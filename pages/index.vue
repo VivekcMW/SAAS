@@ -151,10 +151,15 @@ const handleCategoryClick = () => {
 // Advanced SEO implementation using enhanced SEO composables
 const { generateEnhancedSEO } = useEnhancedSEO();
 const { optimizeContentForLLM, generateRichSnippets } = useLLMOptimization();
-const { optimizeForPerplexity, generateConversationalSchema } = usePerplexityOptimization();
 
 // NEW: Comprehensive LLM optimization using orchestrator
-const { orchestrateLLMOptimization, generateOptimizationReport } = useLLMOrchestrator();
+// (Perplexity-specific helpers are now exposed by the orchestrator)
+const {
+  orchestrateLLMOptimization,
+  generateOptimizationReport,
+  optimizeForPerplexity,
+  generateConversationalSchema
+} = useLLMOrchestrator();
 
 // Configure comprehensive LLM optimization for homepage
 const llmConfig = {

@@ -71,10 +71,11 @@ export default defineNuxtConfig({
 
   // Global CSS - order matters!
   css: [
-    '~/assets/css/reset.css',     // First load the reset to normalize styles
-    '~/assets/css/global.css',    // Load global styles and variables 
-    '~/assets/css/main.css',      // Then load the main CSS with variables
-    '~/assets/scss/main.scss',    // Then load SCSS with component styles
+    '~/assets/css/tokens.css',    // Design tokens (single source of truth — must load first)
+    '~/assets/css/reset.css',     // Normalize browser styles
+    '~/assets/css/global.css',    // Global layout rules
+    '~/assets/css/main.css',      // Base elements + utility classes
+    '~/assets/scss/main.scss',    // SCSS component styles
     '~/assets/css/responsive-fixes.css',
   ],
 
