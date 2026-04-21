@@ -2,37 +2,58 @@
   <nav class="navbar" :class="{ 'navbar-scrolled': isScrolled }">
     <div class="container">
       <div class="navbar-content">
-        <!-- Logo -->
+        <!-- Left: Logo -->
         <div class="logo">
-          <NuxtLink to="/">
+          <NuxtLink to="/" aria-label="SaaSWorld home">
             <SaasworldLogo class="logo-icon" />
-            <span class="logo-text">SaaSWorld</span>
+            <span class="logo-text">SaaS<span class="logo-text-accent">World</span></span>
           </NuxtLink>
         </div>
-        
-        <!-- Navigation Links -->
+
+        <!-- Center: Primary navigation -->
         <div class="nav-links" :class="{ 'show': isMobileMenuOpen }">
           <ul>
+            <li>
+              <button @click="openCategoriesDrawer" class="nav-item nav-item-dropdown" aria-haspopup="true">
+                <UIcon dynamic name="i-heroicons-squares-2x2" class="nav-icon" />
+                <span>Categories</span>
+                <UIcon dynamic name="i-heroicons-chevron-down" class="nav-chevron" />
+              </button>
+            </li>
             <li v-for="item in navItems" :key="item.label">
-              <NuxtLink :to="item.path" :class="{ active: currentPath === item.path }">
+              <NuxtLink :to="item.path" :class="['nav-item', { active: currentPath === item.path }]">
                 {{ item.label }}
               </NuxtLink>
             </li>
             <li>
-              <button @click="openCategoriesDrawer" class="nav-link-button categories-button">
-                <UIcon dynamic name="i-heroicons-squares-2x2" class="categories-icon" />
-                Categories
-              </button>
+              <NuxtLink to="/list-product" class="nav-item">For Vendors</NuxtLink>
+            </li>
+            <li>
+              <NuxtLink to="/pricing" class="nav-item">Pricing</NuxtLink>
             </li>
           </ul>
         </div>
-        
-        <!-- Auth Buttons and Dropdown -->
+
+        <!-- Right: Utility + Auth -->
         <div class="auth-buttons">
-          <!-- Conditional rendering based on auth state -->
+          <!-- Search trigger -->
+          <button
+            type="button"
+            class="nav-utility-btn"
+            aria-label="Search"
+            @click="triggerGlobalSearch"
+          >
+            <UIcon dynamic name="i-heroicons-magnifying-glass" />
+          </button>
+
           <template v-if="!isAuthenticated">
-            <NuxtLink to="/list-product" class="nav-link-button list-app-button">List your application</NuxtLink>
-            <button @click="openSignUpModal" class="nav-link-button signup-button">Sign Up</button>
+            <!-- Divider -->
+            <span class="nav-divider" aria-hidden="true"></span>
+            <button @click="openSignInModal" class="btn-signin">Sign in</button>
+            <button @click="openSignUpModal" class="btn-signup">
+              Get started
+              <UIcon dynamic name="i-heroicons-arrow-right" class="btn-icon" />
+            </button>
           </template>
           <template v-if="isAuthenticated">
             <div class="user-menu">
@@ -64,10 +85,10 @@
             </div>
           </template>
         </div>
-        
+
         <!-- Mobile menu button -->
-        <button class="mobile-menu-button" @click="toggleMobileMenu">
-          <UIcon dynamic name="i-heroicons-bars-3" />
+        <button class="mobile-menu-button" @click="toggleMobileMenu" aria-label="Menu">
+          <UIcon dynamic :name="isMobileMenuOpen ? 'i-heroicons-x-mark' : 'i-heroicons-bars-3'" />
         </button>
       </div>
     </div>
@@ -692,6 +713,19 @@ const openSignUpModal = () => {
   openRegister();
 };
 
+// Open sign in modal
+const openSignInModal = () => {
+  const { openLogin } = useGlobalAuth();
+  openLogin();
+};
+
+// Trigger global search (dispatches event picked up by GlobalSearch component)
+const triggerGlobalSearch = () => {
+  if (import.meta.client) {
+    window.dispatchEvent(new CustomEvent('open-global-search'));
+  }
+};
+
 // Close sign up modal
 const closeSignUpModal = () => {
   showSignUpModal.value = false;
@@ -1013,22 +1047,23 @@ watch(() => route.path, () => {
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: saturate(180%) blur(12px);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 1px solid rgba(17, 24, 39, 0.06);
+  transition: background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .navbar-scrolled {
-  background: rgba(255, 255, 255, 0.98);
-  border-bottom-color: rgba(0, 0, 0, 0.1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom-color: rgba(17, 24, 39, 0.08);
+  box-shadow: 0 1px 3px rgba(17, 24, 39, 0.04), 0 10px 20px -10px rgba(17, 24, 39, 0.08);
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 0 clamp(0.75rem, 2vw, 2rem);
+  padding: 0 clamp(1rem, 2vw, 1.5rem);
   width: 100%;
 }
 
@@ -1036,53 +1071,39 @@ watch(() => route.path, () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: clamp(3.5rem, 4vw, 4rem);
-  gap: 1rem;
+  height: 64px;
+  gap: 1.5rem;
 }
 
-/* Logo styles */
+/* ── Logo ───────────────────────────────────────────── */
 .logo {
   display: flex;
   align-items: center;
-  font-weight: bold;
-  font-size: var(--fs-title-sm);
-  text-decoration: none;
-  color: #1a1a1a;
-  min-width: 0;
   flex-shrink: 0;
 }
 
 .logo a {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  gap: 8px;
   text-decoration: none;
-  color: inherit;
-  gap: 0.5rem;
+  color: var(--sw-text);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
 }
 
 .logo-icon {
-  width: clamp(28px, 4vw, 32px);
-  height: clamp(28px, 4vw, 32px);
+  width: 32px;
+  height: 32px;
   flex-shrink: 0;
 }
 
-.logo-text {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+.logo-text { white-space: nowrap; }
+.logo-text-accent { color: var(--sw-primary); }
 
-.logo-icon {
-  width: 2rem;
-  height: 2rem;
-  margin-right: 0.5rem;
-}
-
-.logo-text {
-  color: #1a1a1a;
-}
-
-/* Navigation links */
+/* ── Nav links (center) ─────────────────────────────── */
 .nav-links {
   display: flex;
   align-items: center;
@@ -1096,130 +1117,192 @@ watch(() => route.path, () => {
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: clamp(1rem, 3vw, 2rem);
-  flex-wrap: wrap;
+  gap: 4px;
 }
 
-.nav-links li {
-  flex-shrink: 0;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: #666;
+.nav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: var(--sw-text-muted);
+  font-family: var(--font-primary);
   font-weight: 500;
-  padding: 0.5rem;
-  border-radius: 6px;
-  transition: color 0.2s ease;
-  font-size: var(--fs-sm);
+  font-size: 0.9375rem;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
   white-space: nowrap;
 }
 
-.nav-links a:hover,
-.nav-links a.active {
-  color: #007bff;
+.nav-item:hover {
+  color: var(--sw-text);
+  background: rgba(17, 24, 39, 0.04);
 }
 
-.nav-links a {
-  color: #666;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
-  position: relative;
-}
-
-.nav-links a:hover {
-  color: #007bff;
-}
-
-.nav-links a.active {
-  color: #007bff;
-}
-
-.nav-links a.active::after {
-  content: '';
-  position: absolute;
-  bottom: -0.5rem;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: #007bff;
-}
-
-.nav-link-button {
-  background: none;
-  border: none;
-  color: #666;
-  font-weight: 500;
-  font-size: var(--fs-sm);
-  cursor: pointer;
-  transition: color 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-}
-
-.nav-link-button:hover:not(.list-app-button):not(.categories-button):not(.signup-button) {
-  color: var(--sw-primary);
-  background: var(--sw-primary-soft);
-}
-
-.categories-button {
-  background: #ff6b35;
-  border: 1px solid #ff6b35;
-  color: white;
-}
-
-.categories-button:hover {
-  background: #e55a2b;
-  border-color: #e55a2b;
-  color: white;
-}
-
-.categories-icon {
-  width: 1rem;
-  height: 1rem;
-}
-
-.nav-link-button.list-app-button {
-  background: transparent !important;
-  border: 2px solid var(--sw-primary);
-  color: var(--sw-primary) !important;
+.nav-item.active {
+  color: var(--sw-text);
+  background: rgba(17, 24, 39, 0.04);
   font-weight: 600;
 }
 
-.nav-link-button.list-app-button:hover {
-  background: var(--sw-primary-soft) !important;
-  border-color: var(--sw-primary) !important;
-  color: var(--sw-primary) !important;
+.nav-icon {
+  font-size: 1rem;
+  width: 16px;
+  height: 16px;
+  color: var(--sw-text-subtle);
 }
 
-.signup-button {
-  background: var(--sw-primary);
-  border: 2px solid var(--sw-primary);
-  color: white !important;
-  font-weight: 600;
-  text-decoration: none;
+.nav-chevron {
+  font-size: 0.875rem;
+  width: 14px;
+  height: 14px;
+  color: var(--sw-text-subtle);
+  transition: transform 0.15s ease;
 }
 
-.signup-button:hover {
-  background: var(--sw-primary-hover);
-  border-color: var(--sw-primary-hover);
-  color: white !important;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 136, 56, 0.28);
-}
+.nav-item-dropdown:hover .nav-chevron { transform: translateY(1px); }
 
-/* Auth buttons */
+/* ── Auth / Utility (right) ─────────────────────────── */
 .auth-buttons {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: clamp(0.5rem, 2vw, 1rem);
+  gap: 6px;
   flex-shrink: 0;
-  margin-left: auto;
+}
+
+.nav-utility-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  color: var(--sw-text-muted);
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.nav-utility-btn:hover {
+  color: var(--sw-text);
+  background: rgba(17, 24, 39, 0.04);
+}
+
+.nav-utility-btn :deep(svg),
+.nav-utility-btn :deep(.nuxt-icon) {
+  width: 18px;
+  height: 18px;
+}
+
+.nav-divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(17, 24, 39, 0.12);
+  margin: 0 6px;
+}
+
+/* Secondary auth — ghost text link */
+.btn-signin {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  color: var(--sw-text);
+  font-family: var(--font-primary);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-signin:hover {
+  background: rgba(17, 24, 39, 0.04);
+}
+
+/* Primary auth — the ONE orange CTA */
+.btn-signup {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: var(--sw-primary);
+  border: 1px solid var(--sw-primary);
+  color: #fff;
+  font-family: var(--font-primary);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(255, 136, 56, 0.2), 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+
+.btn-signup:hover {
+  background: var(--sw-primary-hover);
+  border-color: var(--sw-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 136, 56, 0.28), 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+
+.btn-signup:active { transform: translateY(0); }
+
+.btn-icon {
+  width: 14px;
+  height: 14px;
+  font-size: 14px;
+}
+
+/* Mobile hide/show */
+@media (max-width: 1024px) {
+  /* Trim the lower-priority nav items to keep CTAs visible */
+  .nav-links:not(.show) li:nth-child(3),
+  .nav-links:not(.show) li:nth-child(4) { display: none; }
+}
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-links.show {
+    display: flex;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-bottom: 1px solid rgba(17, 24, 39, 0.08);
+    padding: 16px;
+    z-index: 999;
+  }
+  .nav-links.show ul {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 2px;
+  }
+  .nav-links.show .nav-item {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 12px;
+  }
+  .btn-signin { display: none; }
+  .nav-divider { display: none; }
+}
+
+@media (max-width: 560px) {
+  .logo-text { display: none; }
+  .btn-signup {
+    padding: 8px 12px;
+  }
+  .btn-signup .btn-icon { display: none; }
 }
 
 .btn {

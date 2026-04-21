@@ -302,10 +302,12 @@ const handleKeydown = (event: KeyboardEvent) => {
 onMounted(() => {
   loadHistory()
   document.addEventListener('keydown', handleKeydown)
+  window.addEventListener('open-global-search', expandSearch)
 })
 
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown)
+  window.removeEventListener('open-global-search', expandSearch)
   document.body.style.overflow = ''
 })
 </script>
