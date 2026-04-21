@@ -44,15 +44,6 @@
             >{{ example }}</button>
           </div>
 
-          <!-- Secondary action -->
-          <div class="hero-secondary">
-            <button class="link-btn" @click="handleCategoryClick">
-              <UIcon name="i-heroicons-squares-2x2" dynamic />
-              <span>Or browse all 167 categories</span>
-              <UIcon name="i-heroicons-arrow-right" dynamic />
-            </button>
-          </div>
-
           <!-- Results (inline) -->
           <div v-if="aiResults.length" class="hero-results">
             <h3>Top picks for you</h3>
