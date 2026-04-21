@@ -94,7 +94,8 @@
             <!-- Identity: logo + name + category -->
             <header class="card-identity">
               <div class="product-logo">
-                <img :src="product.image" :alt="product.name + ' logo'" loading="lazy" />
+                <UIcon v-if="product.icon" :name="product.icon" dynamic class="product-logo-icon" />
+                <img v-else :src="product.image" :alt="product.name + ' logo'" loading="lazy" />
               </div>
               <div class="identity-text">
                 <h3>{{ product.name }}</h3>
@@ -168,7 +169,7 @@
         <div class="integration-logos">
           <div class="logo-item" v-for="(logo, index) in integrationLogos" :key="index" @mouseenter="highlightLogo(index)" @mouseleave="resetLogos">
             <div class="logo-tooltip">{{ logo.name }}</div>
-            <img :src="logo.src" :alt="logo.name" :class="{ 'highlighted': highlightedLogo === index }" />
+            <UIcon :name="logo.icon" dynamic class="integration-icon" :class="{ 'highlighted': highlightedLogo === index }" />
           </div>
         </div>
         <div class="integrations-footer">
@@ -613,6 +614,7 @@ const topProducts = [
     category: 'Team Collaboration',
     tagline: 'Channel-based messaging that replaces internal email for fast-moving teams.',
     image: '/assets/images/integrations/slack.svg',
+    icon: 'logos:slack-icon',
     rating: '4.8',
     reviewCount: '42,100',
     users: '12M+',
@@ -630,6 +632,7 @@ const topProducts = [
     category: 'Customer Relationship',
     tagline: 'Free CRM that scales into a full marketing, sales, and service platform.',
     image: '/assets/images/integrations/hubspot.svg',
+    icon: 'logos:hubspot',
     rating: '4.7',
     reviewCount: '28,900',
     users: '8M+',
@@ -647,6 +650,7 @@ const topProducts = [
     category: 'Video Conferencing',
     tagline: 'The reliability benchmark for video meetings, webinars, and events.',
     image: '/assets/images/integrations/zoom.svg',
+    icon: 'logos:zoom-icon',
     rating: '4.6',
     reviewCount: '55,300',
     users: '15M+',
@@ -664,6 +668,7 @@ const topProducts = [
     category: 'Productivity',
     tagline: 'Docs, wikis, tasks, and databases in one connected workspace.',
     image: '/assets/images/integrations/notion.svg',
+    icon: 'simple-icons:notion',
     rating: '4.9',
     reviewCount: '18,400',
     users: '4M+',
@@ -681,6 +686,7 @@ const topProducts = [
     category: 'CRM & Sales',
     tagline: 'The enterprise CRM standard — deeply customizable revenue platform.',
     image: '/assets/images/integrations/salesforce.svg',
+    icon: 'logos:salesforce',
     rating: '4.5',
     reviewCount: '71,200',
     users: '20M+',
@@ -698,6 +704,7 @@ const topProducts = [
     category: 'Design',
     tagline: 'Drag-and-drop design for teams that need beautiful output fast.',
     image: '/assets/images/integrations/canva.svg',
+    icon: 'logos:canva',
     rating: '4.8',
     reviewCount: '12,100',
     users: '10M+',
@@ -711,14 +718,20 @@ const topProducts = [
   }
 ];
 
-// Integration Logos
+// Integration Logos (real brand marks via Iconify logos set)
 const integrationLogos = [
-  { name: 'Slack', src: '/assets/images/integrations/slack.svg' },
-  { name: 'Google Workspace', src: '/assets/images/integrations/google.svg' },
-  { name: 'Microsoft', src: '/assets/images/integrations/microsoft.svg' },
-  { name: 'Zoom', src: '/assets/images/integrations/zoom.svg' },
-  { name: 'Dropbox', src: '/assets/images/integrations/dropbox.svg' },
-  { name: 'Salesforce', src: '/assets/images/integrations/salesforce.svg' }
+  { name: 'Slack', icon: 'logos:slack-icon' },
+  { name: 'Google Workspace', icon: 'logos:google-icon' },
+  { name: 'Microsoft', icon: 'logos:microsoft-icon' },
+  { name: 'Zoom', icon: 'logos:zoom-icon' },
+  { name: 'Dropbox', icon: 'logos:dropbox' },
+  { name: 'Salesforce', icon: 'logos:salesforce' },
+  { name: 'HubSpot', icon: 'logos:hubspot' },
+  { name: 'Notion', icon: 'simple-icons:notion' },
+  { name: 'GitHub', icon: 'logos:github-icon' },
+  { name: 'Stripe', icon: 'logos:stripe' },
+  { name: 'Zapier', icon: 'logos:zapier-icon' },
+  { name: 'Asana', icon: 'logos:asana' },
 ];
 
 // Integration logo highlight effect
@@ -1626,19 +1639,26 @@ onMounted(() => {
   width: 48px;
   height: 48px;
   border-radius: 10px;
-  background: var(--bg-gray);
+  background: #fff;
   border: 1px solid #E5E7EB;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   padding: 8px;
+  overflow: hidden;
 }
 
 .product-logo img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+}
+
+.product-logo-icon {
+  width: 32px;
+  height: 32px;
+  font-size: 32px;
 }
 
 .identity-text { min-width: 0; }
@@ -1879,6 +1899,22 @@ onMounted(() => {
 
 .logo-item:hover img, .logo-item img.highlighted {
   filter: grayscale(0%);
+  transform: scale(1.1);
+}
+
+.integration-icon {
+  width: 56px;
+  height: 56px;
+  font-size: 56px;
+  transition: all var(--transition-fast);
+  filter: grayscale(40%);
+  opacity: 0.85;
+}
+
+.logo-item:hover .integration-icon,
+.integration-icon.highlighted {
+  filter: grayscale(0%);
+  opacity: 1;
   transform: scale(1.1);
 }
 
