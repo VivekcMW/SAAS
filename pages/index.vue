@@ -800,6 +800,13 @@ onMounted(() => {
   border-radius: var(--border-radius-md);
   height: 50px;
   width: 100%;
+  background: #fff;
+  color: var(--sw-text);
+}
+
+.search-input::placeholder {
+  color: var(--sw-text-subtle);
+  opacity: 1;
 }
 
 .search-input:focus {

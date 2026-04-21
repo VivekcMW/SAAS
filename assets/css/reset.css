@@ -37,6 +37,21 @@ input, button, textarea, select {
   font: inherit;
 }
 
+/* Ensure form controls always render on a light surface, even when the user's
+   OS/browser is set to dark mode. Individual components may override. */
+input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+textarea,
+select {
+  background-color: #fff;
+  color: var(--sw-text, #1C1917);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--sw-text-subtle, #78716C);
+  opacity: 1;
+}
+
 /* Remove all animations, transitions and smooth scroll for people who prefer not to see them */
 @media (prefers-reduced-motion: reduce) {
   html:focus-within {

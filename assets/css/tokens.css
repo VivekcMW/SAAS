@@ -20,6 +20,11 @@
  * ============================================================ */
 
 :root {
+  /* Force light theme for form controls regardless of OS/browser dark mode.
+     Without this, browsers auto-invert <input>/<textarea>/<select> backgrounds
+     when the user has a dark system theme. */
+  color-scheme: light;
+
   /* ── Brand ─────────────────────────────────────────────── */
   --primary-color: #FF8838;
   --primary-color-dark: #E67326;
