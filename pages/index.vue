@@ -259,7 +259,7 @@ const perplexityOptimization = optimizeForPerplexity({
   title: 'SaaSWorld - Global Software Marketplace',
   description: 'Discover and compare the best business software solutions worldwide. Find SaaS tools, enterprise software, and digital solutions for your business needs.',
   category: 'Software Marketplace',
-  keyFeatures: [
+  features: [
     'Comprehensive software directory',
     'Expert reviews and comparisons', 
     'Free platform access',
@@ -444,11 +444,12 @@ const homepageSchema = {
 };
 
 // Add Perplexity.ai conversational schema
+// Note: qaPairs are already included inside the schema returned by the orchestrator.
 const perplexitySchema = generateConversationalSchema({
   title: 'SaaSWorld',
   description: 'Global software marketplace for business solutions',
   category: 'Software Marketplace'
-}, perplexityOptimization.qaPairs);
+});
 
 // Add the comprehensive schema to the page
 useHead({
