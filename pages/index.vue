@@ -1,51 +1,81 @@
 <template>
   <div class="home-page">
-    <!-- Hero Section -->
+    <!-- Hero Section (with integrated AI search) -->
     <section class="hero-section">
       <div class="container">
         <div class="hero-content">
+          <div class="hero-badge">
+            <UIcon name="i-heroicons-sparkles" dynamic />
+            <span>AI-powered SaaS discovery</span>
+          </div>
+
           <h1 class="hero-title">Find the right software for the way <span class="highlight">you work</span>.</h1>
-          <p class="hero-subtitle">AI-curated SaaS picks across 167 categories. No sales calls. No bias. Just tools that fit.</p>
-          
-          <!-- Search row -->
-          <div class="search-row">
-            <div class="search-container">
-              <input type="text" placeholder="Describe what you need — e.g. CRM for a 10-person sales team" class="search-input">
-              <button class="search-btn" @click="handleSearch">
-                <UIcon name="i-heroicons-magnifying-glass" dynamic />
-                <span>Search</span>
-              </button>
-            </div>
-            <button class="category-btn" @click="handleCategoryClick" title="Browse Categories">
-              <UIcon name="i-heroicons-squares-2x2" dynamic />
+          <p class="hero-subtitle">Tell us what you need in plain English. We'll shortlist the 3 best apps out of 1,200+ — no sales calls, no bias.</p>
+
+          <!-- Unified AI Search -->
+          <div class="hero-search">
+            <textarea
+              v-model="aiPrompt"
+              class="hero-search-input"
+              :placeholder="searchPlaceholder"
+              rows="2"
+              :disabled="aiLoading"
+              @keydown.enter.exact.prevent="runAIMatch"
+            />
+            <button
+              class="hero-search-btn"
+              :disabled="!aiPrompt.trim() || aiLoading"
+              @click="runAIMatch"
+            >
+              <UIcon v-if="!aiLoading" name="i-heroicons-bolt" dynamic />
+              <UIcon v-else name="i-heroicons-arrow-path" dynamic class="spin" />
+              <span>{{ aiLoading ? 'Matching…' : 'Find my tools' }}</span>
             </button>
           </div>
-          
-          <div class="hero-cta">
-            <NuxtLink to="/marketplace" class="btn btn-primary">
-              Explore Marketplace
-            </NuxtLink>
+
+          <!-- Example chips -->
+          <div class="hero-chips">
+            <span class="chip-label">Try:</span>
+            <button
+              v-for="(example, i) in examples"
+              :key="i"
+              class="chip"
+              @click="aiPrompt = example"
+            >{{ example }}</button>
           </div>
-          <div class="hero-stats">
-            <div class="stat-item">
-              <h3>167</h3>
-              <p>Categories</p>
-            </div>
-            <div class="stat-item">
-              <h3>1,200+</h3>
-              <p>Apps Indexed</p>
-            </div>
-            <div class="stat-item">
-              <h3>Free</h3>
-              <p>To Browse</p>
-            </div>
+
+          <!-- Secondary action -->
+          <div class="hero-secondary">
+            <button class="link-btn" @click="handleCategoryClick">
+              <UIcon name="i-heroicons-squares-2x2" dynamic />
+              <span>Or browse all 167 categories</span>
+              <UIcon name="i-heroicons-arrow-right" dynamic />
+            </button>
+          </div>
+
+          <!-- Results (inline) -->
+          <div v-if="aiResults.length" class="hero-results">
+            <h3>Top picks for you</h3>
+            <ul>
+              <li v-for="r in aiResults" :key="r.name">
+                <strong>{{ r.name }}</strong>
+                <span>— {{ r.reason }}</span>
+              </li>
+            </ul>
+            <p class="results-note">Demo results. Full AI matching launches soon.</p>
+          </div>
+
+          <!-- Trust strip -->
+          <div class="hero-trust">
+            <span><strong>167</strong> categories</span>
+            <span class="dot">·</span>
+            <span><strong>1,200+</strong> apps indexed</span>
+            <span class="dot">·</span>
+            <span><strong>Free</strong> to browse</span>
           </div>
         </div>
       </div>
     </section>
-
-    <!-- AI Match Teaser -->
-    <AIMatchTeaser />
 
     <!-- Top Performing Products Section -->
     <section class="top-products-section">
@@ -131,6 +161,34 @@ const { openCategoriesDrawer } = useCategoriesMenu();
 const handleCategoryClick = () => {
   console.log('Category button clicked!');
   openCategoriesDrawer();
+};
+
+// --- Unified AI Search (hero) --------------------------------
+const aiPrompt = ref('');
+const aiLoading = ref(false);
+const aiResults = ref<Array<{ name: string; reason: string }>>([]);
+
+const searchPlaceholder = 'Describe what you need — e.g. "CRM for a 10-person remote sales team, budget under $20/user"';
+
+const examples = [
+  'CRM for a 10-person sales team',
+  'Async video for a distributed engineering team',
+  'All-in-one HR + payroll under $200/mo',
+];
+
+// Stub matcher — wire to real /api/ai-match endpoint in Phase 2.
+const runAIMatch = () => {
+  if (!aiPrompt.value.trim() || aiLoading.value) return;
+  aiLoading.value = true;
+  aiResults.value = [];
+  setTimeout(() => {
+    aiResults.value = [
+      { name: 'Notion', reason: 'Flexible docs + lightweight project tracking for small teams' },
+      { name: 'Linear', reason: 'Fast issue tracking loved by product-led teams' },
+      { name: 'HubSpot', reason: 'Free CRM tier that scales to full revenue stack' },
+    ];
+    aiLoading.value = false;
+  }, 900);
 };
 
 // Advanced SEO implementation using enhanced SEO composables
@@ -665,12 +723,6 @@ onMounted(() => {
   max-width: 800px;
 }
 
-.hero-title {
-  font-size: 3.25rem;
-  line-height: 1.2;
-  margin-bottom: var(--spacing-lg);
-}
-
 .highlight {
   color: var(--sw-primary);
   position: relative;
@@ -699,6 +751,224 @@ onMounted(() => {
   margin-left: auto;
   margin-right: auto;
 }
+
+/* ─── Unified Hero AI Search ──────────────────────────────── */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--sw-ai-soft);
+  color: var(--sw-ai);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: var(--fs-caption);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 20px;
+}
+
+.hero-title {
+  font-size: 3.25rem;
+  line-height: 1.1;
+  margin-bottom: var(--spacing-md);
+  letter-spacing: -0.02em;
+  color: var(--sw-text);
+}
+
+.hero-search {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  max-width: 720px;
+  margin: 0 auto var(--spacing-md);
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  padding: 8px;
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.04),
+              0 8px 24px rgba(17, 24, 39, 0.06);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.hero-search:focus-within {
+  border-color: var(--sw-ai);
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.04),
+              0 0 0 4px rgba(99, 102, 241, 0.15);
+}
+
+.hero-search-input {
+  flex: 1;
+  border: none;
+  resize: none;
+  padding: 14px 16px;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--sw-text);
+  background: transparent;
+  min-height: 56px;
+  text-align: left;
+}
+
+.hero-search-input:focus { outline: none; }
+
+.hero-search-input::placeholder {
+  color: var(--sw-text-subtle);
+  opacity: 1;
+}
+
+.hero-search-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--sw-ai);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 0 22px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.hero-search-btn:hover:not(:disabled) {
+  background: #4F46E5;
+  transform: translateY(-1px);
+}
+
+.hero-search-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.spin { animation: spin 0.9s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.hero-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.chip-label {
+  font-size: var(--fs-caption);
+  color: var(--sw-text-subtle);
+  font-weight: 500;
+}
+
+.chip {
+  border: 1px solid #E5E7EB;
+  background: #fff;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.875rem;
+  color: var(--sw-text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.chip:hover {
+  border-color: var(--sw-ai);
+  color: var(--sw-ai);
+}
+
+.hero-secondary { margin-bottom: var(--spacing-lg); }
+
+.link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: var(--sw-primary);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: background-color 0.15s;
+}
+
+.link-btn:hover {
+  background: var(--sw-primary-soft);
+  text-decoration: none;
+}
+
+.hero-results {
+  max-width: 720px;
+  margin: 0 auto var(--spacing-lg);
+  text-align: left;
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  padding: 20px 24px;
+}
+
+.hero-results h3 {
+  margin: 0 0 12px;
+  font-size: 1rem;
+  color: var(--sw-text);
+  font-weight: 600;
+}
+
+.hero-results ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hero-results li {
+  color: var(--sw-text-muted);
+  padding: 10px 12px;
+  background: var(--bg-gray);
+  border-radius: 10px;
+}
+
+.hero-results strong {
+  color: var(--sw-text);
+  margin-right: 4px;
+}
+
+.results-note {
+  font-size: var(--fs-caption);
+  color: var(--sw-text-subtle);
+  margin: 0;
+}
+
+.hero-trust {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  color: var(--sw-text-subtle);
+  font-size: 0.875rem;
+}
+
+.hero-trust strong {
+  color: var(--sw-text);
+  font-weight: 600;
+}
+
+.hero-trust .dot { opacity: 0.5; }
+
+@media (max-width: 640px) {
+  .hero-title { font-size: 2.125rem; }
+  .hero-search { flex-direction: column; padding: 10px; }
+  .hero-search-btn { justify-content: center; padding: 14px; }
+  .hero-chips { gap: 6px; }
+  .chip { padding: 5px 10px; font-size: 0.8125rem; }
+}
+/* ─── End Unified Hero ─────────────────────────────────────── */
 
 .search-row {
   display: flex;
