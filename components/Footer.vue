@@ -2,29 +2,35 @@
 <template>
   <footer class="footer">
     <div class="container">
-      <!-- Footer Top Section -->
+      <!-- Top grid: brand + link columns -->
       <div class="footer-top">
         <div class="footer-brand">
           <NuxtLink to="/" class="footer-logo">
             <SaasworldLogo class="logo-icon" />
-            <span>SaaSWorld</span>
+            <span>SaaS<span class="logo-accent">World</span></span>
           </NuxtLink>
           <p class="brand-description">
-            Unlock the full potential of your business with our powerful SaaS platform. Streamline workflows, increase productivity, and drive growth.
+            The global software marketplace — compare, shortlist and deploy SaaS tools built for every team.
           </p>
+
+          <!-- Newsletter -->
+          <form class="newsletter" @submit.prevent>
+            <label for="footer-email" class="newsletter-label">Get the weekly SaaS brief</label>
+            <div class="newsletter-field">
+              <input id="footer-email" type="email" placeholder="you@company.com" class="newsletter-input" />
+              <button type="submit" class="newsletter-submit" aria-label="Subscribe">
+                <UIcon dynamic name="i-heroicons-arrow-right" />
+              </button>
+            </div>
+            <p class="newsletter-note">One short email on Fridays. Unsubscribe anytime.</p>
+          </form>
+
           <div class="social-links">
-            <a href="#" aria-label="Follow us on Twitter">
-              <UIcon dynamic name="i-simple-icons-twitter" />
-            </a>
-            <a href="#" aria-label="Follow us on Facebook">
-              <UIcon dynamic name="i-simple-icons-facebook" />
-            </a>
-            <a href="#" aria-label="Follow us on LinkedIn">
-              <UIcon dynamic name="i-simple-icons-linkedin" />
-            </a>
-            <a href="#" aria-label="Follow us on Instagram">
-              <UIcon dynamic name="i-simple-icons-instagram" />
-            </a>
+            <a href="#" aria-label="Twitter"><UIcon dynamic name="i-simple-icons-twitter" /></a>
+            <a href="#" aria-label="LinkedIn"><UIcon dynamic name="i-simple-icons-linkedin" /></a>
+            <a href="#" aria-label="Facebook"><UIcon dynamic name="i-simple-icons-facebook" /></a>
+            <a href="#" aria-label="Instagram"><UIcon dynamic name="i-simple-icons-instagram" /></a>
+            <a href="#" aria-label="YouTube"><UIcon dynamic name="i-simple-icons-youtube" /></a>
           </div>
         </div>
 
@@ -32,99 +38,101 @@
           <div class="footer-links-column">
             <h3>Product</h3>
             <ul>
+              <li><NuxtLink to="/marketplace">Marketplace</NuxtLink></li>
               <li><NuxtLink to="/features">Features</NuxtLink></li>
               <li><NuxtLink to="/integrations">Integrations</NuxtLink></li>
               <li><NuxtLink to="/changelog">Changelog</NuxtLink></li>
               <li><NuxtLink to="/roadmap">Roadmap</NuxtLink></li>
             </ul>
           </div>
-          
+
+          <div class="footer-links-column">
+            <h3>Vendors</h3>
+            <ul>
+              <li><NuxtLink to="/list-product">List your product</NuxtLink></li>
+              <li><NuxtLink to="/pricing">Pricing</NuxtLink></li>
+              <li><NuxtLink to="/partners">Partner program</NuxtLink></li>
+              <li><NuxtLink to="/ads">Advertise</NuxtLink></li>
+            </ul>
+          </div>
+
           <div class="footer-links-column">
             <h3>Resources</h3>
             <ul>
               <li><NuxtLink to="/blog">Blog</NuxtLink></li>
               <li><NuxtLink to="/documentation">Documentation</NuxtLink></li>
               <li><NuxtLink to="/guides">Guides</NuxtLink></li>
-              <li><NuxtLink to="/help">Help Center</NuxtLink></li>
+              <li><NuxtLink to="/help">Help center</NuxtLink></li>
               <li><NuxtLink to="/community">Community</NuxtLink></li>
             </ul>
           </div>
-          
+
           <div class="footer-links-column">
             <h3>Company</h3>
             <ul>
               <li><NuxtLink to="/about">About</NuxtLink></li>
-              <li><NuxtLink to="/careers">Careers</NuxtLink></li>
+              <li><NuxtLink to="/careers">Careers <span class="pill-soft">We're hiring</span></NuxtLink></li>
               <li><NuxtLink to="/contact">Contact</NuxtLink></li>
-              <li><NuxtLink to="/partners">Partners</NuxtLink></li>
               <li><NuxtLink to="/press">Press</NuxtLink></li>
-              <li><NuxtLink to="/status" class="status-link">
-                Status
-              </NuxtLink></li>
-            </ul>
-          </div>
-          
-          <div class="footer-links-column">
-            <h3>Legal</h3>
-            <ul>
-              <li><NuxtLink to="/terms">Terms</NuxtLink></li>
-              <li><NuxtLink to="/privacy">Privacy</NuxtLink></li>
-              <li><NuxtLink to="/cookies">Cookies</NuxtLink></li>
-              <li><NuxtLink to="/licenses">Licenses</NuxtLink></li>
+              <li>
+                <NuxtLink to="/status" class="status-link">
+                  <span class="status-dot" aria-hidden="true"></span>
+                  All systems normal
+                </NuxtLink>
+              </li>
             </ul>
           </div>
         </div>
       </div>
-      
-      <!-- Categories Section for SEO - Hidden from UI but crawlable -->
+
+      <!-- SEO categories (hidden visually, crawlable) -->
       <div class="footer-categories seo-hidden">
         <div class="footer-categories-header">
           <h3>Browse by Category</h3>
           <p>Discover thousands of applications across all business categories</p>
         </div>
-        
         <div class="categories-grid">
           <div v-for="category in footerCategories" :key="category.id" class="category-section">
             <div class="category-header">
               <UIcon dynamic :name="category.icon" class="category-icon" />
               <h4>
-                <NuxtLink :to="`/marketplace/category/${category.id}`" class="category-title-link">
-                  {{ category.name }}
-                </NuxtLink>
+                <NuxtLink :to="`/marketplace/category/${category.id}`">{{ category.name }}</NuxtLink>
               </h4>
               <span class="category-count">{{ getTotalToolsCount(category) }} tools</span>
             </div>
-            
             <ul class="category-links">
               <li v-for="(subcategory, index) in getTopSubcategories(category)" :key="index">
-                <NuxtLink :to="subcategory.path" class="subcategory-link">
-                  {{ subcategory.name }}
-                </NuxtLink>
+                <NuxtLink :to="subcategory.path">{{ subcategory.name }}</NuxtLink>
               </li>
             </ul>
-            
-            <div class="category-footer" v-if="getRemainingCount(category) > 0">
-              <NuxtLink :to="`/marketplace/category/${category.id}`" class="view-all-link">
-                View all {{ getTotalToolsCount(category) }} tools
-                <UIcon name="i-heroicons-arrow-right" class="arrow-icon" />
-              </NuxtLink>
-            </div>
           </div>
         </div>
       </div>
-      
-      <!-- Footer Bottom Section -->
+
+      <!-- Bottom bar -->
       <div class="footer-bottom">
-        <p>&copy; {{ new Date().getFullYear() }} SaaSWorld. All rights reserved.</p>
-        <div class="footer-right">
+        <div class="footer-bottom-left">
+          <p class="copyright">&copy; {{ new Date().getFullYear() }} SaaSWorld, Inc. All rights reserved.</p>
+          <nav class="legal-links" aria-label="Legal">
+            <NuxtLink to="/terms">Terms</NuxtLink>
+            <span class="legal-dot">·</span>
+            <NuxtLink to="/privacy">Privacy</NuxtLink>
+            <span class="legal-dot">·</span>
+            <NuxtLink to="/cookies">Cookies</NuxtLink>
+            <span class="legal-dot">·</span>
+            <NuxtLink to="/licenses">Licenses</NuxtLink>
+          </nav>
+        </div>
+        <div class="footer-bottom-right">
           <div class="language-selector">
             <UIcon dynamic name="i-heroicons-globe-alt" class="globe-icon" />
-            <select v-model="currentLanguage">
+            <select v-model="currentLanguage" aria-label="Language">
               <option value="en">English</option>
               <option value="fr">Français</option>
               <option value="es">Español</option>
               <option value="de">Deutsch</option>
             </select>
+            <UIcon dynamic name="i-heroicons-chevron-down" class="select-chevron" />
           </div>
         </div>
       </div>
@@ -133,7 +141,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 
 interface Subcategory {
   name: string;
@@ -349,180 +357,206 @@ const getTopSubcategories = (category: Category): Subcategory[] => {
   const allSubcategories = category.columns.flat();
   return allSubcategories.slice(0, 8); // Show top 8 subcategories
 };
-
-const getRemainingCount = (category: Category): number => {
-  const total = getTotalToolsCount(category);
-  const showing = Math.min(8, total);
-  return total - showing;
-};
 </script>
 
 <style scoped>
+/* ───────────────────────────────────────────────────────────
+   SaaSWorld Footer — light, theme-aligned
+   ─────────────────────────────────────────────────────────── */
 .footer {
-  background-color: var(--dark-color);
-  color: var(--light-color);
-  padding: var(--spacing-xl) 0;
+  background-color: #FAFAF9;
+  color: var(--sw-text-muted);
+  padding: 72px 0 28px;
+  border-top: 1px solid #E7E5E4;
+  font-family: var(--font-primary);
 }
 
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ── Top grid: brand + 4 link columns ───────────────────── */
 .footer-top {
   display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: var(--spacing-xl);
-  padding-bottom: var(--spacing-xl);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  margin-bottom: var(--spacing-xl);
+  grid-template-columns: 1.4fr repeat(4, 1fr);
+  gap: 48px;
+  padding-bottom: 48px;
+  border-bottom: 1px solid #E7E5E4;
 }
 
-.footer-brand {
-  max-width: 300px;
-}
+/* Brand column */
+.footer-brand { min-width: 0; }
 
 .footer-logo {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  color: var(--light-color);
-  font-size: 1.5rem;
+  gap: 8px;
+  color: var(--sw-text);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: var(--spacing-md);
   text-decoration: none;
+  margin-bottom: 14px;
 }
-
-.logo-icon {
-  width: 2rem;
-  height: 2rem;
-  margin-right: var(--spacing-xs);
-}
+.logo-icon { width: 32px; height: 32px; flex-shrink: 0; }
+.logo-accent { color: var(--sw-primary); }
 
 .brand-description {
-  color: var(--text-secondary);
-  margin-bottom: var(--spacing-lg);
+  color: var(--sw-text-muted);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  margin: 0 0 24px;
+  max-width: 340px;
 }
 
-.social-links {
-  display: flex;
-  gap: var(--spacing-md);
+/* Newsletter */
+.newsletter {
+  margin-bottom: 24px;
+  max-width: 340px;
 }
-
-.social-links a {
+.newsletter-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--sw-text);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+.newsletter-field {
   display: flex;
+  align-items: stretch;
+  background: #fff;
+  border: 1px solid #D6D3D1;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.newsletter-field:focus-within {
+  border-color: var(--sw-primary);
+  box-shadow: 0 0 0 3px rgba(255, 136, 56, 0.12);
+}
+.newsletter-input {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  padding: 10px 12px;
+  font-size: 0.875rem;
+  font-family: var(--font-primary);
+  color: var(--sw-text);
+  outline: none;
+  min-width: 0;
+}
+.newsletter-input::placeholder { color: var(--sw-text-subtle); }
+.newsletter-submit {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
-  background-color: rgba(255, 255, 255, 0.07);
-  border-radius: 50%;
-  color: var(--light-color);
-  transition: all var(--transition-fast);
+  width: 40px;
+  background: var(--sw-primary);
+  color: #fff;
+  border: 0;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.newsletter-submit:hover { background: var(--sw-primary-hover); }
+.newsletter-submit :deep(.nuxt-icon),
+.newsletter-submit svg { width: 16px; height: 16px; }
+.newsletter-note {
+  margin: 8px 0 0;
+  font-size: 0.75rem;
+  color: var(--sw-text-subtle);
+}
+
+/* Social */
+.social-links {
+  display: flex;
+  gap: 8px;
+}
+.social-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  background: #fff;
+  border: 1px solid #E7E5E4;
+  border-radius: 6px;
+  color: var(--sw-text-muted);
   text-decoration: none;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
 }
-
 .social-links a:hover {
-  background-color: var(--primary-color);
-  transform: translateY(-3px);
+  color: var(--sw-primary);
+  border-color: var(--sw-primary);
+  transform: translateY(-1px);
 }
+.social-links :deep(.nuxt-icon),
+.social-links svg { width: 16px; height: 16px; }
 
-.social-links svg {
-  width: 18px;
-  height: 18px;
-}
-
+/* ── Link columns ──────────────────────────────────────── */
 .footer-links {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--spacing-lg);
-  margin-top: 1rem;
+  display: contents; /* let the outer grid position each column */
 }
 
 .footer-links-column h3 {
-  font-size: 1.1rem;
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
   font-weight: 600;
-  margin-bottom: var(--spacing-md);
-  color: var(--light-color);
-  padding-bottom: 10px;
-  position: relative;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--sw-text);
+  margin: 4px 0 16px;
 }
-
-.footer-links-column h3::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 2px;
-  width: 30px;
-  background-color: var(--primary-color);
-}
-
 .footer-links-column ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
-
-.footer-links-column li {
-  margin-bottom: var(--spacing-sm);
-  position: relative;
-}
-
+.footer-links-column li { margin-bottom: 10px; }
 .footer-links-column a {
-  color: var(--text-secondary);
-  transition: color var(--transition-fast);
+  color: var(--sw-text-muted);
+  font-size: 0.9375rem;
   text-decoration: none;
-  display: inline-block;
-  padding: 3px 0;
-}
-
-.footer-links-column a:hover {
-  color: var(--light-color);
-}
-
-.status-link {
-  display: flex !important;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.status-icon {
-  color: #10B981;
-  font-size: 0.875rem;
-}
-
-.footer-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.875rem;
-}
-
-.footer-right {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-lg);
-}
-
-.language-selector {
-  display: flex;
+  transition: color 0.15s ease;
+  display: inline-flex;
   align-items: center;
   gap: 6px;
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: var(--border-radius-input);
-  padding: 6px 12px;
+}
+.footer-links-column a:hover { color: var(--sw-primary); }
+
+/* Soft "we're hiring" pill */
+.pill-soft {
+  display: inline-block;
+  padding: 1px 7px;
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #047857;
+  background: #D1FAE5;
+  border-radius: 4px;
+  line-height: 1.4;
 }
 
-.globe-icon {
-  color: var(--text-secondary);
+/* Status row */
+.status-link {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 8px !important;
+}
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: #10B981;
+  border-radius: 999px;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+  flex-shrink: 0;
 }
 
-.language-selector select {
-  background-color: transparent;
-  color: var(--text-secondary);
-  border: none;
-  cursor: pointer;
-  padding-right: 12px;
-  appearance: none;
-  outline: none;
-}
-
-/* SEO Hidden Section - Hidden from UI but crawlable by search engines */
+/* ── SEO hidden categories ─────────────────────────────── */
 .seo-hidden {
   position: absolute;
   left: -10000px;
@@ -532,294 +566,107 @@ const getRemainingCount = (category: Category): number => {
   overflow: hidden;
 }
 
-/* Alternative approach using visibility (uncomment if preferred) */
-/*
-.seo-hidden {
-  visibility: hidden;
-  height: 0;
-  overflow: hidden;
-  position: relative;
-}
-*/
-
-/* Footer Categories Styles - Compact Design */
-.footer-categories {
-  padding: var(--spacing-lg) 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  margin: var(--spacing-lg) 0;
-}
-
-.footer-categories-header {
-  text-align: center;
-  margin-bottom: var(--spacing-lg);
-}
-
-.footer-categories-header h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--light-color);
-  margin-bottom: var(--spacing-xs);
-}
-
-.footer-categories-header p {
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  max-width: 500px;
-  margin: 0 auto;
-}
-
-.categories-grid {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-  margin-top: var(--spacing-lg);
-}
-
-.category-section {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 6px;
-  padding: var(--spacing-sm) var(--spacing-md);
-  transition: all 0.2s ease;
+/* ── Bottom bar ────────────────────────────────────────── */
+.footer-bottom {
   display: flex;
   align-items: center;
-  gap: var(--spacing-lg);
-  min-height: 50px;
-}
-
-.category-section:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-.category-header {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  flex-shrink: 0;
-  min-width: 200px;
-  margin-bottom: 0;
-  padding-bottom: 0;
-  border-bottom: none;
-}
-
-.category-icon {
-  font-size: 1rem;
-  color: var(--primary-color);
-  flex-shrink: 0;
-}
-
-.category-header h4 {
-  margin: 0;
-  font-size: 0.9rem;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-.category-title-link {
-  color: var(--light-color);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.category-title-link:hover {
-  color: var(--primary-color);
-}
-
-.category-count {
-  font-size: 0.7rem;
-  color: var(--text-secondary);
-  background: rgba(255, 255, 255, 0.08);
-  padding: 2px 6px;
-  border-radius: 10px;
-  white-space: nowrap;
-  margin-left: var(--spacing-xs);
-}
-
-.category-links {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding-top: 24px;
   flex-wrap: wrap;
-  gap: var(--spacing-sm);
-  flex: 1;
+}
+.footer-bottom-left {
+  display: flex;
   align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
 }
-
-.category-links li {
+.copyright {
   margin: 0;
+  font-size: 0.8125rem;
+  color: var(--sw-text-subtle);
 }
-
-.subcategory-link {
-  display: inline-block;
-  color: var(--text-secondary);
-  text-decoration: none;
-  font-size: 0.8rem;
-  transition: all 0.2s ease;
-  padding: 4px 8px;
-  border-radius: 4px;
-  white-space: nowrap;
-  position: relative;
-}
-
-.subcategory-link::after {
-  content: '•';
-  color: rgba(255, 255, 255, 0.3);
-  margin-left: var(--spacing-sm);
-  font-size: 0.6rem;
-}
-
-.category-links li:last-child .subcategory-link::after {
-  display: none;
-}
-
-.subcategory-link:hover {
-  color: var(--light-color);
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.category-footer {
-  flex-shrink: 0;
-  margin-top: 0;
-  padding-top: 0;
-  border-top: none;
-}
-
-.view-all-link {
+.legal-links {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  color: var(--primary-color);
+  gap: 10px;
+  font-size: 0.8125rem;
+}
+.legal-links a {
+  color: var(--sw-text-muted);
   text-decoration: none;
-  font-size: 0.75rem;
+  transition: color 0.15s ease;
+}
+.legal-links a:hover { color: var(--sw-primary); }
+.legal-dot { color: var(--sw-text-subtle); opacity: 0.5; }
+
+/* Language selector */
+.language-selector {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid #E7E5E4;
+  border-radius: 6px;
+  padding: 6px 10px 6px 12px;
+  position: relative;
+  transition: border-color 0.15s ease;
+}
+.language-selector:hover { border-color: #D6D3D1; }
+.globe-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--sw-text-subtle);
+}
+.language-selector select {
+  background: transparent;
+  color: var(--sw-text);
+  border: 0;
+  cursor: pointer;
+  font-family: var(--font-primary);
+  font-size: 0.8125rem;
   font-weight: 500;
-  transition: all 0.2s ease;
-  padding: 4px 8px;
-  border-radius: 4px;
-  white-space: nowrap;
+  padding: 0 18px 0 0;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+}
+.select-chevron {
+  position: absolute;
+  right: 10px;
+  width: 12px;
+  height: 12px;
+  color: var(--sw-text-subtle);
+  pointer-events: none;
 }
 
-.view-all-link:hover {
-  color: var(--light-color);
-  background: rgba(255, 255, 255, 0.05);
+/* ── Responsive ────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+  }
+  .footer-brand { grid-column: 1 / -1; }
+  .footer-links { display: contents; }
 }
 
-.arrow-icon {
-  font-size: 0.7rem;
-  transition: transform 0.2s ease;
-}
-
-.view-all-link:hover .arrow-icon {
-  transform: translateX(2px);
-}
-
-@media (max-width: 992px) {
+@media (max-width: 640px) {
+  .footer { padding: 48px 0 24px; }
   .footer-top {
     grid-template-columns: 1fr;
+    gap: 28px;
+    padding-bottom: 32px;
   }
-  
-  .footer-brand {
-    max-width: 100%;
-    margin-bottom: var(--spacing-xl);
-  }
-  
-  .footer-links {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .footer-categories {
-    padding: var(--spacing-md) 0;
-  }
-  
-  .footer-categories-header h3 {
-    font-size: 1.125rem;
-  }
-  
-  .category-section {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-sm);
-    min-height: auto;
-    padding: var(--spacing-sm);
-  }
-  
-  .category-header {
-    min-width: auto;
-  }
-  
-  .category-links {
-    width: 100%;
-  }
-  
-  .category-footer {
-    align-self: flex-end;
-  }
-}
-
-@media (max-width: 576px) {
-  .footer-links {
-    grid-template-columns: 1fr;
-  }
-  
-  .footer-links-column {
-    margin-bottom: var(--spacing-md);
-    padding-bottom: var(--spacing-md);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  }
-  
-  .footer-links-column:last-child {
-    border-bottom: none;
-  }
-  
+  .footer-brand { grid-column: auto; }
   .footer-bottom {
     flex-direction: column;
-    gap: var(--spacing-md);
+    align-items: flex-start;
+    gap: 14px;
   }
-  
-  .footer-categories {
-    padding: var(--spacing-sm) 0;
-  }
-  
-  .footer-categories-header h3 {
-    font-size: 1rem;
-  }
-  
-  .footer-categories-header p {
-    font-size: 0.8rem;
-  }
-  
-  .category-section {
-    padding: var(--spacing-xs) var(--spacing-sm);
-    gap: var(--spacing-xs);
-  }
-  
-  .category-header {
-    gap: var(--spacing-xs);
-  }
-  
-  .category-header h4 {
-    font-size: 0.85rem;
-  }
-  
-  .category-count {
-    font-size: 0.65rem;
-    padding: 1px 4px;
-  }
-  
-  .subcategory-link {
-    font-size: 0.75rem;
-    padding: 2px 6px;
-  }
-  
-  .view-all-link {
-    font-size: 0.7rem;
-    padding: 2px 6px;
-  }
-  
-  .category-links {
-    gap: 4px;
+  .footer-bottom-left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
 }
 </style>
