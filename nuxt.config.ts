@@ -14,7 +14,9 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     ['@nuxtjs/google-fonts', {
       families: {
-        Poppins: [300, 400, 500, 600, 700, 800]
+        Poppins: [400, 500, 600, 700, 800],
+        Inter: [400, 500, 600, 700],
+        'JetBrains Mono': [500, 600]
       },
       display: 'swap',
       preload: true

@@ -42,7 +42,7 @@ useHead({
 
 /* Global Component Styles */
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
   color: var(--text-primary);
   background-color: var(--bg-gray);
   margin: 0;

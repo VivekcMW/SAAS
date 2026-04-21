@@ -13,11 +13,21 @@ body, h1, h2, h3, h4, h5, h6, p, figure, blockquote, ul, ol, dl, dd {
 /* Set core body defaults */
 body {
   min-height: 100vh;
-  line-height: 1.5;
-  text-rendering: optimizeSpeed;
-  font-family: 'Poppins', sans-serif;
-  color: var(--text-primary, #4A5568);
+  line-height: var(--lh-body, 1.6);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--font-primary);
+  font-size: var(--fs-base);
+  color: var(--text-primary, #1F2937);
   background-color: var(--light-color, #FFFFFF);
+}
+
+/* Headings use the display family */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  line-height: var(--lh-heading, 1.2);
+  letter-spacing: -0.01em;
 }
 
 /* Remove list styles */
