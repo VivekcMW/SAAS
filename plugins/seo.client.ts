@@ -98,7 +98,10 @@ export default defineNuxtPlugin((nuxtApp) => {
     // Add page loading performance mark
     if (process.client && typeof performance !== 'undefined') {
       performance.mark('page-end')
-      performance.measure('page-load', 'page-start', 'page-end')
+      // Guard against missing 'page-start' (happens on initial hydration)
+      if (performance.getEntriesByName('page-start').length) {
+        performance.measure('page-load', 'page-start', 'page-end')
+      }
     }
 
     // SEO tracking for analytics

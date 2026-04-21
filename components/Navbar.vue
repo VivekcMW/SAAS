@@ -1162,8 +1162,8 @@ watch(() => route.path, () => {
 }
 
 .nav-link-button:hover:not(.list-app-button):not(.categories-button):not(.signup-button) {
-  color: #007bff;
-  background: rgba(0, 123, 255, 0.05);
+  color: var(--sw-primary);
+  background: var(--sw-primary-soft);
 }
 
 .categories-button {
@@ -1185,31 +1185,31 @@ watch(() => route.path, () => {
 
 .nav-link-button.list-app-button {
   background: transparent !important;
-  border: 2px solid #007bff;
-  color: #007bff !important;
+  border: 2px solid var(--sw-primary);
+  color: var(--sw-primary) !important;
   font-weight: 600;
 }
 
 .nav-link-button.list-app-button:hover {
-  background: #007bff !important;
-  border-color: #007bff !important;
-  color: white !important;
+  background: var(--sw-primary-soft) !important;
+  border-color: var(--sw-primary) !important;
+  color: var(--sw-primary) !important;
 }
 
 .signup-button {
-  background: #007bff;
-  border: 2px solid #007bff;
+  background: var(--sw-primary);
+  border: 2px solid var(--sw-primary);
   color: white !important;
   font-weight: 600;
   text-decoration: none;
 }
 
 .signup-button:hover {
-  background: #0056b3;
-  border-color: #0056b3;
+  background: var(--sw-primary-hover);
+  border-color: var(--sw-primary-hover);
   color: white !important;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 136, 56, 0.28);
 }
 
 /* Auth buttons */

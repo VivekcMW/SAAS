@@ -88,16 +88,17 @@ onMounted(() => {
 
 <style scoped>
 .global-market-banner {
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  background: var(--sw-text);
   color: white;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 1rem;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
   animation: slideDown 0.3s ease-out;
+  font-size: var(--fs-caption);
 }
 
 @keyframes slideDown {

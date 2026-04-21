@@ -323,20 +323,21 @@ onUnmounted(() => {
   right: 24px;
   width: 56px;
   height: 56px;
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  background: var(--sw-ai);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+  box-shadow: var(--shadow-ai);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: none;
 }
 
 .global-search-button:hover {
   transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4);
+  background: #4F46E5;
+  box-shadow: 0 12px 32px rgba(99, 102, 241, 0.4);
 }
 
 .search-button-icon {

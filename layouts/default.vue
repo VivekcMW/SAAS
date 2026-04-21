@@ -8,8 +8,10 @@
       <slot />
     </main>
     <Footer />
-    <!-- Global Search - Always Available -->
-    <GlobalSearch />
+    <!-- Global Search - Always Available (client-only to avoid SSR hydration mismatch) -->
+    <ClientOnly>
+      <GlobalSearch />
+    </ClientOnly>
     <!-- Global Auth Modal - Always Available -->
     <GlobalAuthModal />
   </div>

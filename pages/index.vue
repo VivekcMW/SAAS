@@ -69,7 +69,7 @@
     <section class="top-products-section">
       <div class="container">
         <div class="section-header">
-          <h2>Top Performing Products Today !</h2>
+          <h2>Trending right now</h2>
           <p>Discover the most trending, sponsored, and searched applications in our marketplace.</p>
         </div>
         <div class="products-grid">
@@ -655,12 +655,19 @@ onMounted(() => {
 <style scoped>
 /* Hero Section */
 .hero-section {
-  padding: calc(var(--spacing-xxl) * 2) 0;
-  background: linear-gradient(135deg, var(--bg-gray) 0%, #fff 100%);
+  /* Add top padding so H1 clears the fixed navbar (72px desktop / 64px mobile) */
+  padding: calc(var(--navbar-height) + var(--spacing-xxl)) 0 calc(var(--spacing-xxl) * 1.5);
+  background: var(--bg-gray);
   position: relative;
   overflow: visible;
   text-align: center;
   z-index: 1; /* Base z-index for hero section */
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    padding: calc(var(--navbar-height-mobile) + var(--spacing-xl)) 0 var(--spacing-xxl);
+  }
 }
 
 .hero-section .container {
@@ -680,21 +687,22 @@ onMounted(() => {
 }
 
 .highlight {
-  color: var(--primary-color);
+  color: var(--sw-primary);
   position: relative;
   display: inline-block;
+  white-space: nowrap;
 }
 
+/* Subtle 3px underline accent instead of an overlapping block */
 .highlight::after {
   content: '';
   position: absolute;
-  bottom: 10px;
+  bottom: -4px;
   left: 0;
   width: 100%;
-  height: 10px;
-  background-color: var(--secondary-color);
-  z-index: -1;
-  opacity: 0.5;
+  height: 3px;
+  background-color: var(--sw-primary);
+  border-radius: 2px;
 }
 
 .hero-subtitle {
@@ -1160,20 +1168,25 @@ onMounted(() => {
 
 .hero-stats {
   display: flex;
-  gap: var(--spacing-xl);
+  gap: var(--spacing-xxl);
   justify-content: center;
+  margin-top: var(--spacing-xl);
 }
 
 .stat-item h3 {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 700;
-  color: var(--primary-color);
+  color: var(--sw-text);
   margin-bottom: var(--spacing-xs);
+  letter-spacing: -0.02em;
 }
 
 .stat-item p {
   margin: 0;
-  color: var(--text-secondary);
+  color: var(--sw-text-subtle);
+  font-size: var(--fs-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 /* Top Products Section */
