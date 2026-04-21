@@ -289,7 +289,7 @@ const handleImageError = (event: Event) => {
   
   if (ctx) {
     // Generate color based on app name
-    const colorHash = props.app.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
+    const colorHash = props.app.name.split('').reduce((acc, char) => acc + (char.codePointAt(0) || 0), 0)
     const hue = colorHash % 360
     
     ctx.fillStyle = `hsl(${hue}, 70%, 85%)`
@@ -325,7 +325,7 @@ const handleToggleFavorite = () => {
 .app-card {
   background: #ffffff;
   border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 20px;
   transition: all 0.2s ease;
   height: 100%;
@@ -352,61 +352,28 @@ const handleToggleFavorite = () => {
 
 /* Sponsored Card Variant */
 .app-card--sponsored {
-  border: 2px solid transparent;
-  background: linear-gradient(white, white) padding-box,
-              linear-gradient(45deg, #ffd700, #4f46e5, #ffd700) border-box;
+  border: 2px solid #FF8838;
+  background: #ffffff;
   position: relative;
 }
 
-.app-card--sponsored::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
-  transition: left 0.5s ease;
-  pointer-events: none;
-}
-
 .app-card--sponsored:hover {
-  transform: translateY(-3px) scale(1.01);
-  box-shadow: 0 12px 40px rgba(255, 215, 0, 0.3);
-}
-
-.app-card--sponsored:hover::before {
-  left: 100%;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(255, 136, 56, 0.2);
+  border-color: #E87C2A;
 }
 
 /* Trending Card Variant */
 .app-card--trending {
-  border: 2px solid transparent;
-  background: linear-gradient(white, white) padding-box,
-              linear-gradient(45deg, #ff6b6b, #ff8e8e, #ff6b6b) border-box;
+  border: 2px solid #3B82F6;
+  background: #ffffff;
   position: relative;
-}
-
-.app-card--trending::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(45deg, rgba(255, 107, 107, 0.05), rgba(255, 142, 142, 0.05));
-  pointer-events: none;
-  z-index: 0;
-}
-
-.app-card--trending > * {
-  position: relative;
-  z-index: 1;
 }
 
 .app-card--trending:hover {
-  transform: translateY(-3px) scale(1.01);
-  box-shadow: 0 12px 40px rgba(255, 107, 107, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(59, 130, 246, 0.2);
+  border-color: #2563EB;
 }
 
 /* Variant Badge */
@@ -420,7 +387,7 @@ const handleToggleFavorite = () => {
   font-size: 11px;
   font-weight: 700;
   padding: 6px 10px;
-  border-radius: 16px;
+  border-radius: 6px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   z-index: 10;
@@ -428,17 +395,15 @@ const handleToggleFavorite = () => {
 }
 
 .variant-badge--sponsored {
-  background: linear-gradient(135deg, #ffd700, #ffed4e);
-  color: #92400e;
-  border: 1px solid #fbbf24;
-  animation: sponsored-pulse 3s ease-in-out infinite;
+  background: #FF8838;
+  color: #1f2937;
+  border: 1px solid #E87C2A;
 }
 
 .variant-badge--trending {
-  background: linear-gradient(135deg, #ff6b6b, #ff8787);
-  color: white;
-  border: 1px solid #dc2626;
-  animation: trending-flicker 2s ease-in-out infinite;
+  background: #1D4ED8;
+  color: #ffffff;
+  border: 1px solid #1E40AF;
 }
 
 .badge-icon {
@@ -478,7 +443,7 @@ const handleToggleFavorite = () => {
   width: 64px;
   height: 64px;
   flex-shrink: 0;
-  border-radius: 8px;
+  border-radius: 6px;
   overflow: hidden;
   background: #f9fafb;
   display: flex;
@@ -592,13 +557,12 @@ const handleToggleFavorite = () => {
   display: flex;
   align-items: center;
   gap: 2px;
-  background: linear-gradient(135deg, #ff6b6b, #ff8787);
-  color: white;
+  background: #B91C1C;
+  color: #ffffff;
   font-size: 11px;
   font-weight: 600;
   padding: 2px 6px;
-  border-radius: 10px;
-  animation: growth-bounce 2s ease-in-out infinite;
+  border-radius: 6px;
 }
 
 .premium-features {
@@ -649,39 +613,39 @@ const handleToggleFavorite = () => {
 }
 
 .btn-primary {
-  background: #3b82f6;
+  background: #1e40af;
   color: #ffffff;
 }
 
 .btn-primary:hover {
-  background: #2563eb;
+  background: #1e3a8a;
   transform: translateY(-1px);
 }
 
 .btn-primary--sponsored {
-  background: linear-gradient(135deg, #ffd700, #ffed4e);
-  color: #92400e;
-  border: 1px solid #fbbf24;
+  background: #FF8838;
+  color: #1f2937;
+  border: 1px solid #E87C2A;
   font-weight: 700;
 }
 
 .btn-primary--sponsored:hover {
-  background: linear-gradient(135deg, #ffed4e, #ffd700);
+  background: #E87C2A;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+  box-shadow: 0 4px 12px rgba(255, 136, 56, 0.3);
 }
 
 .btn-primary--trending {
-  background: linear-gradient(135deg, #ff6b6b, #ff8787);
-  color: white;
-  border: 1px solid #dc2626;
+  background: #1D4ED8;
+  color: #ffffff;
+  border: 1px solid #1E40AF;
   font-weight: 700;
 }
 
 .btn-primary--trending:hover {
-  background: linear-gradient(135deg, #ff8787, #ff6b6b);
+  background: #1E40AF;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.3);
 }
 
 .btn-favorite {
@@ -700,27 +664,27 @@ const handleToggleFavorite = () => {
 }
 
 .btn-favorite--sponsored {
-  background: linear-gradient(135deg, #fef3c7, #fde68a);
-  border-color: #fbbf24;
+  background: #FFF3E0;
+  border-color: #FF8838;
 }
 
 .btn-favorite--sponsored:hover {
-  background: linear-gradient(135deg, #fde68a, #fef3c7);
-  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2);
+  background: #FFE8D0;
+  box-shadow: 0 2px 8px rgba(255, 136, 56, 0.2);
 }
 
 .btn-favorite--trending {
-  background: linear-gradient(135deg, #fef2f2, #fee2e2);
-  border-color: #fecaca;
+  background: #EFF6FF;
+  border-color: #3B82F6;
 }
 
 .btn-favorite--trending:hover {
-  background: linear-gradient(135deg, #fee2e2, #fef2f2);
-  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.2);
+  background: #DBEAFE;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
 }
 
 .btn-favorite--active {
-  color: #ef4444;
+  color: #991b1b;
   border-color: #fecaca;
   background: #fef2f2;
 }
@@ -776,40 +740,7 @@ const handleToggleFavorite = () => {
 }
 
 /* Animations */
-@keyframes sponsored-pulse {
-  0%, 100% { 
-    transform: scale(1);
-    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.15);
-  }
-  50% { 
-    transform: scale(1.05);
-    box-shadow: 0 4px 16px rgba(255, 215, 0, 0.3);
-  }
-}
-
-@keyframes trending-flicker {
-  0%, 100% { 
-    opacity: 1;
-    transform: scale(1);
-  }
-  25% { 
-    opacity: 0.8;
-    transform: scale(1.02);
-  }
-  75% { 
-    opacity: 0.9;
-    transform: scale(1.01);
-  }
-}
-
-@keyframes growth-bounce {
-  0%, 100% { 
-    transform: translateY(0);
-  }
-  50% { 
-    transform: translateY(-2px);
-  }
-}
+/* Animations removed - using solid colors for cleaner, more minimal design */
 
 /* Responsive */
 @media (max-width: 768px) {
