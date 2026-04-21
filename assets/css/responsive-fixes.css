@@ -1,0 +1,63 @@
+/* Global responsive fixes */
+
+/* Base responsive container */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Responsive image styling */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive tables */
+table {
+  width: 100%;
+  overflow-x: auto;
+  display: block;
+}
+
+/* Mobile navigation improvements */
+@media (max-width: 768px) {
+  .mobile-hidden {
+    display: none !important;
+  }
+  
+  .mobile-only {
+    display: block !important;
+  }
+  
+  /* Improved touch targets for mobile */
+  button, 
+  .btn,
+  a.btn,
+  .nav-link,
+  .clickable {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* Additional responsive classes */
+.text-center-mobile {
+  @media (max-width: 768px) {
+    text-align: center !important;
+  }
+}
+
+.flex-column-mobile {
+  @media (max-width: 768px) {
+    flex-direction: column !important;
+  }
+}
+
+.mt-mobile {
+  @media (max-width: 768px) {
+    margin-top: 1.5rem !important;
+  }
+}

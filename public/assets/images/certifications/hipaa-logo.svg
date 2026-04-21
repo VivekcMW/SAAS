@@ -1,0 +1,15 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="60" cy="60" r="55" fill="#059669" stroke="#10b981" stroke-width="2"/>
+  
+  <!-- Medical Cross -->
+  <rect x="55" y="35" width="10" height="30" fill="white" rx="2"/>
+  <rect x="45" y="45" width="30" height="10" fill="white" rx="2"/>
+  
+  <!-- HIPAA Text -->
+  <text x="60" y="80" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="white">HIPAA</text>
+  <text x="60" y="95" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#bbf7d0">COMPLIANT</text>
+  
+  <!-- Shield outline -->
+  <path d="M60 20L75 28V48C75 63 60 78 60 78S45 63 45 48V28L60 20Z" stroke="white" stroke-width="1.5" fill="none" opacity="0.3"/>
+</svg>

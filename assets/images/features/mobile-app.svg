@@ -1,0 +1,76 @@
+<svg width="600" height="400" viewBox="0 0 600 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="600" height="400" fill="#f8fafc"/>
+  
+  <!-- Phone Frame -->
+  <rect x="200" y="50" width="200" height="350" fill="#1f2937" rx="25"/>
+  <rect x="210" y="60" width="180" height="330" fill="black" rx="20"/>
+  
+  <!-- Status Bar -->
+  <rect x="220" y="70" width="160" height="25" fill="#1f2937"/>
+  <circle cx="230" cy="82" r="3" fill="#10b981"/>
+  <rect x="240" y="79" width="20" height="6" fill="#e5e7eb" rx="3"/>
+  <rect x="340" y="78" width="30" height="8" fill="#e5e7eb" rx="4"/>
+  <rect x="360" y="79" width="10" height="6" fill="#10b981" rx="3"/>
+  
+  <!-- App Header -->
+  <rect x="220" y="100" width="160" height="40" fill="#3b82f6"/>
+  <text x="300" y="122" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="white">Dashboard</text>
+  
+  <!-- Quick Stats Cards -->
+  <rect x="230" y="155" width="65" height="45" fill="white" rx="6"/>
+  <text x="262" y="170" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#6b7280">Revenue</text>
+  <text x="262" y="185" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1f2937">$24.5K</text>
+  <text x="262" y="195" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#10b981">+12%</text>
+  
+  <rect x="305" y="155" width="65" height="45" fill="white" rx="6"/>
+  <text x="337" y="170" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#6b7280">Users</text>
+  <text x="337" y="185" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#1f2937">1,234</text>
+  <text x="337" y="195" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#10b981">+8%</text>
+  
+  <!-- Chart Section -->
+  <rect x="230" y="215" width="140" height="80" fill="white" rx="6"/>
+  <text x="235" y="230" font-family="sans-serif" font-size="12" font-weight="600" fill="#374151">Weekly Overview</text>
+  
+  <!-- Mini Bar Chart -->
+  <rect x="240" y="270" width="8" height="15" fill="#3b82f6"/>
+  <rect x="250" y="260" width="8" height="25" fill="#10b981"/>
+  <rect x="260" y="275" width="8" height="10" fill="#f59e0b"/>
+  <rect x="270" y="250" width="8" height="35" fill="#8b5cf6"/>
+  <rect x="280" y="265" width="8" height="20" fill="#ef4444"/>
+  <rect x="290" y="255" width="8" height="30" fill="#06b6d4"/>
+  <rect x="300" y="270" width="8" height="15" fill="#84cc16"/>
+  
+  <!-- Recent Activities -->
+  <rect x="230" y="310" width="140" height="60" fill="white" rx="6"/>
+  <text x="235" y="325" font-family="sans-serif" font-size="12" font-weight="600" fill="#374151">Recent Activity</text>
+  
+  <circle cx="240" cy="338" r="4" fill="#10b981"/>
+  <text x="250" y="341" font-family="sans-serif" font-size="9" fill="#374151">New user registered</text>
+  <text x="350" y="341" font-family="sans-serif" font-size="8" fill="#6b7280">2m ago</text>
+  
+  <circle cx="240" cy="350" r="4" fill="#3b82f6"/>
+  <text x="250" y="353" font-family="sans-serif" font-size="9" fill="#374151">Report generated</text>
+  <text x="350" y="353" font-family="sans-serif" font-size="8" fill="#6b7280">5m ago</text>
+  
+  <circle cx="240" cy="362" r="4" fill="#f59e0b"/>
+  <text x="250" y="365" font-family="sans-serif" font-size="9" fill="#374151">Payment received</text>
+  <text x="350" y="365" font-family="sans-serif" font-size="8" fill="#6b7280">8m ago</text>
+  
+  <!-- Bottom Navigation -->
+  <rect x="220" y="375" width="160" height="10" fill="#f1f5f9"/>
+  
+  <!-- Side Elements -->
+  <!-- Left notification -->
+  <rect x="50" y="120" width="120" height="40" fill="white" rx="8" opacity="0.9"/>
+  <rect x="60" y="128" width="24" height="24" fill="#10b981" rx="12"/>
+  <text x="72" y="142" text-anchor="middle" font-family="sans-serif" font-size="12" fill="white">✓</text>
+  <text x="90" y="135" font-family="sans-serif" font-size="11" font-weight="500" fill="#374151">Task Completed</text>
+  <text x="90" y="148" font-family="sans-serif" font-size="9" fill="#6b7280">Project milestone reached</text>
+  
+  <!-- Right stats bubble -->
+  <rect x="430" y="200" width="100" height="60" fill="white" rx="8" opacity="0.9"/>
+  <text x="480" y="220" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#6b7280">Monthly Growth</text>
+  <text x="480" y="240" text-anchor="middle" font-family="sans-serif" font-size="20" font-weight="bold" fill="#10b981">+24%</text>
+  <text x="480" y="252" text-anchor="middle" font-family="sans-serif" font-size="8" fill="#6b7280">vs last month</text>
+</svg>

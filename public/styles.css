@@ -1,0 +1,10 @@
+/* Critical CSS Variables */
+:root {
+  --primary-color: #FF8838;
+  --secondary-color: #F9C845;
+  --dark-color: #1E1E1E;
+  --light-color: #FFFFFF;
+  --bg-gray: #F8F9FA;
+  --text-primary: #4A5568;
+  --text-secondary: #718096;
+}

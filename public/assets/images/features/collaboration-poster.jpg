@@ -1,0 +1,79 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="600" fill="url(#bg)"/>
+  
+  <!-- Video Player UI -->
+  <rect x="50" y="50" width="700" height="500" fill="#000" rx="12"/>
+  
+  <!-- Video Content Area -->
+  <rect x="70" y="70" width="660" height="400" fill="#1f2937" rx="8"/>
+  
+  <!-- Play Button -->
+  <circle cx="400" cy="270" r="40" fill="rgba(255,255,255,0.9)"/>
+  <polygon points="385,250 385,290 420,270" fill="#1f2937"/>
+  
+  <!-- Video Title Overlay -->
+  <rect x="70" y="380" width="660" height="90" fill="linear-gradient(to top, rgba(0,0,0,0.8), transparent)" rx="8"/>
+  <text x="90" y="420" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white">Team Collaboration in Action</text>
+  <text x="90" y="445" font-family="Arial, sans-serif" font-size="16" fill="rgba(255,255,255,0.8)">See how teams work together seamlessly</text>
+  
+  <!-- Video Controls -->
+  <rect x="70" y="480" width="660" height="60" fill="#111827" rx="0 0 8 8"/>
+  
+  <!-- Progress Bar -->
+  <rect x="90" y="500" width="540" height="4" fill="#374151" rx="2"/>
+  <rect x="90" y="500" width="180" height="4" fill="#3b82f6" rx="2"/>
+  <circle cx="270" cy="502" r="6" fill="#3b82f6"/>
+  
+  <!-- Time -->
+  <text x="90" y="525" font-family="Arial, sans-serif" font-size="12" fill="white">2:34</text>
+  <text x="590" y="525" font-family="Arial, sans-serif" font-size="12" fill="#9ca3af">8:45</text>
+  
+  <!-- Control Buttons -->
+  <circle cx="450" cy="515" r="12" fill="#374151"/>
+  <polygon points="445,508 445,522 456,515" fill="white"/>
+  
+  <circle cx="480" cy="515" r="12" fill="#374151"/>
+  <rect x="475" y="510" width="3" height="10" fill="white"/>
+  <rect x="482" y="510" width="3" height="10" fill="white"/>
+  
+  <!-- Volume -->
+  <text x="510" y="520" font-family="Arial, sans-serif" font-size="16" fill="white">🔊</text>
+  
+  <!-- Fullscreen -->
+  <rect x="660" y="505" width="8" height="8" fill="none" stroke="white" stroke-width="1"/>
+  <rect x="665" y="510" width="8" height="8" fill="none" stroke="white" stroke-width="1"/>
+  
+  <!-- Demo participants (simulated) -->
+  <rect x="100" y="100" width="120" height="80" fill="rgba(59,130,246,0.3)" rx="8"/>
+  <circle cx="160" cy="130" r="15" fill="#3b82f6"/>
+  <text x="140" y="165" font-family="Arial, sans-serif" font-size="12" fill="white">John (Host)</text>
+  
+  <rect x="240" y="120" width="120" height="80" fill="rgba(16,185,129,0.3)" rx="8"/>
+  <circle cx="300" cy="150" r="15" fill="#10b981"/>
+  <text x="285" y="185" font-family="Arial, sans-serif" font-size="12" fill="white">Sarah</text>
+  
+  <rect x="480" y="110" width="120" height="80" fill="rgba(245,158,11,0.3)" rx="8"/>
+  <circle cx="540" cy="140" r="15" fill="#f59e0b"/>
+  <text x="525" y="175" font-family="Arial, sans-serif" font-size="12" fill="white">Mike</text>
+  
+  <!-- Chat simulation -->
+  <rect x="520" y="220" width="180" height="140" fill="rgba(255,255,255,0.1)" rx="8"/>
+  <text x="530" y="235" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Live Chat</text>
+  
+  <text x="530" y="255" font-family="Arial, sans-serif" font-size="10" fill="#9ca3af">Sarah: Great presentation!</text>
+  <text x="530" y="270" font-family="Arial, sans-serif" font-size="10" fill="#9ca3af">Mike: I agree, very clear</text>
+  <text x="530" y="285" font-family="Arial, sans-serif" font-size="10" fill="#9ca3af">John: Thanks team! 👍</text>
+  <text x="530" y="300" font-family="Arial, sans-serif" font-size="10" fill="#9ca3af">Sarah: When do we start?</text>
+  
+  <!-- Screen sharing indicator -->
+  <rect x="100" y="300" width="200" height="30" fill="rgba(16,185,129,0.2)" rx="4"/>
+  <text x="110" y="320" font-family="Arial, sans-serif" font-size="12" fill="#10b981">📺 John is sharing screen</text>
+</svg>

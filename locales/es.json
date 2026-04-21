@@ -1,0 +1,95 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "about": "Acerca de",
+    "features": "Características",
+    "marketplace": "Mercado",
+    "integrations": "Integraciones",
+    "blog": "Blog",
+    "contact": "Contacto",
+    "listProduct": "Lista tu producto / Servicio",
+    "login": "Iniciar sesión",
+    "signup": "Registrarse"
+  },
+  "hero": {
+    "title": "Potencia tu negocio con nuestra plataforma {platform}",
+    "subtitle": "El {platform} es un mercado digital para aplicaciones web que proporciona una amplia gama de aplicaciones que pueden ser buscadas según las necesidades de los usuarios y ayuda a tomar decisiones para pequeñas y medianas empresas.",
+    "searchPlaceholder": "Buscar aplicaciones...",
+    "trending": "Tendencias:"
+  },
+  "features": {
+    "title": "Características Poderosas",
+    "subtitle": "Todo lo que necesitas para hacer crecer tu negocio y deleitar a tus clientes."
+  },
+  "integrations": {
+    "title": "Integra perfectamente con tus herramientas favoritas",
+    "subtitle": "Conecta SaaSWorld con más de 100+ aplicaciones y servicios que ya usas.",
+    "viewAll": "Ver todas las integraciones"
+  },
+  "cta": {
+    "title": "¿Listo para transformar tu negocio?",
+    "subtitle": "Únete a miles de empresas que usan SaaSWorld para escalar sus operaciones.",
+    "startTrial": "Comenzar Prueba Gratuita",
+    "contactSales": "Contactar Ventas"
+  },
+  "marketplace": {
+    "title": "Mercado SaaSWorld",
+    "subtitle": "Descubre las Mejores Aplicaciones y Servicios",
+    "categories": "Categorías",
+    "filters": "Filtros",
+    "price": "Precio",
+    "rating": "Calificación",
+    "free": "Gratis",
+    "freemium": "Freemium",
+    "paid": "Pagado",
+    "enterprise": "Empresarial",
+    "featured": "Destacado",
+    "trending": "Tendencia",
+    "new": "Nuevo",
+    "viewDetails": "Ver Detalles",
+    "noResults": "No se encontraron aplicaciones",
+    "noResultsDesc": "Intenta ajustar tus filtros o criterios de búsqueda",
+    "resetFilters": "Restablecer Filtros"
+  },
+  "pricing": {
+    "currency": "EUR",
+    "symbol": "€",
+    "free": "Gratis",
+    "trial": "Prueba Gratuita",
+    "month": "mes",
+    "year": "año",
+    "perMonth": "por mes",
+    "perYear": "por año",
+    "billedMonthly": "Facturado mensualmente",
+    "billedAnnually": "Facturado anualmente"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "page": "Página",
+    "of": "de",
+    "results": "resultados",
+    "showMore": "Mostrar más",
+    "showLess": "Mostrar menos",
+    "learnMore": "Saber más",
+    "getStarted": "Comenzar",
+    "subscribe": "Suscribirse",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "yes": "Sí",
+    "no": "No"
+  },
+  "footer": {
+    "copyright": "Todos los derechos reservados",
+    "privacy": "Política de Privacidad",
+    "terms": "Términos de Servicio",
+    "support": "Soporte",
+    "language": "Idioma"
+  }
+}

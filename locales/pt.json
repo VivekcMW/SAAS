@@ -1,0 +1,95 @@
+{
+  "nav": {
+    "home": "Início",
+    "about": "Sobre",
+    "features": "Recursos",
+    "marketplace": "Mercado",
+    "integrations": "Integrações",
+    "blog": "Blog",
+    "contact": "Contato",
+    "listProduct": "Liste seu produto / Serviço",
+    "login": "Entrar",
+    "signup": "Cadastrar"
+  },
+  "hero": {
+    "title": "Fortaleça seu negócio com nossa plataforma {platform}",
+    "subtitle": "O {platform} é um marketplace digital para aplicações web que oferece uma ampla gama de apps pesquisáveis conforme as necessidades dos usuários e ajuda na tomada de decisões para pequenas e médias empresas.",
+    "searchPlaceholder": "Buscar aplicações...",
+    "trending": "Tendências:"
+  },
+  "features": {
+    "title": "Recursos Poderosos",
+    "subtitle": "Tudo que você precisa para crescer seu negócio e encantar seus clientes."
+  },
+  "integrations": {
+    "title": "Integre perfeitamente com suas ferramentas favoritas",
+    "subtitle": "Conecte o SaaSWorld com mais de 100+ aplicações e serviços que você já usa.",
+    "viewAll": "Ver todas as integrações"
+  },
+  "cta": {
+    "title": "Pronto para transformar seu negócio?",
+    "subtitle": "Junte-se a milhares de empresas usando SaaSWorld para escalar suas operações.",
+    "startTrial": "Iniciar Teste Gratuito",
+    "contactSales": "Contatar Vendas"
+  },
+  "marketplace": {
+    "title": "Marketplace SaaSWorld",
+    "subtitle": "Descubra as Melhores Aplicações e Serviços",
+    "categories": "Categorias",
+    "filters": "Filtros",
+    "price": "Preço",
+    "rating": "Avaliação",
+    "free": "Grátis",
+    "freemium": "Freemium",
+    "paid": "Pago",
+    "enterprise": "Empresarial",
+    "featured": "Destaque",
+    "trending": "Tendência",
+    "new": "Novo",
+    "viewDetails": "Ver Detalhes",
+    "noResults": "Nenhuma aplicação encontrada",
+    "noResultsDesc": "Tente ajustar seus filtros ou critérios de busca",
+    "resetFilters": "Resetar Filtros"
+  },
+  "pricing": {
+    "currency": "BRL",
+    "symbol": "R$",
+    "free": "Grátis",
+    "trial": "Teste Gratuito",
+    "month": "mês",
+    "year": "ano",
+    "perMonth": "por mês",
+    "perYear": "por ano",
+    "billedMonthly": "Cobrado mensalmente",
+    "billedAnnually": "Cobrado anualmente"
+  },
+  "common": {
+    "loading": "Carregando...",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "page": "Página",
+    "of": "de",
+    "results": "resultados",
+    "showMore": "Mostrar mais",
+    "showLess": "Mostrar menos",
+    "learnMore": "Saiba mais",
+    "getStarted": "Começar",
+    "subscribe": "Inscrever-se",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "close": "Fechar",
+    "back": "Voltar",
+    "next": "Próximo",
+    "previous": "Anterior",
+    "yes": "Sim",
+    "no": "Não"
+  },
+  "footer": {
+    "copyright": "Todos os direitos reservados",
+    "privacy": "Política de Privacidade",
+    "terms": "Termos de Serviço",
+    "support": "Suporte",
+    "language": "Idioma"
+  }
+}

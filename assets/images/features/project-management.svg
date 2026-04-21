@@ -1,0 +1,77 @@
+<svg width="600" height="400" viewBox="0 0 600 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="600" height="400" fill="#f8fafc"/>
+  
+  <!-- Header -->
+  <rect width="600" height="60" fill="white"/>
+  <rect x="20" y="20" width="120" height="20" rx="4" fill="#e2e8f0"/>
+  <rect x="480" y="15" width="100" height="30" rx="15" fill="#10b981"/>
+  <text x="530" y="32" text-anchor="middle" font-family="sans-serif" font-size="12" fill="white">New Project</text>
+  
+  <!-- Left Sidebar -->
+  <rect x="0" y="60" width="180" height="340" fill="#f1f5f9"/>
+  <text x="20" y="85" font-family="sans-serif" font-size="14" font-weight="bold" fill="#374151">Projects</text>
+  
+  <!-- Project List -->
+  <rect x="20" y="100" width="140" height="30" fill="#dbeafe" rx="4"/>
+  <circle cx="35" cy="115" r="6" fill="#3b82f6"/>
+  <text x="50" y="118" font-family="sans-serif" font-size="12" fill="#1e40af" font-weight="500">Website Redesign</text>
+  
+  <rect x="20" y="140" width="140" height="30" fill="white" rx="4"/>
+  <circle cx="35" cy="155" r="6" fill="#10b981"/>
+  <text x="50" y="158" font-family="sans-serif" font-size="12" fill="#374151">Mobile App</text>
+  
+  <rect x="20" y="180" width="140" height="30" fill="white" rx="4"/>
+  <circle cx="35" cy="195" r="6" fill="#f59e0b"/>
+  <text x="50" y="198" font-family="sans-serif" font-size="12" fill="#374151">Marketing Campaign</text>
+  
+  <!-- Main Content -->
+  <rect x="200" y="80" width="380" height="300" fill="white" rx="8"/>
+  
+  <!-- Project Header -->
+  <text x="220" y="105" font-family="sans-serif" font-size="18" font-weight="bold" fill="#111827">Website Redesign Project</text>
+  <rect x="220" y="115" width="60" height="20" fill="#dbeafe" rx="10"/>
+  <text x="250" y="127" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#1e40af">In Progress</text>
+  
+  <!-- Progress Bar -->
+  <text x="220" y="150" font-family="sans-serif" font-size="12" fill="#6b7280">Progress: 68%</text>
+  <rect x="220" y="155" width="300" height="8" fill="#e5e7eb" rx="4"/>
+  <rect x="220" y="155" width="204" height="8" fill="#3b82f6" rx="4"/>
+  
+  <!-- Task List -->
+  <text x="220" y="185" font-family="sans-serif" font-size="14" font-weight="600" fill="#374151">Tasks</text>
+  
+  <!-- Task Items -->
+  <rect x="220" y="200" width="340" height="25" fill="#f9fafb" rx="4"/>
+  <rect x="225" y="207" width="12" height="12" fill="#10b981" rx="2"/>
+  <line x1="229" y1="213" x2="233" y2="217" stroke="white" stroke-width="1.5"/>
+  <line x1="233" y1="217" x2="237" y2="209" stroke="white" stroke-width="1.5"/>
+  <text x="245" y="216" font-family="sans-serif" font-size="12" fill="#374151">Design homepage mockup</text>
+  <text x="520" y="216" font-family="sans-serif" font-size="10" fill="#6b7280">Done</text>
+  
+  <rect x="220" y="230" width="340" height="25" fill="#f9fafb" rx="4"/>
+  <rect x="225" y="237" width="12" height="12" fill="#3b82f6" rx="2"/>
+  <text x="245" y="246" font-family="sans-serif" font-size="12" fill="#374151">Implement responsive design</text>
+  <text x="500" y="246" font-family="sans-serif" font-size="10" fill="#6b7280">In Progress</text>
+  
+  <rect x="220" y="260" width="340" height="25" fill="#f9fafb" rx="4"/>
+  <rect x="225" y="267" width="12" height="12" fill="#e5e7eb" rx="2"/>
+  <text x="245" y="276" font-family="sans-serif" font-size="12" fill="#6b7280">User testing</text>
+  <text x="520" y="276" font-family="sans-serif" font-size="10" fill="#6b7280">Pending</text>
+  
+  <rect x="220" y="290" width="340" height="25" fill="#f9fafb" rx="4"/>
+  <rect x="225" y="297" width="12" height="12" fill="#e5e7eb" rx="2"/>
+  <text x="245" y="306" font-family="sans-serif" font-size="12" fill="#6b7280">Deploy to production</text>
+  <text x="510" y="306" font-family="sans-serif" font-size="10" fill="#6b7280">Scheduled</text>
+  
+  <!-- Team Members -->
+  <text x="220" y="340" font-family="sans-serif" font-size="12" fill="#6b7280">Team Members</text>
+  <circle cx="240" cy="355" r="12" fill="#3b82f6"/>
+  <text x="240" y="359" text-anchor="middle" font-family="sans-serif" font-size="10" fill="white">JD</text>
+  <circle cx="270" cy="355" r="12" fill="#10b981"/>
+  <text x="270" y="359" text-anchor="middle" font-family="sans-serif" font-size="10" fill="white">SM</text>
+  <circle cx="300" cy="355" r="12" fill="#f59e0b"/>
+  <text x="300" y="359" text-anchor="middle" font-family="sans-serif" font-size="10" fill="white">AR</text>
+  <rect x="320" y="345" width="20" height="20" fill="#e5e7eb" rx="10"/>
+  <text x="330" y="357" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#6b7280">+2</text>
+</svg>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSS Test</title>
+    <style>
+        /* Test CSS variables */
+        :root {
+            --primary-color: #FF8838;
+            --test-bg: red;
+        }
+        
+        .test-container {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px;
+        }
+        
+        .test-bg {
+            background-color: var(--test-bg);
+            color: white;
+            padding: 10px;
+            margin: 10px;
+        }
+        
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>CSS Variables Test</h1>
+    <div class="test-container">
+        This should have orange background (--primary-color: #FF8838)
+    </div>
+    <div class="test-bg">
+        This should have red background (--test-bg: red)
+    </div>
+    <button class="btn">Test Button</button>
+</body>
+</html>

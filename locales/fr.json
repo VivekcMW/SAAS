@@ -1,0 +1,95 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "about": "À propos",
+    "features": "Fonctionnalités",
+    "marketplace": "Marché",
+    "integrations": "Intégrations",
+    "blog": "Blog",
+    "contact": "Contact",
+    "listProduct": "Listez votre produit / Service",
+    "login": "Se connecter",
+    "signup": "S'inscrire"
+  },
+  "hero": {
+    "title": "Dynamisez votre entreprise avec notre plateforme {platform}",
+    "subtitle": "Le {platform} est un marché numérique pour les applications web qui propose une large gamme d'applications recherchables selon les besoins des utilisateurs et aide à prendre des décisions pour les petites et moyennes entreprises.",
+    "searchPlaceholder": "Rechercher des applications...",
+    "trending": "Tendances:"
+  },
+  "features": {
+    "title": "Fonctionnalités Puissantes",
+    "subtitle": "Tout ce dont vous avez besoin pour développer votre entreprise et satisfaire vos clients."
+  },
+  "integrations": {
+    "title": "Intégrez parfaitement vos outils favoris",
+    "subtitle": "Connectez SaaSWorld avec plus de 100+ applications et services que vous utilisez déjà.",
+    "viewAll": "Voir toutes les intégrations"
+  },
+  "cta": {
+    "title": "Prêt à transformer votre entreprise?",
+    "subtitle": "Rejoignez des milliers d'entreprises qui utilisent SaaSWorld pour développer leurs opérations.",
+    "startTrial": "Commencer l'Essai Gratuit",
+    "contactSales": "Contacter les Ventes"
+  },
+  "marketplace": {
+    "title": "Marché SaaSWorld",
+    "subtitle": "Découvrez les Meilleures Applications et Services",
+    "categories": "Catégories",
+    "filters": "Filtres",
+    "price": "Prix",
+    "rating": "Évaluation",
+    "free": "Gratuit",
+    "freemium": "Freemium",
+    "paid": "Payant",
+    "enterprise": "Entreprise",
+    "featured": "En vedette",
+    "trending": "Tendance",
+    "new": "Nouveau",
+    "viewDetails": "Voir les Détails",
+    "noResults": "Aucune application trouvée",
+    "noResultsDesc": "Essayez d'ajuster vos filtres ou critères de recherche",
+    "resetFilters": "Réinitialiser les Filtres"
+  },
+  "pricing": {
+    "currency": "EUR",
+    "symbol": "€",
+    "free": "Gratuit",
+    "trial": "Essai Gratuit",
+    "month": "mois",
+    "year": "année",
+    "perMonth": "par mois",
+    "perYear": "par année",
+    "billedMonthly": "Facturé mensuellement",
+    "billedAnnually": "Facturé annuellement"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "sort": "Trier",
+    "page": "Page",
+    "of": "de",
+    "results": "résultats",
+    "showMore": "Afficher plus",
+    "showLess": "Afficher moins",
+    "learnMore": "En savoir plus",
+    "getStarted": "Commencer",
+    "subscribe": "S'abonner",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "yes": "Oui",
+    "no": "Non"
+  },
+  "footer": {
+    "copyright": "Tous droits réservés",
+    "privacy": "Politique de Confidentialité",
+    "terms": "Conditions de Service",
+    "support": "Support",
+    "language": "Langue"
+  }
+}

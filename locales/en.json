@@ -1,0 +1,95 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "features": "Features",
+    "marketplace": "Marketplace",
+    "integrations": "Integrations",
+    "blog": "Blog",
+    "contact": "Contact",
+    "listProduct": "List your product / Service",
+    "login": "Log in",
+    "signup": "Sign up"
+  },
+  "hero": {
+    "title": "Empower your business with our {platform} platform",
+    "subtitle": "The {platform} is a digital marketplace for web applications that provides a wide range of apps that can be searched on the need of users and helps to make decisions for small and medium businesses, that can be used by multiple personas and businesses.",
+    "searchPlaceholder": "Search for applications...",
+    "trending": "Trending:"
+  },
+  "features": {
+    "title": "Powerful Features",
+    "subtitle": "Everything you need to grow your business and delight your customers."
+  },
+  "integrations": {
+    "title": "Seamlessly integrate with your favorite tools",
+    "subtitle": "Connect SaaSWorld with over 100+ applications and services you already use.",
+    "viewAll": "View all integrations"
+  },
+  "cta": {
+    "title": "Ready to transform your business?",
+    "subtitle": "Join thousands of companies using SaaSWorld to scale their operations.",
+    "startTrial": "Start Free Trial",
+    "contactSales": "Contact Sales"
+  },
+  "marketplace": {
+    "title": "SaaSWorld Marketplace",
+    "subtitle": "Discover Top Applications & Services",
+    "categories": "Categories",
+    "filters": "Filters",
+    "price": "Price",
+    "rating": "Rating",
+    "free": "Free",
+    "freemium": "Freemium",
+    "paid": "Paid",
+    "enterprise": "Enterprise",
+    "featured": "Featured",
+    "trending": "Trending",
+    "new": "New",
+    "viewDetails": "View Details",
+    "noResults": "No applications found",
+    "noResultsDesc": "Try adjusting your filters or search criteria",
+    "resetFilters": "Reset Filters"
+  },
+  "pricing": {
+    "currency": "USD",
+    "symbol": "$",
+    "free": "Free",
+    "trial": "Free Trial",
+    "month": "month",
+    "year": "year",
+    "perMonth": "per month",
+    "perYear": "per year",
+    "billedMonthly": "Billed monthly",
+    "billedAnnually": "Billed annually"
+  },
+  "common": {
+    "loading": "Loading...",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "page": "Page",
+    "of": "of",
+    "results": "results",
+    "showMore": "Show more",
+    "showLess": "Show less",
+    "learnMore": "Learn more",
+    "getStarted": "Get Started",
+    "subscribe": "Subscribe",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "footer": {
+    "copyright": "All rights reserved",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "support": "Support",
+    "language": "Language"
+  }
+}

@@ -1,0 +1,52 @@
+/* CSS Reset for SaaSWorld */
+
+/* Box sizing */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Reset margins */
+body, h1, h2, h3, h4, h5, h6, p, figure, blockquote, ul, ol, dl, dd {
+  margin: 0;
+}
+
+/* Set core body defaults */
+body {
+  min-height: 100vh;
+  line-height: 1.5;
+  text-rendering: optimizeSpeed;
+  font-family: 'Poppins', sans-serif;
+  color: var(--text-primary, #4A5568);
+  background-color: var(--light-color, #FFFFFF);
+}
+
+/* Remove list styles */
+ul, ol {
+  list-style: none;
+  padding: 0;
+}
+
+/* Set img defaults */
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Inherit fonts for inputs and buttons */
+input, button, textarea, select {
+  font: inherit;
+}
+
+/* Remove all animations, transitions and smooth scroll for people who prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+   scroll-behavior: auto;
+  }
+  
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

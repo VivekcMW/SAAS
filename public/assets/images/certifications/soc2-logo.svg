@@ -1,0 +1,18 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="60" cy="60" r="55" fill="#1e40af" stroke="#3b82f6" stroke-width="2"/>
+  
+  <!-- SOC 2 Text -->
+  <text x="60" y="45" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="bold" fill="white">SOC 2</text>
+  <text x="60" y="65" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="500" fill="#bfdbfe">TYPE II</text>
+  
+  <!-- Shield Icon -->
+  <path d="M60 20L75 30V50C75 65 60 80 60 80S45 65 45 50V30L60 20Z" fill="white" opacity="0.2"/>
+  <path d="M60 25L70 32V48C70 60 60 72 60 72S50 60 50 48V32L60 25Z" fill="white" opacity="0.3"/>
+  
+  <!-- Check Mark -->
+  <path d="M52 55L58 61L68 45" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Year -->
+  <text x="60" y="95" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#3b82f6">2024</text>
+</svg>

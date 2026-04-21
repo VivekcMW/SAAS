@@ -1,0 +1,43 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="600" fill="url(#bg)"/>
+  
+  <!-- Dashboard UI -->
+  <rect x="50" y="50" width="700" height="500" fill="white" rx="12"/>
+  
+  <!-- Header -->
+  <rect x="70" y="70" width="660" height="60" fill="#f8fafc" rx="8"/>
+  <text x="90" y="105" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#111827">Project Management Dashboard</text>
+  
+  <!-- Cards -->
+  <rect x="90" y="150" width="200" height="120" fill="#e0e7ff" rx="8"/>
+  <text x="110" y="175" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#3730a3">Active Projects</text>
+  <text x="110" y="220" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#1e40af">24</text>
+  
+  <rect x="310" y="150" width="200" height="120" fill="#dcfce7" rx="8"/>
+  <text x="330" y="175" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#166534">Completed Tasks</text>
+  <text x="330" y="220" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#15803d">156</text>
+  
+  <rect x="530" y="150" width="200" height="120" fill="#fef3c7" rx="8"/>
+  <text x="550" y="175" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#92400e">Team Members</text>
+  <text x="550" y="220" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#d97706">12</text>
+  
+  <!-- Chart Area -->
+  <rect x="90" y="290" width="640" height="240" fill="#f9fafb" rx="8"/>
+  <text x="110" y="315" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#374151">Project Timeline</text>
+  
+  <!-- Sample bars -->
+  <rect x="120" y="340" width="80" height="160" fill="#3b82f6" rx="4"/>
+  <rect x="220" y="360" width="80" height="140" fill="#10b981" rx="4"/>
+  <rect x="320" y="350" width="80" height="150" fill="#f59e0b" rx="4"/>
+  <rect x="420" y="370" width="80" height="130" fill="#ef4444" rx="4"/>
+  <rect x="520" y="330" width="80" height="170" fill="#8b5cf6" rx="4"/>
+  <rect x="620" y="380" width="80" height="120" fill="#06b6d4" rx="4"/>
+</svg>

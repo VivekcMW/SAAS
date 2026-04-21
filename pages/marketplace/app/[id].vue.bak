@@ -1,0 +1,1795 @@
+<template>
+  <div class="app-details-page">
+    <!-- Loading state -->
+    <div v-if="loading" class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>Loading application details...</p>
+    </div>
+    
+    <!-- App not found state -->
+    <div v-else-if="!app" class="not-found-container">
+      <div class="not-found-icon">
+        <i class="fas fa-exclamation-circle"></i>
+      </div>
+      <h2>Application Not Found</h2>
+      <p>Sorry, we couldn't find the application you're looking for.</p>
+      <NuxtLink to="/marketplace" class="btn btn-primary">
+        Return to Marketplace
+      </NuxtLink>
+    </div>
+
+    <!-- App content -->
+    <div v-else class="app-content">
+      <!-- Hero Section with Enquiry Form -->
+      <section class="hero-section">
+        <div class="container">
+          <div class="hero-content">
+            <div class="hero-info">
+              <div class="app-header">
+                <div class="app-logo">
+                  <img 
+                    :src="app.logo" 
+                    :alt="app.name + ' logo'" 
+                    @error="handleImageError($event)" 
+                    loading="lazy"
+                  />
+                </div>
+                <div class="app-header-text">
+                  <h1 class="app-name">{{ app.name }}</h1>
+                  <div v-if="app.provider" class="app-provider">by {{ app.provider }}</div>
+                  <div class="app-meta">
+                    <div class="app-rating">
+                      <div class="stars">
+                        <i v-for="star in 5" :key="star" class="fas fa-star" :class="{ 'filled': star <= Math.floor(app.rating) }"></i>
+                        <i v-if="app.rating % 1 >= 0.5" class="fas fa-star-half-alt filled"></i>
+                      </div>
+                      <span class="rating-value">{{ app.rating.toFixed(1) }}</span>
+                      <span class="rating-count">({{ app.reviewCount }} reviews)</span>
+                    </div>
+                    <div class="app-tags">
+                      <span v-for="(tag, index) in app.tags" :key="index" class="app-tag">{{ tag }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="hero-description">
+                <p>{{ app.longDescription || app.description }}</p>
+                <div class="hero-cta">
+                  <button class="btn btn-primary btn-lg">Get Started</button>
+                  <button class="btn btn-outline btn-lg favorite-btn" 
+                    @click="toggleFavorite"
+                    :class="{ 'favorited': isFavorite }"
+                  >
+                    <i :class="isFavorite ? 'fas fa-heart' : 'far fa-heart'"></i>
+                    <span>{{ isFavorite ? 'Favorited' : 'Add to Favorites' }}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="enquiry-form">
+              <div class="form-header">
+                <h3>Request Information</h3>
+                <p>Interested in {{ app.name }}? Fill out this form to get more details.</p>
+              </div>
+              <form @submit.prevent="submitEnquiry">
+                <div class="form-group">
+                  <label for="name">Full Name</label>
+                  <input type="text" id="name" v-model="enquiryForm.name" required placeholder="Your name">
+                </div>
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <input type="email" id="email" v-model="enquiryForm.email" required placeholder="Your email address">
+                </div>
+                <div class="form-group">
+                  <label for="company">Company</label>
+                  <input type="text" id="company" v-model="enquiryForm.company" placeholder="Your company name">
+                </div>
+                <div class="form-group">
+                  <label for="message">Message</label>
+                  <textarea id="message" v-model="enquiryForm.message" rows="4" placeholder="What would you like to know about this application?"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" :disabled="enquirySubmitting">
+                  <span v-if="enquirySubmitting"><i class="fas fa-spinner fa-spin"></i> Submitting</span>
+                  <span v-else>Request Info</span>
+                </button>
+                <p class="enquiry-policy">By submitting this form, you agree to our <a href="#">privacy policy</a>.</p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- About the Product Section with Media -->
+      <section class="about-section" v-if="app">
+        <div class="container">
+          <h2 class="section-title">About {{ app.name }}</h2>
+          
+          <div class="about-content">
+            <div class="about-text">
+              <p>{{ app.longDescription || app.description }}</p>
+              <p>Designed for businesses of all sizes, {{ app.name }} provides a comprehensive suite of tools that streamline operations and enhance productivity. With an intuitive user interface and powerful backend infrastructure, users can quickly implement solutions without extensive training.</p>
+              <ul class="about-highlights">
+                <li><i class="fas fa-check-circle"></i> Easy to implement and use</li>
+                <li><i class="fas fa-check-circle"></i> Robust security features</li>
+                <li><i class="fas fa-check-circle"></i> Seamless integration with other tools</li>
+                <li><i class="fas fa-check-circle"></i> Regular updates and improvements</li>
+                <li><i class="fas fa-check-circle"></i> Comprehensive documentation and support</li>
+              </ul>
+            </div>
+            
+            <div class="about-media">
+              <div v-if="hasVideoInGallery" class="video-container">
+                <iframe 
+                  :src="getFirstVideo?.url" 
+                  frameborder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowfullscreen
+                ></iframe>
+              </div>
+              <div v-else-if="hasImagesInGallery" class="image-container">
+                <img :src="getFirstImage?.url" :alt="getFirstImage?.caption || app.name" />
+                <p v-if="getFirstImage?.caption" class="media-caption">{{ getFirstImage?.caption }}</p>
+              </div>
+              <div v-else class="placeholder-media">
+                <i class="fas fa-desktop"></i>
+                <p>Media content coming soon</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Application Gallery & Features with Tabs -->
+      <section class="features-section" v-if="app && app.features && app.features.length > 0">
+        <div class="container">
+          <h2 class="section-title">Key Features</h2>
+          
+          <div class="tabs">
+            <div class="tabs-header">
+              <button 
+                v-for="(tab, index) in featureTabs" 
+                :key="index" 
+                class="tab-button" 
+                :class="{ active: activeTab === index }" 
+                @click="activeTab = index"
+              >
+                {{ tab }}
+              </button>
+            </div>
+            
+            <div class="tabs-content">
+              <!-- Features Tab -->
+              <div v-if="activeTab === 0" class="tab-content">
+                <div class="features-grid">
+                  <div v-for="(feature, index) in app.features" :key="index" class="feature-card">
+                    <div class="feature-icon">
+                      <i v-if="feature.icon" :class="'fas ' + feature.icon"></i>
+                      <i v-else class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="feature-content">
+                      <h3>{{ feature.title }}</h3>
+                      <p>{{ feature.description }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Gallery Tab -->
+              <div v-if="activeTab === 1" class="tab-content">
+                <div v-if="app.gallery && app.gallery.length > 0" class="gallery-grid">
+                  <div 
+                    v-for="(item, index) in app.gallery" 
+                    :key="index" 
+                    class="gallery-item"
+                    @click="openGalleryItem(index)"
+                  >
+                    <div v-if="item.type === 'image'" class="gallery-image">
+                      <img :src="item.url" :alt="item.caption || `Gallery item ${index + 1}`" loading="lazy" />
+                      <div class="gallery-caption" v-if="item.caption">{{ item.caption }}</div>
+                    </div>
+                    <div v-else-if="item.type === 'video'" class="gallery-video">
+                      <div class="video-thumbnail">
+                        <i class="fas fa-play-circle"></i>
+                      </div>
+                      <div class="gallery-caption" v-if="item.caption">{{ item.caption }}</div>
+                    </div>
+                  </div>
+                </div>
+                <div v-else class="no-gallery">
+                  <i class="fas fa-images"></i>
+                  <p>No gallery items available for this application</p>
+                </div>
+              </div>
+              
+              <!-- Use Cases Tab -->
+              <div v-if="activeTab === 2" class="tab-content">
+                <div class="use-cases">
+                  <div class="use-case">
+                    <h3>Small Businesses</h3>
+                    <p>Perfect for small teams looking to streamline their operations and scale efficiently. {{ app.name }} provides affordable solutions with core functionality to help small businesses compete with larger enterprises.</p>
+                    <ul>
+                      <li>Easy to implement with minimal technical knowledge</li>
+                      <li>Affordable pricing options</li>
+                      <li>Quick onboarding process</li>
+                    </ul>
+                  </div>
+                  <div class="use-case">
+                    <h3>Enterprise Solutions</h3>
+                    <p>Designed to handle the complex needs of large organizations. With advanced security features and robust scalability, {{ app.name }} can support thousands of users and manage complex workflows.</p>
+                    <ul>
+                      <li>Advanced security and compliance features</li>
+                      <li>Custom implementation options</li>
+                      <li>Enterprise-grade support and SLAs</li>
+                    </ul>
+                  </div>
+                  <div class="use-case">
+                    <h3>Industry Specific</h3>
+                    <p>{{ app.name }} offers specialized solutions for various industries including healthcare, finance, education, and manufacturing. Each industry module includes tailored features to meet specific regulatory and operational needs.</p>
+                    <ul>
+                      <li>Industry-specific compliance features</li>
+                      <li>Specialized workflows and templates</li>
+                      <li>Integration with industry-standard tools</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Newsletter Banner -->
+      <section class="newsletter-section">
+        <div class="container">
+          <div class="newsletter-content">
+            <div class="newsletter-text">
+              <h2>Stay Up to Date</h2>
+              <p class="quote">
+                <i class="fas fa-quote-left"></i>
+                {{ app?.name || 'This solution' }} transformed how our team collaborates and has increased our productivity by over 30%.
+                <i class="fas fa-quote-right"></i>
+              </p>
+              <p class="quote-author">- Sarah Johnson, Marketing Director</p>
+              <p class="newsletter-description">
+                Subscribe to our newsletter for updates about {{ app?.name || 'this application' }}, 
+                including new features, case studies, and exclusive offers.
+              </p>
+            </div>
+            
+            <div class="newsletter-form">
+              <form @submit.prevent="subscribeNewsletter">
+                <div class="form-group">
+                  <input type="email" v-model="newsletterEmail" placeholder="Your email address" required>
+                  <button type="submit" class="btn btn-primary" :disabled="newsletterSubmitting">
+                    <span v-if="newsletterSubmitting"><i class="fas fa-spinner fa-spin"></i></span>
+                    <span v-else>Subscribe</span>
+                  </button>
+                </div>
+                <p class="privacy-note">
+                  We respect your privacy. Unsubscribe at any time.
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Pricing Section -->
+      <section class="pricing-section" v-if="app && app.pricing">
+        <div class="container">
+          <h2 class="section-title">Pricing Plans</h2>
+          <p class="section-description">Choose the plan that fits your needs</p>
+          
+          <div class="pricing-tiers" v-if="app.pricing.tiers && app.pricing.tiers.length > 0">
+            <div 
+              v-for="(tier, index) in app.pricing.tiers" 
+              :key="index" 
+              class="pricing-card"
+              :class="{ 'popular': tier.popular }"
+            >
+              <div v-if="tier.popular" class="popular-tag">Most Popular</div>
+              <h3 class="tier-name">{{ tier.name }}</h3>
+              <div class="tier-price">
+                <span class="price">${{ tier.price }}</span>
+                <span class="period">/ {{ tier.period }}</span>
+              </div>
+              <ul class="tier-features">
+                <li v-for="(feature, featureIndex) in tier.features" :key="featureIndex">
+                  <i class="fas fa-check"></i> {{ feature }}
+                </li>
+              </ul>
+              <button class="btn btn-primary btn-block">Get Started</button>
+            </div>
+          </div>
+          
+          <div class="pricing-simple" v-else>
+            <div class="pricing-card">
+              <div v-if="app.pricing.type === 'free'" class="pricing-info">
+                <h3 class="tier-name">Free Plan</h3>
+                <div class="tier-price">
+                  <span class="price">$0</span>
+                  <span class="period">/ forever</span>
+                </div>
+                <p class="pricing-description">
+                  Get started with all core features at no cost. Perfect for small teams and individuals.
+                </p>
+              </div>
+              
+              <div v-else-if="app.pricing.type === 'trial'" class="pricing-info">
+                <h3 class="tier-name">Free Trial</h3>
+                <div class="tier-price">
+                  <span class="price">${{ app.pricing.value }}</span>
+                  <span class="period">/ {{ app.pricing.period }} after trial</span>
+                </div>
+                <p class="pricing-description">
+                  Try all features free for 14 days. No credit card required to start your trial.
+                </p>
+              </div>
+              
+              <div v-else class="pricing-info">
+                <h3 class="tier-name">Standard Plan</h3>
+                <div class="tier-price">
+                  <span class="price">${{ app.pricing.value }}</span>
+                  <span class="period">/ {{ app.pricing.period }}</span>
+                </div>
+                <p class="pricing-description">
+                  Get access to all features with our straightforward pricing plan.
+                </p>
+              </div>
+              
+              <div class="pricing-cta">
+                <button class="btn btn-primary btn-lg">
+                  {{ app.pricing.type === 'free' ? 'Get Started' : app.pricing.type === 'trial' ? 'Start Free Trial' : 'Subscribe Now' }}
+                </button>
+                <p class="pricing-contact">Need custom pricing? <a href="#contact">Contact us</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Third-party Integrations Section -->
+      <section class="integrations-section" v-if="app && app.integrations && app.integrations.length > 0">
+        <div class="container">
+          <h2 class="section-title">Integrations</h2>
+          <p class="section-description">{{ app.name }} integrates seamlessly with your favorite tools</p>
+          
+          <div class="integrations-grid">
+            <div 
+              v-for="(integration, index) in app.integrations" 
+              :key="index" 
+              class="integration-item"
+            >
+              <div class="integration-icon">
+                <img 
+                  :src="`/assets/images/integrations/${integration}.svg`" 
+                  :alt="`${integration} logo`" 
+                  @error="handleImageError($event)" 
+                  loading="lazy"
+                />
+              </div>
+              <div class="integration-name">{{ integration.charAt(0).toUpperCase() + integration.slice(1) }}</div>
+            </div>
+          </div>
+          
+          <div class="integrations-cta">
+            <button class="btn btn-outline-primary">
+              <i class="fas fa-puzzle-piece"></i>
+              Request Custom Integration
+            </button>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Product Ranking and Statistics Section -->
+      <section class="stats-section" v-if="app">
+        <div class="container">
+          <h2 class="section-title">App Statistics</h2>
+          
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-calendar-alt"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value">{{ app.launchDate ? new Date(app.launchDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long' }) : 'N/A' }}</div>
+                <div class="stat-label">Launch Date</div>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-eye"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value">{{ app.monthlyViews?.toLocaleString() || 'N/A' }}</div>
+                <div class="stat-label">Monthly Views</div>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon ranking-icon">
+                <i class="fas fa-trophy"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value">#{{ app.yearlyRank || 'N/A' }}</div>
+                <div class="stat-label">Yearly Ranking</div>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <div class="stat-content">
+                <div class="stat-value">#{{ app.monthlyRank || 'N/A' }}</div>
+                <div class="stat-label">Monthly Ranking</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Social Media Sharing Section -->
+      <section class="sharing-section">
+        <div class="container">
+          <div class="sharing-content">
+            <div class="sharing-text">
+              <h2>Share {{ app?.name }}</h2>
+              <p>Found {{ app?.name }} useful? Share it with your network</p>
+            </div>
+            
+            <div class="sharing-buttons">
+              <!-- Twitter sharing -->
+              <a :href="`https://twitter.com/intent/tweet?url=${encodeURIComponent(currentPageUrl)}&text=Check out ${app?.name} on SaaSWorld`" 
+                target="_blank" rel="noopener noreferrer" class="share-button twitter">
+                <i class="fab fa-twitter"></i>
+                <span>Twitter</span>
+              </a>
+              
+              <!-- LinkedIn sharing -->
+              <a :href="`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentPageUrl)}`" 
+                target="_blank" rel="noopener noreferrer" class="share-button linkedin">
+                <i class="fab fa-linkedin-in"></i>
+                <span>LinkedIn</span>
+              </a>
+              
+              <!-- Facebook sharing -->
+              <a :href="`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentPageUrl)}`" 
+                target="_blank" rel="noopener noreferrer" class="share-button facebook">
+                <i class="fab fa-facebook-f"></i>
+                <span>Facebook</span>
+              </a>
+              
+              <!-- Email sharing -->-->
+              <a :href="`mailto:?subject=Check out ${app?.name} on SaaSWorld&body=${encodeURIComponent(`I found this great app on SaaSWorld: ${currentPageUrl}`)}`" 
+                class="share-button email">
+                <i class="fas fa-envelope"></i>
+                <span>Email</span>
+              </a>
+              
+              <!-- Copy link button -->
+              <button @click="copyPageUrl" class="share-button copy-link">
+                <i class="fas fa-link"></i>
+                <span>{{ copyLinkText }}</span>
+              </button>
+            </div>
+            
+            <!-- App provider social media links -->
+            <div class="provider-social-links" v-if="app?.socialLinks && app.socialLinks.length > 0">
+              <div class="provider-social-text">Follow {{ app.name }} on social media:</div>
+              <div class="social-icons">
+                <a v-for="(social, index) in app.socialLinks" :key="index"
+                  :href="social.url" target="_blank" rel="noopener noreferrer"
+                  class="social-icon" :class="social.platform">
+                  <i :class="`fab fa-${social.platform}`"></i>
+                </a>
+              </div>
+            </div>
+          </div>p><input type="email" id="contact-email" v-model="contactForm.email" required placeholder="Your email address"><input type="email" id="contact-email" v-model="contactForm.email" required placeholder="Your email address">
+        </div>div>div>div>
+      </section><div class="form-group"><div class="form-group">ion>
+            <div class="newsletter-form">ject">Subject</label>ject">Subject</label>
+      <!-- Newsletter Section -->nt="subscribeNewsletter">v-model="contactForm.subject" required placeholder="Message subject">v-model="contactForm.subject" required placeholder="Message subject">
+      <section class="newsletter-section">
+        <div class="container">email" v-model="newsletterEmail" placeholder="Your email address" required>
+          <div class="newsletter-content">ass="btn btn-primary" :disabled="newsletterSubmitting">
+            <div class="newsletter-text">rSubmitting"><i class="fas fa-spinner fa-spin"></i></span>aceholder="Your message..."></textarea>aceholder="Your message..."></textarea>
+              <h2>Stay Up to Date</h2>ribe</span>
+              <p class="quote">ubmit" class="btn btn-primary btn-block" :disabled="contactSubmitting">ubmit" class="btn btn-primary btn-block" :disabled="contactSubmitting">te">
+                <i class="fas fa-quote-left"></i><i class="fas fa-spinner fa-spin"></i> Sending...</span><i class="fas fa-spinner fa-spin"></i> Sending...</span>ss="fas fa-quote-left"></i>
+                {{ app?.name || 'This solution' }} transformed how our team collaborates and has increased our productivity by over 30%.
+                <i class="fas fa-quote-right"></i>ribe at any time.
+              </p>p>>>
+              <p class="quote-author">- Sarah Johnson, Marketing Director</p>
+              <p class="newsletter-description">
+                Subscribe to our newsletter for updates about {{ app?.name || 'this application' }}, 
+                including new features, case studies, and exclusive offers..
+              </p>iv class="contact-icon">iv class="contact-icon">p>
+            </div><i class="fas fa-envelope"></i><i class="fas fa-envelope"></i>  </div>
+                </div>    </div>    
+            <div class="newsletter-form">
+              <form @submit.prevent="subscribeNewsletter">tter">
+                <div class="form-group">e?.toLowerCase().replace(/\s+/g, '') }}.com</p>e?.toLowerCase().replace(/\s+/g, '') }}.com</p>        <div class="form-group">
+                  <input type="email" v-model="newsletterEmail" placeholder="Your email address" required>
+                  <button type="submit" class="btn btn-primary" :disabled="newsletterSubmitting">
+                    <span v-if="newsletterSubmitting"><i class="fas fa-spinner fa-spin"></i></span>
+                    <span v-else>Subscribe</span>else>Subscribe</span>
+                  </button>"contact-icon">"contact-icon">  </button>
+                </div>lass="fas fa-phone-alt"></i>lass="fas fa-phone-alt"></i>v>
+                <p class="privacy-note">
+                  We respect your privacy. Unsubscribe at any time.
+                </p>3>Phone</h3>3>Phone</h3>
+              </form>+1 (800) 123-4567</p>+1 (800) 123-4567</p>m>
+            </div>div>div>    </div>
+          </div>mitting: false,
+        </div>te: false,
+      </section>Email: '',contact-info-item">contact-info-item">
+    </div>letterSubmitting: false,t-icon">t-icon">
+  </div>tiveTab: 0,i class="fas fa-globe"></i>i class="fas fa-globe"></i>
+</template>reTabs: ['Features', 'Gallery', 'Use Cases'],
+      stats: {  <div>  <div>
+<script>launchDate: null,site</h3>site</h3>
+export default {iews: 0,href="#" target="_blank">www.{{ app?.name?.toLowerCase().replace(/\s+/g, '') }}.com</a></p>href="#" target="_blank">www.{{ app?.name?.toLowerCase().replace(/\s+/g, '') }}.com</a></p>
+  data() {arlyRank: 0,
+    return {hlyRank: 0
+      loading: true,g: true,
+      app: null,eUrl: '', // Added for sharing functionality
+      enquiryForm: {'Copy Link' // Text for copy link button
+        name: '', name: '',
+        email: '',
+        company: '',>ny: '',
+        message: ''ry() {n">
+      },turn this.app.gallery.some(item => item.type === 'video');
+      enquirySubmitting: false,tting: false,
+      isFavorite: false, {ext">
+      newsletterEmail: '',ery.some(item => item.type === 'image');
+      newsletterSubmitting: false,se,
+      activeTab: 0, {ss="fas fa-quote-left"></i>
+      featureTabs: ['Features', 'Gallery', 'Use Cases'], 'video');ctivity by over 30%.
+      stats: {ageUrl: '', // Added for sharing functionality  <i class="fas fa-quote-right"></i>stats: {
+        launchDate: null,
+        monthlyViews: 0,llery.find(item => item.type === 'image');
+        yearlyRank: 0,wsletter-description">   yearlyRank: 0,
+        monthlyRank: 0e to our newsletter for updates about {{ app?.name || 'this application' }},     monthlyRank: 0
+      },s: {age: ''    including new features, case studies, and exclusive offers.
+      currentPageUrl: '', // Added for sharing functionality
+      copyLinkText: 'Copy Link' // Text for copy link button
+    },  name: '',      
+  },submitEnquiry() {newsletter-form">
+  computed: {quirySubmitting = true;tter">
+    hasVideoInGallery() {lgroup">
+      return this.app.gallery.some(item => item.type === 'video'); item.type === 'video');
+    },  this.enquirySubmitting = false;tn-primary" :disabled="newsletterSubmitting">
+    hasImagesInGallery() {mitted successfully!'); fa-spinner fa-spin"></i></span>
+      return this.app.gallery.some(item => item.type === 'image');
+    },    name: '',alse,/button>
+    getFirstVideo() {
+      return this.app.gallery.find(item => item.type === 'video');video');
+    },    message: '' your privacy. Unsubscribe at any time.
+    getFirstImage() {ull,tImage() {
+      return this.app.gallery.find(item => item.type === 'image');
+    },  yearlyRank: 0,      </div>
+  },toggleFavorite() {
+  methods: {sFavorite = !this.isFavorite;
+    handleImageError(event) { update favorite statusk button
+      event.target.src = '/assets/images/default-logo.png';
+    },  alert(`Application ${this.isFavorite ? 'added to' : 'removed from'} favorites!`);
+    submitEnquiry() {
+      this.enquirySubmitting = true;
+      // Simulate API call{ry.some(item => item.type === 'video');
+      setTimeout(() => {mitting = true;
+        this.enquirySubmitting = false;
+        alert('Enquiry submitted successfully!');ype === 'image');
+        this.enquiryForm = {tting = false;
+          name: '',cribed to newsletter successfully!');
+          email: '',terEmail = '';(item => item.type === 'video');
+          company: '',
+          message: '' message: ''
+        };lleryItem(index) {y.find(item => item.type === 'image');
+      }, 2000);to open the gallery item in a modal or new page
+    },console.log('Open gallery item:', index);
+    toggleFavorite() {gleFavorite() {
+      this.isFavorite = !this.isFavorite;
+      // Simulate API call to update favorite statusUrl).then(() => {
+      setTimeout(() => {t = 'Link Copied!';
+        alert(`Application ${this.isFavorite ? 'added to' : 'removed from'} favorites!`);
+      }, 500);.copyLinkText = 'Copy Link';'Use Cases'],
+    },  }, 2000); API call to update favorite status
+    subscribeNewsletter() {) {
+      this.newsletterSubmitting = true;ext: ', err);d to' : 'removed from'} favorites!`);
+      // Simulate API calll
+      setTimeout(() => {
+        this.newsletterSubmitting = false;
+        alert('Subscribed to newsletter successfully!');newsletter successfully!');
+        this.newsletterEmail = '';or copy link button;
+      }, 2000);() => { {
+    },this.loading = false;ing = false;
+    openGalleryItem(index) {tted successfully!');
+      // Logic to open the gallery item in a modal or new page
+      console.log('Open gallery item:', index);
+    },  provider: 'AppProvider',
+    copyPageUrl() {,',ing: false
+      navigator.clipboard.writeText(this.currentPageUrl).then(() => {
+        this.copyLinkText = 'Link Copied!';on', 'Project Management'],
+        setTimeout(() => {This is an awesome app that helps you manage your projects and collaborate with your team effectively.',
+          this.copyLinkText = 'Copy Link';ly.',
+        }, 2000);[etter() {app.gallery.some(item => item.type === 'video');
+      }, (err) => {image', url: '/assets/images/gallery1.jpg', caption: 'Gallery Image 1' },
+        console.error('Could not copy text: ', err);ery2.jpg', caption: 'Gallery Image 2' },
+      }); { type: 'video', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' }
+    }   ],is.newsletterSubmitting = false;
+  },    features: [cribed to newsletter successfully!'); {
+  mounted() {itle: 'Feature 1', description: 'Description of feature 1', icon: 'fa-check' },
+    // Simulate fetching app dataescription: 'Description of feature 2', icon: 'fa-check' },
+    setTimeout(() => {ature 3', description: 'Description of feature 3', icon: 'fa-check' }
+      this.loading = false;item => item.type === 'image');.loading = false;
+      this.app = {ipboard.writeText(this.currentPageUrl).then(() => {
+        logo: '/assets/images/app-logo.png',
+        name: 'Awesome App',
+        provider: 'AppProvider', copy text: ', err);,
+        rating: 4.5,ts/images/default-logo.png';5,
+        reviewCount: 120, Plan', price: 0, period: 'forever', features: ['Feature 1', 'Feature 2'], popular: false },
+        tags: ['Productivity', 'Collaboration', 'Project Management'],: ['Feature 1', 'Feature 2', 'Feature 3'], popular: true },
+        longDescription: 'This is an awesome app that helps you manage your projects and collaborate with your team effectively.',
+        description: 'Manage projects easily.',
+        gallery: [) => {) => {llery: [
+          { type: 'image', url: '/assets/images/gallery1.jpg', caption: 'Gallery Image 1' },
+          { type: 'image', url: '/assets/images/gallery2.jpg', caption: 'Gallery Image 2' },
+          { type: 'video', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' }
+        ],arlyRank: 25,
+        features: [: 5,
+          { title: 'Feature 1', description: 'Description of feature 1', icon: 'fa-check' },
+          { title: 'Feature 2', description: 'Description of feature 2', icon: 'fa-check' },
+          { title: 'Feature 3', description: 'Description of feature 3', icon: 'fa-check' }
+        ],{ platform: 'facebook', url: 'https://facebook.com/awesomeapp' }
+        pricing: {
+          type: 'free',
+          value: 0,{is.isFavorite;
+          period: 'forever',(this.app.launchDate),
+          tiers: [ws: this.app.monthlyViews,
+            { name: 'Free Plan', price: 0, period: 'forever', features: ['Feature 1', 'Feature 2'], popular: false },
+            { name: 'Pro Plan', price: 9.99, period: 'month', features: ['Feature 1', 'Feature 2', 'Feature 3'], popular: true },
+            { name: 'Enterprise Plan', price: 29.99, period: 'month', features: ['All features'], popular: false }
+          ]currentPageUrl = window.location.href; // Set current page URL for sharing
+        },0);der: 'AppProvider',wsletterSubmitting = true;
+        integrations: ['slack', 'jira', 'github', 'google-drive', 'dropbox'],
+        launchDate: '2023-01-15',: '2023-01-15',
+        monthlyViews: 1500,false;onthlyViews: 1500,
+        yearlyRank: 25,ed to newsletter successfully!');        yearlyRank: 25,
+        monthlyRank: 5,l = '';yRank: 5,
+        socialLinks: [ever',
+          { platform: 'twitter', url: 'https://twitter.com/awesomeapp' },
+          { platform: 'linkedin', url: 'https://linkedin.com/company/awesomeapp' },', 'Feature 2'], popular: false },
+          { platform: 'facebook', url: 'https://facebook.com/awesomeapp' }Feature 1', 'Feature 2', 'Feature 3'], popular: true },s://facebook.com/awesomeapp' }
+        ]-success: #28a745;rise Plan', price: 29.99, period: 'month', features: ['All features'], popular: false }lery item:', index);
+      };r-danger: #dc3545;
+      this.stats = {ffc107;
+        launchDate: new Date(this.app.launchDate),roject Management'],geUrl).then(() => {Date(this.app.launchDate),
+        monthlyViews: this.app.monthlyViews,
+        yearlyRank: this.app.yearlyRank,ion: 'Description of feature 1', icon: 'fa-check' },k,
+        monthlyRank: this.app.monthlyRankon: 'Description of feature 2', icon: 'fa-check' },;pp.monthlyRank
+      };r-gray-100: #f0f0f0;3', description: 'Description of feature 3', icon: 'fa-check' }
+      this.currentPageUrl = window.location.href; // Set current page URL for sharing
+    }, 1000);y-300: #d0d0d0;is is an awesome app that helps you manage your projects and collaborate with your team effectively.', not copy text: ', err);
+  }-color-gray-400: #b0b0b0; projects easily.',
+} --color-gray-500: #909090;
+</script>-gray-600: #707070;rl: '/assets/images/gallery1.jpg', caption: 'Gallery Image 1' },
+  --color-gray-700: #505050;rl: '/assets/images/gallery2.jpg', caption: 'Gallery Image 2' }, = true;
+<style scoped>-800: #303030;rl: 'https://www.youtube.com/embed/dQw4w9WgXcQ' }
+.app-details-page { #101010;
+  --color-primary: #007bff;ck', 'jira', 'github', 'google-drive', 'dropbox'],ing = false;007bff;
+  --color-primary-light: #66b3ff;ssfully!');ght: #66b3ff;
+  --color-primary-dark: #0056b3;3;
+  --color-success: #28a745;
+  --color-danger: #dc3545;
+  --color-warning: #ffc107;
+  --color-info: #17a2b8; rgba(0, 0, 0, 0.1);://twitter.com/awesomeapp' },
+  --color-light: #f8f9fa;rgba(0, 0, 0, 0.1);s://linkedin.com/company/awesomeapp' },
+  --color-dark: #343a40;x rgba(0, 0, 0, 0.1);://facebook.com/awesomeapp' }
+  --color-gray-50: #f9f9f9;
+  --color-gray-100: #f0f0f0;
+  --color-gray-200: #e0e0e0;
+  --color-gray-300: #d0d0d0;(this.app.launchDate), data00: #d0d0d0;
+  --color-gray-400: #b0b0b0;pp.monthlyViews,
+  --color-gray-500: #909090;.yearlyRank,9090;
+  --color-gray-600: #707070;p.monthlyRank
+  --color-gray-700: #505050;;
+  --color-gray-800: #303030;window.location.href; // Set current page URL for sharing303030;
+  --color-gray-900: #101010;ay-900: #101010;
+  --spacing-xs: 4px;px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;gba(255, 255, 255, 0.3);
+  --spacing-lg: 24px;id var(--color-primary);ollaborate with your team effectively.',
+  --spacing-xl: 32px; projects easily.',
+  --border-radius: 8px;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);, caption: 'Gallery Image 1' },0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);2.jpg', caption: 'Gallery Image 2' },, 0.1);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);mbed/dQw4w9WgXcQ' } --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
+} --color-success: #28a745;       ],}
+@keyframes spin { #dc3545; [
+.loading-container {tate(0deg); }tion: 'Description of feature 1', icon: 'fa-check' },
+  display: flex;rm: rotate(360deg); }ription of feature 2', icon: 'fa-check' },
+  flex-direction: column;re 3', description: 'Description of feature 3', icon: 'fa-check' } flex-direction: column;
+  align-items: center;0;s: center;
+  justify-content: center;;
+  height: calc(100vh - 80px);80px);
+  text-align: center;umn;e0;
+} align-items: center;0d0d0;ever',
+  justify-content: center;0;
+.loading-spinner {vh - 80px);', price: 0, period: 'forever', features: ['Feature 1', 'Feature 2'], popular: false },
+  border: 4px solid rgba(255, 255, 255, 0.3);features: ['Feature 1', 'Feature 2', 'Feature 3'], popular: true },gba(255, 255, 255, 0.3);
+  border-top: 4px solid var(--color-primary);month', features: ['All features'], popular: false } border-top: 4px solid var(--color-primary);
+  border-radius: 50%;303030;adius: 50%;
+  width: 40px;n {0: #101010;
+  height: 40px;em;x;ns: ['slack', 'jira', 'github', 'google-drive', 'dropbox'],
+  animation: spin 1s linear infinite;
+} margin-bottom: var(--spacing-md);
+} --spacing-lg: 24px;       yearlyRank: 25,
+@keyframes spin {2px;nk: 5,@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }, 0.1); 'https://twitter.com/awesomeapp' },: rotate(360deg); }
+} --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);         { platform: 'linkedin', url: 'https://linkedin.com/company/awesomeapp' },
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);          { platform: 'facebook', url: 'https://facebook.com/awesomeapp' }
+.not-found-container {
+  display: flex;near-gradient(135deg, rgba(0, 123, 255, 0.8), rgba(0, 123, 255, 0.2)), url('/assets/images/hero-bg.jpg') no-repeat center center / cover;
+  flex-direction: column;
+  align-items: center;te(0deg); }w Date(this.app.launchDate),;
+  justify-content: center;(360deg); }.app.monthlyViews,center;
+  height: calc(100vh - 80px);vh - 80px);
+  text-align: center; text-align: center;
+}hero-section::before {
+  content: '';x;rentPageUrl = window.location.href; // Set current page URL for sharing
+.not-found-icon {ute;umn;
+  font-size: 4rem;ter;
+  color: var(--color-danger);
+  margin-bottom: var(--spacing-md);
+} bottom: 0;: center;
+  background: rgba(0, 0, 0, 0.5);
+.app-content {nt {
+  padding: 80px 0; #007bff;  padding: 80px 0;
+}hero-content {olid rgba(255, 255, 255, 0.3);ry-light: #66b3ff;
+  position: relative;id var(--color-primary);k: #0056b3;
+.hero-section {: 50%;ss: #28a745; {
+  background: linear-gradient(135deg, rgba(0, 123, 255, 0.8), rgba(0, 123, 255, 0.2)), url('/assets/images/hero-bg.jpg') no-repeat center center / cover;
+  color: white;ng: #ffc107;  color: white;
+  position: relative;linear infinite;b8;elative;
+  overflow: hidden;r(--spacing-md);8f9fa;en;
+} align-items: center;
+  margin-bottom: var(--spacing-lg);
+.hero-section::before {0f0;hero-section::before {
+  content: '';x;-200: #e0e0e0;  content: '';
+  position: absolute;umn;d0d0d0; absolute;
+  top: 0;80px; center;-400: #b0b0b0;
+  left: 0;80px;nt: center;500: #909090;
+  right: 0;ght: var(--spacing-md);
+  bottom: 0;: center;ay-700: #505050; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);deg, rgba(0, 123, 255, 0.8), rgba(0, 123, 255, 0.2)), url('/assets/images/hero-bg.jpg') no-repeat center center / cover;kground: rgba(0, 0, 0, 0.5);
+}app-logo img {
+  width: 100%;
+.hero-content { { 8px;
+  position: relative;;
+  z-index: 1;--color-danger);g: 24px; z-index: 1;
+} margin-bottom: var(--spacing-md); --spacing-xl: 32px;}
+.app-header-text {
+.app-header {gba(0, 0, 0, 0.1);r {
+  display: flex;px 8px rgba(0, 0, 0, 0.1); display: flex;
+  align-items: center;rgba(0, 0, 0, 0.1);  align-items: center;
+  margin-bottom: var(--spacing-lg);
+} font-size: 2rem;
+  margin: 0 0 var(--spacing-xs);
+.app-logo {d: linear-gradient(135deg, rgba(0, 123, 255, 0.8), rgba(0, 123, 255, 0.2)), url('/assets/images/hero-bg.jpg') no-repeat center center / cover;flex;app-logo {
+  width: 80px;;on: column;  width: 80px;
+  height: 80px;ative;center;
+  margin-right: var(--spacing-md);
+} color: rgba(255, 255, 255, 0.8);
+  margin-bottom: var(--spacing-xs);
+.app-logo img {before {
+  width: 100%;
+  height: 100%;olute;r {00%;
+  object-fit: contain;255, 0.3);ntain;
+} justify-content: space-between;
+  align-items: center;
+.app-header-text {-text {
+  flex: 1;nd: rgba(0, 0, 0, 0.5);40px;  flex: 1;
+}app-rating {ar infinite;
+  display: flex;
+.app-name {ms: center;
+  font-size: 2rem;-size: 2rem;
+  margin: 0 0 var(--spacing-xs);r(--spacing-xs);
+}stars {-right: var(--spacing-md); transform: rotate(360deg); }
+  display: flex;
+.app-provider { var(--spacing-xs);
+  font-size: 1rem;font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: var(--spacing-xs););
+} color: var(--color-warning);-lg);
+  font-size: 1rem;
+.app-meta { 80px);app-meta {
+  display: flex; {nter;  display: flex;
+  justify-content: space-between;
+  align-items: center;
+} margin-right: var(--spacing-xs);
+}app-name { font-size: 4rem;
+.app-rating {2rem;--color-danger);.app-rating {
+  display: flex;r(--spacing-xs); var(--spacing-md);;
+  align-items: center;
+} color: rgba(255, 255, 255, 0.7);
+}app-provider {app-content {
+.stars {ize: 1rem;g: 80px 0;.stars {
+  display: flex;5, 255, 255, 0.8);
+  margin-right: var(--spacing-xs);;
+} flex-wrap: wrap;
+  gap: var(--spacing-xs); 255, 0.8), rgba(0, 123, 255, 0.2)), url('/assets/images/hero-bg.jpg') no-repeat center center / cover;
+.stars i {{hite;stars i {
+  color: var(--color-warning);rning);
+  font-size: 1rem; space-between;;e: 1rem;
+} background: rgba(255, 255, 255, 0.2);
+  color: white;: var(--spacing-md);
+.rating-value {8px;
+  font-weight: 600;px;
+  margin-right: var(--spacing-xs);
+} display: flex; top: 0;
+  align-items: center;  left: 0;
+.rating-count {on {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);;
+} text-align: center;
+} margin-right: var(--spacing-xs);
+.app-tags {ags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);;ng);
+} gap: var(--spacing-md);
+}app-header {
+.app-tag {-tag {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;ar(--color-primary);
+  padding: 4px 8px;(--spacing-xs);
+  border-radius: 12px;
+  font-size: 0.9rem;
+} border-radius: var(--border-radius);
+  cursor: pointer;m;
+.hero-description {round-color 0.3s ease;
+  max-width: 600px;
+  margin: 0 auto var(--spacing-xl);
+  text-align: center;
+} background: var(--color-primary-dark);
+} flex-wrap: wrap; height: 100%;
+.hero-cta {--spacing-xs);t: contain;.hero-cta {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);;
+} color: white;gba(255, 255, 255, 0.2);
+  padding: 12px 24px;
+.btn-primary {s: var(--border-radius);
+  background: var(--color-primary);
+  color: white;ll 0.3s ease;
+  padding: 12px 24px; 12px 24px;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;(255, 255, 255, 0.2);
+  transition: background-color 0.3s ease; 0.3s ease;
+} text-align: center; color: rgba(255, 255, 255, 0.8);}
+.favorite-btn {g-xs);
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+} gap: var(--spacing-xs);
+} justify-content: center; display: flex;
+.btn-outline {pacing-md);ent: space-between;.btn-outline {
+  background: transparent;
+  border: 2px solid white;
+  color: white;
+  padding: 12px 24px;olor-primary);g: 12px 24px;
+  border-radius: var(--border-radius);
+  cursor: pointer;(255, 255, 255, 0.1);
+  transition: all 0.3s ease;);
+} border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+.btn-outline:hover {shadow-md);0.3s ease;
+  background: rgba(255, 255, 255, 0.2);
+}
+.btn-primary:hover {
+.favorite-btn {ar(--color-primary-dark);
+  display: flex; var(--spacing-md);
+  align-items: center;
+  gap: var(--spacing-xs);
+}formkground: transparent;
+  border: 2px solid white;.rating-value {
+.favorite-btn i {
+  font-size: 1.2rem;;--spacing-xs);
+} border-radius: var(--border-radius);
+  cursor: pointer;
+.enquiry-form {ll 0.3s ease;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);255, 0.2);
+  box-shadow: var(--shadow-md);
+  margin-top: var(--spacing-lg);
+}favorite-btn { flex-wrap: wrap;
+  display: flex;  gap: var(--spacing-xs);
+.form-header { center;
+  margin-bottom: var(--spacing-md);
+}app-tag {
+  background: rgba(255, 255, 255, 0.2);
+.form-header h3 {
+  margin: 0 0 var(--spacing-xs);
+  color: var(--color-primary);
+}font-size: 0.9rem;
+.enquiry-form {}
+.form-header p {ba(255, 255, 255, 0.1);
+  margin: 0;ilter: blur(10px);ption {
+  color: var(--color-gray-700);adius);
+  font-size: 0.9rem;cing-lg);(--spacing-xl);
+} box-shadow: var(--shadow-md); text-align: center;
+  margin-top: var(--spacing-lg);}
+.form-group {
+  margin-bottom: var(--spacing-md);
+}form-header { display: flex;
+  margin-bottom: var(--spacing-md);  justify-content: center;
+.form-group label {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  font-weight: 500;-spacing-xs);
+  color: var(--color-gray-800);y);
+} color: white;
+  padding: 12px 24px;
+.form-group input,
+.form-group textarea {dius);
+  width: 100%;-color-gray-700);ter;
+  padding: 12px 16px;nd-color 0.3s ease;
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  color: var(--color-gray-800);md);ry-dark);
+}
+
+.form-group textarea {
+  resize: vertical;rent;
+} margin-bottom: var(--spacing-xs); border: 2px solid white;
+  font-weight: 500;  color: white;
+.btn-primary.btn-block {y-800);
+  width: 100%;er-radius);
+}cursor: pointer;
+.form-group input,  transition: all 0.3s ease;
+.enquiry-policy {rea {
+  margin-top: var(--spacing-sm);
+  font-size: 0.8rem;;
+  color: var(--color-gray-600);-gray-300);5, 0.2);
+  text-align: center;--border-radius);
+} font-size: 1rem;
+  color: var(--color-gray-800);.favorite-btn {
+.about-section {
+  padding: 80px 0;
+}form-group textarea { gap: var(--spacing-xs);
+  resize: vertical;}
+.about-content {
+  display: flex;
+  gap: var(--spacing-xl);
+  flex-wrap: wrap;
+}
+.enquiry-form {
+.about-text {cy { rgba(255, 255, 255, 0.1);
+  flex: 1;op: var(--spacing-sm);-filter: blur(10px);
+  max-width: 600px;;r(--border-radius);
+} color: var(--color-gray-600); padding: var(--spacing-lg);
+  text-align: center;  box-shadow: var(--shadow-md);
+.about-highlights {
+  list-style: none;
+  padding: 0;n {
+  margin: 0;0px 0; {
+} margin-bottom: var(--spacing-md);
+}
+.about-highlights li {
+  margin-bottom: var(--spacing-sm);
+  padding-left: 28px;xl);pacing-xs);
+  position: relative;mary);
+  color: var(--color-gray-800);
+}
+.about-text {.form-header p {
+.about-highlights li i {
+  position: absolute;ay-700);
+  left: 0;;
+  top: 2px;
+  color: var(--color-success);
+} list-style: none;form-group {
+  padding: 0;  margin-bottom: var(--spacing-md);
+.about-media {
+  flex: 1;
+  max-width: 550px;
+}about-highlights li { display: block;
+  margin-bottom: var(--spacing-sm);  margin-bottom: var(--spacing-xs);
+.video-container {px;;
+  position: relative;gray-800);
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-lg);
+} left: 0; padding: 12px 16px;
+  top: 2px;  border: 1px solid var(--color-gray-300);
+.video-container iframe {ess);rder-radius);
+  position: absolute;
+  top: 0;or-gray-800);
+  left: 0;ia {
+  width: 100%;
+  height: 100%;0px;tarea {
+} resize: vertical;
+}
+.image-container {
+  border-radius: var(--border-radius);
+  overflow: hidden;6.25%; /* 16:9 aspect ratio */
+  box-shadow: var(--shadow-lg);
+  position: relative;
+} border-radius: var(--border-radius);enquiry-policy {
+  box-shadow: var(--shadow-lg);  margin-top: var(--spacing-sm);
+.image-container img {
+  width: 100%;0);
+  height: auto;r iframe {enter;
+  display: block;ute;
+} top: 0;
+  left: 0;.about-section {
+.media-caption {
+  margin-top: var(--spacing-sm);
+  color: var(--color-gray-600);
+  font-style: italic;
+  font-size: 0.9rem;
+  text-align: center;--border-radius);xl);
+} overflow: hidden; flex-wrap: wrap;
+  box-shadow: var(--shadow-lg);}
+/* Features Section Styles */
+.features-section {
+  padding: 80px 0;
+  background-color: var(--color-gray-50);
+} width: 100%;
+  height: auto;
+.tabs {ay: block;highlights {
+  margin-top: var(--spacing-xl);
+}padding: 0;
+.media-caption {  margin: 0;
+.tabs-header {var(--spacing-sm);
+  display: flex;olor-gray-600);
+  justify-content: center;
+  border-bottom: 1px solid var(--color-gray-200);
+  margin-bottom: var(--spacing-lg);
+} position: relative;
+  color: var(--color-gray-800);
+.tab-button {ection Styles */
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: 1rem;li i {
+  font-weight: 600; var(--color-gray-50);e;
+  color: var(--color-gray-600);
+  background: transparent;
+  border: none;ccess);
+  cursor: pointer;--spacing-xl);
+  position: relative;
+  transition: all 0.3s ease;
+  margin: 0 var(--spacing-xs);
+} display: flex; max-width: 550px;
+  justify-content: center;}
+.tab-button:after {x solid var(--color-gray-200);
+  content: '';m: var(--spacing-lg);er {
+  position: absolute;
+  bottom: -2px;6:9 aspect ratio */
+  left: 0;n {0;
+  width: 100%;(--spacing-sm) var(--spacing-lg);dden;
+  height: 3px;rem;s: var(--border-radius);
+  background: var(--color-primary);
+  transform: scaleX(0);ay-600);
+  transition: transform 0.3s ease;
+} border: none;video-container iframe {
+  cursor: pointer;  position: absolute;
+.tab-button:hover {e;
+  color: var(--color-primary);
+} margin: 0 var(--spacing-xs); width: 100%;
+}  height: 100%;
+.tab-button.active {
+  color: var(--color-primary);
+} content: '';image-container {
+  position: absolute;  border-radius: var(--border-radius);
+.tab-button.active:after {
+  transform: scaleX(1);
+} width: 100%; position: relative;
+  height: 3px;}
+.tab-content {var(--color-primary);
+  animation: fadeIn 0.5s ease;
+} transition: transform 0.3s ease; width: 100%;
+}  height: auto;
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }-primary);
+}media-caption {
+  margin-top: var(--spacing-sm);
+.features-grid {ve {olor-gray-600);
+  justify-content: center;ry);nter;
+} grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-lg);
+.video-thumbnail {:after {
+  font-size: 3rem;X(1);
+  color: white;
+  opacity: 0.8;hite;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+} padding: var(--spacing-lg);;or-gray-50);
+  box-shadow: var(--shadow-sm);
+.gallery-video:hover .video-thumbnail {
+  opacity: 1;spacing-md);
+  transform: scale(1.1);ase;
+} to { opacity: 1; }
+}
+.gallery-caption {r {
+  position: absolute;eY(-5px);
+  bottom: 0;: var(--shadow-md);
+  left: 0; grid;ottom: 1px solid var(--color-gray-200); left: 0;
+  width: 100%;e-columns: repeat(2, 1fr);m: var(--spacing-lg);  width: 100%;
+  padding: var(--spacing-sm);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  font-size: 0.8rem;ng-sm) var(--spacing-lg);m;
+} border-radius: 50%;
+  background: rgba(var(--primary-color-rgb), 0.1);
+.no-gallery {ex;lor-gray-600);
+  text-align: center;;0.3s ease, transform 0.3s ease;ent;
+  padding: var(--spacing-xl) 0;
+  color: var(--color-gray-500);
+} font-size: 1.2rem; .video-thumbnail {;
+} opacity: 1; transition: all 0.3s ease;
+.no-gallery i {ale(1.1);(--spacing-xs);.no-gallery i {
+  font-size: 3rem;3 {
+  margin-bottom: var(--spacing-md);
+} font-size: 1.1rem;
+  color: var(--color-gray-900);
+.use-cases {absolute;use-cases {
+  display: grid;ay: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-lg);sm););
+} color: var(--color-gray-600););
+  line-height: 1.5;or-primary);
+.use-case {: 0.8rem;: scaleX(0);use-case {
+  background: white;kground: white;
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);(3, 1fr);
+} gap: var(--spacing-md);xl) 0;ary);
+} color: var(--color-gray-500);
+.use-case h3 {
+  margin-top: 0;
+  margin-bottom: var(--spacing-md);s);
+  color: var(--color-primary);
+  position: relative;hadow-sm);
+  padding-bottom: var(--spacing-xs);
+} position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+.use-case h3:after {mns: repeat(3, 1fr);
+  content: '';pacing-lg);  content: '';
+  position: absolute;
+  bottom: 0; translateY(-5px);
+  left: 0;ow: var(--shadow-md);
+  width: 30px;white;eIn { width: 30px;
+  height: 3px;s: var(--border-radius);ty: 0; }  height: 3px;
+  background: var(--color-primary-light);
+} width: 100%;var(--shadow-sm);
+  height: 200px;tive;
+.use-case p { cover;orm 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: var(--spacing-md);
+  color: var(--color-gray-700);ay-700);
+  line-height: 1.5;lg);  line-height: 1.5;
+}gallery-video {nslateY(-5px);
+  position: relative;
+.use-case ul {x;
+  padding-left: var(--spacing-lg);ay-800);
+  margin: 0;lex; var(--border-radius);
+  color: var(--color-gray-600);md);y-600);
+} justify-content: center;ry);-sm);
+} position: relative; display: flex;
+.use-case ul li {e ul li {
+  margin-bottom: var(--spacing-xs);
+} font-size: 3rem; {
+  color: white;
+/* Newsletter Section Styles */
+.newsletter-section { 0.3s ease, transform 0.3s ease;
+  background-color: var(--color-primary);
+  color: white;
+  padding: 60px 0;er .video-thumbnail {
+  position: relative;olor-primary-light);e;
+  overflow: hidden;1.1);
+}height: 50px;
+.use-case p {  min-width: 50px;
+.newsletter-section::before {g-md);e {
+  content: '';solute;gray-700);r(--primary-color-rgb), 0.1);
+  position: absolute;e;
+  top: 0;;er;
+  right: 0;0%;
+  width: 50%;r(--spacing-sm);
+  height: 100%;gba(0, 0, 0, 0.7);;
+  background-image: url('/assets/images/features/pattern-dots-white.png');
+  opacity: 0.1;8rem;-gray-600);
+  pointer-events: none;
+}margin: 0 0 var(--spacing-xs);}
+.no-gallery {li {1.1rem;
+.newsletter-content {--spacing-xs);gray-900);
+  display: flex;-spacing-xl) 0;
+  flex-direction: column;-500);
+  align-items: center;ign-items: center;
+  text-align: center;ar(--color-primary);ign: center;
+}no-gallery i {color-gray-600);
+  font-size: 3rem;;
+.newsletter-text {ar(--spacing-md);
+  max-width: 600px;
+  margin-bottom: var(--spacing-lg);cing-lg);
+}use-cases {';rid;
+  display: grid;lute;columns: repeat(3, 1fr);
+.newsletter-text h2 {ns: repeat(3, 1fr);
+  font-size: 2rem;ng-lg);
+  margin-bottom: var(--spacing-md);
+  font-weight: 700;eight: 700;
+}use-case {d-image: url('/assets/images/features/pattern-dots-white.png');dius: var(--border-radius);
+  background: white;
+.quote {-radius: var(--border-radius);
+  font-style: italic;ing-lg);
+  margin: 0;: var(--shadow-sm);
+  position: relative;3s ease, box-shadow 0.3s ease; position: relative;
+  display: inline-block;;;
+}use-case h3 { center;
+  margin-top: 0;nter;ver {
+.quote:before {: var(--spacing-md);
+  content: '“';color-primary);
+  position: absolute;
+  left: -20px;om: var(--spacing-xs);
+  top: -10px;om: var(--spacing-lg);e img { top: -10px;
+  font-size: 3rem;
+  color: rgba(255, 255, 255, 0.3);
+} content: '';xt h2 {cover;
+  position: absolute;
+.quote:after {m: var(--spacing-md);
+  content: '”';700;
+  position: absolute;
+  right: -20px;
+  bottom: -10px;r(--color-primary-light);
+  font-size: 3rem;ar(--border-radius);: var(--color-gray-800); font-size: 3rem;
+  color: rgba(255, 255, 255, 0.3);3);
+}use-case p {elative;: center;
+  margin-bottom: var(--spacing-md);
+.quote-author {color-gray-700);
+  margin-top: var(--spacing-xs);
+  font-weight: 500;-weight: 500;
+  font-size: 0.9rem;size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+} padding-left: var(--spacing-lg);
+  margin: 0;;: opacity 0.3s ease, transform 0.3s ease;
+.newsletter-description {-600);
+  margin-top: var(--spacing-md););
+  font-size: 1rem;il {  font-size: 1rem;
+  line-height: 1.6;
+} margin-bottom: var(--spacing-xs);
+} content: '”';
+.newsletter-form {te;
+  width: 100%;Section Styles */
+  max-width: 400px; {
+  margin: 0 auto;r: var(--color-primary);
+} color: white;55, 255, 255, 0.3);
+  padding: 60px 0;
+.newsletter-form .form-group {
+  display: flex;en;, 0, 0.7);
+  gap: var(--spacing-sm);ng-xs);--spacing-sm);
+} font-weight: 500; font-size: 0.8rem;}
+.newsletter-section::before {
+.newsletter-form input {255, 0.8);
+  flex: 1;: absolute;
+  padding: 12px 16px;
+  border: none;cription {--spacing-xl) 0;one;
+  border-radius: var(--border-radius);der-radius);
+  font-size: 1rem;
+} background-image: url('/assets/images/features/pattern-dots-white.png');
+  opacity: 0.1;
+.newsletter-form button {
+  padding: 12px 24px;pacing-md); padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600; {
+  border: none;;
+  border-radius: var(--border-radius);
+  cursor: pointer;ter;-group {s: repeat(3, 1fr);
+  transition: background-color 0.3s ease;
+} gap: var(--spacing-sm);
+}
+.newsletter-form button:disabled {
+  background-color: rgba(255, 255, 255, 0.3);
+  cursor: not-allowed;-spacing-lg);
+} padding: 12px 16px; padding: var(--spacing-lg);
+  border: none;  box-shadow: var(--shadow-sm);
+.privacy-note {t h2 {--border-radius);
+  margin-top: var(--spacing-sm);
+  font-size: 0.8rem;(--spacing-md);
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;on {--spacing-md); text-align: center;
+} padding: 12px 24px; color: var(--color-primary);}
+.quote {ize: 1rem;on: relative;
+/* Pricing Section Styles */les */
+.pricing-section {
+  padding: 80px 0;ve;--border-radius);
+  background-color: white;
+} transition: background-color 0.3s ease; content: '';
+}  position: absolute;
+.section-title {
+  font-size: 2rem;utton:disabled {
+  margin-bottom: var(--spacing-lg);255, 0.3);
+  color: var(--color-gray-900);
+  text-align: center; center;
+  position: relative;
+} color: rgba(255, 255, 255, 0.3);
+} margin-top: var(--spacing-sm);use-case p {
+.section-title::after {cing-md);.section-title::after {
+  content: '';255, 255, 255, 0.9);-color-gray-700);
+  position: absolute;ute;
+  bottom: -10px;lute;
+  left: 50%;px;
+  transform: translateX(-50%);
+  width: 60px;rem;r(--spacing-lg);
+  height: 4px;255, 255, 255, 0.3);
+  background: var(--color-primary);var(--color-primary);
+  border-radius: 2px;
+}quote-author {
+  margin-top: var(--spacing-xs);
+.section-description {cing-xs);n {
+  text-align: center;--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-gray-700);r(--color-gray-700);
+  font-size: 1.1rem;;{  font-size: 1.1rem;
+}newsletter-description {
+  margin-top: var(--spacing-md);
+.pricing-tiers {m;ter {
+  display: flex;.6;
+  gap: var(--spacing-lg);--spacing-lg);
+  flex-wrap: wrap;
+  justify-content: center;
+} width: 100%;ranslateX(-50%);ction::before {
+  max-width: 400px;
+.pricing-card {o;;
+  background: white;color-primary);: white;
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);{
+  box-shadow: var(--shadow-sm);
+  flex: 1;(--spacing-sm);sets/images/features/pattern-dots-white.png');
+  min-width: 280px;r;-width: 280px;
+  max-width: 360px;r(--spacing-lg);one;  max-width: 360px;
+  position: relative;t {y-700);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+} padding: 12px 16px;
+  border: none;
+.pricing-card.popular {border-radius);
+  border: 2px solid var(--color-primary);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+} flex-wrap: wrap;}
+.newsletter-form button {;
+.popular-tag {x 24px;
+  position: absolute;
+  top: 16px;t: 600;spacing-lg);
+  right: 16px;;hite;
+  background: var(--color-primary);s);
+  color: white;er;pacing-lg);2 {
+  padding: 4px 10px;ound-color 0.3s ease;
+  border-radius: 12px;; border-radius: 12px;
+  font-size: 0.8rem;font-size: 0.8rem;
+  font-weight: 600;tton:disabled {
+  text-transform: uppercase;, 255, 255, 0.3);
+} cursor: not-allowed;m 0.3s ease, box-shadow 0.3s ease;
+} font-style: italic;
+.tier-name {
+  font-size: 1.5rem;{;5rem;
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-gray-900);
+  text-align: center;5, 255, 0.9);
+} text-align: center;
+}pricing-card.popular { content: '“';
+.tier-price { solid var(--color-primary);bsolute;.tier-price {
+  font-size: 2.5rem;tyles */ba(0, 0, 0, 0.1);
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+} background-color: white;
+} position: absolute;
+.price {6px;
+  font-weight: 700;
+  color: var(--color-primary);ary);
+} margin-bottom: var(--spacing-lg);
+  color: var(--color-gray-900);
+.period {ign: center;;
+  font-size: 0.8rem;;
+  color: var(--color-gray-600);ar(--color-gray-600);
+}}
+.section-title::after {
+.tier-features {
+  list-style: none;e;acing-xs);
+  padding: 0;px; var(--spacing-sm);00;
+  margin: 0 0 var(--spacing-md);ng-md);
+} transform: translateX(-50%);
+  width: 60px;
+.tier-features li {
+  margin-bottom: var(--spacing-xs);
+  padding-left: 24px;acing-md);
+  position: relative;--spacing-md);sition: relative;
+  color: var(--color-gray-800);ray-800);
+}section-description {
+  text-align: center;
+.tier-features li i {--spacing-lg);
+  position: absolute;gray-700);
+  left: 0;e: 1.1rem;-primary);
+  top: 2px;: 2px;
+  color: var(--color-success);
+}pricing-tiers {
+  display: flex;rem; .form-group {
+.pricing-cta {pacing-lg);-600);
+  text-align: center;
+} justify-content: center;
+}tier-features {
+.pricing-cta button {{.pricing-cta button {
+  padding: 12px 24px;
+  font-size: 1rem;e;spacing-md);;
+  font-weight: 600;r(--border-radius);
+  border: none;--spacing-lg);
+  border-radius: var(--border-radius);
+  cursor: pointer;ar(--spacing-xs);
+  transition: background-color 0.3s ease;
+} max-width: 360px;e;tton {
+  position: relative;gray-800);
+.pricing-contact {sform 0.3s ease, box-shadow 0.3s ease;
+  margin-top: var(--spacing-sm);
+  font-size: 0.9rem;{t-size: 0.9rem;
+  color: var(--color-gray-600);600);
+  text-align: center;ar(--color-primary);
+} box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+} color: var(--color-success);
+.pricing-contact a {
+  color: var(--color-primary);
+  text-decoration: none; 255, 0.3);ne;
+} top: 16px;: var(--spacing-sm);t-allowed;
+  right: 16px;center;
+.pricing-contact a:hover {primary);
+  text-decoration: underline;
+} padding: 4px 10px;{spacing-sm);
+  border-radius: 12px;
+/* Integrations Section Styles */
+.integrations-section {
+  padding: 80px 0;uppercase;
+  background-color: var(--color-gray-50);
+} cursor: pointer;* Pricing Section Styles */}
+.tier-name {: background-color 0.3s ease;tion {
+.integrations-grid {
+  display: grid; var(--spacing-sm);
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--spacing-lg);ng-sm);
+  margin-top: var(--spacing-xl);l);
+} color: var(--color-gray-600); font-size: 2rem;}
+.tier-price { center;om: var(--spacing-lg);
+.integration-item {;
+  display: flex; var(--spacing-md);
+  flex-direction: column;enter;-direction: column;
+  align-items: center;rimary);
+  text-align: center;ne;
+  transition: transform 0.3s ease;
+}content: '';integration-item:hover {
+.pricing-contact a:hover {  position: absolute;  transform: translateY(-5px);
+.integration-item:hover {ine;
+  transform: translateY(-5px);
+}transform: translateX(-50%);integration-icon {
+/* Integrations Section Styles */  width: 60px;  width: 80px;
+.integration-icon {on {
+  width: 80px;x 0;var(--color-primary);x;
+  height: 80px;lor: var(--color-gray-50);: 2px;center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--spacing-sm);
+  border-radius: 12px;s: repeat(5, 1fr);-spacing-lg);ng-sm);
+  background-color: white;00);-sm);
+  padding: var(--spacing-sm);l);
+  box-shadow: var(--shadow-sm);
+}tegration-icon img {
+.integration-item {.pricing-tiers {  max-width: 48px;
+.integration-icon img {
+  max-width: 48px;column;ng-lg);ain;
+  max-height: 48px;er;
+  object-fit: contain;er;
+} transition: transform 0.3s ease;integration-name {
+}  font-weight: 500;
+.integration-name {
+  font-weight: 500;over {;r-gray-700);
+  font-size: 0.9rem;teY(-5px);(--border-radius);
+  color: var(--color-gray-700);
+}box-shadow: var(--shadow-sm);integrations-cta {
+.integration-icon {  flex: 1;  margin-top: var(--spacing-xl);
+.integrations-cta {
+  margin-top: var(--spacing-xl);
+  text-align: center;
+} align-items: center; transition: transform 0.3s ease, box-shadow 0.3s ease;btn-outline-primary {
+  justify-content: center;}  background-color: transparent;
+.btn-outline-primary {-spacing-sm);
+  background-color: transparent;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);0, 0, 0, 0.1);
+  padding: 10px 20px;hadow-sm);
+  font-weight: 600;
+  border-radius: var(--border-radius);
+  cursor: pointer;img {te;flex;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;lor-primary);
+  gap: var(--spacing-xs);
+}padding: 4px 10px;btn-outline-primary:hover {
+.integration-name {  border-radius: 12px;  background-color: var(--color-primary-light);
+.btn-outline-primary:hover {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  transform: translateY(-2px);
+}Stats Section Styles */
+.integrations-cta {.tier-name {.stats-section {
+/* Stats Section Styles */g-xl);
+.stats-section {nter; var(--spacing-sm);or: white;
+  padding: 80px 0;
+  background-color: white;
+}btn-outline-primary {stats-grid {
+  background-color: transparent;  display: grid;
+.stats-grid { solid var(--color-primary);te-columns: repeat(4, 1fr);
+  display: grid;olor-primary);rem;cing-lg);
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-xl);dius);
+} cursor: pointer;tat-card {
+  transition: all 0.3s ease;.tier-features {  background: white;
+.stat-card {nline-flex;: none;ius: var(--border-radius);
+  background: white;r;);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-gray-200);
+  display: flex;or: var(--color-primary-light); var(--spacing-xs);cing-md);
+  align-items: center;rimary-dark);
+  gap: var(--spacing-md);2px);
+  transition: all 0.3s ease;
+}at-card:hover {
+/* Stats Section Styles */.tier-features li i {  transform: translateY(-5px);
+.stat-card:hover {-success);--shadow-md);
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}tat-icon {
+/* Integrations Section Styles */  width: 50px;
+.stat-icon {{s-section {px;
+  width: 50px;d;x 0;s: 50%;
+  height: 50px;-columns: repeat(4, 1fr);lor: white;;
+  border-radius: 50%;lg);
+  display: flex;r(--spacing-xl);
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;eat(4, 1fr);-primary);
+  background-color: rgba(var(--primary-color-rgb), 0.1);
+  color: var(--color-primary);radius);
+} padding: var(--spacing-lg);anking-icon {
+  box-shadow: var(--shadow-sm);.integration-item {  background-color: rgba(var(--warning-color-rgb), 0.1);
+.ranking-icon {olid var(--color-gray-200);hite;color-warning);
+  background-color: rgba(var(--warning-color-rgb), 0.1);
+  color: var(--color-warning);
+} gap: var(--spacing-md); box-shadow: var(--shadow-sm);stat-content {
+  transition: all 0.3s ease;  transition: transform 0.3s ease;  flex: 1;
+.stat-content {
+  flex: 1;
+}stat-card:hover {integration-item:hover {stat-value {
+  transform: translateY(-5px);  transform: translateY(-5px);  font-size: 1.5rem;
+.stat-value { var(--shadow-md);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+} width: 50px; height: 80px;stat-label {
+  height: 50px;  display: flex;  font-size: 0.9rem;
+.stat-label {us: 50%;: center;--color-gray-600);
+  font-size: 0.9rem;r;
+  color: var(--color-gray-600);
+  margin-top: 2px; center;2px;
+} font-size: 1.5rem; background-color: white;* Responsive adjustments */
+  background-color: rgba(var(--primary-color-rgb), 0.1);  padding: var(--spacing-sm);@media (max-width: 992px) {
+/* Sharing Section Styles */);m);
+.sharing-section {
+  padding: 50px 0;
+  background-color: var(--color-gray-50);
+} background-color: rgba(var(--warning-color-rgb), 0.1); max-width: 48px;tyle>  text-align: center;
+  color: var(--color-warning);  max-height: 48px;
+.sharing-content {
+  text-align: center;
+}stat-content {
+  flex: 1;
+.sharing-text {
+  margin-bottom: var(--spacing-lg);
+}stat-value {
+  font-size: 1.5rem;
+.sharing-text h2 {;
+  font-size: 2rem;or-gray-900);
+  margin-bottom: var(--spacing-xs);
+  color: var(--color-gray-900);
+}stat-label {
+  font-size: 0.9rem;
+.sharing-text p {lor-gray-600);
+  color: var(--color-gray-700);
+  font-size: 1.1rem;
+}
+/* Sharing Section Styles */
+.sharing-buttons {
+  display: flex;0;
+  justify-content: center;color-gray-50);
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-lg);
+} text-align: center;
+}
+.share-button {
+  display: flex;
+  align-items: center;-spacing-lg);
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  text-decoration: none;pacing-xs);
+  transition: all 0.3s ease;0);
+  cursor: pointer;
+}
+.sharing-text p {
+.share-button i {lor-gray-700);
+  font-size: 1.2rem;
+}
+
+.share-button.twitter {
+  background-color: #1da1f2;
+  color: white;nt: center;
+} gap: var(--spacing-md);
+  flex-wrap: wrap;
+.share-button.linkedin {pacing-lg);
+  background-color: #0077b5;
+  color: white;
+}share-button {
+  display: flex;
+.share-button.facebook {
+  background-color: #4267B2;
+  color: white; 16px;
+} border-radius: var(--border-radius);
+  font-weight: 500;
+.share-button.email {ne;
+  background-color: #ea4335;
+  color: white;er;
+}
+
+.share-button.copy-link {
+  background-color: var(--color-gray-200);
+  color: var(--color-gray-700);
+  border: none;
+}share-button.twitter {
+  background-color: #1da1f2;
+.share-button:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}share-button.linkedin {
+  background-color: #0077b5;
+.provider-social-links {
+  margin-top: var(--spacing-lg);
+}
+.share-button.facebook {
+.provider-social-text {67B2;
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-gray-600);
+}
+.share-button.email {
+.social-icons {lor: #ea4335;
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+}share-button.copy-link {
+  background-color: var(--color-gray-200);
+.social-icon {-color-gray-700);
+  width: 40px;;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;ver {
+  align-items: center;Y(-3px);
+  justify-content: center;-md);
+  background-color: var(--color-gray-200);
+  color: var(--color-gray-700);
+  transition: all 0.3s ease;
+} margin-top: var(--spacing-lg);
+}
+.social-icon:hover {
+  transform: translateY(-3px);
+} margin-bottom: var(--spacing-sm);
+  color: var(--color-gray-600);</style>}  }    grid-template-columns: repeat(2, 1fr);  .integrations-grid {@media (max-width: 992px) {/* Responsive adjustments */}  margin-top: 2px;  color: var(--color-gray-600);  font-size: 0.9rem;.stat-label {}  color: var(--color-gray-900);  font-weight: 700;  font-size: 1.5rem;.stat-value {}  flex: 1;.stat-content {}  color: var(--color-warning);  background-color: rgba(var(--warning-color-rgb), 0.1);.ranking-icon {}  color: var(--color-primary);  background-color: rgba(var(--primary-color-rgb), 0.1);  font-size: 1.5rem;  justify-content: center;  align-items: center;  display: flex;  border-radius: 50%;  height: 50px;  width: 50px;.stat-icon {}  box-shadow: var(--shadow-md);  transform: translateY(-5px);.stat-card:hover {}  transition: all 0.3s ease;  gap: var(--spacing-md);  align-items: center;  display: flex;  border: 1px solid var(--color-gray-200);  box-shadow: var(--shadow-sm);  padding: var(--spacing-lg);  border-radius: var(--border-radius);  background: white;.stat-card {}  margin-top: var(--spacing-xl);  gap: var(--spacing-lg);  grid-template-columns: repeat(4, 1fr);  display: grid;.stats-grid {}  background-color: white;  padding: 80px 0;.stats-section {/* Stats Section Styles */}  transform: translateY(-2px);  color: var(--color-primary-dark);  background-color: var(--color-primary-light);.btn-outline-primary:hover {}  gap: var(--spacing-xs);  align-items: center;  display: inline-flex;  transition: all 0.3s ease;  cursor: pointer;  border-radius: var(--border-radius);  font-weight: 600;  padding: 10px 20px;  color: var(--color-primary);  border: 2px solid var(--color-primary);  background-color: transparent;.btn-outline-primary {}  text-align: center;  margin-top: var(--spacing-xl);.integrations-cta {}  color: var(--color-gray-700);  font-size: 0.9rem;  font-weight: 500;.integration-name {}.sharing-text {
+.social-icon.twitter {
+  background-color: #1da1f2;
+  color: white;
+} display: flex;sharing-text h2 {
+  justify-content: center;  font-size: 2rem;
+.social-icon.facebook {);spacing-xs);
+  background-color: #4267B2;
+  color: white;
+}social-icon {
+  width: 40px;.sharing-text p {
+.social-icon.linkedin {
+  background-color: #0077b5;
+  color: white;;
+} align-items: center;
+  justify-content: center;.sharing-buttons {
+/* Contact Section Styles */lor-gray-200);
+.contact-section {or-gray-700); center;
+  padding: 80px 0;0.3s ease;ng-md);
+  background-color: white;
+}margin-bottom: var(--spacing-lg);
+.social-icon:hover {}
+.contact-container {);
+  display: flex;
+  gap: var(--spacing-xl);
+  margin-top: var(--spacing-xl);
+} background-color: #1da1f2; gap: 8px;
+  color: white;  padding: 10px 16px;
+.contact-form {s);
+  flex: 1;
+  padding: var(--spacing-lg);social-icon.facebook { text-decoration: none;
+  background-color: var(--color-gray-50);  background-color: #4267B2;  transition: all 0.3s ease;
+  border-radius: var(--border-radius);er;
+  box-shadow: var(--shadow-sm);
+}
+.social-icon.linkedin {.share-button i {
+.contact-info {: #0077b5;m;
+  width: 300px;
+  flex-shrink: 0;
+}
+* Contact Section Styles */ background-color: #1da1f2;
+.contact-info-item {.contact-section {  color: white;
+  display: flex;;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);background-color: #0077b5;
+  background-color: var(--color-gray-50);/* Responsive adjustments */  color: white;
+  border-radius: var(--border-radius); 992px) {
+  box-shadow: var(--shadow-sm);grid {
+} repeat(2, 1fr);
+
+.contact-icon {
+  width: 50px;
+  height: 50px; text-decoration: none;
+  min-width: 50px;  transition: all 0.3s ease;
+  border-radius: 50%;er;
+  background-color: rgba(var(--primary-color-rgb), 0.1);
+  display: flex;
+  align-items: center;on i {
+  justify-content: center;
+  color: var(--color-primary);
+  font-size: 1.2rem;
+}
+
+.contact-info-item h3 {
+  margin: 0 0 var(--spacing-xs);
+  font-size: 1.1rem;
+  color: var(--color-gray-900);kedin {
+}#0077b5;
+ color: white;
+.contact-info-item p {}
+  margin: 0;
+  color: var(--color-gray-600);
+}lor: #4267B2;
+ color: white;
+.contact-info-item a {}
+  color: var(--color-primary);
+  text-decoration: none;
+}lor: #ea4335;
+ color: white;
+.contact-info-item a:hover {}
+  text-decoration: underline;
+}
+lor: var(--color-gray-200);
+/* Discussion Section Styles */ color: var(--color-gray-700);
+.discussion-section {  border: none;
+  padding: 80px 0;
+  background-color: var(--color-gray-50);
+}over {
+ transform: translateY(-3px);
+/* Responsive adjustments */  box-shadow: var(--shadow-md);
+@media (max-width: 992px) {
+  .integrations-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }ar(--spacing-lg);
+}
+</style>

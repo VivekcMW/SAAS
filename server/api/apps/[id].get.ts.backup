@@ -1,0 +1,359 @@
+/**
+ * API Endpoint: Get App by ID with Enhanced Missing Fields Data
+ * Returns comprehensive app data including analytics, reviews, and performance metrics
+ */
+
+import type { EnhancedAppData, UserMetrics, PerformanceData, Badge } from '~/types/enhanced-app'
+
+// Enhanced mock data with missing fields included
+const getEnhancedAppData = async (appId: string): Promise<EnhancedAppData | null> => {
+  // Base app data (simplified for demo)
+  const baseAppData = {
+    'app-001': {
+      id: 'app-001',
+      name: 'SalesForce CRM',
+      logo: '/assets/images/integrations/salesforce.svg',
+      provider: 'Salesforce Inc.',
+      description: 'Complete customer relationship management platform with analytics, automation, and integrations.',
+      longDescription: `
+        <p>SalesForce CRM is the world's leading customer relationship management platform, designed to help businesses of all sizes manage their customer interactions, sales processes, and marketing campaigns more effectively.</p>
+      `,
+      rating: 4.7,
+      reviewCount: 256,
+      tags: ['CRM', 'Sales', 'Marketing'],
+      pricing: { type: 'paid' as const, value: 29, period: 'month' },
+      category: 'crm',
+      featured: true,
+      trending: false,
+      screenshots: [
+        { url: '/assets/images/hero-dashboard.png', caption: 'Dashboard Overview' }
+      ],
+      features: ['Lead Management', 'Sales Pipeline', 'Email Marketing'],
+      included: ['Unlimited Contacts', 'Email Templates', 'Basic Reporting'],
+      pricingFeatures: ['Up to 10 users', '10,000 contacts', 'Email marketing'],
+      integrations: ['Gmail', 'Outlook', 'Slack'],
+      lastUpdated: '2024-01-15',
+      version: '2.1.0',
+      languages: ['English', 'Spanish'],
+      website: 'https://salesforce.com'
+    }
+  }
+
+  const base = baseAppData[appId as keyof typeof baseAppData]
+  if (!base) return null
+
+  // Add enhanced missing fields data
+  const enhancedData: EnhancedAppData = {
+    ...base,
+    // User-Generated Content (from our missing fields plan)
+    reviews: [
+      {
+        id: 'review-1',
+        userName: 'Sarah Johnson',
+        rating: 5,
+        title: 'Excellent CRM solution!',
+        content: 'This has transformed our sales process completely.',
+        verified: true,
+        helpfulVotes: 12,
+        createdAt: new Date('2024-01-10'),
+        updatedAt: new Date('2024-01-10'),
+        status: 'approved' as const,
+        metadata: { platform: 'web', version: '2.1.0' }
+      }
+    ],
+    overallRating: 4.7,
+    ratingBreakdown: {
+      1: 2,
+      2: 8,
+      3: 25,
+      4: 89,
+      5: 132,
+      total: 256
+    },
+    userTestimonials: [
+      {
+        id: 'testimonial-1',
+        author: 'Mike Chen',
+        company: 'TechCorp',
+        role: 'Sales Director',
+        content: 'Incredible results with SalesForce. Our conversion rate increased by 40%.',
+        rating: 5,
+        featured: true,
+        verified: true,
+        createdAt: new Date('2024-01-05')
+      }
+    ],
+
+    // Dynamic Metrics (automated collection)
+    downloadCount: 45680,
+    activeUsers: {
+      daily: 12500,
+      weekly: 78000,
+      monthly: 285000,
+      lastUpdated: new Date(),
+      trend: 'up' as const,
+      growthRate: 15.3
+    },
+    performanceMetrics: {
+      uptime: 99.97,
+      responseTime: 240,
+      errorRate: 0.03,
+      lastChecked: new Date(),
+      status: 'healthy' as const,
+      endpoints: [
+        { url: 'https://api.salesforce.com/health', status: 200, responseTime: 120 },
+        { url: 'https://api.salesforce.com/auth', status: 200, responseTime: 180 }
+      ]
+    },
+    usageAnalytics: {
+      views: {
+        total: 125000,
+        unique: 98000,
+        timeSeriesData: [
+          { date: '2024-01-01', views: 4200, uniqueViews: 3800 },
+          { date: '2024-01-02', views: 4500, uniqueViews: 4100 }
+        ]
+      },
+      downloads: {
+        total: 45680,
+        byPlatform: { web: 25000, ios: 12000, android: 8680 },
+        timeSeriesData: [
+          { date: '2024-01-01', downloads: 150, platform: 'web' }
+        ]
+      },
+      engagement: {
+        averageSessionTime: 1800,
+        bounceRate: 28,
+        clickThroughRate: 3.2
+      },
+      sources: {
+        direct: 40,
+        search: 35,
+        social: 15,
+        referral: 8,
+        other: 2
+      }
+    },
+
+    // Marketing Enhancement (admin managed)
+    featuredBadges: [
+      {
+        id: 'badge-1',
+        name: "Editor's Choice",
+        type: 'editor_choice' as const,
+        description: 'Handpicked by our editorial team for exceptional quality',
+        iconUrl: '/icons/badges/editors-choice.svg',
+        color: '#FFD700',
+        criteria: 'Manual selection by editorial team',
+        assignedAt: new Date('2024-01-01'),
+        assignedBy: 'admin',
+        expiresAt: undefined
+      },
+      {
+        id: 'badge-2',
+        name: 'Popular',
+        type: 'popular' as const,
+        description: 'Loved by thousands of users worldwide',
+        iconUrl: '/icons/badges/popular.svg',
+        color: '#4ECDC4',
+        criteria: '10,000+ total downloads',
+        assignedAt: new Date('2024-01-10'),
+        assignedBy: 'system'
+      }
+    ],
+    competitiveAdvantages: [
+      'Industry-leading automation features',
+      'Seamless third-party integrations',
+      '99.97% uptime guarantee',
+      'Award-winning customer support'
+    ],
+    successStories: [
+      {
+        id: 'story-1',
+        title: 'TechCorp Increases Sales by 300%',
+        company: 'TechCorp',
+        industry: 'Technology',
+        challenge: 'Managing leads across multiple channels',
+        solution: 'Implemented SalesForce CRM with custom workflows',
+        results: ['300% increase in sales', '50% reduction in lead response time'],
+        metrics: [
+          { metric: 'Sales Growth', improvement: '300%', timeframe: '6 months' },
+          { metric: 'Lead Response Time', improvement: '50% reduction', timeframe: '3 months' }
+        ],
+        featured: true,
+        publishedAt: new Date('2024-01-01')
+      }
+    ],
+    marketPosition: {
+      ranking: { category: 1, overall: 5, trending: 8 },
+      competitors: [
+        { name: 'HubSpot', comparison: 'better' as const, differentiators: ['Better automation', 'Lower price'] }
+      ],
+      marketShare: 23.5,
+      industryPosition: 'Market Leader'
+    },
+
+    // Technical Validation (automated + manual)
+    liveApiStatus: {
+      status: 'online' as const,
+      endpoints: [
+        { url: 'https://api.salesforce.com/v1', method: 'GET', status: 200, responseTime: 120, lastChecked: new Date() }
+      ],
+      uptime: 99.97,
+      lastIncident: undefined
+    },
+    compatibilityMatrix: {
+      platforms: [
+        { name: 'Web', versions: ['Chrome 90+', 'Firefox 88+'], tested: true, compatibility: 'full' as const, lastTested: new Date() }
+      ],
+      browsers: [
+        { name: 'Chrome', versions: ['90+'], supported: true }
+      ],
+      devices: [
+        { type: 'desktop' as const, specifications: '1920x1080+', compatibility: 'excellent' as const }
+      ]
+    },
+    securityCertifications: [
+      {
+        id: 'cert-1',
+        name: 'SOC 2 Type II',
+        type: 'security' as const,
+        issuer: 'AICPA',
+        certificationDate: new Date('2024-01-01'),
+        expiryDate: new Date('2025-01-01'),
+        status: 'active' as const,
+        description: 'System and Organization Controls 2 certification'
+      }
+    ],
+    performanceBenchmarks: {
+      performance: { responseTime: 240, throughput: 1000, concurrentUsers: 5000, uptime: 99.97 },
+      security: { vulnerabilities: 0, securityScore: 95, lastAudit: new Date('2024-01-01'), certifications: ['SOC2', 'GDPR'] },
+      reliability: { errorRate: 0.03, recoveryTime: 30, availability: 99.97 },
+      lastUpdated: new Date()
+    },
+
+    // Computed fields
+    isHealthy: true,
+    trustScore: 95,
+    popularityScore: 88,
+    lastDataUpdate: new Date(),
+
+    // Additional required fields from DatabaseApplication
+    created_at: '2024-01-01',
+    updated_at: new Date().toISOString(),
+    short_description: base.description,
+    long_description: base.longDescription,
+    categories: [base.category],
+    search_keywords: base.tags,
+    company_name: base.provider,
+    company_website: base.website,
+    company_size: '10001+',
+    company_location: 'San Francisco, CA',
+    founded: '1999',
+    industries: ['Software', 'SaaS', 'CRM'],
+    social_links: { twitter: 'salesforce', linkedin: 'salesforce' },
+    included_features: base.included,
+    pricing_models: ['subscription'],
+    pricing_details: 'Starting at $29/month per user',
+    target_audience: 'Sales teams and businesses of all sizes',
+    platform_support: ['web', 'ios', 'android'],
+    application_stage: 'live',
+    development_stage: 'mature',
+    business_model: 'subscription',
+    api_available: true,
+    webhook_support: true,
+    app_version: base.version,
+    supported_languages: base.languages,
+    app_store_links: {
+      web: base.website,
+      ios: 'https://apps.apple.com/app/salesforce',
+      android: 'https://play.google.com/store/apps/details?id=com.salesforce'
+    },
+    support_channels: ['Email Support', 'Live Chat', 'Phone Support'],
+    documentation_url: 'https://help.salesforce.com',
+    help_center_url: 'https://trailhead.salesforce.com',
+    logo_url: base.logo,
+    videos: [],
+    testimonials: [
+      {
+        author: 'Sarah Johnson',
+        company: 'TechCorp',
+        role: 'Sales Director',
+        content: 'Salesforce has transformed our sales process.',
+        rating: 5
+      }
+    ],
+    founder: {
+      name: 'Marc Benioff',
+      title: 'Chairman and CEO',
+      bio: 'Marc Benioff is the founder, chairman and CEO of Salesforce.',
+      profile_picture_url: ''
+    },
+    team_members: [],
+    contact: {
+      name: 'Sales Team',
+      email: 'sales@salesforce.com',
+      phone: '1-800-NO-SOFTWARE',
+      role: 'Sales'
+    },
+    submission_date: '2024-01-01',
+    status: 'published' as const,
+    review_notes: undefined,
+    reviewed_by: undefined,
+    reviewed_at: undefined,
+    slug: 'salesforce-crm',
+    meta_title: 'SalesForce CRM - Customer Relationship Management',
+    meta_description: base.description,
+    view_count: 125000,
+    click_count: 45680
+  }
+
+  return enhancedData
+}
+import { getEnhancedAppData } from '~/utils/enhancedAppData'
+
+export default defineEventHandler(async (event) => {
+  try {
+    const appId = getRouterParam(event, 'id');
+    
+    if (!appId) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'App ID is required'
+      });
+    }
+
+    // Get enhanced app data with missing fields
+    const appData = await getEnhancedAppData(appId);
+    
+    if (!appData) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'Application not found'
+      });
+    }
+
+    // Check if app is published (only show published apps to public)
+    if (appData.status !== 'published') {
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'Application not found'
+      });
+    }
+
+    return appData;
+    
+  } catch (error) {
+    // If it's already a proper error, re-throw it
+    if (error && typeof error === 'object' && 'statusCode' in error) {
+      throw error;
+    }
+    
+    // Otherwise, create a generic server error
+    console.error('Error fetching app data:', error);
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Internal server error'
+    });
+  }
+});

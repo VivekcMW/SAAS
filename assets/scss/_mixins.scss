@@ -1,0 +1,147 @@
+// Mixins for SaaSWorld
+
+// Responsive breakpoints
+@mixin breakpoint($point) {
+  @if $point == lg {
+    @media (max-width: 1200px) { @content; }
+  }
+  @else if $point == md {
+    @media (max-width: 992px) { @content; }
+  }
+  @else if $point == sm {
+    @media (max-width: 768px) { @content; }
+  }
+  @else if $point == xs {
+    @media (max-width: 576px) { @content; }
+  }
+}
+
+// Flexbox
+@mixin flex($direction: row, $justify: flex-start, $align: stretch, $wrap: nowrap) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+  flex-wrap: $wrap;
+}
+
+// Center content (absolute)
+@mixin center-absolute {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// Center content with flex
+@mixin center-flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Transitions
+@mixin transition($properties...) {
+  transition-property: $properties;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
+}
+
+// Grid
+@mixin grid($columns: 1, $gap: 1rem) {
+  display: grid;
+  grid-template-columns: repeat($columns, 1fr);
+  grid-gap: $gap;
+}
+
+// Text truncate
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Custom scrollbar
+@mixin custom-scrollbar($width: 6px, $trackColor: rgba(0,0,0,0.1), $thumbColor: rgba(0,0,0,0.3)) {
+  &::-webkit-scrollbar {
+    width: $width;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: $trackColor;
+    border-radius: $width;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background-color: $thumbColor;
+    border-radius: $width;
+    
+    &:hover {
+      background-color: darken($thumbColor, 10%);
+    }
+  }
+}
+
+// Shadow
+@mixin shadow($level: 1) {
+  @if $level == 1 {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  } @else if $level == 2 {
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  } @else if $level == 3 {
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  } @else if $level == 4 {
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  } @else if $level == 5 {
+    box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+  }
+}
+
+// Button styles
+@mixin button-style($bgColor, $textColor, $hoverBgColor) {
+  background-color: $bgColor;
+  color: $textColor;
+  border: none;
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  
+  &:hover {
+    background-color: $hoverBgColor;
+  }
+}
+
+// Image cover
+@mixin img-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+// Gradient text
+@mixin gradient-text($gradient) {
+  background: $gradient;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+
+// Card style
+@mixin card($padding: var(--spacing-md), $radius: var(--border-radius-md), $bgColor: var(--light-color)) {
+  background-color: $bgColor;
+  border-radius: $radius;
+  padding: $padding;
+  @include shadow(1);
+}
+
+// Hover transition
+@mixin hover-lift {
+  transition: transform 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+  }
+}

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <style>
+    .st0{fill:#F5F5F5;}
+    .st1{fill:#4F46E5;}
+    .st2{fill:#FFFFFF;}
+    .st3{fill:#CBD5E1;}
+  </style>
+  <rect class="st0" width="400" height="300" rx="10"/>
+  <circle class="st1" cx="200" cy="120" r="60"/>
+  <path class="st2" d="M185,115l10,10l20-20" stroke="#fff" stroke-width="4" fill="none"/>
+  <rect x="100" y="200" width="200" height="60" rx="5" class="st3"/>
+  <rect x="110" y="210" width="180" height="10" rx="2" class="st2"/>
+  <rect x="110" y="230" width="120" height="10" rx="2" class="st2"/>
+  <circle cx="320" cy="220" r="15" class="st1"/>
+  <line x1="315" y1="220" x2="325" y2="220" stroke="#fff" stroke-width="2"/>
+  <line x1="320" y1="215" x2="320" y2="225" stroke="#fff" stroke-width="2"/>
+  <path class="st3" d="M50,80 C50,70 60,60 70,60 H160 V40 H70 C50,40 30,60 30,80 V220 C30,240 50,260 70,260 H330 C350,260 370,240 370,220 V180 H350 V220 C350,230 340,240 330,240 H70 C60,240 50,230 50,220 V80z"/>
+</svg>

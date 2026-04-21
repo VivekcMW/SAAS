@@ -1,0 +1,99 @@
+{
+  "name": "SaaSWorld - Global Software Marketplace",
+  "short_name": "SaaSWorld",
+  "description": "Discover and compare the best business software solutions worldwide. Find SaaS tools, enterprise software, and digital solutions for your business needs.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1a73e8",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    }
+  ],
+  "categories": [
+    "business",
+    "productivity",
+    "utilities"
+  ],
+  "screenshots": [
+    {
+      "src": "/assets/images/screenshot-desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/assets/images/screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Marketplace",
+      "short_name": "Marketplace",
+      "description": "Browse software marketplace",
+      "url": "/marketplace",
+      "icons": [
+        {
+          "src": "/assets/icons/marketplace-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "short_name": "Categories",
+      "description": "Browse by categories",
+      "url": "/marketplace/categories",
+      "icons": [
+        {
+          "src": "/assets/icons/categories-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Search",
+      "short_name": "Search",
+      "description": "Search software",
+      "url": "/marketplace?search=",
+      "icons": [
+        {
+          "src": "/assets/icons/search-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
+}

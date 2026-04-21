@@ -1,0 +1,15 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="60" cy="60" r="55" fill="#ea580c" stroke="#f97316" stroke-width="2"/>
+  
+  <!-- California Bear silhouette -->
+  <path d="M45 50C45 45 50 40 55 40C58 35 65 35 68 40C73 40 78 45 78 50C78 52 75 55 75 60C75 65 70 70 60 70C50 70 45 65 45 60C45 55 42 52 45 50Z" fill="white" opacity="0.3"/>
+  
+  <!-- CCPA Text -->
+  <text x="60" y="82" text-anchor="middle" font-family="sans-serif" font-size="12" font-weight="bold" fill="white">CCPA</text>
+  <text x="60" y="98" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#fed7aa">COMPLIANT</text>
+  
+  <!-- Privacy icon -->
+  <circle cx="60" cy="35" r="8" stroke="white" stroke-width="2" fill="none"/>
+  <path d="M55 35L58 38L65 31" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
