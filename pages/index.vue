@@ -4,28 +4,13 @@
     <section class="hero-section">
       <div class="container">
         <div class="hero-content">
-          <h1 class="hero-title">Empower your business with our <span class="highlight">Saasworld.club</span> platform</h1>
-          <p class="hero-subtitle">The Saasworld.club is a digital marketplace for web applications that provides a wide range of apps that can be searched on the need of users and helps to make decisions for small and medium businesses, that can be used by multiple personas and businesses.</p>
+          <h1 class="hero-title">Find the right software for the way <span class="highlight">you work</span>.</h1>
+          <p class="hero-subtitle">AI-curated SaaS picks across 167 categories. No sales calls. No bias. Just tools that fit.</p>
           
           <!-- Search row -->
           <div class="search-row">
             <div class="search-container">
-              <!-- Country select hidden for now 
-              <div class="country-select">
-                <div class="selected-country">
-                  <img src="/assets/images/flags/us.svg" alt="US Flag" class="country-flag">
-                  <span>+1</span>
-                  <UIcon dynamic name="i-heroicons-chevron-down" />
-                </div>
-                <div class="country-dropdown">
-                  <div class="country-option" v-for="country in countries" :key="country.code">
-                    <img :src="country.flag" :alt="country.name + ' Flag'" class="country-flag">
-                    <span>+{{ country.dialCode }}</span>
-                  </div>
-                </div>
-              </div>
-              -->
-              <input type="text" placeholder="Search for applications..." class="search-input">
+              <input type="text" placeholder="Describe what you need — e.g. CRM for a 10-person sales team" class="search-input">
               <button class="search-btn" @click="handleSearch">
                 <UIcon name="i-heroicons-magnifying-glass" dynamic />
                 <span>Search</span>
@@ -34,31 +19,25 @@
             <button class="category-btn" @click="handleCategoryClick" title="Browse Categories">
               <UIcon name="i-heroicons-squares-2x2" dynamic />
             </button>
-            <!-- Filter button hidden for now 
-            <button class="search-filter-btn">
-              <UIcon dynamic name="i-heroicons-funnel" />
-              <span>Filter</span>
-            </button>
-            -->
           </div>
           
           <div class="hero-cta">
-            <NuxtLink to="/marketplace" class="btn btn-primary animate-pulse">
+            <NuxtLink to="/marketplace" class="btn btn-primary">
               Explore Marketplace
             </NuxtLink>
           </div>
           <div class="hero-stats">
             <div class="stat-item">
-              <h3>10,000+</h3>
-              <p>Happy Customers</p>
+              <h3>167</h3>
+              <p>Categories</p>
             </div>
             <div class="stat-item">
-              <h3>99.9%</h3>
-              <p>Uptime SLA</p>
+              <h3>1,200+</h3>
+              <p>Apps Indexed</p>
             </div>
             <div class="stat-item">
-              <h3>24/7</h3>
-              <p>Customer Support</p>
+              <h3>Free</h3>
+              <p>To Browse</p>
             </div>
           </div>
         </div>
