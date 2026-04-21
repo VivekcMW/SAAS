@@ -81,37 +81,73 @@
           <p>Discover the most trending, sponsored, and searched applications in our marketplace.</p>
         </div>
         <div class="products-grid">
-          <div class="product-card" v-for="(product, index) in topProducts" :key="index">
-            <div class="product-badge" :class="product.badgeType">
-              <UIcon dynamic :name="product.badgeIcon" />
-              {{ product.badge }}
+          <article class="product-card" v-for="(product, index) in topProducts" :key="product.id">
+            <!-- Header row: rank + badge -->
+            <div class="card-top">
+              <span class="rank-chip">#{{ index + 1 }}</span>
+              <span class="product-badge" :class="product.badgeType">
+                <UIcon dynamic :name="product.badgeIcon" />
+                {{ product.badge }}
+              </span>
             </div>
-            <div class="product-image">
-              <img :src="product.image" :alt="product.name" />
-            </div>
-            <div class="product-content">
-              <h3>{{ product.name }}</h3>
-              <p class="product-category">{{ product.category }}</p>
-              <p class="product-description">{{ product.description }}</p>
-              <div class="product-stats">
-                <div class="stat">
-                  <UIcon dynamic name="i-heroicons-star-solid" />
-                  <span>{{ product.rating }}</span>
-                </div>
-                <div class="stat">
-                  <UIcon dynamic name="i-heroicons-users" />
-                  <span>{{ product.users }}</span>
-                </div>
+
+            <!-- Identity: logo + name + category -->
+            <header class="card-identity">
+              <div class="product-logo">
+                <img :src="product.image" :alt="product.name + ' logo'" loading="lazy" />
               </div>
-              <div class="product-pricing">
+              <div class="identity-text">
+                <h3>{{ product.name }}</h3>
+                <p class="product-category">{{ product.category }}</p>
+              </div>
+            </header>
+
+            <!-- Value prop -->
+            <p class="product-tagline">{{ product.tagline }}</p>
+
+            <!-- Trust strip -->
+            <div class="trust-strip">
+              <span class="trust-item rating">
+                <UIcon dynamic name="i-heroicons-star-solid" />
+                <strong>{{ product.rating }}</strong>
+                <span class="muted">({{ product.reviewCount }})</span>
+              </span>
+              <span class="trust-divider">·</span>
+              <span class="trust-item muted">
+                <UIcon dynamic name="i-heroicons-users" />
+                {{ product.users }}
+              </span>
+            </div>
+
+            <!-- Best-for line -->
+            <p class="best-for">
+              <UIcon dynamic name="i-heroicons-check-badge" />
+              {{ product.bestFor }}
+            </p>
+
+            <!-- Attribute tags -->
+            <div class="attr-tags">
+              <span class="attr-tag" v-for="tag in product.tags" :key="tag">{{ tag }}</span>
+            </div>
+
+            <!-- Footer: pricing + dual CTA -->
+            <footer class="card-footer">
+              <div class="price-block">
                 <span class="price">{{ product.price }}</span>
-                <span class="price-period">{{ product.pricePeriod }}</span>
+                <span v-if="product.pricePeriod" class="price-period">{{ product.pricePeriod }}</span>
               </div>
-              <NuxtLink :to="`/marketplace/app/${product.id}`" class="btn btn-primary btn-sm">
-                View Details
-              </NuxtLink>
-            </div>
-          </div>
+              <div class="card-actions">
+                <button class="btn-ghost" :aria-label="'Add ' + product.name + ' to compare'">
+                  <UIcon dynamic name="i-heroicons-scale" />
+                  <span>Compare</span>
+                </button>
+                <NuxtLink :to="`/marketplace/app/${product.id}`" class="btn-primary-card">
+                  View details
+                  <UIcon dynamic name="i-heroicons-arrow-right" />
+                </NuxtLink>
+              </div>
+            </footer>
+          </article>
         </div>
         <div class="section-footer">
           <NuxtLink to="/marketplace" class="btn btn-outline">
@@ -575,12 +611,15 @@ const topProducts = [
     id: 'slack',
     name: 'Slack',
     category: 'Team Collaboration',
-    description: 'Transform the way your team communicates with Slack\'s powerful messaging platform.',
+    tagline: 'Channel-based messaging that replaces internal email for fast-moving teams.',
     image: '/assets/images/integrations/slack.svg',
     rating: '4.8',
+    reviewCount: '42,100',
     users: '12M+',
-    price: '$8',
-    pricePeriod: '/month',
+    price: 'From $8',
+    pricePeriod: '/user/mo',
+    bestFor: 'Best for remote teams',
+    tags: ['Free plan', 'G2 Leader', 'Enterprise-ready'],
     badge: 'Trending',
     badgeType: 'trending',
     badgeIcon: 'i-heroicons-fire'
@@ -589,12 +628,15 @@ const topProducts = [
     id: 'hubspot',
     name: 'HubSpot CRM',
     category: 'Customer Relationship',
-    description: 'Grow better with HubSpot\'s free CRM software that helps you track leads and customers.',
+    tagline: 'Free CRM that scales into a full marketing, sales, and service platform.',
     image: '/assets/images/integrations/hubspot.svg',
     rating: '4.7',
+    reviewCount: '28,900',
     users: '8M+',
-    price: 'Free',
+    price: 'Free forever',
     pricePeriod: '',
+    bestFor: 'Best for SMB sales teams',
+    tags: ['Free forever', 'No credit card', 'SOC 2'],
     badge: 'Sponsored',
     badgeType: 'sponsored',
     badgeIcon: 'i-heroicons-star-solid'
@@ -603,12 +645,15 @@ const topProducts = [
     id: 'zoom',
     name: 'Zoom',
     category: 'Video Conferencing',
-    description: 'Connect, collaborate, and celebrate from anywhere with Zoom\'s reliable video platform.',
+    tagline: 'The reliability benchmark for video meetings, webinars, and events.',
     image: '/assets/images/integrations/zoom.svg',
     rating: '4.6',
+    reviewCount: '55,300',
     users: '15M+',
-    price: '$14.99',
-    pricePeriod: '/month',
+    price: 'From $14.99',
+    pricePeriod: '/host/mo',
+    bestFor: 'Best for external meetings',
+    tags: ['Free 40-min', 'HIPAA option', 'Phone & chat'],
     badge: 'Most Searched',
     badgeType: 'popular',
     badgeIcon: 'i-heroicons-magnifying-glass'
@@ -617,12 +662,15 @@ const topProducts = [
     id: 'notion',
     name: 'Notion',
     category: 'Productivity',
-    description: 'Your connected workspace for docs, notes, tasks, wikis, and databases.',
+    tagline: 'Docs, wikis, tasks, and databases in one connected workspace.',
     image: '/assets/images/integrations/notion.svg',
     rating: '4.9',
+    reviewCount: '18,400',
     users: '4M+',
-    price: '$10',
-    pricePeriod: '/month',
+    price: 'From $10',
+    pricePeriod: '/user/mo',
+    bestFor: 'Best all-in-one for startups',
+    tags: ['Free plan', 'AI add-on', 'Great mobile'],
     badge: 'Trending',
     badgeType: 'trending',
     badgeIcon: 'i-heroicons-fire'
@@ -631,12 +679,15 @@ const topProducts = [
     id: 'salesforce',
     name: 'Salesforce',
     category: 'CRM & Sales',
-    description: 'The world\'s #1 CRM platform that helps you sell, service, and market like never before.',
+    tagline: 'The enterprise CRM standard — deeply customizable revenue platform.',
     image: '/assets/images/integrations/salesforce.svg',
     rating: '4.5',
+    reviewCount: '71,200',
     users: '20M+',
-    price: '$25',
-    pricePeriod: '/month',
+    price: 'From $25',
+    pricePeriod: '/user/mo',
+    bestFor: 'Best for enterprise',
+    tags: ['Enterprise', 'AppExchange', 'Einstein AI'],
     badge: 'Sponsored',
     badgeType: 'sponsored',
     badgeIcon: 'i-heroicons-star-solid'
@@ -645,12 +696,15 @@ const topProducts = [
     id: 'canva',
     name: 'Canva',
     category: 'Design',
-    description: 'Create stunning designs with Canva\'s easy-to-use design platform.',
+    tagline: 'Drag-and-drop design for teams that need beautiful output fast.',
     image: '/assets/images/integrations/canva.svg',
     rating: '4.8',
+    reviewCount: '12,100',
     users: '10M+',
-    price: '$12.99',
-    pricePeriod: '/month',
+    price: 'From $12.99',
+    pricePeriod: '/user/mo',
+    bestFor: 'Best for non-designers',
+    tags: ['Free plan', 'AI tools', 'Team templates'],
     badge: 'Most Searched',
     badgeType: 'popular',
     badgeIcon: 'i-heroicons-magnifying-glass'
@@ -1505,148 +1559,253 @@ onMounted(() => {
   margin-bottom: var(--spacing-xxl);
 }
 
+/* ─── Trending Product Card (redesigned) ───────────────────── */
 .product-card {
   background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  height: 100%;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  transition: all 0.3s ease;
+  gap: 12px;
   position: relative;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  max-height: 420px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  text-align: left;
+  height: 100%;
 }
 
 .product-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  border-color: #2563eb;
+  transform: translateY(-3px);
+  border-color: var(--sw-primary);
+  box-shadow: 0 12px 28px rgba(17, 24, 39, 0.08),
+              0 2px 6px rgba(17, 24, 39, 0.04);
+}
+
+/* Top row — rank + badge */
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.rank-chip {
+  background: var(--sw-text);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
 }
 
 .product-badge {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  font-size: 0.625rem;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.product-badge.trending   { background: #FEE2E2; color: #B91C1C; }
+.product-badge.sponsored  { background: var(--sw-primary-soft); color: var(--sw-primary-hover); }
+.product-badge.popular    { background: var(--sw-ai-soft); color: var(--sw-ai); }
+
+/* Identity: logo + name */
+.card-identity {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  z-index: 2;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  gap: 12px;
 }
 
-.product-badge.trending {
-  background-color: #FF6B6B;
-  color: white;
-}
-
-.product-badge.sponsored {
-  background-color: #4ECDC4;
-  color: white;
-}
-
-.product-badge.popular {
-  background-color: #FFE66D;
-  color: #2C3E50;
-}
-
-.product-image {
-  padding: var(--spacing-md);
+.product-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: var(--bg-gray);
+  border: 1px solid #E5E7EB;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  height: 80px;
-  border-radius: 0.25rem;
-  margin-bottom: var(--spacing-sm);
+  flex-shrink: 0;
+  padding: 8px;
 }
 
-.product-image img {
-  max-width: 60px;
-  max-height: 60px;
+.product-logo img {
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
 }
 
-.product-content {
-  padding: 0 var(--spacing-sm) var(--spacing-sm);
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
+.identity-text { min-width: 0; }
 
-.product-content h3 {
-  font-size: 1.125rem;
+.identity-text h3 {
+  font-size: 1.0625rem;
   font-weight: 700;
-  margin-bottom: 0.25rem;
-  color: var(--text-primary);
-  line-height: 1.3;
+  color: var(--sw-text);
+  margin: 0 0 2px;
+  line-height: 1.25;
 }
 
 .product-category {
-  font-size: 0.875rem;
-  color: var(--primary-color);
-  font-weight: 500;
-  margin-bottom: var(--spacing-sm);
+  font-size: 0.75rem;
+  color: var(--sw-text-subtle);
+  margin: 0;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.05em;
+  font-weight: 500;
 }
 
-.product-description {
-  color: var(--text-secondary);
-  font-size: 0.825rem;
-  line-height: 1.4;
-  margin-bottom: 0.5rem;
+/* Tagline */
+.product-tagline {
+  color: var(--sw-text-muted);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.7em;
 }
 
-.product-stats {
-  display: flex;
-  gap: 0.75rem;
-  margin-bottom: 0.5rem;
-}
-
-.stat {
+/* Trust strip */
+.trust-strip {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 8px;
+  font-size: 0.875rem;
+  color: var(--sw-text-muted);
+}
+
+.trust-item { display: inline-flex; align-items: center; gap: 4px; }
+.trust-item.rating strong { color: var(--sw-text); font-weight: 700; }
+.trust-item.rating :deep(.nuxt-icon),
+.trust-item.rating svg { color: #F59E0B; }
+.trust-item.muted { color: var(--sw-text-subtle); }
+.trust-item .muted { color: var(--sw-text-subtle); font-size: 0.8125rem; }
+.trust-divider { color: var(--sw-text-subtle); opacity: 0.5; }
+
+/* Best-for line */
+.best-for {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 0.8125rem;
-  color: var(--text-secondary);
+  color: var(--color-success-dark, #059669);
+  font-weight: 500;
 }
 
-.stat .nuxt-icon {
-  color: #fbbf24;
+/* Attribute tags */
+.attr-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
-.product-pricing {
+.attr-tag {
+  font-size: 0.75rem;
+  color: var(--sw-text-muted);
+  background: var(--bg-gray);
+  border: 1px solid #E5E7EB;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* Footer: price + CTAs */
+.card-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 12px;
+  margin-top: auto;
+  border-top: 1px dashed #E5E7EB;
+}
+
+.price-block {
   display: flex;
   align-items: baseline;
-  gap: 0.25rem;
-  margin-bottom: 0.75rem;
+  gap: 4px;
+  white-space: nowrap;
 }
 
 .price {
-  font-size: 1.375rem;
+  font-size: 1rem;
   font-weight: 700;
-  color: var(--primary-color);
+  color: var(--sw-text);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
 }
 
 .price-period {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  color: var(--sw-text-subtle);
+  white-space: nowrap;
 }
 
-.btn-sm {
-  padding: 0.5rem 1rem;
-  font-size: 0.8125rem;
-  width: 100%;
-  justify-content: center;
+.card-actions {
+  display: flex;
+  gap: 8px;
 }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 9px 12px;
+  border: 1px solid #E5E7EB;
+  background: #fff;
+  color: var(--sw-text-muted);
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background-color 0.15s;
+  flex-shrink: 0;
+}
+
+.btn-ghost:hover {
+  border-color: var(--sw-text-muted);
+  color: var(--sw-text);
+  background: var(--bg-gray);
+}
+
+.btn-primary-card {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 9px 14px;
+  background: var(--sw-primary);
+  color: #fff !important;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.15s, transform 0.1s;
+  flex: 1;
+}
+
+.btn-primary-card:hover {
+  background: var(--sw-primary-hover);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 1024px) {
+  .products-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .products-grid { grid-template-columns: 1fr; }
+}
+/* ─── End Trending Product Card ───────────────────────────── */
 
 .section-footer {
   text-align: center;
