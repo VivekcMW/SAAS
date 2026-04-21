@@ -22,15 +22,20 @@
               :disabled="aiLoading"
               @keydown.enter.exact.prevent="runAIMatch"
             />
-            <button
-              class="hero-search-btn"
-              :disabled="!aiPrompt.trim() || aiLoading"
-              @click="runAIMatch"
-            >
-              <UIcon v-if="!aiLoading" name="i-heroicons-bolt" dynamic />
-              <UIcon v-else name="i-heroicons-arrow-path" dynamic class="spin" />
-              <span>{{ aiLoading ? 'Matching…' : 'Find my tools' }}</span>
-            </button>
+            <div class="hero-search-actions">
+              <span class="hero-search-hint">
+                <kbd>Enter</kbd> to search
+              </span>
+              <button
+                class="hero-search-btn"
+                :disabled="!aiPrompt.trim() || aiLoading"
+                @click="runAIMatch"
+              >
+                <UIcon v-if="!aiLoading" name="i-heroicons-bolt" dynamic />
+                <UIcon v-else name="i-heroicons-arrow-path" dynamic class="spin" />
+                <span>{{ aiLoading ? 'Matching…' : 'Find my tools' }}</span>
+              </button>
+            </div>
           </div>
 
           <!-- Example chips -->
@@ -769,14 +774,13 @@ onMounted(() => {
 
 .hero-search {
   display: flex;
-  align-items: stretch;
-  gap: 10px;
+  flex-direction: column;
   max-width: 720px;
   margin: 0 auto var(--spacing-md);
   background: #fff;
   border: 1px solid #E5E7EB;
   border-radius: 16px;
-  padding: 8px;
+  padding: 6px 6px 10px;
   box-shadow: 0 1px 2px rgba(17, 24, 39, 0.04),
               0 8px 24px rgba(17, 24, 39, 0.06);
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -789,16 +793,15 @@ onMounted(() => {
 }
 
 .hero-search-input {
-  flex: 1;
+  width: 100%;
   border: none;
   resize: none;
-  padding: 14px 16px;
+  padding: 14px 16px 4px;
   font-family: inherit;
   font-size: 1rem;
   line-height: 1.5;
   color: var(--sw-text);
   background: transparent;
-  min-height: 56px;
   text-align: left;
 }
 
@@ -809,6 +812,34 @@ onMounted(() => {
   opacity: 1;
 }
 
+.hero-search-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 10px;
+}
+
+.hero-search-hint {
+  font-size: var(--fs-caption);
+  color: var(--sw-text-subtle);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hero-search-hint kbd {
+  background: var(--bg-gray);
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--sw-text-muted);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+}
+
 .hero-search-btn {
   display: inline-flex;
   align-items: center;
@@ -816,14 +847,13 @@ onMounted(() => {
   background: var(--sw-ai);
   color: #fff;
   border: none;
-  border-radius: 12px;
-  padding: 0 22px;
+  border-radius: 10px;
+  padding: 10px 20px;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.9375rem;
   cursor: pointer;
   transition: background-color 0.2s, transform 0.1s;
   white-space: nowrap;
-  flex-shrink: 0;
 }
 
 .hero-search-btn:hover:not(:disabled) {
@@ -832,7 +862,8 @@ onMounted(() => {
 }
 
 .hero-search-btn:disabled {
-  opacity: 0.5;
+  background: #D1D5DB;
+  color: #fff;
   cursor: not-allowed;
 }
 
@@ -954,8 +985,9 @@ onMounted(() => {
 
 @media (max-width: 640px) {
   .hero-title { font-size: 2.125rem; }
-  .hero-search { flex-direction: column; padding: 10px; }
-  .hero-search-btn { justify-content: center; padding: 14px; }
+  .hero-search-actions { flex-direction: column-reverse; align-items: stretch; gap: 10px; }
+  .hero-search-btn { justify-content: center; padding: 12px; }
+  .hero-search-hint { justify-content: center; }
   .hero-chips { gap: 6px; }
   .chip { padding: 5px 10px; font-size: 0.8125rem; }
 }
