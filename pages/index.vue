@@ -1552,7 +1552,7 @@ onMounted(() => {
 .product-card {
   background: #fff;
   border: 1px solid #E5E7EB;
-  border-radius: 14px;
+  border-radius: 6px;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -1581,22 +1581,25 @@ onMounted(() => {
   transform: translateX(3px);
 }
 
-/* Badge (floating, top-right) */
+/* Badge (floating, top-right) — compact */
 .product-badge {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 10px;
+  right: 10px;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 3px 8px;
-  border-radius: 999px;
-  font-size: 0.6875rem;
+  gap: 3px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.625rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  line-height: 1.2;
+  letter-spacing: 0.03em;
+  line-height: 1.3;
 }
+
+.product-badge :deep(.nuxt-icon),
+.product-badge svg { width: 10px; height: 10px; }
 
 .product-badge.trending   { background: #FEE2E2; color: #B91C1C; }
 .product-badge.sponsored  { background: var(--sw-primary-soft); color: var(--sw-primary-hover); }
@@ -1607,13 +1610,13 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding-right: 70px; /* leave room for floating badge */
+  padding-right: 60px; /* leave room for floating badge */
 }
 
 .product-logo {
   width: 44px;
   height: 44px;
-  border-radius: 10px;
+  border-radius: 6px;
   background: #fff;
   border: 1px solid #E5E7EB;
   display: flex;

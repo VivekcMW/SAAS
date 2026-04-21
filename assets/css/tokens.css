@@ -129,8 +129,8 @@
   /* ── Radii ─────────────────────────────────────────────── */
   --border-radius-sm:     4px;
   --border-radius-md:     6px;
-  --border-radius-lg:     12px;
-  --border-radius-xl:     16px;
+  --border-radius-lg:     6px;
+  --border-radius-xl:     6px;
   --border-radius-pill:   9999px;
   --border-radius-input:  6px;
   --border-radius-button: 6px;
