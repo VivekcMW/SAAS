@@ -53,7 +53,7 @@
           </div>
           
           <!-- Search results -->
-          <div v-if="searchQuery && filteredSuggestions.length > 0" class="suggestion-section">
+          <div v-if="searchQuery && filteredSuggestions.apps.length > 0" class="suggestion-section">
             <div class="suggestion-header">
               <span>Applications</span>
             </div>
@@ -101,8 +101,22 @@
         </div>
       </div>
 
+      <div class="quick-categories">
+        <p class="quick-categories-label">Popular categories</p>
+        <div class="quick-categories-list">
+          <button
+            v-for="category in quickCategories"
+            :key="category"
+            class="quick-category-pill"
+            @click="applyQuickCategory(category)"
+          >
+            {{ category }}
+          </button>
+        </div>
+      </div>
+
       <!-- Sponsored Apps Row -->
-      <div class="apps-section">
+      <div class="apps-section" v-if="false">
         <div class="section-header">
           <h2 class="section-title">
             <UIcon name="i-heroicons-sparkles" class="section-icon" dynamic />
@@ -145,7 +159,7 @@
       </div>
 
       <!-- Trending Apps Row -->
-      <div class="apps-section">
+      <div class="apps-section" v-if="false">
         <div class="section-header">
           <h2 class="section-title">
             <UIcon name="i-heroicons-arrow-trending-up" class="section-icon" dynamic />
@@ -225,6 +239,8 @@ const allCategories = [
   'Issue Tracking', 'Customer Service', 'Analytics', 'Design', 
   'Development', 'HR', 'Finance', 'Productivity', 'Social Media'
 ];
+
+const quickCategories = allCategories.slice(0, 8);
 
 // Filter suggestions based on search query
 const filteredSuggestions = computed(() => {
@@ -362,6 +378,10 @@ const navigateToCategory = (category: string) => {
   router.push(`/marketplace?category=${encodeURIComponent(category)}`);
 };
 
+const applyQuickCategory = (category: string) => {
+  router.push(`/marketplace?category=${encodeURIComponent(category)}`);
+};
+
 const performSearch = () => {
   if (searchQuery.value.trim()) {
     saveRecentSearch(searchQuery.value);
@@ -401,7 +421,7 @@ const navigateToApp = (appId: string) => {
   if (searchQuery.value.trim()) {
     saveRecentSearch(searchQuery.value);
   }
-  router.push(`/marketplace/${appId}`);
+  router.push(`/marketplace/app/${appId}`);
 };
 
 // View all sponsored apps
@@ -698,6 +718,46 @@ onMounted(() => {
 
 .see-all-button:hover {
   background-color: rgba(var(--primary-color-rgb), 0.1);
+}
+
+.quick-categories {
+  max-width: 860px;
+  margin: 0 auto var(--spacing-xl);
+  text-align: center;
+}
+
+.quick-categories-label {
+  margin: 0 0 10px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.quick-categories-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.quick-category-pill {
+  border: 1px solid #E5E7EB;
+  background: #fff;
+  color: var(--sw-text-muted);
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+}
+
+.quick-category-pill:hover {
+  border-color: var(--sw-primary);
+  color: var(--sw-primary-hover);
+  background: var(--sw-primary-soft);
 }
 
 .apps-section {

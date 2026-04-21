@@ -45,7 +45,7 @@
       </div>
       
       <!-- Search results -->
-      <div v-if="searchQuery && filteredSuggestions.length > 0" class="suggestion-section">
+      <div v-if="searchQuery && filteredSuggestions.apps.length > 0" class="suggestion-section">
         <div class="suggestion-header">
           <span>Applications</span>
         </div>
@@ -175,7 +175,7 @@ const hideSuggestionsDelayed = () => {
 // Navigate to app details
 const navigateToApp = (appId: string) => {
   saveRecentSearch(searchQuery.value);
-  router.push(`/marketplace/${appId}`);
+  router.push(`/marketplace/app/${appId}`);
 };
 
 // Navigate to category

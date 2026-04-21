@@ -155,13 +155,19 @@ const navigateToApp = async (appId: string) => {
   await router.push(`/marketplace/app/${identifier}`)
 }
 
+const getActiveUsers = (app: Application) => {
+  if (app.featured) return 48200
+  if (app.trending) return 31800
+  return 12600
+}
+
 const transformAppData = (app: Application) => ({
   id: app.id,
   name: app.name,
   logo: app.logo,
   rating: app.rating,
   reviewCount: app.reviewCount,
-  activeUsers: app.featured ? 48200 : app.trending ? 31800 : 12600,
+  activeUsers: getActiveUsers(app),
   pricing: app.pricing,
   isFavorited: isInFavorites(app.id),
   growthStats: app.trending ? {
@@ -271,9 +277,9 @@ onMounted(async () => {
 }
 
 .ad-card {
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  background: #FFFFFF;
   border: 1px solid #e5e7eb;
-  border-radius: 0;
+  border-radius: 6px;
   padding: 1.5rem;
   height: 100%;
   display: flex;
@@ -287,17 +293,17 @@ onMounted(async () => {
 .ad-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  border-color: #7c3aed;
+  border-color: var(--sw-primary);
 }
 
 .ad-badge {
   position: absolute;
   top: 12px;
   right: 12px;
-  padding: 0.5rem 0.75rem;
-  background: linear-gradient(135deg, #7c3aed, #5b21b6);
-  color: #fff;
-  border-radius: 0;
+  padding: 0.25rem 0.5rem;
+  background: var(--sw-primary-soft);
+  color: var(--sw-primary-hover);
+  border-radius: 4px;
   font-size: var(--fs-caption);
   font-weight: 600;
   display: flex;
@@ -372,13 +378,14 @@ onMounted(async () => {
 }
 
 .btn-ad {
-  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  background: var(--sw-primary);
   color: #fff;
   font-weight: 600;
+  border-radius: 6px;
 }
 
 .btn-ad:hover {
-  background: linear-gradient(135deg, #6d28d9, #4c1d95);
+  background: var(--sw-primary-hover);
   transform: translateY(-1px);
 }
 
@@ -401,12 +408,12 @@ onMounted(async () => {
 
 .status-badge.featured {
   background-color: #4ECDC4;
-  color: #fff;
+  color: #0F172A;
 }
 
 .status-badge.trending {
   background-color: #FF6B6B;
-  color: #fff;
+  color: #111827;
 }
 
 .status-badge.recent {
@@ -462,7 +469,7 @@ onMounted(async () => {
 
 .app-provider {
   font-size: var(--fs-sm);
-  color: #6b7280;
+  color: #4b5563;
   margin-bottom: 0.5rem;
   font-weight: 500;
 }
@@ -485,7 +492,7 @@ onMounted(async () => {
 
 .app-tag-more {
   background: #e5e7eb;
-  color: #6b7280;
+  color: #374151;
 }
 
 /* App Description */
@@ -610,12 +617,12 @@ onMounted(async () => {
 }
 
 .btn-primary {
-  background: #3b82f6;
+  background: #1D4ED8;
   color: #fff;
 }
 
 .btn-primary:hover {
-  background: #2563eb;
+  background: #1E40AF;
   transform: translateY(-1px);
 }
 

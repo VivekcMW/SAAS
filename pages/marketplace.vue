@@ -23,7 +23,6 @@ import { ref, onMounted } from 'vue';
 
 // Import marketplace components
 import MarketplaceHero from '~/components/marketplace/MarketplaceHero.vue';
-import MarketplaceCategories from '~/components/marketplace/MarketplaceCategories.vue';
 import MarketplaceFilters from '~/components/marketplace/MarketplaceFilters.vue';
 import MarketplaceGrid from '~/components/marketplace/MarketplaceGrid.vue';
 import MarketplaceAdBanner from '~/components/marketplace/MarketplaceAdBanner.vue';

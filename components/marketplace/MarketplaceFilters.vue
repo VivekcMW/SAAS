@@ -318,7 +318,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
@@ -467,8 +467,6 @@ onBeforeUnmount(() => {
   // Restore body scrolling
   document.body.style.overflow = '';
 });
-
-import { onMounted, onBeforeUnmount } from 'vue';
 </script>
 
 <style scoped>
