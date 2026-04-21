@@ -81,15 +81,17 @@
           <p>Discover the most trending, sponsored, and searched applications in our marketplace.</p>
         </div>
         <div class="products-grid">
-          <article class="product-card" v-for="(product, index) in topProducts" :key="product.id">
-            <!-- Header row: rank + badge -->
-            <div class="card-top">
-              <span class="rank-chip">#{{ index + 1 }}</span>
-              <span class="product-badge" :class="product.badgeType">
-                <UIcon dynamic :name="product.badgeIcon" />
-                {{ product.badge }}
-              </span>
-            </div>
+          <NuxtLink
+            v-for="product in topProducts"
+            :key="product.id"
+            :to="`/marketplace/app/${product.id}`"
+            class="product-card"
+          >
+            <!-- Badge (top-right floating) -->
+            <span class="product-badge" :class="product.badgeType">
+              <UIcon dynamic :name="product.badgeIcon" />
+              {{ product.badge }}
+            </span>
 
             <!-- Identity: logo + name + category -->
             <header class="card-identity">
@@ -103,52 +105,24 @@
               </div>
             </header>
 
-            <!-- Value prop -->
-            <p class="product-tagline">{{ product.tagline }}</p>
-
-            <!-- Trust strip -->
-            <div class="trust-strip">
-              <span class="trust-item rating">
+            <!-- Meta row: rating + price -->
+            <div class="card-meta">
+              <span class="meta-rating">
                 <UIcon dynamic name="i-heroicons-star-solid" />
                 <strong>{{ product.rating }}</strong>
-                <span class="muted">({{ product.reviewCount }})</span>
+                <span class="meta-reviews">({{ product.reviewCount }})</span>
               </span>
-              <span class="trust-divider">·</span>
-              <span class="trust-item muted">
-                <UIcon dynamic name="i-heroicons-users" />
-                {{ product.users }}
+              <span class="meta-price">
+                {{ product.price }}<span v-if="product.pricePeriod" class="meta-price-period">{{ product.pricePeriod }}</span>
               </span>
             </div>
 
-            <!-- Best-for line -->
-            <p class="best-for">
-              <UIcon dynamic name="i-heroicons-check-badge" />
-              {{ product.bestFor }}
-            </p>
-
-            <!-- Attribute tags -->
-            <div class="attr-tags">
-              <span class="attr-tag" v-for="tag in product.tags" :key="tag">{{ tag }}</span>
-            </div>
-
-            <!-- Footer: pricing + dual CTA -->
-            <footer class="card-footer">
-              <div class="price-block">
-                <span class="price">{{ product.price }}</span>
-                <span v-if="product.pricePeriod" class="price-period">{{ product.pricePeriod }}</span>
-              </div>
-              <div class="card-actions">
-                <button class="btn-ghost" :aria-label="'Add ' + product.name + ' to compare'">
-                  <UIcon dynamic name="i-heroicons-scale" />
-                  <span>Compare</span>
-                </button>
-                <NuxtLink :to="`/marketplace/app/${product.id}`" class="btn-primary-card">
-                  View details
-                  <UIcon dynamic name="i-heroicons-arrow-right" />
-                </NuxtLink>
-              </div>
-            </footer>
-          </article>
+            <!-- CTA -->
+            <span class="card-cta">
+              View details
+              <UIcon dynamic name="i-heroicons-arrow-right" />
+            </span>
+          </NuxtLink>
         </div>
         <div class="section-footer">
           <NuxtLink to="/marketplace" class="btn btn-outline">
@@ -1569,61 +1543,59 @@ onMounted(() => {
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
   margin-bottom: var(--spacing-xxl);
 }
 
-/* ─── Trending Product Card (redesigned) ───────────────────── */
+/* ─── Trending Product Card (minimal, 4-col) ───────────────── */
 .product-card {
   background: #fff;
   border: 1px solid #E5E7EB;
-  border-radius: 16px;
+  border-radius: 14px;
   padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   position: relative;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
   text-align: left;
+  text-decoration: none;
+  color: inherit;
   height: 100%;
 }
 
 .product-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--sw-primary);
-  box-shadow: 0 12px 28px rgba(17, 24, 39, 0.08),
-              0 2px 6px rgba(17, 24, 39, 0.04);
+  transform: translateY(-2px);
+  border-color: #D1D5DB;
+  box-shadow: 0 8px 20px rgba(17, 24, 39, 0.06),
+              0 2px 4px rgba(17, 24, 39, 0.03);
 }
 
-/* Top row — rank + badge */
-.card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+.product-card:hover .card-cta {
+  color: var(--sw-primary-hover);
 }
 
-.rank-chip {
-  background: var(--sw-text);
-  color: #fff;
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 999px;
-  letter-spacing: 0.02em;
+.product-card:hover .card-cta :deep(.nuxt-icon),
+.product-card:hover .card-cta svg {
+  transform: translateX(3px);
 }
 
+/* Badge (floating, top-right) */
 .product-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 3px 10px;
+  padding: 3px 8px;
   border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 0.6875rem;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  line-height: 1.2;
 }
 
 .product-badge.trending   { background: #FEE2E2; color: #B91C1C; }
@@ -1635,11 +1607,12 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 12px;
+  padding-right: 70px; /* leave room for floating badge */
 }
 
 .product-logo {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: 10px;
   background: #fff;
   border: 1px solid #E5E7EB;
@@ -1647,7 +1620,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  padding: 8px;
+  padding: 7px;
   overflow: hidden;
 }
 
@@ -1658,185 +1631,104 @@ onMounted(() => {
 }
 
 .product-logo-icon {
-  width: 32px;
-  height: 32px;
-  font-size: 32px;
+  width: 28px;
+  height: 28px;
+  font-size: 28px;
 }
 
 .identity-text { min-width: 0; }
 
 .identity-text h3 {
   font-family: var(--font-display);
-  font-size: 1.0625rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--sw-text);
   margin: 0 0 2px;
   line-height: 1.25;
   letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .product-category {
   font-size: 0.75rem;
   color: var(--sw-text-subtle);
   margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   font-weight: 500;
-}
-
-/* Tagline */
-.product-tagline {
-  color: var(--sw-text-muted);
-  font-size: 0.9375rem;
-  line-height: 1.45;
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  white-space: nowrap;
   overflow: hidden;
-  min-height: 2.7em;
+  text-overflow: ellipsis;
 }
 
-/* Trust strip */
-.trust-strip {
+/* Meta row — rating + price */
+.card-meta {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 8px;
-  font-size: 0.875rem;
-  color: var(--sw-text-muted);
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid #F3F4F6;
 }
 
-.trust-item { display: inline-flex; align-items: center; gap: 4px; }
-.trust-item.rating strong {
+.meta-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+  color: var(--sw-text-muted);
+}
+.meta-rating strong {
   color: var(--sw-text);
   font-weight: 700;
   font-family: var(--font-mono);
   font-feature-settings: 'tnum' 1;
-  font-size: 0.875rem;
 }
-.trust-item.rating :deep(.nuxt-icon),
-.trust-item.rating svg { color: #F59E0B; }
-.trust-item.muted { color: var(--sw-text-subtle); }
-.trust-item .muted { color: var(--sw-text-subtle); font-size: 0.8125rem; }
-.trust-divider { color: var(--sw-text-subtle); opacity: 0.5; }
+.meta-rating :deep(.nuxt-icon),
+.meta-rating svg { color: #F59E0B; width: 14px; height: 14px; }
+.meta-reviews { color: var(--sw-text-subtle); font-size: 0.75rem; }
 
-/* Best-for line */
-.best-for {
-  margin: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.8125rem;
-  color: var(--color-success-dark, #059669);
-  font-weight: 500;
-}
-
-/* Attribute tags */
-.attr-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.attr-tag {
-  font-size: 0.75rem;
-  color: var(--sw-text-muted);
-  background: var(--bg-gray);
-  border: 1px solid #E5E7EB;
-  padding: 3px 10px;
-  border-radius: 6px;
-  font-weight: 500;
-}
-
-/* Footer: price + CTAs */
-.card-footer {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding-top: 12px;
-  margin-top: auto;
-  border-top: 1px dashed #E5E7EB;
-}
-
-.price-block {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-  white-space: nowrap;
-}
-
-.price {
+.meta-price {
   font-family: var(--font-mono);
   font-feature-settings: 'tnum' 1;
-  font-size: 1rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: var(--sw-text);
-  letter-spacing: -0.01em;
   white-space: nowrap;
 }
-
-.price-period {
-  font-family: var(--font-mono);
-  font-feature-settings: 'tnum' 1;
-  font-size: 0.8125rem;
+.meta-price-period {
   color: var(--sw-text-subtle);
-  white-space: nowrap;
-}
-
-.card-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 9px 12px;
-  border: 1px solid #E5E7EB;
-  background: #fff;
-  color: var(--sw-text-muted);
-  border-radius: 8px;
-  font-size: 0.8125rem;
   font-weight: 500;
-  cursor: pointer;
-  transition: border-color 0.15s, color 0.15s, background-color 0.15s;
-  flex-shrink: 0;
 }
 
-.btn-ghost:hover {
-  border-color: var(--sw-text-muted);
-  color: var(--sw-text);
-  background: var(--bg-gray);
-}
-
-.btn-primary-card {
+/* CTA — minimal text link, not a big button */
+.card-cta {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 4px;
-  padding: 9px 14px;
-  background: var(--sw-primary);
-  color: #fff !important;
-  border-radius: 8px;
+  color: var(--sw-primary);
   font-size: 0.8125rem;
   font-weight: 600;
-  text-decoration: none;
-  transition: background-color 0.15s, transform 0.1s;
-  flex: 1;
+  letter-spacing: -0.005em;
+  transition: color 0.15s ease;
+}
+.card-cta :deep(.nuxt-icon),
+.card-cta svg {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.15s ease;
 }
 
-.btn-primary-card:hover {
-  background: var(--sw-primary-hover);
-  transform: translateY(-1px);
+@media (max-width: 1200px) {
+  .products-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 900px) {
   .products-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 560px) {
   .products-grid { grid-template-columns: 1fr; }
 }
 /* ─── End Trending Product Card ───────────────────────────── */
