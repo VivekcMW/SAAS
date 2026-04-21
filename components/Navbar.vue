@@ -1047,17 +1047,14 @@ watch(() => route.path, () => {
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: saturate(180%) blur(12px);
-  -webkit-backdrop-filter: saturate(180%) blur(12px);
-  border-bottom: 1px solid rgba(17, 24, 39, 0.06);
-  transition: background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  background: #ffffff;
+  border-bottom: 1px solid #E5E7EB;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .navbar-scrolled {
-  background: rgba(255, 255, 255, 0.96);
-  border-bottom-color: rgba(17, 24, 39, 0.08);
-  box-shadow: 0 1px 3px rgba(17, 24, 39, 0.04), 0 10px 20px -10px rgba(17, 24, 39, 0.08);
+  border-bottom-color: #E5E7EB;
+  box-shadow: 0 1px 3px rgba(17, 24, 39, 0.04), 0 4px 12px -6px rgba(17, 24, 39, 0.08);
 }
 
 .container {
