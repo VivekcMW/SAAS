@@ -379,40 +379,40 @@ const handleToggleFavorite = () => {
 /* Variant Badge */
 .variant-badge {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 10px;
+  right: 10px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 6px 10px;
-  border-radius: 6px;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.03em;
+  line-height: 1.3;
   z-index: 10;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .variant-badge--sponsored {
-  background: #FF8838;
-  color: #1f2937;
-  border: 1px solid #E87C2A;
+  background: #FEF3E2;
+  color: #92400E;
+  border: none;
 }
 
 .variant-badge--trending {
-  background: #1D4ED8;
-  color: #ffffff;
-  border: 1px solid #1E40AF;
+  background: #E0E7FF;
+  color: #1D4ED8;
+  border: none;
 }
 
 .badge-icon {
-  width: 14px;
-  height: 14px;
+  width: 10px;
+  height: 10px;
 }
 
 .badge-text {
-  font-size: 10px;
+  font-size: 9px;
 }
 
 .growth-indicator {
@@ -440,15 +440,17 @@ const handleToggleFavorite = () => {
 }
 
 .app-logo {
-  width: 64px;
-  height: 64px;
+  width: 44px;
+  height: 44px;
   flex-shrink: 0;
   border-radius: 6px;
   overflow: hidden;
-  background: #f9fafb;
+  background: #fff;
+  border: 1px solid #e5e7eb;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 7px;
 }
 
 .app-logo img {
@@ -463,11 +465,12 @@ const handleToggleFavorite = () => {
 }
 
 .app-name {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 600;
   color: #1f2937;
   margin: 0 0 8px 0;
-  line-height: 1.2;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -594,7 +597,7 @@ const handleToggleFavorite = () => {
 .btn {
   padding: 10px 16px;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   text-align: center;
   border: none;
@@ -605,6 +608,7 @@ const handleToggleFavorite = () => {
   justify-content: center;
   gap: 6px;
   flex: 1;
+  letter-spacing: -0.01em;
 }
 
 .btn:focus {
