@@ -44,6 +44,9 @@
       </div>
     </section>
 
+    <!-- AI Match Teaser -->
+    <AIMatchTeaser />
+
     <!-- Top Performing Products Section -->
     <section class="top-products-section">
       <div class="container">
@@ -111,6 +114,9 @@
         </div>
       </div>
     </section>
+
+    <!-- Vendor CTA -->
+    <VendorCta />
 
   </div>
 </template>
