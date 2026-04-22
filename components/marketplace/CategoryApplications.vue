@@ -22,11 +22,10 @@
         </h2>
         <div class="apps-grid">
           <div v-for="app in sponsoredApps" :key="app.id" class="grid-item">
-            <AppCard 
-              :app="transformAppData(app, 'sponsored')"
+            <ProductCard 
+              :product="transformAppData(app, 'sponsored')"
+              layout="vertical"
               variant="sponsored"
-              :show-growth-stats="false"
-              :show-premium-features="true"
               @view-details="navigateToApp"
               @toggle-favorite="handleToggleFavorite"
               @card-click="navigateToApp"
@@ -43,11 +42,10 @@
         </h2>
         <div class="apps-grid">
           <div v-for="app in trendingApps" :key="app.id" class="grid-item">
-            <AppCard 
-              :app="transformAppData(app, 'trending')"
+            <ProductCard 
+              :product="transformAppData(app, 'trending')"
+              layout="vertical"
               variant="trending"
-              :show-growth-stats="true"
-              :show-premium-features="false"
               @view-details="navigateToApp"
               @toggle-favorite="handleToggleFavorite"
               @card-click="navigateToApp"
@@ -64,11 +62,10 @@
         </h2>
         <div class="apps-grid">
           <div v-for="app in regularApps" :key="app.id" class="grid-item">
-            <AppCard 
-              :app="transformAppData(app, 'regular')"
+            <ProductCard 
+              :product="transformAppData(app, 'regular')"
+              layout="vertical"
               variant="regular"
-              :show-growth-stats="false"
-              :show-premium-features="false"
               @view-details="navigateToApp"
               @toggle-favorite="handleToggleFavorite"
               @card-click="navigateToApp"
@@ -190,7 +187,7 @@ const navigateToApp = (appId: string) => {
   router.push(`/marketplace/app/${appId}`);
 };
 
-// Transform app data for the global AppCard component
+// Transform app data for the global ProductCard component
 const transformAppData = (app: Application, variant: 'regular' | 'sponsored' | 'trending' = 'regular') => {
   // Generate mock growth stats for trending apps
   const growthStats = variant === 'trending' ? {
@@ -1520,15 +1517,14 @@ onMounted(() => {
 
 .apps-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
 }
 
 /* App Card Styles */
 .grid-item {
   border-radius: 0;
   overflow: hidden;
-  transition: all 0.3s ease;
 }
 
 .app-card-link {
@@ -1576,13 +1572,13 @@ onMounted(() => {
 }
 
 .status-badge.sponsored {
-  background-color: #4ECDC4;
-  color: #fff;
+  background-color: #0f766e;
+  color: #ffffff;
 }
 
 .status-badge.trending {
-  background-color: #FF6B6B;
-  color: #fff;
+  background-color: #dc2626;
+  color: #ffffff;
 }
 
 .status-badge.recent {

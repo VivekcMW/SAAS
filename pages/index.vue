@@ -81,48 +81,14 @@
           <p>Discover the most trending, sponsored, and searched applications in our marketplace.</p>
         </div>
         <div class="products-grid">
-          <NuxtLink
+          <ProductCard
             v-for="product in topProducts"
             :key="product.id"
-            :to="`/marketplace/app/${product.id}`"
-            class="product-card"
-          >
-            <!-- Badge (top-right floating) -->
-            <span class="product-badge" :class="product.badgeType">
-              <UIcon dynamic :name="product.badgeIcon" />
-              {{ product.badge }}
-            </span>
-
-            <!-- Identity: logo + name + category -->
-            <header class="card-identity">
-              <div class="product-logo">
-                <UIcon v-if="product.icon" :name="product.icon" dynamic class="product-logo-icon" />
-                <img v-else :src="product.image" :alt="product.name + ' logo'" loading="lazy" />
-              </div>
-              <div class="identity-text">
-                <h3>{{ product.name }}</h3>
-                <p class="product-category">{{ product.category }}</p>
-              </div>
-            </header>
-
-            <!-- Meta row: rating + price -->
-            <div class="card-meta">
-              <span class="meta-rating">
-                <UIcon dynamic name="i-heroicons-star-solid" />
-                <strong>{{ product.rating }}</strong>
-                <span class="meta-reviews">({{ product.reviewCount }})</span>
-              </span>
-              <span class="meta-price">
-                {{ product.price }}<span v-if="product.pricePeriod" class="meta-price-period">{{ product.pricePeriod }}</span>
-              </span>
-            </div>
-
-            <!-- CTA -->
-            <span class="card-cta">
-              View details
-              <UIcon dynamic name="i-heroicons-arrow-right" />
-            </span>
-          </NuxtLink>
+            :product="transformProductData(product)"
+            :layout="'vertical'"
+            :variant="product.badgeType || 'regular'"
+            :special-label="product.badgeType === 'trending' ? 'Trending' : product.badgeType === 'sponsored' ? 'Sponsored' : undefined"
+          />
         </div>
         <div class="section-footer">
           <NuxtLink to="/marketplace" class="btn btn-outline">
@@ -159,7 +125,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted } from 'vue';
 
 // Global categories menu composable for cross-component communication
 const { openCategoriesDrawer } = useCategoriesMenu();
@@ -729,6 +695,41 @@ onMounted(() => {
   });
 });
 
+// Transform topProducts data to ProductCard format
+const transformProductData = (product: any) => {
+  const cleanReviewCount = product.reviewCount.replaceAll(/[,KM+]/g, '')
+  const cleanUsers = product.users.replaceAll(/[,KM+]/g, '')
+  
+  // Determine pricing type
+  let pricingType: 'free' | 'paid' | 'contact' = 'contact'
+  if (product.price === 'Free forever' || product.price === 'Free') {
+    pricingType = 'free'
+  } else if (product.price.includes('From')) {
+    pricingType = 'paid'
+  }
+  
+  return {
+    id: product.id,
+    name: product.name,
+    logo: product.image,
+    category: product.category,
+    rating: Number.parseFloat(product.rating),
+    reviewCount: Number.parseInt(cleanReviewCount, 10),
+    activeUsers: Number.parseInt(cleanUsers, 10) * 1000,
+    pricing: {
+      type: pricingType,
+      value: product.price.includes('From') ? Number.parseInt(product.price.match(/\d+/)?.[0] || '0', 10) : undefined,
+      period: product.pricePeriod?.replace('/', '') || undefined
+    },
+    growthStats: product.badgeType === 'trending' ? {
+      percentage: Math.floor(Math.random() * 30) + 10,
+      period: 'month',
+      trend: 'up' as const
+    } : undefined,
+    isFavorited: false
+  }
+}
+
 // Home page data
 </script>
 
@@ -905,8 +906,8 @@ onMounted(() => {
 }
 
 .hero-search-btn:disabled {
-  background: #D1D5DB;
-  color: #fff;
+  background: #d1d5db;
+  color: #374151;
   cursor: not-allowed;
 }
 
@@ -1541,6 +1542,7 @@ onMounted(() => {
   color: var(--text-secondary);
 }
 
+/* Product cards handled by global ProductCard component */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -1548,193 +1550,23 @@ onMounted(() => {
   margin-bottom: var(--spacing-xxl);
 }
 
-/* ─── Trending Product Card (minimal, 4-col) ───────────────── */
-.product-card {
-  background: #fff;
-  border: 1px solid #E5E7EB;
-  border-radius: 6px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  position: relative;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-  text-align: left;
-  text-decoration: none;
-  color: inherit;
-  height: 100%;
-}
-
-.product-card:hover {
-  transform: translateY(-2px);
-  border-color: #D1D5DB;
-  box-shadow: 0 8px 20px rgba(17, 24, 39, 0.06),
-              0 2px 4px rgba(17, 24, 39, 0.03);
-}
-
-.product-card:hover .card-cta {
-  color: var(--sw-primary-hover);
-}
-
-.product-card:hover .card-cta :deep(.nuxt-icon),
-.product-card:hover .card-cta svg {
-  transform: translateX(3px);
-}
-
-/* Badge (floating, top-right) — compact */
-.product-badge {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 0.625rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  line-height: 1.3;
-}
-
-.product-badge :deep(.nuxt-icon),
-.product-badge svg { width: 10px; height: 10px; }
-
-.product-badge.trending   { background: #FEE2E2; color: #B91C1C; }
-.product-badge.sponsored  { background: var(--sw-primary-soft); color: var(--sw-primary-hover); }
-.product-badge.popular    { background: var(--sw-ai-soft); color: var(--sw-ai); }
-
-/* Identity: logo + name */
-.card-identity {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-right: 60px; /* leave room for floating badge */
-}
-
-.product-logo {
-  width: 44px;
-  height: 44px;
-  border-radius: 6px;
-  background: #fff;
-  border: 1px solid #E5E7EB;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  padding: 7px;
-  overflow: hidden;
-}
-
-.product-logo img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-.product-logo-icon {
-  width: 28px;
-  height: 28px;
-  font-size: 28px;
-}
-
-.identity-text { min-width: 0; }
-
-.identity-text h3 {
-  font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--sw-text);
-  margin: 0 0 2px;
-  line-height: 1.25;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.product-category {
-  font-size: 0.75rem;
-  color: var(--sw-text-subtle);
-  margin: 0;
-  font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Meta row — rating + price */
-.card-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-top: auto;
-  padding-top: 14px;
-  border-top: 1px solid #F3F4F6;
-}
-
-.meta-rating {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.8125rem;
-  color: var(--sw-text-muted);
-}
-.meta-rating strong {
-  color: var(--sw-text);
-  font-weight: 700;
-  font-family: var(--font-mono);
-  font-feature-settings: 'tnum' 1;
-}
-.meta-rating :deep(.nuxt-icon),
-.meta-rating svg { color: #F59E0B; width: 14px; height: 14px; }
-.meta-reviews { color: var(--sw-text-subtle); font-size: 0.75rem; }
-
-.meta-price {
-  font-family: var(--font-mono);
-  font-feature-settings: 'tnum' 1;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--sw-text);
-  white-space: nowrap;
-}
-.meta-price-period {
-  color: var(--sw-text-subtle);
-  font-weight: 500;
-}
-
-/* CTA — minimal text link, not a big button */
-.card-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  color: var(--sw-primary);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: -0.005em;
-  transition: color 0.15s ease;
-}
-.card-cta :deep(.nuxt-icon),
-.card-cta svg {
-  width: 14px;
-  height: 14px;
-  transition: transform 0.15s ease;
-}
-
 @media (max-width: 1200px) {
-  .products-grid { grid-template-columns: repeat(3, 1fr); }
+  .products-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 @media (max-width: 900px) {
-  .products-grid { grid-template-columns: repeat(2, 1fr); }
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 560px) {
-  .products-grid { grid-template-columns: 1fr; }
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
 }
-/* ─── End Trending Product Card ───────────────────────────── */
 
 .section-footer {
   text-align: center;

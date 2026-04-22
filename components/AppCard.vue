@@ -1,6 +1,6 @@
 <!--
-  Global App Card Component
-  Simple, crisp design for all application cards across the platform
+  Global App Card Component - Horizontal Layout
+  Matches marketplace design with logo left, content center, buttons right
   Features: Logo, Name, Rating, Active Users, Pricing, Action Buttons
 -->
 <template>
@@ -14,17 +14,8 @@
     @keydown.enter="handleCardClick"
     @keydown.space.prevent="handleCardClick"
   >
-    <!-- Variant Badge -->
-    <div v-if="badgeText" class="variant-badge" :class="`variant-badge--${variant}`">
-      <UIcon v-if="badgeIcon" :name="badgeIcon" class="badge-icon" dynamic />
-      <span class="badge-text">{{ badgeText }}</span>
-      <div v-if="variant === 'trending' && app.growthStats" class="growth-indicator">
-        <UIcon name="i-heroicons-arrow-trending-up" class="growth-icon" dynamic />
-        <span>+{{ app.growthStats.percentage }}%</span>
-      </div>
-    </div>
-    <!-- Header: Logo + Name + Rating -->
-    <div class="app-header">
+    <!-- Logo Section -->
+    <div class="card-logo-section">
       <div class="app-logo">
         <img 
           :src="app.logo" 
@@ -33,9 +24,21 @@
           loading="lazy"
         />
       </div>
-      
-      <div class="app-info">
+    </div>
+
+    <!-- Content Section: Name, Rating, Metrics, Labels -->
+    <div class="card-content-section">
+      <!-- Header Row: Name + Badge -->
+      <div class="content-header">
         <h3 class="app-name" :title="app.name">{{ app.name }}</h3>
+        <div v-if="badgeText" class="variant-badge" :class="`variant-badge--${variant}`">
+          <UIcon v-if="badgeIcon" :name="badgeIcon" class="badge-icon" dynamic />
+          <span class="badge-text">{{ badgeText }}</span>
+        </div>
+      </div>
+
+      <!-- Rating Row -->
+      <div class="rating-row">
         <div class="app-rating">
           <div class="stars">
             <UIcon 
@@ -50,49 +53,42 @@
           <span class="rating-count" v-if="app.reviewCount">({{ formatCount(app.reviewCount) }})</span>
         </div>
       </div>
-    </div>
 
-    <!-- Metrics: Active Users + Pricing -->
-    <div class="app-metrics">
-      <div class="metric-item">
-        <UIcon name="i-heroicons-users" class="metric-icon" dynamic />
-        <span class="metric-value">
-          {{ formatCount(app.activeUsers) }} active users
-          <span v-if="variant === 'trending' && app.growthStats" class="growth-badge">
-            <UIcon name="i-heroicons-arrow-trending-up" dynamic />
-            +{{ app.growthStats.percentage }}%
-          </span>
-        </span>
-      </div>
-      
-      <div class="metric-item">
-        <UIcon name="i-heroicons-currency-dollar" class="metric-icon" dynamic />
-        <span class="metric-value pricing">{{ formattedPrice }}</span>
+      <!-- Metrics Row: Users + Price -->
+      <div class="metrics-row">
+        <div class="metric-inline">
+          <UIcon name="i-heroicons-users" class="metric-icon" dynamic />
+          <span>{{ formatCount(app.activeUsers) }} active users</span>
+        </div>
+        <div class="metric-separator">·</div>
+        <div class="metric-inline">
+          <UIcon name="i-heroicons-currency-dollar" class="metric-icon" dynamic />
+          <span>{{ formattedPrice }}</span>
+        </div>
       </div>
 
-      <!-- Special Label for Sponsored/Trending -->
-      <div v-if="specialLabel" class="metric-item special-label">
-        <UIcon 
-          :name="variant === 'sponsored' ? 'i-heroicons-trophy' : 'i-heroicons-chart-bar-solid'" 
-          class="metric-icon special-icon" 
-          dynamic 
-        />
-        <span class="metric-value special">{{ specialLabel }}</span>
-      </div>
-
-      <!-- Premium Features for Sponsored -->
-      <div v-if="variant === 'sponsored' && app.premiumFeatures?.length" class="premium-features">
-        <div class="feature-item">
-          <UIcon name="i-heroicons-check-circle" class="feature-icon" dynamic />
-          <span>{{ app.premiumFeatures[0] }}</span>
+      <!-- Special Labels Row -->
+      <div v-if="specialLabel || (variant === 'trending' && app.growthStats)" class="labels-row">
+        <!-- Trending Indicator -->
+        <div v-if="variant === 'trending' && app.growthStats" class="growth-badge">
+          <UIcon name="i-heroicons-arrow-trending-up" dynamic />
+          +{{ app.growthStats.percentage }}%
+        </div>
+        <!-- Special Label -->
+        <div v-if="specialLabel" class="special-label">
+          <UIcon 
+            :name="variant === 'sponsored' ? 'i-heroicons-sparkles' : 'i-heroicons-chart-bar-solid'" 
+            dynamic 
+          />
+          <span>{{ specialLabel }}</span>
         </div>
       </div>
     </div>
 
-    <!-- Actions: View Details + Favorites -->
-    <div class="app-actions">
+    <!-- Actions Section: Buttons on Right -->
+    <div class="card-actions-section">
       <button 
-        class="btn btn-primary"
+        class="btn-action btn-primary"
         :class="{
           'btn-primary--sponsored': variant === 'sponsored',
           'btn-primary--trending': variant === 'trending'
@@ -104,11 +100,9 @@
       </button>
       
       <button 
-        class="btn btn-favorite"
+        class="btn-action btn-favorite"
         :class="{ 
-          'btn-favorite--active': isFavorited,
-          'btn-favorite--sponsored': variant === 'sponsored',
-          'btn-favorite--trending': variant === 'trending'
+          'btn-favorite--active': isFavorited
         }"
         @click.stop="handleToggleFavorite"
         :aria-label="isFavorited ? `Remove ${app.name} from favorites` : `Add ${app.name} to favorites`"
@@ -326,11 +320,13 @@ const handleToggleFavorite = () => {
   background: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 6px;
-  padding: 20px;
+  padding: 16px;
   transition: all 0.2s ease;
   height: 100%;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
   position: relative;
   overflow: hidden;
 }
@@ -348,6 +344,26 @@ const handleToggleFavorite = () => {
 .app-card--clickable:focus {
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
+}
+
+/* Card Sections */
+.card-logo-section {
+  flex-shrink: 0;
+}
+
+.card-content-section {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.card-actions-section {
+  flex-shrink: 0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
 /* Sponsored Card Variant */
@@ -376,22 +392,17 @@ const handleToggleFavorite = () => {
   border-color: #2563EB;
 }
 
-/* Variant Badge */
+/* Variant Badge - Now inline */
 .variant-badge {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
   font-size: 10px;
   font-weight: 600;
   padding: 2px 6px;
   border-radius: 4px;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  line-height: 1.3;
-  z-index: 10;
 }
 
 .variant-badge--sponsored {
@@ -415,20 +426,79 @@ const handleToggleFavorite = () => {
   font-size: 9px;
 }
 
-.growth-indicator {
+/* Content Structure */
+.content-header {
   display: flex;
   align-items: center;
-  gap: 2px;
-  font-size: 9px;
-  background: rgba(255, 255, 255, 0.2);
-  padding: 2px 6px;
-  border-radius: 8px;
-  margin-left: 4px;
+  gap: 8px;
+  margin-bottom: 2px;
 }
 
-.growth-icon {
-  width: 10px;
-  height: 10px;
+.rating-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.metrics-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.metric-inline {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.metric-icon {
+  width: 16px;
+  height: 16px;
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+.metric-separator {
+  color: #d1d5db;
+}
+
+.labels-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.growth-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #B91C1C;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.growth-badge :deep(.nuxt-icon),
+.growth-badge svg {
+  width: 12px;
+  height: 12px;
+}
+
+.special-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #7c3aed;
+  font-weight: 600;
 }
 
 /* Header */
@@ -468,7 +538,7 @@ const handleToggleFavorite = () => {
   font-size: 16px;
   font-weight: 600;
   color: #1f2937;
-  margin: 0 0 8px 0;
+  margin: 0;
   line-height: 1.25;
   letter-spacing: -0.01em;
   overflow: hidden;
@@ -479,7 +549,8 @@ const handleToggleFavorite = () => {
 .app-rating {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
+  font-size: 13px;
 }
 
 .stars {
@@ -488,8 +559,8 @@ const handleToggleFavorite = () => {
 }
 
 .star {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   color: #d1d5db;
 }
 
@@ -502,99 +573,18 @@ const handleToggleFavorite = () => {
 }
 
 .rating-value {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #374151;
 }
 
 .rating-count {
-  font-size: 14px;
-  color: #6b7280;
-}
-
-/* Metrics */
-.app-metrics {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 20px;
-}
-
-.metric-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.metric-icon {
-  width: 16px;
-  height: 16px;
-  color: #6b7280;
-  flex-shrink: 0;
-}
-
-.metric-value {
-  font-size: 14px;
-  font-weight: 500;
-  color: #6b7280;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.metric-value.pricing {
-  color: #374151;
-  font-weight: 600;
-}
-
-.metric-value.special {
-  color: #7c3aed;
-  font-weight: 600;
-}
-
-.special-icon {
-  color: #7c3aed;
-}
-
-.growth-badge {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  background: #B91C1C;
-  color: #ffffff;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 2px 6px;
-  border-radius: 6px;
-}
-
-.premium-features {
-  margin-top: 4px;
-}
-
-.feature-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
   font-size: 12px;
-  color: #059669;
-  font-weight: 500;
+  color: #6b7280;
 }
 
-.feature-icon {
-  width: 14px;
-  height: 14px;
-  color: #059669;
-}
-
-/* Actions */
-.app-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: auto;
-}
-
-.btn {
+/* Action Buttons */
+.btn-action {
   padding: 10px 16px;
   border-radius: 6px;
   font-size: 13px;
@@ -607,105 +597,85 @@ const handleToggleFavorite = () => {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  flex: 1;
   letter-spacing: -0.01em;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.btn:focus {
+.btn-action:focus {
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
 }
 
 .btn-primary {
-  background: #1e40af;
-  color: #ffffff;
+  background: #FF8838;
+  color: #1f2937;
+  min-width: 120px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .btn-primary:hover {
-  background: #1e3a8a;
+  background: #E87C2A;
   transform: translateY(-1px);
 }
 
 .btn-primary--sponsored {
   background: #FF8838;
   color: #1f2937;
-  border: 1px solid #E87C2A;
-  font-weight: 700;
 }
 
 .btn-primary--sponsored:hover {
   background: #E87C2A;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255, 136, 56, 0.3);
 }
 
 .btn-primary--trending {
-  background: #1D4ED8;
-  color: #ffffff;
-  border: 1px solid #1E40AF;
-  font-weight: 700;
+  background: #FF8838;
+  color: #1f2937;
 }
 
 .btn-primary--trending:hover {
-  background: #1E40AF;
+  background: #E87C2A;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.3);
 }
 
 .btn-favorite {
-  background: #f3f4f6;
-  color: #374151;
-  border: 1px solid #e5e7eb;
-  padding: 10px;
-  min-width: 44px;
-  flex: 0 0 auto;
+  background: #374151;
+  color: #ffffff;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 6px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .btn-favorite:hover {
-  background: #e5e7eb;
-  border-color: #d1d5db;
+  background: #1f2937;
   transform: translateY(-1px);
 }
 
-.btn-favorite--sponsored {
-  background: #FFF3E0;
-  border-color: #FF8838;
-}
-
-.btn-favorite--sponsored:hover {
-  background: #FFE8D0;
-  box-shadow: 0 2px 8px rgba(255, 136, 56, 0.2);
-}
-
-.btn-favorite--trending {
-  background: #EFF6FF;
-  border-color: #3B82F6;
-}
-
-.btn-favorite--trending:hover {
-  background: #DBEAFE;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
-}
-
 .btn-favorite--active {
-  color: #991b1b;
-  border-color: #fecaca;
-  background: #fef2f2;
+  background: #dc2626;
+  color: #ffffff;
 }
 
 .btn-favorite--active:hover {
-  background: #fee2e2;
+  background: #b91c1c;
   transform: translateY(-1px);
 }
 
 .heart-icon {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   transition: all 0.2s ease;
-}
-
-.btn-favorite--active .heart-icon {
-  color: #ef4444;
 }
 
 /* Responsive */
@@ -850,13 +820,11 @@ const handleToggleFavorite = () => {
   }
   
   .app-card--sponsored {
-    background: linear-gradient(#1f2937, #1f2937) padding-box,
-                linear-gradient(45deg, #ffd700, #4f46e5, #ffd700) border-box;
+    border-color: #FF8838;
   }
   
   .app-card--trending {
-    background: linear-gradient(#1f2937, #1f2937) padding-box,
-                linear-gradient(45deg, #ff6b6b, #ff8e8e, #ff6b6b) border-box;
+    border-color: #3B82F6;
   }
   
   .app-name {
@@ -868,22 +836,22 @@ const handleToggleFavorite = () => {
   }
   
   .rating-count,
-  .metric-value {
+  .metrics-row {
     color: #9ca3af;
   }
   
-  .metric-value.pricing {
-    color: #e5e7eb;
+  .btn-primary {
+    background: #FF8838;
+    color: #1f2937;
   }
   
   .btn-favorite {
     background: #374151;
-    color: #e5e7eb;
-    border-color: #4b5563;
+    color: #d1d5db;
   }
   
-  .btn-favorite:hover {
-    background: #4b5563;
+  .metric-icon {
+    color: #9ca3af;
   }
 }
 </style>

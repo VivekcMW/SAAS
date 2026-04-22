@@ -6,11 +6,14 @@
     <!-- Applications Listing Section -->
     <section class="applications-section">
       <div class="container">
+        <!-- Top sponsored banner (Phase 5) -->
+        <div class="marketplace-sponsored-top">
+          <SponsoredSlot placement="banner" variant="banner" label="Featured partner" />
+        </div>
+
         <MarketplaceFilters />
         <div class="applications-grid-container">
-          <MarketplaceAdBanner position="top" />
           <MarketplaceGrid />
-          <MarketplaceAdBanner position="middle" />
           <MarketplacePagination :totalItems="totalApplications" />
         </div>
       </div>
@@ -25,7 +28,6 @@ import { ref, onMounted } from 'vue';
 import MarketplaceHero from '~/components/marketplace/MarketplaceHero.vue';
 import MarketplaceFilters from '~/components/marketplace/MarketplaceFilters.vue';
 import MarketplaceGrid from '~/components/marketplace/MarketplaceGrid.vue';
-import MarketplaceAdBanner from '~/components/marketplace/MarketplaceAdBanner.vue';
 import MarketplacePagination from '~/components/marketplace/MarketplacePagination.vue';
 
 // State for total items (for pagination)
@@ -137,6 +139,7 @@ onMounted(() => {
 <style scoped>
 .marketplace-page {
   padding-bottom: var(--spacing-xxl);
+  overflow-x: clip;
 }
 
 .applications-section {
@@ -148,6 +151,13 @@ onMounted(() => {
 .applications-grid-container {
   margin-top: var(--spacing-xl);
   padding: 1rem 0;
+}
+
+.marketplace-sponsored-top {
+  margin-top: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  width: 100%;
+  display: block;
 }
 
 /* Ensure proper spacing for the grid */

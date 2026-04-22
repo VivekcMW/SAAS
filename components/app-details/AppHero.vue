@@ -1,0 +1,529 @@
+<script setup lang="ts">
+import { computed } from 'vue'
+
+interface Pricing {
+  type: 'free' | 'trial' | 'paid' | 'contact'
+  value?: number
+  period?: string
+}
+
+interface App {
+  id: string
+  slug?: string
+  name: string
+  logo: string
+  provider: string
+  description: string
+  rating: number
+  reviewCount: number
+  tags?: string[]
+  pricing: Pricing
+  category?: string
+  featured?: boolean
+  trending?: boolean
+  sponsored?: boolean
+  screenshots?: { url: string; caption?: string }[]
+  analytics?: { activeUsers?: number }
+  performance?: { uptime?: number }
+  lastUpdated?: string
+  version?: string
+}
+
+interface Props {
+  app: App
+  verdict?: string
+}
+
+const props = defineProps<Props>()
+
+defineEmits<{
+  trial: []
+  demo: []
+  save: []
+  share: []
+  compare: []
+}>()
+
+const priceLabel = computed(() => {
+  const p = props.app.pricing
+  if (p.type === 'free') return 'Free'
+  if (p.type === 'contact') return 'Custom pricing'
+  if (p.type === 'trial') return 'Free trial'
+  if (p.value) {
+    const suffix = p.period ? `/${p.period}` : ''
+    return `from $${p.value}${suffix}`
+  }
+  return 'Paid'
+})
+
+const ctaLabel = computed(() => {
+  if (props.app.pricing.type === 'free') return 'Get started — it\'s free'
+  if (props.app.pricing.type === 'contact') return 'Talk to sales'
+  return 'Start free trial'
+})
+
+const ctaSubLabel = computed(() => {
+  if (props.app.pricing.type === 'free') return 'No credit card required'
+  if (props.app.pricing.type === 'contact') return 'Custom pricing for your team'
+  return 'Cancel anytime · No credit card'
+})
+
+const heroImage = computed(() => props.app.screenshots?.[0]?.url ?? '')
+
+const formattedUsers = computed(() => {
+  const n = props.app.analytics?.activeUsers ?? 0
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`
+  if (n >= 1_000) return `${Math.round(n / 1_000)}K`
+  if (n > 0) return String(n)
+  return '10K+'
+})
+
+const valueProps = computed(() => {
+  const p = props.app.pricing
+  let primary: { icon: string; label: string }
+  if (p.type === 'free') primary = { icon: 'heroicons:gift', label: 'Free forever plan' }
+  else if (p.type === 'trial') primary = { icon: 'heroicons:bolt', label: '14-day free trial' }
+  else if (p.type === 'contact') primary = { icon: 'heroicons:building-office-2', label: 'Built for enterprise' }
+  else primary = { icon: 'heroicons:bolt', label: 'Setup in minutes' }
+
+  return [
+    primary,
+    { icon: 'heroicons:shield-check', label: 'SOC 2 Type II compliant' },
+    { icon: 'heroicons:users', label: `${formattedUsers.value} active users` }
+  ]
+})
+</script>
+
+<template>
+  <section class="app-hero">
+    <!-- Top trust bar -->
+    <div class="hero-trust">
+      <div class="trust-item">
+        <Icon name="heroicons:check-badge" class="trust-icon verified" />
+        <span>Verified vendor</span>
+      </div>
+      <span class="trust-sep">·</span>
+      <div class="trust-item">
+        <Icon name="heroicons:signal" class="trust-icon" />
+        <span>{{ app.performance?.uptime ?? 99.9 }}% uptime</span>
+      </div>
+      <span v-if="app.lastUpdated" class="trust-sep">·</span>
+      <div v-if="app.lastUpdated" class="trust-item">
+        <Icon name="heroicons:clock" class="trust-icon" />
+        <span>Updated {{ app.lastUpdated }}</span>
+      </div>
+    </div>
+
+    <div class="hero-grid">
+      <!-- Left: branding + headline + CTAs -->
+      <div class="hero-left">
+        <div class="brand-row">
+          <div class="logo-wrap">
+            <img :src="app.logo" :alt="`${app.name} logo`" class="logo-img">
+          </div>
+          <div class="brand-text">
+            <p class="provider-pill">by {{ app.provider }}</p>
+            <div class="hero-badges">
+              <Badge v-if="verdict" variant="sponsored">{{ verdict }}</Badge>
+              <Badge v-else-if="app.featured" variant="sponsored">Editor's Pick</Badge>
+              <Badge v-if="app.trending" variant="trending">Trending</Badge>
+            </div>
+          </div>
+        </div>
+
+        <h1 class="hero-title">{{ app.name }}</h1>
+        <p class="hero-tagline">{{ app.description }}</p>
+
+        <!-- Social proof + price line -->
+        <div class="hero-meta">
+          <div class="meta-rating">
+            <Rating :model-value="app.rating" :show-value="true" readonly size="md" />
+            <span class="meta-count">{{ app.reviewCount.toLocaleString() }} reviews</span>
+          </div>
+          <span class="meta-sep">·</span>
+          <span class="meta-price">{{ priceLabel }}</span>
+        </div>
+
+        <!-- Value props -->
+        <ul class="value-props">
+          <li v-for="vp in valueProps" :key="vp.label">
+            <Icon :name="vp.icon" />
+            <span>{{ vp.label }}</span>
+          </li>
+        </ul>
+
+        <!-- Inline CTAs -->
+        <div class="hero-ctas">
+          <Button variant="primary" size="lg" @click="$emit('trial')">
+            {{ ctaLabel }}
+            <Icon name="heroicons:arrow-right" class="cta-arrow" />
+          </Button>
+          <Button variant="ghost" size="lg" @click="$emit('demo')">
+            <Icon name="heroicons:play-circle" class="demo-icon" />
+            Watch 2-min demo
+          </Button>
+        </div>
+        <p class="cta-sub">{{ ctaSubLabel }}</p>
+
+        <!-- Quick actions row -->
+        <div class="quick-actions">
+          <button type="button" class="qa-btn" @click="$emit('save')">
+            <Icon name="heroicons:heart" />
+            Save
+          </button>
+          <button type="button" class="qa-btn" @click="$emit('compare')">
+            <Icon name="heroicons:scale" />
+            Compare
+          </button>
+          <slot name="share">
+            <button type="button" class="qa-btn" @click="$emit('share')">
+              <Icon name="heroicons:share" />
+              Share
+            </button>
+          </slot>
+        </div>
+      </div>
+
+      <!-- Right: hero preview / screenshot -->
+      <div class="hero-right">
+        <div class="preview-card">
+          <div class="preview-chrome">
+            <span class="dot dot-r" />
+            <span class="dot dot-y" />
+            <span class="dot dot-g" />
+            <span class="preview-url">{{ app.provider.toLowerCase().replaceAll(/\s+/g, '') }}.com</span>
+          </div>
+          <div class="preview-body">
+            <img v-if="heroImage" :src="heroImage" :alt="`${app.name} preview`" class="preview-img">
+            <div v-else class="preview-placeholder">
+              <img :src="app.logo" :alt="app.name" class="preview-logo">
+              <p class="preview-name">{{ app.name }}</p>
+              <p class="preview-mini">Live preview</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mini stats below preview -->
+        <div class="preview-stats">
+          <div class="ps-item">
+            <span class="ps-value">{{ formattedUsers }}</span>
+            <span class="ps-label">Users</span>
+          </div>
+          <div class="ps-item">
+            <span class="ps-value">{{ app.rating.toFixed(1) }}<Icon name="heroicons:star-solid" class="ps-star" /></span>
+            <span class="ps-label">Rating</span>
+          </div>
+          <div class="ps-item">
+            <span class="ps-value">{{ app.performance?.uptime ?? 99.9 }}%</span>
+            <span class="ps-label">Uptime</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tag pills row -->
+    <div v-if="app.tags?.length" class="hero-tags">
+      <span class="tags-label">Best for:</span>
+      <Tag v-for="t in app.tags.slice(0, 8)" :key="t" size="sm">{{ t }}</Tag>
+    </div>
+  </section>
+</template>
+
+<style scoped>
+.app-hero {
+  background: #ffffff;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 28px 32px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle accent backdrop */
+.app-hero::before {
+  content: '';
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 360px;
+  height: 360px;
+  background: radial-gradient(circle, #fff3e6 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+.app-hero > * { position: relative; z-index: 1; }
+
+/* Trust bar */
+.hero-trust {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 0.5px dashed #e5e7eb;
+}
+.trust-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+.trust-icon { width: 14px; height: 14px; color: #6b7280; }
+.trust-icon.verified { color: #10b981; }
+.trust-sep { color: #d1d5db; font-size: 12px; }
+
+/* Grid */
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 36px;
+  align-items: start;
+}
+
+/* Left column */
+.brand-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.logo-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  border: 0.5px solid #e5e7eb;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+.logo-img { width: 100%; height: 100%; object-fit: contain; padding: 8px; }
+
+.brand-text { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.provider-pill { margin: 0; font-size: 13px; color: #6b7280; font-weight: 500; }
+.hero-badges { display: flex; flex-wrap: wrap; gap: 4px; }
+
+.hero-title {
+  margin: 0 0 8px;
+  font-size: 36px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.hero-tagline {
+  margin: 0 0 16px;
+  font-size: 17px;
+  color: #475569;
+  line-height: 1.55;
+  max-width: 540px;
+}
+
+.hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.meta-rating { display: flex; align-items: center; gap: 8px; }
+.meta-count { font-size: 13px; color: #6b7280; }
+.meta-sep { color: #d1d5db; }
+.meta-price { font-size: 14px; color: #0f172a; font-weight: 600; }
+
+/* Value props */
+.value-props {
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.value-props li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #1f2937;
+  font-weight: 500;
+}
+.value-props li :deep(svg) {
+  width: 18px;
+  height: 18px;
+  color: #ff8838;
+  flex-shrink: 0;
+}
+
+/* CTAs */
+.hero-ctas {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.cta-arrow { width: 16px; height: 16px; margin-left: 4px; }
+.demo-icon { width: 18px; height: 18px; margin-right: 4px; }
+.cta-sub {
+  margin: 0 0 16px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.quick-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding-top: 16px;
+  border-top: 0.5px solid #e5e7eb;
+}
+.qa-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  color: #6b7280;
+  border: 0;
+  padding: 6px 10px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 150ms ease, color 150ms ease;
+}
+.qa-btn:hover { background: #f9fafb; color: #ff8838; }
+.qa-btn :deep(svg) { width: 14px; height: 14px; }
+
+/* Right column: preview card */
+.hero-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.preview-card {
+  background: #ffffff;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+.preview-card:hover {
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.1);
+}
+
+.preview-chrome {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #f9fafb;
+  border-bottom: 0.5px solid #e5e7eb;
+}
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  display: inline-block;
+}
+.dot-r { background: #ff5f57; }
+.dot-y { background: #febc2e; }
+.dot-g { background: #28c840; }
+.preview-url {
+  margin-left: 12px;
+  font-size: 11px;
+  color: #6b7280;
+  font-family: ui-monospace, monospace;
+}
+
+.preview-body {
+  position: relative;
+  background: #f9fafb;
+  aspect-ratio: 16 / 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.preview-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.preview-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  text-align: center;
+}
+.preview-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  object-fit: contain;
+  background: #ffffff;
+  padding: 8px;
+  border: 0.5px solid #e5e7eb;
+}
+.preview-name { margin: 4px 0 0; font-size: 16px; font-weight: 600; color: #0f172a; }
+.preview-mini { margin: 0; font-size: 12px; color: #6b7280; }
+
+.preview-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  background: #f9fafb;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 12px;
+}
+.ps-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+}
+.ps-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.ps-star { width: 14px; height: 14px; color: #ff8838; }
+.ps-label { font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.04em; }
+
+/* Tags row */
+.hero-tags {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 0.5px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.tags-label { font-size: 12px; color: #6b7280; font-weight: 500; margin-right: 4px; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .app-hero { padding: 22px 20px 20px; }
+  .hero-grid { grid-template-columns: 1fr; gap: 24px; }
+  .hero-title { font-size: 28px; }
+  .hero-tagline { font-size: 15px; }
+  .preview-stats { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 480px) {
+  .hero-title { font-size: 24px; }
+  .hero-ctas { flex-direction: column; }
+  .hero-ctas :deep(button) { width: 100%; }
+}
+</style>

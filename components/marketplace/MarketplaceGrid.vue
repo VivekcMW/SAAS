@@ -16,51 +16,34 @@
     
     <div v-else class="grid-container">
       <template v-for="(app, index) in applications" :key="app.id">
-        <!-- Global App Card -->
+        <!-- Global Product Card - Horizontal Layout -->
         <div class="grid-item">
-          <AppCard 
-            :app="transformAppData(app)"
+          <ProductCard 
+            :product="transformAppData(app)"
+            layout="vertical"
             :variant="getAppVariant(app)"
-            :show-growth-stats="app.trending"
-            :show-premium-features="app.sponsored"
             @view-details="navigateToApp"
             @toggle-favorite="handleToggleFavorite"
             @card-click="navigateToApp"
           />
         </div>
 
-      <!-- Advertisement Card - Show every 6th position -->
-      <div v-if="(index + 1) % 6 === 0" class="grid-item ad-item">
-        <div class="ad-card">
-          <div class="ad-badge">
-            <UIcon name="i-heroicons-megaphone" dynamic /> Sponsored
-          </div>
-          
-          <div class="ad-content">
-            <div class="ad-header">
-              <div class="ad-logo">
-                <img :src="getAdLogo(index)" alt="Advertisement" loading="lazy" />
-              </div>
-              <h3 class="ad-title">{{ getAdTitle(index) }}</h3>
-            </div>
-            
-            <p class="ad-description">{{ getAdDescription(index) }}</p>
-            
-            <div class="ad-footer">
-              <button class="btn btn-ad full-width" @click="handleAdClick(index)">
-                Learn More
-              </button>
-            </div>
-          </div>
+        <!-- Sponsored slot — after 3rd cell, then every 6th cell. Aligns to grid row height. -->
+        <div v-if="shouldShowAd(index)" class="grid-item ad-item">
+          <SponsoredSlot
+            placement="grid"
+            variant="native-card"
+            label="Sponsored"
+            :exclude="visibleAppIds"
+          />
         </div>
-      </div>
-    </template>
+      </template>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from '#app'
 
 interface AppPricing {
@@ -91,32 +74,13 @@ const loading = ref(true)
 const favorites = ref<string[]>([])
 const route = useRoute()
 const router = useRouter()
-const advertisements = [
-  {
-    title: 'Boost Your Business with CloudFlow Pro',
-    description: 'Streamline your workflow with our AI-powered automation platform. Get 30% off your first year!',
-    logo: '/assets/images/integrations/cloudflow-pro.svg',
-    url: 'https://cloudflow-pro.com?ref=saasworld'
-  },
-  {
-    title: 'DataViz Analytics - Free Trial',
-    description: 'Transform your data into actionable insights. Advanced analytics made simple for everyone.',
-    logo: '/assets/images/integrations/dataviz.svg',
-    url: 'https://dataviz-analytics.com?ref=saasworld'
-  },
-  {
-    title: 'SecureVault Enterprise Security',
-    description: 'Protect your business with military-grade encryption. Trusted by 10,000+ companies worldwide.',
-    logo: '/assets/images/integrations/securevault.svg',
-    url: 'https://securevault.io?ref=saasworld'
-  },
-  {
-    title: 'TeamSync Collaboration Suite',
-    description: 'Bring your team together with our all-in-one collaboration platform. Start free today!',
-    logo: '/assets/images/integrations/teamsync.svg',
-    url: 'https://teamsync.app?ref=saasworld'
-  }
-]
+
+// Used to exclude apps already on the page from the sponsored slot rotation
+const visibleAppIds = computed(() => applications.value.map(a => a.id))
+
+// Inject sponsored cell after position 3 (index 2), then every 6 cells after that.
+// On a 4-col grid this puts ads at: end of row 1, mid-row 3, mid-row 5, etc.
+const shouldShowAd = (index: number) => index === 2 || (index > 2 && (index - 2) % 6 === 0)
 
 const isInFavorites = (appId: string) => favorites.value.includes(appId)
 
@@ -198,17 +162,6 @@ const handleToggleFavorite = (appId: string, isFavorited: boolean) => {
   }
 }
 
-const getAdTitle = (index: number) => advertisements[Math.floor(index / 4) % advertisements.length].title
-const getAdDescription = (index: number) => advertisements[Math.floor(index / 4) % advertisements.length].description
-const getAdLogo = (index: number) => advertisements[Math.floor(index / 4) % advertisements.length].logo
-
-const handleAdClick = (index: number) => {
-  const ad = advertisements[Math.floor(index / 4) % advertisements.length]
-  if (process.client) {
-    window.open(ad.url, '_blank', 'noopener,noreferrer')
-  }
-}
-
 const resetFilters = () => {
   router.replace({ query: {} })
 }
@@ -229,8 +182,8 @@ onMounted(async () => {
 
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
   margin-top: 1rem;
 }
 
@@ -238,6 +191,7 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   height: 100%;
+  min-width: 0;
 }
 
 .app-card-link {
@@ -269,124 +223,22 @@ onMounted(async () => {
   border-color: #2563eb;
 }
 
-/* Advertisement Cards */
+/* Sponsored slot cell — fills exactly one grid cell, matches AppCard row height */
 .ad-item {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
-.ad-card {
-  background: #FFFFFF;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  padding: 1.5rem;
+.ad-item :deep(.sponsored-slot),
+.ad-item :deep(.ad-card) {
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  transition: all 0.3s ease;
-  position: relative;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  width: 100%;
 }
 
-.ad-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  border-color: var(--sw-primary);
-}
-
-.ad-badge {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  padding: 0.25rem 0.5rem;
-  background: var(--sw-primary-soft);
-  color: var(--sw-primary-hover);
-  border-radius: 4px;
-  font-size: var(--fs-caption);
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  z-index: 2;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.ad-content {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.ad-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.ad-logo {
-  width: 64px;
-  height: 64px;
-  flex-shrink: 0;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.ad-logo img {
-  width: 80%;
-  height: 80%;
-  object-fit: contain;
-}
-
-.ad-title {
-  font-size: var(--fs-title-sm);
-  font-weight: 700;
-  color: #1f2937;
-  margin: 0;
-  line-height: 1.2;
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
-.ad-description {
-  color: #4b5563;
-  font-size: var(--fs-sm);
-  line-height: var(--lh-body);
-  margin: 0 0 1.5rem 0;
-  flex: 1;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.ad-footer {
-  margin-top: auto;
-}
-
-.btn-ad {
-  background: var(--sw-primary);
-  color: #fff;
-  font-weight: 600;
-  border-radius: 6px;
-}
-
-.btn-ad:hover {
-  background: var(--sw-primary-hover);
-  transform: translateY(-1px);
+/* Collapse the cell when no ad inventory is available so we don't leave a gap */
+.ad-item:not(:has(.sponsored-slot)) {
+  display: none;
 }
 
 /* Status Badges */
@@ -691,37 +543,39 @@ onMounted(async () => {
 }
 
 /* Responsive Design */
+@media (max-width: 1280px) {
+  .grid-container {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 1024px) {
   .grid-container {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.25rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
   }
 }
 
 @media (max-width: 768px) {
   .grid-container {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
   }
   
   .app-card {
     padding: 1.25rem;
   }
   
-  .ad-card {
-    padding: 1.25rem;
-  }
-  
-  .app-header, .ad-header {
+  .app-header {
     gap: 0.75rem;
   }
   
-  .app-logo, .ad-logo {
+  .app-logo {
     width: 56px;
     height: 56px;
   }
   
-  .app-name, .ad-title {
+  .app-name {
     font-size: var(--fs-body-lg);
   }
   
@@ -741,23 +595,19 @@ onMounted(async () => {
     padding: 1rem;
   }
   
-  .ad-card {
-    padding: 1rem;
-  }
-  
-  .app-header, .ad-header {
+  .app-header {
     flex-direction: column;
     text-align: center;
     gap: 0.75rem;
   }
   
-  .app-logo, .ad-logo {
+  .app-logo {
     width: 48px;
     height: 48px;
     align-self: center;
   }
   
-  .status-badge, .ad-badge {
+  .status-badge {
     position: static;
     align-self: flex-start;
     margin-bottom: 0.75rem;

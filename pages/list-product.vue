@@ -1,85 +1,36 @@
 <template>
   <div class="list-product-page">
-    <div class="page-header">
+    <div class="page-hero">
       <div class="container">
-        <h1>List Your Product on SaaSWorld</h1>
-        <p>Get your product or service in front of thousands of potential customers by listing it on our platform.</p>
-        
-        <!-- Benefits -->
-        <div class="benefits">
-          <div class="benefit-item">
-            <UIcon name="i-heroicons-eye" dynamic />
-            <span>Get discovered by thousands of users</span>
-          </div>
-          <div class="benefit-item">
-            <UIcon name="i-heroicons-rocket-launch" dynamic />
-            <span>Boost your product visibility</span>
-          </div>
-          <div class="benefit-item">
-            <UIcon name="i-heroicons-chart-bar-square" dynamic />
-            <span>Track performance analytics</span>
-          </div>
+        <h1>List your product on SaaSWorld</h1>
+        <p>Answer a few quick questions and you're live in under 2 minutes.</p>
+        <div class="hero-pills">
+          <span class="hero-pill"><Icon name="heroicons:bolt" /> No account required</span>
+          <span class="hero-pill"><Icon name="heroicons:lock-closed" /> Edit anytime</span>
+          <span class="hero-pill"><Icon name="heroicons:eye" /> Free listing</span>
         </div>
       </div>
     </div>
 
     <div class="container">
-      <!-- Onboarding Options Selection -->
-      <OnboardingOptions v-if="!selectedOption" @select-option="handleOptionSelection" />
-      
-      <!-- Selected Onboarding Flow -->
-      <component 
-        v-else
-        :is="selectedComponent"
-        :onboarding-type="selectedOption"
-        @go-back="resetSelection"
-      />
+      <ChatOnboarding />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import OnboardingOptions from '~/components/onboarding/OnboardingOptions.vue';
-import ProductOnboarding from '~/components/onboarding/ProductOnboarding.vue';
-import QuickListOnboarding from '~/components/onboarding/QuickListOnboarding.vue';
-import AIOnboarding from '~/components/onboarding/AIOnboarding.vue';
+import ChatOnboarding from '~/components/onboarding/ChatOnboarding.vue';
 
-// Onboarding flow selection
-const selectedOption = ref<string | null>(null);
-
-const selectedComponent = computed(() => {
-  switch (selectedOption.value) {
-    case 'quick':
-      return QuickListOnboarding;
-    case 'complete':
-      return ProductOnboarding;
-    case 'ai':
-      return AIOnboarding;
-    default:
-      return ProductOnboarding;
-  }
-});
-
-const handleOptionSelection = (option: string) => {
-  selectedOption.value = option;
-};
-
-const resetSelection = () => {
-  selectedOption.value = null;
-};
-
-// SEO
 useHead({
   title: 'List Your Product - SaaSWorld Marketplace',
   meta: [
-    { 
-      name: 'description', 
-      content: 'List your SaaS product on SaaSWorld marketplace and get discovered by thousands of potential customers. Choose from Quick List, Complete Profile, or AI-powered listing options.' 
+    {
+      name: 'description',
+      content: 'List your SaaS product on SaaSWorld in under 2 minutes with our chat-based onboarding. Paste a URL or answer a few questions and your listing goes live instantly.'
     },
-    { name: 'keywords', content: 'list product, saas marketplace, submit application, product listing, saas directory, ai listing' },
+    { name: 'keywords', content: 'list product, saas marketplace, submit application, product listing, saas directory' },
     { property: 'og:title', content: 'List Your Product - SaaSWorld Marketplace' },
-    { property: 'og:description', content: 'Get your SaaS product in front of thousands of potential customers by listing it on SaaSWorld.' },
+    { property: 'og:description', content: 'Get your SaaS product in front of thousands of customers in under 2 minutes.' },
     { property: 'og:type', content: 'website' },
     { property: 'og:url', content: 'https://saasworld.club/list-product' }
   ]
@@ -89,67 +40,65 @@ useHead({
 <style scoped>
 .list-product-page {
   width: 100%;
+  background: #fafafa;
+  min-height: 100vh;
 }
 
-.page-header {
-  background-color: var(--bg-gray);
-  padding: var(--spacing-xxl) 0;
+.page-hero {
+  background: #ffffff;
+  border-bottom: 0.5px solid #e5e7eb;
+  padding: 40px 0 32px;
   text-align: center;
-  margin-bottom: var(--spacing-md);
 }
 
-.page-header h1 {
-  font-size: 2.5rem;
-  color: var(--primary-color);
-  margin-bottom: var(--spacing-md);
+.page-hero h1 {
+  margin: 0 0 8px;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111827;
 }
 
-.page-header p {
-  font-size: 1.2rem;
-  color: var(--text-secondary);
-  max-width: 600px;
-  margin: 0 auto var(--spacing-lg) auto;
+.page-hero p {
+  margin: 0 0 16px;
+  font-size: 1rem;
+  color: #6b7280;
 }
 
-.benefits {
-  display: flex;
-  justify-content: center;
-  gap: var(--spacing-xl);
+.hero-pills {
+  display: inline-flex;
+  gap: 8px;
   flex-wrap: wrap;
-  margin-top: var(--spacing-lg);
+  justify-content: center;
 }
 
-.benefit-item {
-  display: flex;
+.hero-pill {
+  display: inline-flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  color: var(--text-secondary);
+  gap: 4px;
+  background: #f9fafb;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: #374151;
   font-weight: 500;
 }
 
-.benefit-item svg {
-  color: var(--primary-color);
-  width: 20px;
-  height: 20px;
+.hero-pill :deep(svg) {
+  width: 12px;
+  height: 12px;
+  color: #ff8838;
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 760px;
   margin: 0 auto;
-  padding: 0 var(--spacing-md);
+  padding: 0 16px;
 }
 
-@media (max-width: 768px) {
-  .page-header {
-    padding: var(--spacing-xl) 0;
-  }
-
-  .page-header h1 {
-    font-size: 2rem;
-  }
-
-  .page-header p {
-    font-size: 1.1rem;
-  }
+@media (max-width: 600px) {
+  .page-hero { padding: 28px 0 22px; }
+  .page-hero h1 { font-size: 1.5rem; }
+  .page-hero p { font-size: 0.95rem; }
 }
 </style>

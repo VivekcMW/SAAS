@@ -1,6 +1,44 @@
 <template>
   <div class="onboarding-options">
     <div class="options-grid">
+      <!-- Express Option (Recommended) -->
+      <div class="option-card express recommended" @click="selectOption('express')">
+        <div class="recommended-ribbon">RECOMMENDED</div>
+        <div class="option-header">
+          <div class="option-icon express-icon">
+            <UIcon dynamic name="i-heroicons-bolt" />
+          </div>
+          <div class="option-badge express">60 seconds</div>
+        </div>
+
+        <h3>Express</h3>
+        <p class="option-description">Just paste your URL — we auto-fill everything from your website</p>
+
+        <div class="option-features">
+          <div class="feature-item">
+            <UIcon dynamic name="i-heroicons-clock" />
+            <span>Under 2 minutes</span>
+          </div>
+          <div class="feature-item">
+            <UIcon dynamic name="i-heroicons-sparkles" />
+            <span>Auto-detected logo, name &amp; pricing</span>
+          </div>
+          <div class="feature-item">
+            <UIcon dynamic name="i-heroicons-pencil-square" />
+            <span>Edit anything before publishing</span>
+          </div>
+          <div class="feature-item">
+            <UIcon dynamic name="i-heroicons-rocket-launch" />
+            <span>No account required</span>
+          </div>
+        </div>
+
+        <button class="option-button express">
+          Start Express Listing
+          <UIcon dynamic name="i-heroicons-arrow-right" />
+        </button>
+      </div>
+
       <!-- Quick List Option -->
       <div class="option-card quick" @click="selectOption('quick')">
         <div class="option-header">
@@ -348,6 +386,47 @@ const selectOption = (option: string) => {
   color: white;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+/* Express card */
+.option-card.express {
+  border-color: #ff8838;
+  background: linear-gradient(180deg, #fffaf5 0%, #ffffff 100%);
+}
+.option-card.express:hover {
+  border-color: #e57320;
+  box-shadow: 0 8px 24px rgba(255, 136, 56, 0.18);
+}
+.option-card.express .option-icon,
+.option-icon.express-icon {
+  background: #fff3e6;
+  color: #ff8838;
+}
+.option-badge.express {
+  background: #fff3e6;
+  color: #b45309;
+}
+.option-button.express {
+  background: #ff8838;
+  color: #ffffff;
+  border: 1px solid #ff8838;
+}
+.option-button.express:hover {
+  background: #e57320;
+  border-color: #e57320;
+}
+.recommended-ribbon {
+  position: absolute;
+  top: 12px;
+  right: -32px;
+  transform: rotate(35deg);
+  background: #ff8838;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 4px 36px;
+  z-index: 1;
 }
 
 /* Funding feature styling */

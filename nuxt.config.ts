@@ -35,6 +35,17 @@ export default defineNuxtConfig({
     compressPublicAssets: true
   },
 
+  // Per-route headers — embed pages must be iframe-safe
+  routeRules: {
+    '/embed/**': {
+      headers: {
+        'X-Frame-Options': 'ALLOWALL',
+        'Content-Security-Policy': "frame-ancestors *",
+        'Cache-Control': 'public, max-age=300, s-maxage=600'
+      }
+    }
+  },
+
   // Configure @nuxt/icon
   icon: {
     size: '24px',

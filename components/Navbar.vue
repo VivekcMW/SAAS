@@ -13,12 +13,8 @@
         <!-- Center: Primary navigation -->
         <div class="nav-links" :class="{ 'show': isMobileMenuOpen }">
           <ul>
-            <li>
-              <button @click="openCategoriesDrawer" class="nav-item nav-item-dropdown" aria-haspopup="true">
-                <UIcon dynamic name="i-heroicons-squares-2x2" class="nav-icon" />
-                <span>Categories</span>
-                <UIcon dynamic name="i-heroicons-chevron-down" class="nav-chevron" />
-              </button>
+            <li class="nav-item-categories">
+              <CategoriesLauncher trigger-label="Categories" />
             </li>
             <li v-for="item in navItems" :key="item.label">
               <NuxtLink :to="item.path" :class="['nav-item', { active: currentPath === item.path }]">
@@ -97,138 +93,8 @@
     <div class="mobile-menu-overlay" :class="{ 'show': isMobileMenuOpen }" @click="toggleMobileMenu"></div>
   </nav>
   
-  <!-- Categories Drawer -->
-  <div class="categories-drawer" :class="{ 'open': isCategoriesDrawerOpen }">
-    <div class="drawer-overlay" @click="closeCategoriesDrawer"></div>
-    <div class="drawer-content">
-      <div class="drawer-header">
-        <div class="drawer-header-content">
-          <div class="drawer-title-section">
-            <h2 class="drawer-title">Browse Categories</h2>
-            <p class="drawer-subtitle">Discover {{ categoryGroups.length }} groups with {{ getTotalSubcategories() }} categories</p>
-          </div>
-          <button @click="closeCategoriesDrawer" class="drawer-close">
-            <UIcon dynamic name="i-heroicons-x-mark" />
-          </button>
-        </div>
-        
-        <!-- Search -->
-        <div class="drawer-search">
-          <div class="search-input-wrapper">
-            <UIcon dynamic name="i-heroicons-magnifying-glass" class="search-icon" />
-            <input 
-              v-model="searchQuery"
-              type="text" 
-              placeholder="Search categories..." 
-              class="search-input"
-            />
-          </div>
-        </div>
-      </div>
-      
-      <div class="drawer-body">
-        <!-- Search Results -->
-        <div v-if="searchQuery && searchResults.length > 0" class="search-results-container">
-          <h3 class="search-results-title">Search Results</h3>
-          <div class="search-results-grid">
-            <NuxtLink 
-              v-for="result in searchResults.slice(0, 20)" 
-              :key="result.path"
-              :to="result.path"
-              class="search-result-item"
-              @click="closeCategoriesDrawer"
-            >
-              <span class="result-name">{{ result.name }}</span>
-              <span class="result-group">{{ result.groupName }}</span>
-            </NuxtLink>
-          </div>
-        </div>
-        
-        <!-- No Search Results -->
-        <div v-else-if="searchQuery && searchResults.length === 0" class="no-results">
-          <UIcon dynamic name="i-heroicons-magnifying-glass" class="no-results-icon" />
-          <p class="no-results-text">No categories found for "{{ searchQuery }}"</p>
-        </div>
-        
-        <!-- Categories Layout -->
-        <div v-else class="categories-layout">
-          <!-- Left Sidebar - Category Groups -->
-          <div class="category-groups-sidebar">
-            <h3 class="sidebar-title">Category Groups</h3>
-            <div class="category-groups-list">
-              <button
-                v-for="group in categoryGroups.filter(g => g.id !== 'all')"
-                :key="group.id"
-                @click="selectedCategoryGroup = group.id"
-                class="category-group-item"
-                :class="{ 'active': selectedCategoryGroup === group.id }"
-              >
-                <div class="group-icon">
-                  <UIcon :name="group.icon" />
-                </div>
-                <div class="group-info">
-                  <span class="group-name">{{ group.name }}</span>
-                  <span class="group-count">{{ group.count }} categories</span>
-                </div>
-                <UIcon 
-                  dynamic 
-                  name="i-heroicons-chevron-right" 
-                  class="chevron-right"
-                />
-              </button>
-            </div>
-          </div>
-          
-          <!-- Right Content - Subcategories -->
-          <div class="subcategories-content">
-            <div v-if="!selectedCategoryGroup" class="no-group-selected">
-              <div class="no-selection-icon">
-                <UIcon dynamic name="i-heroicons-cursor-arrow-rays" />
-              </div>
-              <h3 class="no-selection-title">Select a Category Group</h3>
-              <p class="no-selection-text">Choose a category group from the left to browse its categories</p>
-            </div>
-            
-            <div v-else class="selected-group-content">
-              <div class="group-header">
-                <div class="group-header-icon">
-                  <UIcon :name="getSelectedGroupData()?.icon" />
-                </div>
-                <div class="group-header-info">
-                  <h3 class="selected-group-title">{{ getSelectedGroupData()?.name }}</h3>
-                  <p class="selected-group-subtitle">{{ getSelectedGroupCategories().length }} categories</p>
-                </div>
-              </div>
-              
-              <div class="subcategories-list">
-                <NuxtLink
-                  v-for="category in getSelectedGroupCategories()"
-                  :key="category.id"
-                  :to="`/marketplace/category/${category.id}`"
-                  class="subcategory-card"
-                  @click="closeCategoriesDrawer"
-                >
-                  <div class="subcategory-icon">
-                    <UIcon :name="category.icon" />
-                  </div>
-                  <div class="subcategory-info">
-                    <h4 class="subcategory-name">{{ category.name }}</h4>
-                    <p class="subcategory-description">Browse {{ category.name.toLowerCase() }}</p>
-                  </div>
-                  <UIcon 
-                    dynamic 
-                    name="i-heroicons-arrow-right" 
-                    class="subcategory-arrow"
-                  />
-                </NuxtLink>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
+  <!-- Categories Drawer (legacy inline markup removed — now handled by CategoriesLauncher in navbar) -->
+
   <!-- Sign Up Modal -->
   <div class="signup-modal" :class="{ 'open': showSignUpModal }">
     <div class="modal-overlay" @click="closeSignUpModal"></div>
@@ -512,7 +378,7 @@ import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useGlobalAuth } from '~/composables/useGlobalAuth';
 
-import { allCategories, categoryGroups, getCategoriesByGroup, searchCategories } from '~/utils/categories';
+import { allCategories, categoryGroups, getCategoriesByGroup } from '~/utils/categories';
 
 const route = useRoute();
 

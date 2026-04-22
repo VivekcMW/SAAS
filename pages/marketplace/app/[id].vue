@@ -1,1419 +1,1223 @@
+<script setup lang="ts">
+import { computed, ref } from 'vue'
+
+const route = useRoute()
+const router = useRouter()
+const appId = computed(() => route.params.id as string)
+
+interface Pricing {
+  type: 'free' | 'trial' | 'paid' | 'contact'
+  value?: number
+  period?: string
+}
+interface AppData {
+  id: string
+  slug?: string
+  name: string
+  logo: string
+  provider: string
+  description: string
+  longDescription?: string
+  rating: number
+  reviewCount: number
+  tags?: string[]
+  pricing: Pricing
+  category?: string
+  featured?: boolean
+  trending?: boolean
+  sponsored?: boolean
+  screenshots?: { url: string; caption?: string }[]
+  features?: string[] | { name: string; group?: string; included?: boolean; description?: string; tier?: string }[]
+  integrations?: string[]
+  security?: { certifications?: string[] }
+  performance?: { uptime?: number }
+  analytics?: { activeUsers?: number }
+  languages?: string[]
+  version?: string
+  lastUpdated?: string
+}
+
+// Fetch data
+const { data, pending, error } = await useFetch<AppData>(`/api/apps/${appId.value}`, {
+  key: `app-${appId.value}`
+})
+
+const app = computed(() => data.value as AppData | null)
+
+// --- Normalization helpers ---
+const normalizedFeatures = computed(() => {
+  const feats = app.value?.features
+  if (!feats || feats.length === 0) {
+    // Provide sensible defaults so matrix isn't empty
+    return [
+      { name: 'User management', group: 'Core', included: true },
+      { name: 'API access', group: 'Core', included: true },
+      { name: 'Custom reports', group: 'Analytics', included: true },
+      { name: 'SSO / SAML', group: 'Security', included: true, tier: 'Business' },
+      { name: 'Audit logs', group: 'Security', included: true, tier: 'Business' },
+      { name: 'Dedicated support', group: 'Support', included: true, tier: 'Enterprise' }
+    ]
+  }
+  if (typeof feats[0] === 'string') {
+    return (feats as string[]).map(f => ({ name: f, included: true, group: 'Core Features' }))
+  }
+  return feats as { name: string; group?: string; included?: boolean; description?: string; tier?: string }[]
+})
+
+const normalizedScreenshots = computed(() => {
+  const s = app.value?.screenshots || []
+  if (s.length === 0) {
+    const color = '#ff8838'
+    return Array.from({ length: 3 }, (_, i) => ({
+      type: 'image' as const,
+      url: `https://placehold.co/1280x800/${color.replace('#', '')}/ffffff?text=${encodeURIComponent(app.value?.name || 'App')}+Screen+${i + 1}`,
+      caption: `${app.value?.name} — screen ${i + 1}`
+    }))
+  }
+  return s.map(ss => ({ type: 'image' as const, url: ss.url, caption: ss.caption }))
+})
+
+const normalizedIntegrations = computed(() => {
+  const raw = app.value?.integrations || []
+  if (raw.length === 0) {
+    return ['Slack', 'Google Drive', 'Zapier', 'GitHub', 'Notion', 'Microsoft Teams'].map(n => ({
+      name: n,
+      type: 'native' as const
+    }))
+  }
+  return raw.map(n => ({ name: n, type: 'native' as const }))
+})
+
+// --- Generated/derived data (Phase 1 stub; Phase 2 will wire AI) ---
+const verdict = computed(() => {
+  if (!app.value) return ''
+  if (app.value.featured) return "Editor's Pick"
+  if (app.value.trending) return 'Trending'
+  if (app.value.rating >= 4.5) return 'Top Rated'
+  return ''
+})
+
+const priceLabel = computed(() => {
+  const p = app.value?.pricing
+  if (!p) return '—'
+  if (p.type === 'free') return 'Free'
+  if (p.type === 'contact') return 'Custom'
+  if (p.value) return `$${p.value}`
+  return 'Paid'
+})
+
+const stats = computed(() => [
+  { label: 'Rating', value: `${app.value?.rating.toFixed(1) || '—'} ★`, icon: 'heroicons:star', hint: `${app.value?.reviewCount || 0} reviews` },
+  { label: 'Starting Price', value: priceLabel.value, icon: 'heroicons:currency-dollar', hint: app.value?.pricing?.period ? `per ${app.value.pricing.period}` : 'starts at' },
+  { label: 'Active Users', value: app.value?.analytics?.activeUsers ? formatNumber(app.value.analytics.activeUsers) : '10K+', icon: 'heroicons:users' },
+  { label: 'Uptime', value: `${app.value?.performance?.uptime || 99.9}%`, icon: 'heroicons:signal', hint: 'last 90 days' },
+  { label: 'Deployment', value: 'Cloud / SaaS', icon: 'heroicons:cloud' },
+  { label: 'Category', value: getCategoryLabel(app.value?.category), icon: 'heroicons:tag' }
+])
+
+const trustBadges = computed(() => {
+  const certs = app.value?.security?.certifications || []
+  return certs.map(c => ({
+    label: c,
+    icon: 'heroicons:shield-check',
+    hint: `Compliant with ${c}`
+  }))
+})
+
+const pricingPlans = computed(() => {
+  const p = app.value?.pricing
+  const base = p?.value || 29
+  if (p?.type === 'free') {
+    return [
+      {
+        name: 'Free',
+        price: 0,
+        description: 'Perfect for individuals getting started',
+        features: ['Core features', 'Up to 3 projects', 'Community support'],
+        popular: false
+      },
+      {
+        name: 'Pro',
+        price: base || 19,
+        description: 'For growing teams',
+        features: ['Everything in Free', 'Unlimited projects', 'Priority support', 'Advanced analytics', 'API access'],
+        popular: true
+      },
+      {
+        name: 'Enterprise',
+        price: null,
+        custom: true,
+        description: 'For large organizations',
+        features: ['Everything in Pro', 'SSO / SAML', 'Dedicated CSM', 'Custom SLA', 'Audit logs'],
+        popular: false
+      }
+    ]
+  }
+  return [
+    {
+      name: 'Starter',
+      price: Math.round(base * 0.5),
+      description: 'For individuals and small teams',
+      features: ['Up to 5 users', 'Core features', 'Email support', 'Standard integrations'],
+      popular: false
+    },
+    {
+      name: 'Business',
+      price: base,
+      description: 'Most popular for growing teams',
+      features: ['Up to 50 users', 'Advanced features', 'Priority support', 'API access', 'Custom reports'],
+      popular: true
+    },
+    {
+      name: 'Enterprise',
+      price: null,
+      custom: true,
+      description: 'For large-scale deployments',
+      features: ['Unlimited users', 'SSO / SAML', 'Dedicated support', 'Custom SLA', 'Audit logs'],
+      popular: false
+    }
+  ]
+})
+
+const sampleReviews = [
+  {
+    id: 'r1',
+    author: 'Alex Chen',
+    title: 'Product Manager · 51–200 employees',
+    rating: 5,
+    reviewTitle: 'Transformed how we work',
+    content: 'Onboarded the whole team in under a week. The automation alone saved us 15 hours/week. Support is responsive.',
+    date: 'Mar 12, 2026',
+    verified: true,
+    helpfulVotes: 24
+  },
+  {
+    id: 'r2',
+    author: 'Priya Sharma',
+    title: 'Engineering Lead · 11–50 employees',
+    rating: 4,
+    reviewTitle: 'Great but steep learning curve',
+    content: 'Powerful platform once you get it. First week was rough, but the docs got better. Worth the investment.',
+    date: 'Feb 28, 2026',
+    verified: true,
+    helpfulVotes: 17
+  },
+  {
+    id: 'r3',
+    author: 'Marcus Reed',
+    title: 'Founder · 1–10 employees',
+    rating: 5,
+    reviewTitle: 'Perfect for small teams',
+    content: 'Free tier got us started; we upgraded within a month. Integrations with Slack and Notion are flawless.',
+    date: 'Feb 10, 2026',
+    verified: false,
+    helpfulVotes: 9
+  }
+]
+
+const ratingBreakdown = computed(() => {
+  const total = app.value?.reviewCount || 100
+  return {
+    5: Math.round(total * 0.62),
+    4: Math.round(total * 0.24),
+    3: Math.round(total * 0.09),
+    2: Math.round(total * 0.03),
+    1: Math.round(total * 0.02),
+    total
+  }
+})
+
+const sentimentTags = [
+  { tag: 'Easy onboarding', percent: 92, positive: true },
+  { tag: 'Great support', percent: 87, positive: true },
+  { tag: 'Intuitive UI', percent: 81, positive: true },
+  { tag: 'Pricey', percent: 34, positive: false },
+  { tag: 'Learning curve', percent: 28, positive: false }
+]
+
+const faqs = computed(() => {
+  const name = app.value?.name || 'This app'
+  const integrationNames = normalizedIntegrations.value.slice(0, 5).map(i => i.name).join(', ')
+  const certs = (app.value?.security?.certifications || ['SOC 2 Type II']).join(', ')
+  const period = app.value?.pricing?.period
+  const periodSuffix = period ? ` per ${period}` : ''
+  const freeAnswer = `Yes, ${name} offers a free tier with core features. Paid plans are available for teams that need more.`
+  const paidAnswer = `${name} offers a free trial. Paid plans start at ${priceLabel.value}${periodSuffix}.`
+  return [
+    {
+      q: `Is ${name} free to use?`,
+      a: app.value?.pricing?.type === 'free' ? freeAnswer : paidAnswer
+    },
+    {
+      q: `What integrations does ${name} support?`,
+      a: `${name} integrates with popular tools including ${integrationNames}, and many more via API and Zapier.`
+    },
+    {
+      q: `Is ${name} secure?`,
+      a: `Yes. ${name} is ${certs} compliant and encrypts data in transit and at rest.`
+    },
+    {
+      q: 'Can I cancel my subscription anytime?',
+      a: 'Yes. You can cancel at any time from your account settings. No long-term contracts required.'
+    },
+    {
+      q: `Does ${name} have a mobile app?`,
+      a: `${name} is available on web, iOS, and Android with full feature parity.`
+    },
+    {
+      q: 'What support options are available?',
+      a: 'All plans include email support. Paid plans get priority support with guaranteed response times. Enterprise customers get a dedicated customer success manager.'
+    }
+  ]
+})
+
+const alternatives = ref([
+  { id: 'alt-1', name: 'Notion', tagline: 'All-in-one workspace for notes, docs & wikis', rating: 4.6, startingPrice: '$8/mo', logo: 'https://upload.wikimedia.org/wikipedia/commons/e/e9/Notion-logo.svg' },
+  { id: 'alt-2', name: 'Asana', tagline: 'Work management for teams of all sizes', rating: 4.4, startingPrice: '$10.99/mo' },
+  { id: 'alt-3', name: 'Monday.com', tagline: 'Visual project management platform', rating: 4.5, startingPrice: '$9/mo' },
+  { id: 'alt-4', name: 'ClickUp', tagline: 'One app to replace them all', rating: 4.5, startingPrice: 'Free' },
+  { id: 'alt-5', name: 'Linear', tagline: 'Modern issue tracking for software teams', rating: 4.8, startingPrice: '$8/mo' }
+])
+
+const companyInfo = computed(() => ({
+  name: app.value?.provider || '—',
+  founded: 2015,
+  headquarters: 'San Francisco, CA',
+  employees: '201–500',
+  fundingTotal: '$120M',
+  latestRound: 'Series C (2024)',
+  investors: ['Sequoia', 'a16z', 'Accel'],
+  website: '#',
+  linkedin: '#',
+  twitter: '#'
+}))
+
+// --- About section: derived highlights & use-cases ---
+const aboutQuickFacts = computed(() => {
+  const p = app.value?.pricing
+  let startingPrice = 'Paid plans'
+  if (p?.type === 'free') startingPrice = 'Free forever'
+  else if (p?.type === 'contact') startingPrice = 'Custom pricing'
+  else if (p?.value) {
+    const suffix = p.period ? `/${p.period}` : ''
+    startingPrice = `From $${p.value}${suffix}`
+  }
+  return [
+    { icon: 'heroicons:tag', label: 'Category', value: getCategoryLabel(app.value?.category) },
+    { icon: 'heroicons:currency-dollar', label: 'Starts at', value: startingPrice },
+    { icon: 'heroicons:cloud', label: 'Deployment', value: 'Cloud · SaaS' },
+    { icon: 'heroicons:globe-alt', label: 'Available in', value: `${app.value?.languages?.length || 12}+ languages` }
+  ]
+})
+
+const aboutHighlights = computed(() => {
+  const rating = app.value?.rating || 0
+  const featCount = normalizedFeatures.value.length
+  const integCount = normalizedIntegrations.value.length
+  const uptime = app.value?.performance?.uptime || 99.9
+  const items = [
+    {
+      icon: 'heroicons:bolt',
+      color: '#ff8838',
+      bg: '#fff3e6',
+      title: 'Fast to deploy',
+      body: `Go from signup to production in hours with ${featCount}+ ready-to-use capabilities and clear onboarding.`
+    },
+    {
+      icon: 'heroicons:squares-plus',
+      color: '#6d28d9',
+      bg: '#f5f3ff',
+      title: 'Fits your stack',
+      body: `${integCount} native integrations plus REST APIs and webhooks so it plugs into what you already use.`
+    },
+    {
+      icon: 'heroicons:shield-check',
+      color: '#047857',
+      bg: '#ecfdf5',
+      title: 'Enterprise-grade',
+      body: `${uptime}% uptime with SOC 2, encryption at rest, and role-based access — trusted by teams of every size.`
+    }
+  ]
+  if (rating >= 4.5) {
+    items[0] = {
+      icon: 'heroicons:sparkles',
+      color: '#ff8838',
+      bg: '#fff3e6',
+      title: 'Loved by users',
+      body: `Rated ${rating.toFixed(1)}★ across ${app.value?.reviewCount || 0}+ reviews — teams praise onboarding, support, and day-to-day usability.`
+    }
+  }
+  return items
+})
+
+const aboutUseCases = computed(() => {
+  const base = app.value?.tags?.length ? app.value.tags.slice(0, 4) : []
+  if (base.length >= 3) return base
+  return ['Small teams', 'Growing startups', 'Mid-market companies', 'Enterprise teams']
+})
+
+const aboutResources = computed(() => [
+  { icon: 'heroicons:book-open', label: 'Documentation', href: '#' },
+  { icon: 'heroicons:academic-cap', label: 'Getting started guide', href: '#' },
+  { icon: 'heroicons:code-bracket', label: 'API reference', href: '#' },
+  { icon: 'heroicons:chat-bubble-left-right', label: 'Community forum', href: '#' },
+  { icon: 'heroicons:lifebuoy', label: 'Contact support', href: '#' }
+])
+
+// --- Handlers ---
+const handleTrial = () => { /* Phase 2: route to vendor site or onboarding flow */ }
+const handleDemo = () => { /* Phase 2: open video demo modal */ }
+const handleSave = () => { /* Phase 2: add to user shortlist */ }
+const handleCompare = () => { router.push(`/marketplace/compare?apps=${appId.value}`) }
+const handleShareScroll = () => { /* handled by <AppDetailsShareMenu> */ }
+const handlePrint = () => {
+  if (globalThis.window === undefined) return
+  globalThis.print()
+}
+
+// --- SEO ---
+const pageUrl = computed(() => {
+  const base = 'https://saasworld.com'
+  return `${base}/marketplace/app/${appId.value}`
+})
+
+useHead(() => ({
+  title: app.value ? `${app.value.name} — Reviews, Pricing, Alternatives | SaaSWorld` : 'App Details | SaaSWorld',
+  meta: [
+    { name: 'description', content: app.value?.description || 'Discover SaaS tools on SaaSWorld.' },
+    { property: 'og:title', content: app.value?.name || 'SaaSWorld' },
+    { property: 'og:description', content: app.value?.description || '' },
+    { property: 'og:image', content: `/api/og/app/${appId.value}` },
+    { property: 'og:url', content: pageUrl.value },
+    { property: 'og:type', content: 'website' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: app.value?.name || '' },
+    { name: 'twitter:description', content: app.value?.description || '' },
+    { name: 'twitter:image', content: `/api/og/app/${appId.value}` }
+  ],
+  script: app.value
+    ? [
+        {
+          type: 'application/ld+json',
+          innerHTML: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'SoftwareApplication',
+            name: app.value.name,
+            description: app.value.description,
+            image: app.value.logo,
+            applicationCategory: app.value.category,
+            operatingSystem: 'Web, iOS, Android',
+            aggregateRating: {
+              '@type': 'AggregateRating',
+              ratingValue: app.value.rating,
+              reviewCount: app.value.reviewCount
+            },
+            offers: {
+              '@type': 'Offer',
+              price: app.value.pricing?.value ?? 0,
+              priceCurrency: 'USD'
+            },
+            brand: {
+              '@type': 'Brand',
+              name: app.value.provider
+            }
+          })
+        }
+      ]
+    : []
+}))
+
+const sections = [
+  { id: 'overview', label: 'Overview' },
+  { id: 'ai-insights', label: 'AI Insights', short: 'AI' },
+  { id: 'screenshots', label: 'Screenshots', short: 'Shots' },
+  { id: 'about', label: 'About' },
+  { id: 'features', label: 'Features' },
+  { id: 'pricing', label: 'Pricing' },
+  { id: 'tools', label: 'ROI & Alerts', short: 'Tools' },
+  { id: 'integrations', label: 'Integrations', short: 'Integr.' },
+  { id: 'reviews', label: 'Reviews' },
+  { id: 'changelog', label: "What's New", short: 'Updates' },
+  { id: 'alternatives', label: 'Alternatives', short: 'Alts' },
+  { id: 'migration', label: 'Migration' },
+  { id: 'faq', label: 'FAQ' }
+]
+
+// --- Utilities ---
+function formatNumber(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`
+  return String(n)
+}
+
+function getCategoryLabel(cat?: string): string {
+  if (!cat) return 'SaaS'
+  return cat.charAt(0).toUpperCase() + cat.slice(1).replaceAll('-', ' ')
+}
+</script>
+
 <template>
-  <div class="app-details-page">
-    <!-- Loading State -->
-    <div v-if="pending" class="loading-container">
-      <div class="loading-spinner"></div>
-      <p>Loading application details...</p>
+  <div class="app-details">
+    <!-- Loading -->
+    <div v-if="pending" class="state-container">
+      <div class="spinner"></div>
+      <p>Loading application details…</p>
     </div>
 
-    <!-- Error State -->
-    <div v-else-if="error" class="error-container">
-      <div class="error-icon">
-        <UIcon name="i-heroicons-exclamation-triangle" dynamic />
+    <!-- Error -->
+    <div v-else-if="error || !app" class="state-container">
+      <Icon name="heroicons:exclamation-triangle" class="error-icon" />
+      <h2>Application not found</h2>
+      <p>We couldn't find the application you're looking for.</p>
+      <Button variant="primary" to="/marketplace">Back to Marketplace</Button>
+    </div>
+
+    <!-- Content -->
+    <template v-else>
+      <!-- Breadcrumb -->
+      <div class="container breadcrumb-row">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <NuxtLink to="/marketplace" class="bc-link">Marketplace</NuxtLink>
+          <Icon name="heroicons:chevron-right" class="bc-sep" />
+          <NuxtLink
+            v-if="app.category"
+            :to="`/marketplace?category=${app.category}`"
+            class="bc-link"
+          >
+            {{ getCategoryLabel(app.category) }}
+          </NuxtLink>
+          <Icon v-if="app.category" name="heroicons:chevron-right" class="bc-sep" />
+          <span class="bc-current">{{ app.name }}</span>
+        </nav>
       </div>
-      <h2>Application Not Found</h2>
-      <p>The requested application could not be found.</p>
-      <NuxtLink to="/marketplace" class="btn btn-primary">
-        Back to Marketplace
-      </NuxtLink>
-    </div>
 
-    <!-- Application Details -->
-    <div v-else-if="app" class="app-content">
-      <!-- Hero Section -->
-      <section class="app-hero">
-        <div class="container">
-          <div class="hero-content">
-            <div class="app-header">
-              <div class="app-logo-large">
-                <img :src="app.logo" :alt="app.name + ' logo'" @error="handleImageError" />
+      <!-- Hero -->
+      <div class="container">
+        <AppHero
+          :app="app"
+          :verdict="verdict"
+          @trial="handleTrial"
+          @demo="handleDemo"
+          @save="handleSave"
+          @compare="handleCompare"
+          @share="handleShareScroll"
+        >
+          <template #share>
+            <AppShareMenu
+              :url="pageUrl"
+              :title="`${app.name} — ${app.description}`"
+              :description="app.description"
+              :hashtags="['SaaS', 'SaaSWorld', app.category || 'software']"
+            />
+          </template>
+        </AppHero>
+      </div>
+
+      <!-- Sticky sub-nav -->
+      <AppStickyNav :sections="sections" />
+
+      <!-- Main content -->
+      <main id="app-main" class="container app-main" tabindex="-1">
+        <!-- Overview / Stats -->
+        <section id="overview" class="section">
+          <div class="overview-toolbar">
+            <AppVoiceOverview :text="`${app.name}. ${app.longDescription || app.description || ''}`" :app-name="app.name" />
+            <div class="toolbar-right">
+              <button class="print-btn no-print" type="button" @click="handlePrint" title="Print or save as PDF">
+                <Icon name="heroicons:printer" />
+                Print / PDF
+              </button>
+              <AppStackBuilder :app-id="app.id" :app-name="app.name" :app-logo="app.logo" />
+            </div>
+          </div>
+          <AppStatsStrip :stats="stats" />
+          <div v-if="trustBadges.length" class="trust-row">
+            <AppTrustBadges :badges="trustBadges" />
+          </div>
+        </section>
+
+        <!-- AI Insights (Phase 2) -->
+        <section id="ai-insights" class="section">
+          <header class="section-head">
+            <h2 class="section-title">AI-Powered Insights</h2>
+            <p class="section-sub">Decide in minutes — not hours of research</p>
+          </header>
+
+          <AISummaryTabs :app-id="app.id" :app-name="app.name" />
+
+          <div class="ai-grid">
+            <AIFitCheck
+              :app-name="app.name"
+              :app-rating="app.rating"
+              @cta-trial="handleTrial"
+              @cta-compare="handleCompare"
+            />
+            <AIChatInline :app-id="app.id" :app-name="app.name" />
+          </div>
+        </section>
+
+        <!-- Screenshots / Media -->
+        <section id="screenshots" class="section">
+          <header class="section-head">
+            <h2 class="section-title">Screenshots & Demos</h2>
+            <p class="section-sub">See {{ app.name }} in action</p>
+          </header>
+          <AppMediaGallery :items="normalizedScreenshots" :app-name="app.name" />
+        </section>
+
+        <!-- Description + sidebar -->
+        <section id="about" class="section about-section">
+          <header class="section-head">
+            <h2 class="section-title">About {{ app.name }}</h2>
+            <p class="section-sub">Everything you need to know at a glance</p>
+          </header>
+
+          <!-- Quick-facts strip -->
+          <ul class="about-facts">
+            <li v-for="f in aboutQuickFacts" :key="f.label" class="fact-card">
+              <div class="fact-icon">
+                <Icon :name="f.icon" />
               </div>
-              <div class="app-info">
-                <div class="app-badges">
-                  <span v-if="app.featured" class="badge featured">
-                    <UIcon name="i-heroicons-star" dynamic /> Featured
-                  </span>
-                  <span v-if="app.trending" class="badge trending">
-                    <UIcon name="i-heroicons-chart-bar" dynamic /> Trending
-                  </span>
-                  <span v-if="isRecentlyAdded(app)" class="badge recent">
-                    <UIcon name="i-heroicons-clock" dynamic /> New
-                  </span>
-                </div>
-                <h1 class="app-title">{{ app.name }}</h1>
-                <p class="app-provider">by {{ app.provider }}</p>
-                <div class="app-meta-hero">
-                  <div class="rating-large">
-                    <div class="stars">
-                      <UIcon 
-                        v-for="star in 5" 
-                        :key="star" 
-                        :name="getStarIcon(star, app.rating)" 
-                        dynamic
-                        :class="getStarClass(star, app.rating)"
-                      />
+              <div class="fact-body">
+                <div class="fact-label">{{ f.label }}</div>
+                <div class="fact-value">{{ f.value }}</div>
+              </div>
+            </li>
+          </ul>
+
+          <div class="two-col">
+            <div class="main-col">
+              <!-- Description with drop cap -->
+              <div class="about-description" v-html="app.longDescription || app.description"></div>
+
+              <!-- Why teams choose highlights -->
+              <div class="about-highlights">
+                <h3 class="hl-title">Why teams choose {{ app.name }}</h3>
+                <div class="hl-grid">
+                  <article
+                    v-for="h in aboutHighlights"
+                    :key="h.title"
+                    class="hl-card"
+                    :style="{ '--hl-color': h.color, '--hl-bg': h.bg }"
+                  >
+                    <div class="hl-icon">
+                      <Icon :name="h.icon" />
                     </div>
-                    <span class="rating-value">{{ app.rating.toFixed(1) }}</span>
-                    <span class="rating-count">({{ app.reviewCount }} reviews)</span>
-                  </div>
-                  <div class="pricing-large">
-                    <span class="price">{{ formatPrice(app.pricing) }}</span>
-                  </div>
-                </div>
-                <div class="app-tags-hero">
-                  <span v-for="tag in app.tags" :key="tag" class="tag">{{ tag }}</span>
+                    <h4 class="hl-card-title">{{ h.title }}</h4>
+                    <p class="hl-card-body">{{ h.body }}</p>
+                  </article>
                 </div>
               </div>
+
+              <!-- Best for use cases -->
+              <div class="about-usecases">
+                <h3 class="uc-title">
+                  <Icon name="heroicons:user-group" />
+                  Best for
+                </h3>
+                <ul class="uc-list">
+                  <li v-for="uc in aboutUseCases" :key="uc" class="uc-chip">
+                    <Icon name="heroicons:check-circle" />
+                    <span>{{ uc }}</span>
+                  </li>
+                </ul>
+              </div>
             </div>
-            <div class="hero-actions">
-              <button class="btn btn-primary btn-large" @click="startTrial">
+
+            <aside class="side-col">
+              <AppCompanyCard :info="companyInfo" />
+
+              <!-- Resources card -->
+              <div class="resources-card">
+                <div class="resources-head">
+                  <Icon name="heroicons:squares-2x2" />
+                  <span>Resources</span>
+                </div>
+                <ul class="resources-list">
+                  <li v-for="r in aboutResources" :key="r.label">
+                    <a :href="r.href" class="resources-link">
+                      <Icon :name="r.icon" class="r-icon" />
+                      <span>{{ r.label }}</span>
+                      <Icon name="heroicons:arrow-up-right" class="r-arrow" />
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <!-- Features -->
+        <section id="features" class="section">
+          <header class="section-head">
+            <h2 class="section-title">Features</h2>
+            <p class="section-sub">What you get with {{ app.name }}</p>
+          </header>
+          <AppFeatureMatrix :features="normalizedFeatures" :show-groups="true" />
+        </section>
+
+        <!-- Pricing -->
+        <section id="pricing" class="section">
+          <header class="section-head">
+            <h2 class="section-title">Pricing</h2>
+            <p class="section-sub">Simple plans that grow with you</p>
+          </header>
+          <AppPricingCards :plans="pricingPlans" @select="handleTrial" />
+        </section>
+
+        <!-- Power Tools (Phase 4): ROI + Price Alert -->
+        <section id="tools" class="section">
+          <header class="section-head">
+            <h2 class="section-title">ROI & Price Alerts</h2>
+            <p class="section-sub">Quantify the value and stay ahead of pricing changes</p>
+          </header>
+          <div class="tools-grid">
+            <AppROICalculator
+              :app-name="app.name"
+              :price-per-seat="app.pricing?.value || 29"
+              :price-period="app.pricing?.period || 'month'"
+            />
+            <AppPriceAlert :app-id="app.id" :app-name="app.name" />
+          </div>
+        </section>
+
+        <!-- Integrations -->
+        <section id="integrations" class="section">
+          <header class="section-head">
+            <h2 class="section-title">Integrations</h2>
+            <p class="section-sub">{{ normalizedIntegrations.length }} integrations available</p>
+          </header>
+          <AppIntegrationsGrid :integrations="normalizedIntegrations" />
+        </section>
+
+        <!-- Reviews -->
+        <section id="reviews" class="section">
+          <header class="section-head">
+            <h2 class="section-title">Reviews & Ratings</h2>
+            <p class="section-sub">What real users say about {{ app.name }}</p>
+          </header>
+          <AppReviewBreakdown
+            :overall-rating="app.rating"
+            :review-count="app.reviewCount"
+            :breakdown="ratingBreakdown"
+            :reviews="sampleReviews"
+            :sentiment-tags="sentimentTags"
+            :view-all-href="`/marketplace/app/${app.id}/reviews`"
+          />
+        </section>
+
+        <!-- Changelog (Phase 4) -->
+        <section id="changelog" class="section">
+          <AppChangelogTimeline :app-name="app.name" />
+        </section>
+
+        <!-- Alternatives -->
+        <section id="alternatives" class="section">
+          <header class="section-head">
+            <h2 class="section-title">Similar Alternatives</h2>
+            <p class="section-sub">Compare with other tools in this category</p>
+          </header>
+          <AppAlternativesCarousel :items="alternatives" />
+
+          <!-- High-intent sponsored placement: buyer is comparing -->
+          <div class="sponsored-after-alts no-print">
+            <SponsoredSlot
+              placement="alternatives"
+              variant="native-card"
+              :category="app.category"
+              :exclude="[app.id, app.slug]"
+              label="Sponsored alternative"
+            />
+          </div>
+        </section>
+
+        <!-- Migration guides (Phase 5) -->
+        <section id="migration" class="section">
+          <AppMigrationGuides :app-name="app.name" />
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq" class="section">
+          <header class="section-head">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+          </header>
+          <AppFAQ :items="faqs" />
+        </section>
+
+        <!-- Final CTA -->
+        <section class="section final-cta">
+          <div class="final-cta-inner">
+            <h2 class="cta-title">Ready to try {{ app.name }}?</h2>
+            <p class="cta-sub">
+              {{ app.pricing.type === 'free' ? 'Get started for free — no credit card required.' : 'Start your free trial today. Cancel anytime.' }}
+            </p>
+            <div class="cta-actions">
+              <Button variant="primary" size="lg" @click="handleTrial">
                 {{ app.pricing.type === 'free' ? 'Get Started Free' : 'Start Free Trial' }}
-              </button>
-              <button class="btn btn-outline btn-large" @click="viewDemo">
-                View Demo
-              </button>
-              <button class="btn btn-ghost" @click="addToWishlist">
-                <UIcon name="i-heroicons-heart" dynamic />
-                Save
-              </button>
+              </Button>
+              <Button variant="ghost" size="lg" @click="handleCompare">
+                Compare with Alternatives
+              </Button>
             </div>
           </div>
-        </div>
-      </section>
-
-      <!-- App Screenshots/Gallery -->
-      <section class="app-gallery" v-if="app.screenshots && app.screenshots.length > 0">
-        <div class="container">
-          <h2>Screenshots</h2>
-          <div class="gallery-grid">
-            <div 
-              v-for="(screenshot, index) in app.screenshots" 
-              :key="index"
-              class="screenshot-item"
-              @click="openLightbox(index)"
-            >
-              <img :src="screenshot.url" :alt="screenshot.caption" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- App Description & Features -->
-      <section class="app-description">
-        <div class="container">
-          <div class="content-grid">
-            <div class="main-content">
-              <h2>About {{ app.name }}</h2>
-              <div class="description-text" v-html="app.longDescription || app.description"></div>
-              
-              <h3>Key Features</h3>
-              <ul class="features-list">
-                <li v-for="feature in app.features" :key="feature">
-                  <UIcon name="i-heroicons-check-circle" dynamic />
-                  {{ feature }}
-                </li>
-              </ul>
-
-              <h3>What's Included</h3>
-              <div class="included-items">
-                <div v-for="item in app.included" :key="item" class="included-item">
-                  <UIcon name="i-heroicons-check" dynamic />
-                  {{ item }}
-                </div>
-              </div>
-            </div>
-
-            <div class="sidebar">
-              <!-- Pricing Card -->
-              <div class="pricing-card">
-                <h3>Pricing</h3>
-                <div class="pricing-details">
-                  <div class="price-display">{{ formatPrice(app.pricing) }}</div>
-                  <div class="price-description">{{ getPricingDescription(app.pricing) }}</div>
-                </div>
-                <div class="pricing-features">
-                  <div v-for="feature in app.pricingFeatures" :key="feature" class="pricing-feature">
-                    <UIcon name="i-heroicons-check" dynamic />
-                    <span>{{ feature }}</span>
-                  </div>
-                </div>
-                <button class="btn btn-primary full-width" @click="startTrial">
-                  {{ app.pricing.type === 'free' ? 'Get Started Free' : 'Start Free Trial' }}
-                </button>
-              </div>
-
-              <!-- App Info Card -->
-              <div class="info-card">
-                <h3>App Information</h3>
-                <div class="info-items">
-                  <div class="info-item">
-                    <span class="label">Category:</span>
-                    <span class="value">{{ getCategoryName(app.category) }}</span>
-                  </div>
-                  <div class="info-item">
-                    <span class="label">Developer:</span>
-                    <span class="value">{{ app.provider }}</span>
-                  </div>
-                  <div class="info-item">
-                    <span class="label">Last Updated:</span>
-                    <span class="value">{{ formatDate(app.lastUpdated || '2024-01-01') }}</span>
-                  </div>
-                  <div class="info-item">
-                    <span class="label">Version:</span>
-                    <span class="value">{{ app.version || '1.0.0' }}</span>
-                  </div>
-                  <div class="info-item">
-                    <span class="label">Languages:</span>
-                    <span class="value">{{ app.languages?.join(', ') || 'English' }}</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Integration Card -->
-              <div class="integration-card" v-if="app.integrations && app.integrations.length > 0">
-                <h3>Integrations</h3>
-                <div class="integrations-list">
-                  <div v-for="integration in app.integrations.slice(0, 6)" :key="integration" class="integration-item">
-                    <img :src="`/assets/images/integrations/${integration.toLowerCase()}.svg`" :alt="integration" />
-                    <span>{{ integration }}</span>
-                  </div>
-                  <div v-if="app.integrations.length > 6" class="integration-more">
-                    +{{ app.integrations.length - 6 }} more
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Reviews Section -->
-      <section class="app-reviews">
-        <div class="container">
-          <div class="reviews-header">
-            <h2>Reviews & Ratings</h2>
-            <div class="overall-rating">
-              <div class="rating-score">{{ app.rating.toFixed(1) }}</div>
-              <div class="rating-details">
-                <div class="stars">
-                  <UIcon 
-                    v-for="star in 5" 
-                    :key="star" 
-                    :name="getStarIcon(star, app.rating)" 
-                    dynamic
-                    :class="getStarClass(star, app.rating)"
-                  />
-                </div>
-                <div class="rating-text">Based on {{ app.reviewCount }} reviews</div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="reviews-grid">
-            <div v-for="review in mockReviews" :key="review.id" class="review-card">
-              <div class="review-header">
-                <div class="reviewer-info">
-                  <div class="reviewer-avatar">{{ review.author.charAt(0) }}</div>
-                  <div class="reviewer-details">
-                    <div class="reviewer-name">{{ review.author }}</div>
-                    <div class="reviewer-title">{{ review.title }}</div>
-                  </div>
-                </div>
-                <div class="review-rating">
-                  <div class="stars">
-                    <UIcon 
-                      v-for="star in 5" 
-                      :key="star" 
-                      :name="star <= review.rating ? 'i-heroicons-star-solid' : 'i-heroicons-star'" 
-                      dynamic
-                      :class="{ 'filled': star <= review.rating }"
-                    />
-                  </div>
-                  <span class="review-date">{{ formatDate(review.date) }}</span>
-                </div>
-              </div>
-              <div class="review-content">
-                <p>{{ review.comment }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Enhanced Reviews Section -->
-      <section class="app-reviews" v-if="app">
-        <div class="container">
-          <ReviewSystem 
-            :app-id="appId"
-            :reviews="reviewsData?.reviews || []"
-            :overall-rating="reviewsData?.averageRating || app.rating"
-            :rating-breakdown="reviewsData?.ratingBreakdown || { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, total: 0 }"
-            :can-review="true"
-            @review-submitted="onReviewSubmitted"
-          />
-        </div>
-      </section>
-
-      <!-- Analytics Dashboard (Admin/Owner only) -->
-      <section class="app-analytics" v-if="analyticsData && canViewAnalytics">
-        <div class="container">
-          <h2>Analytics Overview</h2>
-          <AnalyticsDashboard 
-            :app-id="appId"
-            :timeframe="'30d'"
-          />
-        </div>
-      </section>
-
-      <!-- Similar Apps -->
-      <section class="similar-apps">
-        <div class="container">
-          <h2>Similar Applications</h2>
-          <div class="similar-apps-grid">
-            <div v-for="similarApp in similarApps" :key="similarApp.id" class="similar-app-card">
-              <NuxtLink :to="`/marketplace/app/${similarApp.id}`" class="similar-app-link">
-                <div class="similar-app-logo">
-                  <img :src="similarApp.logo" :alt="similarApp.name" />
-                </div>
-                <h4>{{ similarApp.name }}</h4>
-                <p>{{ similarApp.description.substring(0, 80) }}...</p>
-                <div class="similar-app-rating">
-                  <div class="stars">
-                    <UIcon 
-                      v-for="star in 5" 
-                      :key="star" 
-                      :name="getStarIcon(star, similarApp.rating)" 
-                      dynamic
-                      :class="getStarClass(star, similarApp.rating)"
-                    />
-                  </div>
-                  <span>{{ similarApp.rating.toFixed(1) }}</span>
-                </div>
-                <div class="similar-app-price">{{ formatPrice(similarApp.pricing) }}</div>
-              </NuxtLink>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
+        </section>
+      </main>
+    </template>
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, computed, watchEffect, onMounted, onUnmounted } from 'vue';
-import { useRoute, useRouter, useNuxtApp } from '#app';
-
-// Types
-interface AppPricing {
-  type: 'free' | 'trial' | 'paid';
-  value?: number;
-  period?: string;
-}
-
-interface Application {
-  id: string;
-  name: string;
-  logo: string;
-  provider: string;
-  description: string;
-  longDescription?: string;
-  rating: number;
-  reviewCount: number;
-  tags: string[];
-  pricing: AppPricing;
-  category: string;
-  featured?: boolean;
-  trending?: boolean;
-  screenshots?: { url: string; caption: string }[];
-  features?: string[];
-  included?: string[];
-  pricingFeatures?: string[];
-  integrations?: string[];
-  lastUpdated?: string;
-  version?: string;
-  languages?: string[];
-}
-
-// Use global market plugin
-const nuxtApp = useNuxtApp();
-let formatCurrency, getLocalizedPrice, currentRegionSettings;
-
-try {
-  if (nuxtApp.$globalMarket) {
-    formatCurrency = nuxtApp.$globalMarket.formatCurrency;
-    getLocalizedPrice = nuxtApp.$globalMarket.getLocalizedPrice;
-    currentRegionSettings = nuxtApp.$globalMarket.currentRegionSettings;
-  } else {
-    formatCurrency = (amount: number) => {
-      return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-      }).format(amount);
-    };
-    getLocalizedPrice = (amount: number) => amount;
-    currentRegionSettings = computed(() => ({ 
-      currency: 'USD', 
-      locale: 'en-US',
-      name: 'United States',
-      tax: 8.5,
-      flag: 'us'
-    }));
-  }
-} catch (error) {
-  formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
-  };
-  getLocalizedPrice = (amount: number) => amount;
-  currentRegionSettings = computed(() => ({ 
-    currency: 'USD', 
-    locale: 'en-US',
-    name: 'United States',
-    tax: 8.5,
-    flag: 'us'
-  }));
-}
-
-const route = useRoute();
-const router = useRouter();
-const appId = route.params.id as string;
-
-// Initialize analytics tracking
-const { trackAppView, trackAppDownload, trackTrialStart, trackSectionView, trackTimeSpent, trackScrollDepth } = useAnalytics()
-
-// State for API data fetching with enhanced missing fields
-const { data: app, pending, error } = await useFetch<Application>(`/api/apps/${appId}`, {
-  key: `app-${appId}`,
-  server: true
-});
-
-// Load review data
-const { data: reviewsData, refresh: refreshReviews } = await useFetch(`/api/apps/${appId}/reviews`, {
-  key: `reviews-${appId}`,
-  default: () => ({
-    reviews: [],
-    total: 0,
-    averageRating: 0,
-    ratingBreakdown: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, total: 0 }
-  }),
-  transform: (data: any) => ({
-    ...data,
-    reviews: data.reviews?.map((review: any) => ({
-      ...review,
-      createdAt: new Date(review.createdAt),
-      updatedAt: new Date(review.updatedAt)
-    })) || []
-  })
-})
-
-// Load analytics data for this app (if user has permission)
-const { data: analyticsData } = await useFetch(`/api/apps/${appId}/metrics`, {
-  key: `analytics-${appId}`,
-  default: () => null,
-  server: false // Load on client side only
-})
-
-// Mock similar apps for now - in production, this would also come from API
-const mockSimilarApps: Application[] = [
-  {
-    id: 'app-002',
-    name: 'Asana Tasks',
-    logo: '/assets/images/integrations/asana.svg',
-    provider: 'Asana Inc.',
-    description: 'Advanced project management tool with team collaboration features, timeline tracking, and resource allocation.',
-    rating: 4.5,
-    reviewCount: 189,
-    tags: ['Project Management', 'Collaboration'],
-    pricing: { type: 'trial' as const, value: 19, period: 'month' },
-    category: 'productivity'
-  },
-  {
-    id: 'app-003',
-    name: 'Zapier Connect',
-    logo: '/assets/images/integrations/zapier.svg',
-    provider: 'Zapier Inc.',
-    description: 'Real-time data synchronization platform for businesses with multi-source integration capabilities.',
-    rating: 4.2,
-    reviewCount: 127,
-    tags: ['Data', 'Integration', 'Sync'],
-    pricing: { type: 'paid' as const, value: 49, period: 'month' },
-    category: 'integration'
-  }
-];
-
-// Helper functions
-const formatPrice = (pricing: AppPricing) => {
-  if (pricing.type === 'free') return 'Free';
-  if (pricing.type === 'trial') return 'Free Trial';
-  if (pricing.value && pricing.period) {
-    try {
-      const localizedAmount = getLocalizedPrice(pricing.value, 'USD');
-      const formattedPrice = formatCurrency(localizedAmount);
-      return `${formattedPrice}/${pricing.period}`;
-    } catch (error) {
-      return `$${pricing.value}/${pricing.period}`;
-    }
-  }
-  return 'Contact for pricing';
-};
-
-const getStarIcon = (starPosition: number, rating: number) => {
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating % 1 >= 0.5;
-  
-  if (starPosition <= fullStars) {
-    return 'i-heroicons-star-solid';
-  } else if (starPosition === fullStars + 1 && hasHalfStar) {
-    return 'i-heroicons-star-solid';
-  } else {
-    return 'i-heroicons-star';
-  }
-};
-
-const getStarClass = (starPosition: number, rating: number) => {
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating % 1 >= 0.5;
-  
-  if (starPosition <= fullStars) {
-    return 'filled';
-  } else if (starPosition === fullStars + 1 && hasHalfStar) {
-    return 'filled half-star';
-  } else {
-    return '';
-  }
-};
-
-const isRecentlyAdded = (app: Application) => {
-  if (!app.lastUpdated) return false;
-  const updateDate = new Date(app.lastUpdated);
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-  return updateDate > thirtyDaysAgo;
-};
-
-const getCategoryName = (category: string) => {
-  const categories: Record<string, string> = {
-    crm: 'Customer Relationship Management',
-    productivity: 'Productivity',
-    marketing: 'Marketing',
-    finance: 'Finance',
-    development: 'Development',
-    integration: 'Integration'
-  };
-  return categories[category] || category;
-};
-
-const getPricingDescription = (pricing: AppPricing) => {
-  if (pricing.type === 'free') return 'Always free to use';
-  if (pricing.type === 'trial') return 'Free trial available';
-  return 'Billed monthly, cancel anytime';
-};
-
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', { 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
-  });
-};
-
-// Mock reviews data - In production, this would come from API
-const mockReviews = [
-  {
-    id: 1,
-    author: 'Sarah Johnson',
-    title: 'Marketing Manager',
-    rating: 5,
-    date: '2024-01-10',
-    comment: 'This app has transformed our sales process. The automation features are incredible and the customer support is top-notch.'
-  },
-  {
-    id: 2,
-    author: 'Mike Chen',
-    title: 'Sales Director',
-    rating: 4,
-    date: '2023-12-28',
-    comment: 'Great CRM system with lots of customization options. Takes some time to set up initially but worth the investment.'
-  },
-  {
-    id: 3,
-    author: 'Emily Rodriguez',
-    title: 'Business Owner',
-    rating: 5,
-    date: '2023-12-15',
-    comment: 'Perfect for small businesses. The pricing is reasonable and the features are exactly what we needed.'
-  }
-];
-
-// Computed
-const similarApps = computed(() => {
-  if (!app.value) return [];
-  return mockSimilarApps
-    .filter((a: Application) => a.id !== app.value!.id && a.category === app.value!.category)
-    .slice(0, 4);
-});
-
-// Check if user can view analytics (admin/owner only)
-const canViewAnalytics = computed(() => {
-  // In a real app, this would check user permissions
-  // For now, return false to hide analytics from general users
-  return false;
-});
-
-// Methods with analytics tracking
-const startTrial = async () => {
-  // Track trial start event
-  await trackTrialStart(appId, app.value?.pricing.type || 'trial')
-  
-  // In a real app, this would redirect to the app's signup page
-  window.open(`https://signup.example.com/${app.value?.id}`, '_blank');
-};
-
-const viewDemo = async () => {
-  // Track demo view
-  await trackAppDownload(appId, 'demo', 'web')
-  
-  // In a real app, this would open a demo or video
-  window.open(`https://demo.example.com/${app.value?.id}`, '_blank');
-};
-
-const addToWishlist = async () => {
-  // Track wishlist action
-  await trackSectionView(appId, 'wishlist_add')
-  
-  // Add to wishlist functionality
-  console.log('Added to wishlist:', app.value?.name);
-};
-
-const handleImageError = (event: Event) => {
-  const img = event.target as HTMLImageElement;
-  img.src = '/assets/images/placeholder-app.png';
-};
-
-const openLightbox = (index: number) => {
-  // Open screenshot in lightbox
-  console.log('Open screenshot:', index);
-};
-
-// Handle review submission
-const onReviewSubmitted = async () => {
-  // Refresh review data when new review is submitted
-  await refreshReviews();
-  
-  // Track review submission
-  await trackSectionView(appId, 'review_submitted');
-};
-
-// Analytics lifecycle hooks
-let timeTracker: (() => void) | undefined
-let scrollTracker: (() => void) | undefined
-
-onMounted(async () => {
-  if (app.value) {
-    // Track page view
-    await trackAppView(appId, {
-      appName: app.value.name,
-      category: app.value.category,
-      pricing: app.value.pricing.type
-    })
-    
-    // Set up time tracking
-    timeTracker = trackTimeSpent(appId)
-    
-    // Set up scroll depth tracking
-    scrollTracker = trackScrollDepth(appId)
-  }
-})
-
-onUnmounted(() => {
-  // Clean up tracking
-  if (timeTracker) timeTracker()
-  if (scrollTracker) scrollTracker()
-})
-
-// SEO - update based on fetched app data
-watchEffect(() => {
-  if (app.value) {
-    useHead({
-      title: `${app.value.name} - SaaSWorld Marketplace`,
-      meta: [
-        { 
-          name: 'description', 
-          content: app.value.description
-        },
-        { 
-          property: 'og:title', 
-          content: `${app.value.name} - SaaSWorld Marketplace`
-        },
-        { 
-          property: 'og:description', 
-          content: app.value.description
-        },
-        { property: 'og:type', content: 'website' },
-        { 
-          property: 'og:url', 
-          content: `https://saasworld.club/marketplace/app/${appId}` 
-        },
-        { 
-          property: 'og:image', 
-          content: app.value.logo
-        }
-      ]
-    });
-  } else {
-    useHead({
-      title: 'Application Details - SaaSWorld',
-      meta: [
-        { 
-          name: 'description', 
-          content: 'Discover amazing SaaS applications on SaaSWorld Marketplace'
-        }
-      ]
-    });
-  }
-});
-</script>
-
 <style scoped>
-.app-details-page {
+.app-details {
   min-height: 100vh;
-  background-color: var(--light-color);
+  background: #f9fafb;
+  padding-bottom: 40px;
 }
 
-/* Loading & Error States */
-.loading-container, .error-container {
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Loading / Error */
+.state-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 4rem 2rem;
-  text-align: center;
+  gap: 12px;
   min-height: 60vh;
+  padding: 40px 20px;
+  text-align: center;
 }
-
-.loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid #f3f4f6;
-  border-top: 3px solid #3b82f6;
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 2px solid #e5e7eb;
+  border-top-color: #ff8838;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 1rem;
+  animation: spin 800ms linear infinite;
+}
+.error-icon { width: 40px; height: 40px; color: #6b7280; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Breadcrumb */
+.breadcrumb-row { padding: 16px 20px 12px; }
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+.bc-link { color: #6b7280; text-decoration: none; }
+.bc-link:hover { color: #ff8838; }
+.bc-sep { width: 12px; height: 12px; color: #d1d5db; }
+.bc-current { color: #1f2937; font-weight: 500; }
+
+/* Main */
+.app-main { padding-top: 20px; }
+
+.section { margin-top: 56px; }
+.section:first-child { margin-top: 28px; }
+
+.section-head { margin-bottom: 20px; }
+.section-title {
+  margin: 0 0 4px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+.section-sub {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
+.trust-row { margin-top: 16px; }
 
-.error-icon {
-  font-size: 3rem;
-  color: #ef4444;
-  margin-bottom: 1rem;
-}
-
-/* Container */
-.container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 var(--spacing-lg);
-}
-
-/* Hero Section */
-.app-hero {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: var(--spacing-xxl) 0;
-}
-
-.hero-content {
+/* AI Insights two-column grid (Phase 2) */
+.ai-grid {
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: var(--spacing-xl);
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 8px;
+}
+@media (max-width: 900px) {
+  .ai-grid { grid-template-columns: 1fr; }
+}
+
+/* Power Tools grid (Phase 4) */
+.tools-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 16px;
   align-items: start;
 }
-
-.app-header {
-  display: flex;
-  gap: var(--spacing-lg);
-  align-items: flex-start;
+@media (max-width: 900px) {
+  .tools-grid { grid-template-columns: 1fr; }
 }
 
-.app-logo-large {
-  width: 120px;
-  height: 120px;
-  background: white;
-  border-radius: 16px;
-  padding: 1rem;
-  flex-shrink: 0;
+/* Overview toolbar (voice + stack builder) */
+.overview-toolbar {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-}
-
-.app-logo-large img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.app-info {
-  flex: 1;
-}
-
-.app-badges {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.badge.featured {
-  background-color: rgba(76, 236, 196, 0.2);
-  color: #4ECDC4;
-}
-
-.badge.trending {
-  background-color: rgba(255, 107, 107, 0.2);
-  color: #FF6B6B;
-}
-
-.badge.recent {
-  background-color: rgba(255, 230, 109, 0.2);
-  color: #FFE66D;
-}
-
-.app-title {
-  font-size: 3rem;
-  font-weight: 800;
-  margin: 0 0 0.5rem 0;
-  line-height: 1.1;
-}
-
-.app-provider {
-  font-size: 1.25rem;
-  opacity: 0.9;
-  margin-bottom: 1.5rem;
-}
-
-.app-meta-hero {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xl);
-  margin-bottom: 1.5rem;
-}
-
-.rating-large {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.rating-large .stars {
-  display: flex;
-  gap: 0.25rem;
-}
-
-.rating-large .stars svg {
-  width: 20px;
-  height: 20px;
-  color: rgba(255, 255, 255, 0.3);
-}
-
-.rating-large .stars svg.filled {
-  color: #fbbf24;
-}
-
-.rating-value {
-  font-size: 1.25rem;
-  font-weight: 600;
-}
-
-.rating-count {
-  opacity: 0.8;
-}
-
-.pricing-large .price {
-  font-size: 2rem;
-  font-weight: 700;
-}
-
-.app-tags-hero {
-  display: flex;
+  gap: 12px;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  margin-bottom: 12px;
 }
+.toolbar-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
-.tag {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 25px;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.hero-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  align-items: stretch;
-  min-width: 200px;
-}
-
-.btn-large {
-  padding: 1rem 2rem;
-  font-size: 1.125rem;
-  font-weight: 600;
-  border-radius: 8px;
-  text-align: center;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  border: 2px solid transparent;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.btn-primary {
-  background: #3b82f6;
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #2563eb;
-  transform: translateY(-2px);
-}
-
-.btn-outline {
-  background: transparent;
-  color: white;
-  border-color: rgba(255, 255, 255, 0.3);
-}
-
-.btn-outline:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: white;
-}
-
-.btn-ghost {
-  background: transparent;
-  color: white;
-  border: none;
-}
-
-.btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-/* Gallery Section */
-.app-gallery {
-  padding: var(--spacing-xxl) 0;
-}
-
-.gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: var(--spacing-lg);
-  margin-top: var(--spacing-lg);
-}
-
-.screenshot-item {
-  border-radius: 8px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.screenshot-item:hover {
-  transform: scale(1.02);
-}
-
-.screenshot-item img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-}
-
-/* Description Section */
-.app-description {
-  padding: var(--spacing-xxl) 0;
-  background: white;
-}
-
-.content-grid {
-  display: grid;
-  grid-template-columns: 1fr 350px;
-  gap: var(--spacing-xxl);
-}
-
-.main-content h2 {
-  font-size: 2rem;
-  margin-bottom: var(--spacing-lg);
-  color: var(--text-primary);
-}
-
-.main-content h3 {
-  font-size: 1.5rem;
-  margin: var(--spacing-xl) 0 var(--spacing-lg) 0;
-  color: var(--text-primary);
-}
-
-.description-text {
-  font-size: 1.125rem;
-  line-height: 1.7;
-  color: var(--text-secondary);
-  margin-bottom: var(--spacing-xl);
-}
-
-.features-list {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 var(--spacing-xl) 0;
-}
-
-.features-list li {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 0;
-  font-size: 1.125rem;
-  color: var(--text-primary);
-}
-
-.features-list li svg {
-  color: #10b981;
-  width: 20px;
-  height: 20px;
-}
-
-.included-items {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
-.included-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1rem;
-  color: var(--text-primary);
-}
-
-.included-item svg {
-  color: #10b981;
-  width: 16px;
-  height: 16px;
-}
-
-/* Sidebar Cards */
-.sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
-}
-
-.pricing-card, .info-card, .integration-card {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: var(--spacing-lg);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-}
-
-.pricing-card h3, .info-card h3, .integration-card h3 {
-  margin: 0 0 var(--spacing-lg) 0;
-  font-size: 1.25rem;
-  color: var(--text-primary);
-}
-
-.price-display {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--primary-color);
-  margin-bottom: 0.5rem;
-}
-
-.price-description {
-  color: var(--text-secondary);
-  margin-bottom: var(--spacing-lg);
-}
-
-.pricing-features {
-  margin-bottom: var(--spacing-lg);
-}
-
-.pricing-feature {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0;
-  color: var(--text-primary);
-}
-
-.pricing-feature svg {
-  color: #10b981;
-  width: 16px;
-  height: 16px;
-}
-
-.info-items {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.info-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1rem;
-}
-
-.info-item .label {
-  font-weight: 500;
-  color: var(--text-secondary);
-  min-width: 80px;
-}
-
-.info-item .value {
-  font-weight: 600;
-  color: var(--text-primary);
-  text-align: right;
-}
-
-.integrations-list {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-}
-
-.integration-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-  color: var(--text-primary);
-}
-
-.integration-item img {
-  width: 20px;
-  height: 20px;
-}
-
-.integration-more {
-  grid-column: 1 / -1;
-  text-align: center;
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  padding: 0.5rem;
-}
-
-/* Reviews Section */
-.app-reviews {
-  padding: var(--spacing-xxl) 0;
-  background: #f9fafb;
-}
-
-.reviews-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: var(--spacing-xl);
-}
-
-.reviews-header h2 {
-  font-size: 2rem;
-  color: var(--text-primary);
-  margin: 0;
-}
-
-.overall-rating {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-lg);
-}
-
-.rating-score {
-  font-size: 3rem;
-  font-weight: 700;
-  color: var(--primary-color);
-}
-
-.rating-details .stars {
-  display: flex;
-  gap: 0.25rem;
-  margin-bottom: 0.5rem;
-}
-
-.rating-details .stars svg {
-  width: 20px;
-  height: 20px;
-  color: #d1d5db;
-}
-
-.rating-details .stars svg.filled {
-  color: #fbbf24;
-}
-
-.rating-text {
-  color: var(--text-secondary);
-}
-
-.reviews-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: var(--spacing-lg);
-}
-
-.review-card {
-  background: white;
-  border-radius: 12px;
-  padding: var(--spacing-lg);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.review-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: var(--spacing-md);
-}
-
-.reviewer-info {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.reviewer-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--primary-color);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  font-size: 1.25rem;
-}
-
-.reviewer-name {
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.reviewer-title {
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-}
-
-.review-rating {
-  text-align: right;
-}
-
-.review-rating .stars {
-  display: flex;
-  gap: 0.125rem;
-  margin-bottom: 0.25rem;
-}
-
-.review-rating .stars svg {
-  width: 16px;
-  height: 16px;
-  color: #d1d5db;
-}
-
-.review-rating .stars svg.filled {
-  color: #fbbf24;
-}
-
-.review-date {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-}
-
-.review-content p {
-  margin: 0;
-  line-height: 1.6;
-  color: var(--text-primary);
-}
-
-/* Similar Apps Section */
-.similar-apps {
-  padding: var(--spacing-xxl) 0;
-  background: white;
-}
-
-.similar-apps h2 {
-  font-size: 2rem;
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-xl);
-}
-
-.similar-apps-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--spacing-lg);
-}
-
-.similar-app-card {
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all 0.2s ease;
-}
-
-.similar-app-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-}
-
-.similar-app-link {
-  display: block;
-  padding: var(--spacing-lg);
-  text-decoration: none;
-  color: inherit;
-}
-
-.similar-app-logo {
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
-  overflow: hidden;
-  margin-bottom: 1rem;
-}
-
-.similar-app-logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.similar-app-card h4 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin: 0 0 0.5rem 0;
-  color: var(--text-primary);
-}
-
-.similar-app-card p {
-  color: var(--text-secondary);
-  margin: 0 0 1rem 0;
-  line-height: 1.5;
-}
-
-.similar-app-rating {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.similar-app-rating .stars {
-  display: flex;
-  gap: 0.125rem;
-}
-
-.similar-app-rating .stars svg {
-  width: 14px;
-  height: 14px;
-  color: #d1d5db;
-}
-
-.similar-app-rating .stars svg.filled {
-  color: #fbbf24;
-}
-
-.similar-app-price {
-  font-weight: 600;
-  color: var(--primary-color);
-}
-
-/* Utility Classes */
-.btn {
+.print-btn {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 6px;
+  gap: 4px;
+  background: #ffffff;
+  color: #374151;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
   font-weight: 600;
-  text-decoration: none;
-  transition: all 0.2s ease;
   cursor: pointer;
-  gap: 0.5rem;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+.print-btn:hover { border-color: #ff8838; color: #ff8838; }
+.print-btn :deep(svg) { width: 14px; height: 14px; }
+
+.sponsored-after-alts { margin-top: 16px; }
+
+/* Two-column layout for About */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+}
+.main-col { min-width: 0; }
+.side-col {
+  position: sticky;
+  top: 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+@media (max-width: 900px) {
+  .two-col { grid-template-columns: 1fr; }
+  .side-col { position: static; top: auto; }
 }
 
-.full-width {
-  width: 100%;
+/* --- About section rework --- */
+.about-section { position: relative; }
+
+.about-facts {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 0 0 24px;
+}
+@media (max-width: 900px) { .about-facts { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .about-facts { grid-template-columns: 1fr; } }
+
+.fact-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #ffffff;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 12px;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+.fact-card:hover {
+  border-color: #ff8838;
+  box-shadow: 0 4px 12px rgba(255, 136, 56, 0.08);
+}
+.fact-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #fff3e6;
+  color: #b45309;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.fact-icon :deep(svg) { width: 18px; height: 18px; }
+.fact-body { min-width: 0; }
+.fact-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6b7280;
+  margin-bottom: 2px;
+}
+.fact-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.3;
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .content-grid {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-lg);
-  }
-  
-  .sidebar {
-    order: -1;
-  }
+.about-description {
+  font-size: 16px;
+  color: #334155;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+.about-description :deep(p) { margin: 0 0 14px; }
+.about-description :deep(p:last-child) { margin-bottom: 0; }
+.about-description::first-letter {
+  font-size: 44px;
+  font-weight: 700;
+  float: left;
+  line-height: 1;
+  padding: 4px 10px 0 0;
+  color: #ff8838;
+  font-family: inherit;
 }
 
-@media (max-width: 768px) {
-  .hero-content {
-    grid-template-columns: 1fr;
-    text-align: center;
+.about-highlights { margin-top: 28px; }
+.hl-title {
+  margin: 0 0 14px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+.hl-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+@media (max-width: 700px) { .hl-grid { grid-template-columns: 1fr; } }
+
+.hl-card {
+  position: relative;
+  padding: 18px 16px 16px;
+  background: #ffffff;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+.hl-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--hl-color);
+}
+.hl-card:hover {
+  border-color: var(--hl-color);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+.hl-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--hl-bg);
+  color: var(--hl-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+.hl-icon :deep(svg) { width: 18px; height: 18px; }
+.hl-card-title {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+.hl-card-body {
+  margin: 0;
+  font-size: 13px;
+  color: #4b5563;
+  line-height: 1.55;
+}
+
+.about-usecases {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 0.5px solid #e5e7eb;
+}
+.uc-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.uc-title :deep(svg) { width: 16px; height: 16px; color: #ff8838; }
+.uc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.uc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px 6px 10px;
+  background: #fff3e6;
+  border: 0.5px solid #fed7aa;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #b45309;
+}
+.uc-chip :deep(svg) { width: 14px; height: 14px; color: #ff8838; }
+
+/* Sidebar resources card */
+.resources-card {
+  background: #ffffff;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+}
+.resources-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding-bottom: 12px;
+  margin-bottom: 8px;
+  border-bottom: 0.5px solid #f1f5f9;
+}
+.resources-head :deep(svg) { width: 16px; height: 16px; color: #ff8838; }
+.resources-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.resources-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  color: #374151;
+  text-decoration: none;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+.resources-link:hover {
+  background: #fff3e6;
+  color: #b45309;
+}
+.resources-link .r-icon {
+  width: 16px;
+  height: 16px;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+.resources-link:hover .r-icon { color: #ff8838; }
+.resources-link span { flex: 1; min-width: 0; }
+.resources-link .r-arrow {
+  width: 14px;
+  height: 14px;
+  color: #cbd5e1;
+  opacity: 0;
+  transition: opacity 120ms ease, color 120ms ease;
+}
+.resources-link:hover .r-arrow { opacity: 1; color: #ff8838; }
+
+/* Final CTA */
+.final-cta {
+  background: linear-gradient(135deg, #fff3e6 0%, #ffffff 100%);
+  border: 0.5px solid #fed7aa;
+  border-radius: 16px;
+  padding: 48px 32px;
+  margin-top: 56px;
+  position: relative;
+  overflow: hidden;
+}
+.final-cta::before {
+  content: '';
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(circle, rgba(255, 136, 56, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.final-cta-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  position: relative;
+}
+.cta-title { margin: 0; font-size: 28px; font-weight: 700; color: #0f172a; letter-spacing: -0.01em; }
+.cta-sub { margin: 0 0 8px; font-size: 15px; color: #475569; max-width: 540px; line-height: 1.6; }
+.cta-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+@media (max-width: 900px) {
+  .two-col { grid-template-columns: 1fr; }
+  .side-col { position: static; }
+}
+
+/* --- Print stylesheet (Phase 5: PDF export) --- */
+@media print {
+  /* Strip all interactive chrome */
+  :deep(.app-header),
+  :deep(.footer),
+  :deep(header.app-header),
+  :deep(.sticky-nav),
+  .overview-toolbar,
+  .no-print,
+  .final-cta,
+  .ai-grid,
+  .sponsored-after-alts,
+  :deep(.devtools),
+  :deep(button) {
+    display: none !important;
   }
-  
-  .app-header {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+
+  body, .app-details, .app-main {
+    background: #ffffff !important;
+    color: #000000 !important;
   }
-  
-  .app-logo-large {
-    width: 100px;
-    height: 100px;
+
+  .section {
+    page-break-inside: avoid;
+    margin-bottom: 24pt;
+    border: 0 !important;
+    box-shadow: none !important;
   }
-  
-  .app-title {
-    font-size: 2rem;
+
+  .section-title { font-size: 16pt; }
+  .section-sub { font-size: 10pt; color: #555555 !important; }
+
+  /* Show full URLs for links so the printed PDF is useful offline */
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 8pt;
+    color: #666666;
   }
-  
-  .hero-actions {
-    align-items: center;
-    width: 100%;
-    max-width: 300px;
-    margin: 0 auto;
-  }
-  
-  .reviews-header {
-    flex-direction: column;
-    gap: var(--spacing-lg);
-    text-align: center;
-  }
-  
-  .container {
-    padding: 0 var(--spacing-md);
-  }
+  a[href^="#"]::after,
+  a[href^="javascript:"]::after { content: ""; }
 }
 </style>
