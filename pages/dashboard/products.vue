@@ -89,7 +89,17 @@
         </div>
 
         <footer class="product-card__foot">
-          <NuxtLink :to="`/app/${p.slug}`" class="btn-outline">View details</NuxtLink>
+          <NuxtLink
+            v-if="role === 'vendor'"
+            :to="`/app/${p.slug}`"
+            target="_blank"
+            rel="noopener"
+            class="btn-outline"
+          >
+            Preview listing
+            <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M14 4h6v6M20 4L10 14M20 14v6H4V4h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </NuxtLink>
+          <NuxtLink v-else :to="`/app/${p.slug}`" class="btn-outline">View details</NuxtLink>
           <button v-if="role === 'vendor'" type="button" class="btn-ghost" @click="onEdit(p)">
             Edit
           </button>
@@ -455,6 +465,10 @@ function onRemove(p: Product) {
   font-weight: 600;
   color: #1e1e1e;
   transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
 }
 .btn-outline:hover { border-color: var(--sw-primary, #ff8838); color: var(--sw-primary, #ff8838); }
 
