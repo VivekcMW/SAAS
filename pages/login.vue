@@ -100,6 +100,27 @@
         Don't have an account?
         <NuxtLink to="/signup">Create one</NuxtLink>
       </p>
+
+      <!-- Try demo -->
+      <div class="demo-box">
+        <div class="demo-head">
+          <span class="demo-label">Try a demo account</span>
+          <span class="demo-hint">No signup · instant access</span>
+        </div>
+        <div class="demo-row">
+          <button
+            v-for="d in demoAccounts"
+            :key="d.role"
+            type="button"
+            class="demo-btn"
+            :disabled="isLoading"
+            @click="tryDemo(d)"
+          >
+            <span class="demo-btn__role">{{ d.label }}</span>
+            <span class="demo-btn__desc">{{ d.desc }}</span>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -173,6 +194,35 @@ const handleLogin = async () => {
 
 const handleSocial = (provider: 'google' | 'github') => {
   errorMessage.value = `${provider === 'google' ? 'Google' : 'GitHub'} sign-in is coming soon.`
+}
+
+interface DemoAccount {
+  role: 'buyer' | 'vendor' | 'admin'
+  label: string
+  desc: string
+  email: string
+  password: string
+}
+
+const demoAccounts: DemoAccount[] = [
+  { role: 'buyer', label: 'Buyer', desc: 'Discover & compare', email: 'buyer@saasworld.com', password: 'buyer123' },
+  { role: 'vendor', label: 'Vendor', desc: 'Manage your listings', email: 'demo@saasworld.com', password: 'demo123' },
+  { role: 'admin', label: 'Admin', desc: 'Full platform access', email: 'admin@saasworld.com', password: 'admin123' }
+]
+
+const tryDemo = async (d: DemoAccount) => {
+  if (isLoading.value) return
+  isLoading.value = true
+  errorMessage.value = ''
+  try {
+    await login({ email: d.email, password: d.password, rememberMe: true })
+    await navigateTo('/dashboard')
+  } catch (error: any) {
+    errorMessage.value =
+      error?.data?.statusMessage || error?.message || 'Unable to start demo session.'
+  } finally {
+    isLoading.value = false
+  }
 }
 </script>
 
@@ -369,6 +419,61 @@ const handleSocial = (provider: 'google' | 'github') => {
   text-decoration: none;
 }
 .alt-link a:hover { text-decoration: underline; }
+
+/* Demo box */
+.demo-box {
+  margin-top: 20px;
+  padding: 14px 14px 12px;
+  background: #fff8f1;
+  border: 0.5px solid #ffd9b5;
+  border-radius: 10px;
+}
+.demo-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.demo-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #ff8838;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.demo-hint { font-size: 11px; color: #94a3b8; }
+.demo-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.demo-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 9px 10px;
+  background: #fff;
+  border: 0.5px solid #ffd9b5;
+  border-radius: 8px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 150ms ease;
+  text-align: left;
+}
+.demo-btn:hover:not(:disabled) {
+  border-color: #ff8838;
+  background: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px -10px rgba(255, 136, 56, 0.5);
+}
+.demo-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.demo-btn__role {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e1e1e;
+}
+.demo-btn__desc { font-size: 11px; color: #71717a; }
 
 @media (max-width: 480px) {
   .auth-card { padding: 28px 20px; border-radius: 12px; }

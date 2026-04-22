@@ -1,139 +1,81 @@
 <template>
-  <div class="dashboard-page">
-    <DashboardAuth v-if="!isAuthenticated" />
-    <div v-else class="dashboard-layout">
-      <!-- Dashboard Sub-navbar -->
-      <DashboardSubnav 
-        :stats="dashboardStats"
-        :show-view-toggle="showViewToggle"
-        :current-view="currentView"
-        @changeView="handleViewChange"
-        @addProduct="handleAddProduct"
-        @createReport="handleCreateReport"
-        @scheduleDemo="handleScheduleDemo"
-        @exportData="handleExportData"
-      />
-      
-      <!-- Dashboard Pages Content -->
-      <NuxtPage />
+  <div class="dash-shell" :class="{ 'is-sidebar-collapsed': sidebarCollapsed }">
+    <DashSidebar
+      :role="currentUser?.role ?? null"
+      :collapsed="sidebarCollapsed"
+      @toggle="sidebarCollapsed = !sidebarCollapsed"
+      @logout="onLogout"
+    />
+
+    <div class="dash-shell__main">
+      <DashTopbar :user="currentUser" @toggleSidebar="sidebarCollapsed = !sidebarCollapsed" />
+      <main class="dash-shell__content">
+        <NuxtPage />
+      </main>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watchEffect } from 'vue'
 
-// Use auth composable
-const { isAuthenticated, currentUser, handleLogout } = useAuth();
+definePageMeta({ layout: false })
 
-// Redirect to overview if at root dashboard
-const route = useRoute();
-if (route.path === '/dashboard') {
-  await navigateTo('/dashboard/overview');
-}
-
-// Meta tags for the dashboard page
 useHead({
-  title: 'Dashboard - SaaSWorld',
-  meta: [
-    { name: 'description', content: 'Manage your products, view analytics, and track performance on SaaSWorld' }
-  ]
-});
+  title: 'Dashboard — SaaSWorld',
+  meta: [{ name: 'description', content: 'Manage your apps, enquiries, and analytics on SaaSWorld.' }]
+})
 
-// Dashboard UI state
-const currentView = ref('grid');
-const filtersActive = ref(false);
-const showViewToggle = ref(false);
+const { isAuthenticated, currentUser, isLoading, initialized, handleLogout } = useAuth()
+const route = useRoute()
 
-// Dashboard stats (would typically come from API)
-const dashboardStats = ref({
-  totalViews: 12540,
-  revenue: 3850,
-  products: 3
-});
+// Guard: redirect unauthenticated users to /login with redirect back here
+watchEffect(() => {
+  if (!import.meta.client) return
+  if (!initialized.value) return
+  if (isLoading.value) return
+  if (!isAuthenticated.value) {
+    navigateTo(`/login?redirect=${encodeURIComponent(route.fullPath)}`)
+    return
+  }
+  // Redirect bare /dashboard → /dashboard/overview
+  if (route.path === '/dashboard' || route.path === '/dashboard/') {
+    navigateTo('/dashboard/overview', { replace: true })
+  }
+})
 
-// Dashboard UI handlers
-const handleViewChange = (view: string) => {
-  currentView.value = view;
-};
+const sidebarCollapsed = ref(false)
 
-const handleToggleFilters = () => {
-  filtersActive.value = !filtersActive.value;
-};
-
-const handleSearch = (query: string) => {
-  console.log('Search query:', query);
-  // Implement search functionality
-};
-
-const handleAddProduct = () => {
-  navigateTo('/list-product');
-};
-
-const handleCreateReport = () => {
-  console.log('Create report functionality');
-  // Implement report creation
-};
-
-const handleScheduleDemo = () => {
-  console.log('Schedule demo functionality');
-  // Implement demo scheduling
-};
-
-const handleExportData = () => {
-  console.log('Export data functionality');
-  // Implement data export
-};
+const onLogout = async () => {
+  await handleLogout()
+  await navigateTo('/login')
+}
 </script>
 
 <style scoped>
-.dashboard-page {
+.dash-shell {
   min-height: 100vh;
-  background-color: #f8fafc;
-  /* Account for default layout margin-top from layouts/default.vue */
-  margin-top: -72px !important; /* Counteract the default layout margin */
+  background: #fbfaf8;
 }
 
-.dashboard-layout {
+.dash-shell__main {
   min-height: 100vh;
+  margin-left: 248px;
   display: flex;
   flex-direction: column;
-  /* Ensure proper stacking context for fixed subnav */
-  position: relative;
-  overflow-x: hidden; /* Prevent horizontal scroll */
-  /* Add padding to account for fixed navbar + subnav */
-  padding-top: 72px; /* Space for fixed navbar */
+  transition: margin-left 0.2s ease;
+}
+.dash-shell.is-sidebar-collapsed .dash-shell__main { margin-left: 68px; }
+
+.dash-shell__content {
+  flex: 1;
+  padding: 2rem 2rem 3rem;
+  max-width: 1400px;
+  width: 100%;
 }
 
-/* 
- * ⚠️ CRITICAL: FIXED SUBNAV POSITIONING ENFORCEMENT ⚠️
- * 
- * Since the subnav is now position: fixed, ensure it never gets overridden
- */
-.dashboard-layout :deep(.dashboard-subnav) {
-  position: fixed !important;
-  top: 72px !important;
-  left: 0 !important;
-  right: 0 !important;
-  width: 100% !important;
-  z-index: 1500 !important;
-  background: white !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* Mobile responsive positioning */
-@media (max-width: 768px) {
-  .dashboard-page {
-    margin-top: -64px !important; /* Counteract mobile default layout margin */
-  }
-
-  .dashboard-layout {
-    padding-top: 64px; /* Space for mobile fixed navbar */
-  }
-
-  .dashboard-layout :deep(.dashboard-subnav) {
-    top: 64px !important;
-  }
+@media (max-width: 900px) {
+  .dash-shell__main { margin-left: 0 !important; }
+  .dash-shell__content { padding: 1.5rem 1rem 2.5rem; }
 }
 </style>

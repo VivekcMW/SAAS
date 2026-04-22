@@ -59,15 +59,52 @@ export function ensureSeedCredentials() {
   const db = getDb()
   const seedAccounts = [
     { email: 'demo@saasworld.com', password: 'demo123' },
-    { email: 'admin@saasworld.com', password: 'admin123' }
+    { email: 'admin@saasworld.com', password: 'admin123' },
+    { email: 'buyer@saasworld.com', password: 'buyer123' }
   ]
 
   const updatePassword = db.prepare('UPDATE users SET password_hash = ? WHERE email = ?')
   const selectUser = db.prepare('SELECT password_hash FROM users WHERE email = ?')
+  const insertUser = db.prepare(`
+    INSERT INTO users (
+      id, email, password_hash, first_name, last_name, full_name,
+      company_name, company_size, job_title, phone_number, role, plan,
+      created_at, updated_at
+    ) VALUES (
+      @id, @email, @password_hash, @first_name, @last_name, @full_name,
+      @company_name, @company_size, @job_title, @phone_number, @role, @plan,
+      @created_at, @updated_at
+    )
+  `)
 
   seedAccounts.forEach(account => {
     const row = selectUser.get(account.email) as { password_hash?: string } | undefined
-    if (!row || (row.password_hash && !row.password_hash.includes('placeholder'))) {
+
+    // Create the buyer seed if missing (vendor + admin are already seeded in database.ts)
+    if (!row) {
+      if (account.email === 'buyer@saasworld.com') {
+        const now = new Date().toISOString()
+        insertUser.run({
+          id: 'user_buyer_demo',
+          email: account.email,
+          password_hash: hashPassword(account.password),
+          first_name: 'Demo',
+          last_name: 'Buyer',
+          full_name: 'Demo Buyer',
+          company_name: 'Acme Corp',
+          company_size: '11-50',
+          job_title: 'Operations Lead',
+          phone_number: '+1-555-0102',
+          role: 'buyer',
+          plan: 'Free',
+          created_at: now,
+          updated_at: now
+        })
+      }
+      return
+    }
+
+    if (row.password_hash && !row.password_hash.includes('placeholder')) {
       return
     }
 

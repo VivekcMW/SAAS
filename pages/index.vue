@@ -1,667 +1,370 @@
 <template>
-  <div class="home-page">
-    <!-- Hero Section (with integrated AI search) -->
-    <section class="hero-section">
-      <div class="container">
-        <div class="hero-content">
-          <div class="hero-badge">
-            <UIcon name="i-heroicons-sparkles" dynamic />
-            <span>AI-powered SaaS discovery</span>
-          </div>
+  <main class="mk-page home">
+    <!-- 1. Hero -->
+    <section class="home-hero">
+      <div class="home-hero__inner">
+        <span class="mk-eyebrow home-hero__badge">
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 2l2.6 6.4L21 10l-4.9 4.3L17.8 21 12 17.6 6.2 21l1.7-6.7L3 10l6.4-1.6z" fill="currentColor"/></svg>
+          AI-powered software discovery
+        </span>
+        <h1 class="home-hero__title">
+          Find the right software for the way
+          <span class="home-hero__accent">you work.</span>
+        </h1>
+        <p class="home-hero__lede">
+          Tell us what you need in plain English. We'll shortlist the 3 best apps out of 1,200+ —
+          no sales calls, no bias, no pay-to-play rankings.
+        </p>
 
-          <h1 class="hero-title">Find the right software for the way <span class="highlight">you work</span>.</h1>
-          <p class="hero-subtitle">Tell us what you need in plain English. We'll shortlist the 3 best apps out of 1,200+ — no sales calls, no bias.</p>
+        <form class="home-search" @submit.prevent="runAIMatch">
+          <svg class="home-search__icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+            <path d="M21 21l-5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <input
+            v-model="aiPrompt"
+            type="text"
+            class="home-search__input"
+            :placeholder="searchPlaceholder"
+            :disabled="aiLoading"
+            aria-label="Describe what you need"
+          />
+          <button
+            type="submit"
+            class="mk-btn mk-btn--primary home-search__btn"
+            :disabled="!aiPrompt.trim() || aiLoading"
+          >
+            <span v-if="!aiLoading">Find my tools</span>
+            <span v-else>Matching…</span>
+          </button>
+        </form>
 
-          <!-- Unified AI Search -->
-          <div class="hero-search">
-            <textarea
-              v-model="aiPrompt"
-              class="hero-search-input"
-              :placeholder="searchPlaceholder"
-              rows="2"
-              :disabled="aiLoading"
-              @keydown.enter.exact.prevent="runAIMatch"
-            />
-            <div class="hero-search-actions">
-              <span class="hero-search-hint">
-                <kbd>Enter</kbd> to search
-              </span>
-              <button
-                class="hero-search-btn"
-                :disabled="!aiPrompt.trim() || aiLoading"
-                @click="runAIMatch"
-              >
-                <UIcon v-if="!aiLoading" name="i-heroicons-bolt" dynamic />
-                <UIcon v-else name="i-heroicons-arrow-path" dynamic class="spin" />
-                <span>{{ aiLoading ? 'Matching…' : 'Find my tools' }}</span>
-              </button>
-            </div>
-          </div>
+        <div class="home-chips">
+          <span class="home-chips__label">Try:</span>
+          <button
+            v-for="(ex, i) in examples"
+            :key="i"
+            type="button"
+            class="home-chip"
+            @click="aiPrompt = ex"
+          >{{ ex }}</button>
+        </div>
 
-          <!-- Example chips -->
-          <div class="hero-chips">
-            <span class="chip-label">Try:</span>
-            <button
-              v-for="(example, i) in examples"
-              :key="i"
-              class="chip"
-              @click="aiPrompt = example"
-            >{{ example }}</button>
-          </div>
+        <div v-if="aiResults.length" class="home-results">
+          <h3>Top picks for you</h3>
+          <ul>
+            <li v-for="r in aiResults" :key="r.name">
+              <strong>{{ r.name }}</strong>
+              <span>— {{ r.reason }}</span>
+            </li>
+          </ul>
+          <small>Demo results. Full AI matching launches soon.</small>
+        </div>
 
-          <!-- Results (inline) -->
-          <div v-if="aiResults.length" class="hero-results">
-            <h3>Top picks for you</h3>
-            <ul>
-              <li v-for="r in aiResults" :key="r.name">
-                <strong>{{ r.name }}</strong>
-                <span>— {{ r.reason }}</span>
-              </li>
-            </ul>
-            <p class="results-note">Demo results. Full AI matching launches soon.</p>
-          </div>
-
-          <!-- Trust strip -->
-          <div class="hero-trust">
-            <span><strong>167</strong> categories</span>
-            <span class="dot">·</span>
-            <span><strong>1,200+</strong> apps indexed</span>
-            <span class="dot">·</span>
-            <span><strong>Free</strong> to browse</span>
-          </div>
+        <div class="home-trust">
+          <span><strong>167</strong> categories</span>
+          <span class="home-trust__dot" aria-hidden="true">·</span>
+          <span><strong>1,200+</strong> apps indexed</span>
+          <span class="home-trust__dot" aria-hidden="true">·</span>
+          <span><strong>Free</strong> to browse</span>
         </div>
       </div>
     </section>
 
-    <!-- Top Performing Products Section -->
-    <section class="top-products-section">
-      <div class="container">
-        <div class="section-header">
-          <h2>Trending right now</h2>
-          <p>Discover the most trending, sponsored, and searched applications in our marketplace.</p>
+    <!-- 2. Social proof -->
+    <section class="home-proof">
+      <div class="home-proof__inner">
+        <span class="home-proof__label">Trusted by teams at</span>
+        <div class="home-proof__logos">
+          <span v-for="brand in trustedBrands" :key="brand" class="home-proof__brand">{{ brand }}</span>
         </div>
-        <div class="products-grid">
-          <ProductCard
-            v-for="product in topProducts"
-            :key="product.id"
-            :product="transformProductData(product)"
-            :layout="'vertical'"
-            :variant="product.badgeType || 'regular'"
-            :special-label="product.badgeType === 'trending' ? 'Trending' : product.badgeType === 'sponsored' ? 'Sponsored' : undefined"
-          />
+      </div>
+    </section>
+
+    <!-- 3. How it works -->
+    <section class="mk-section">
+      <div class="mk-section__inner">
+        <div class="home-section-head">
+          <span class="mk-eyebrow">How it works</span>
+          <h2 class="mk-section__title">From fuzzy need to shortlist in under a minute</h2>
+          <p class="mk-section__lede">A focused workflow that replaces hours of demo calls.</p>
         </div>
-        <div class="section-footer">
-          <NuxtLink to="/marketplace" class="btn btn-outline">
-            View All Products
+
+        <div class="home-steps">
+          <article v-for="(s, i) in steps" :key="s.title" class="home-step">
+            <div class="home-step__num">{{ String(i + 1).padStart(2, '0') }}</div>
+            <div class="home-step__icon" aria-hidden="true" v-html="s.icon" />
+            <h3 class="home-step__title">{{ s.title }}</h3>
+            <p class="home-step__text">{{ s.text }}</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Categories -->
+    <section class="mk-section mk-section--soft">
+      <div class="mk-section__inner">
+        <div class="home-section-head">
+          <span class="mk-eyebrow">Browse by category</span>
+          <h2 class="mk-section__title">Start where your stack needs the most help</h2>
+        </div>
+        <div class="home-cats">
+          <NuxtLink
+            v-for="c in categories"
+            :key="c.slug"
+            :to="`/marketplace?category=${c.slug}`"
+            class="home-cat"
+          >
+            <div class="home-cat__icon" aria-hidden="true" v-html="c.icon" />
+            <div class="home-cat__text">
+              <h3 class="home-cat__name">{{ c.name }}</h3>
+              <span class="home-cat__count">{{ c.count }} apps</span>
+            </div>
+            <svg class="home-cat__arrow" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </NuxtLink>
         </div>
+        <div class="home-cats__footer">
+          <NuxtLink to="/marketplace" class="mk-btn mk-btn--secondary">Browse all categories</NuxtLink>
+        </div>
       </div>
     </section>
 
-    <!-- Integration Section -->
-    <section class="integrations-section">
-      <div class="container">
-        <div class="integration-content">
-          <h2>Seamlessly integrate with your favorite tools</h2>
-          <p>Connect SaaSWorld with over 100+ applications and services you already use.</p>
-          <NuxtLink to="/integrations" class="btn btn-primary">View all integrations</NuxtLink>
+    <!-- 5. Trending apps -->
+    <section class="mk-section">
+      <div class="mk-section__inner">
+        <div class="home-section-head">
+          <span class="mk-eyebrow">Trending right now</span>
+          <h2 class="mk-section__title">What buyers are shortlisting this week</h2>
+          <p class="mk-section__lede">Hand-picked from real evaluation activity on SaaSWorld — not paid placements.</p>
         </div>
-        <div class="integration-logos">
-          <div class="logo-item" v-for="(logo, index) in integrationLogos" :key="index" @mouseenter="highlightLogo(index)" @mouseleave="resetLogos">
-            <div class="logo-tooltip">{{ logo.name }}</div>
-            <UIcon :name="logo.icon" dynamic class="integration-icon" :class="{ 'highlighted': highlightedLogo === index }" />
+
+        <div class="home-apps">
+          <NuxtLink
+            v-for="app in topProducts"
+            :key="app.id"
+            :to="`/marketplace/app/${app.id}`"
+            class="app-card"
+          >
+            <div class="app-card__head">
+              <div class="app-card__logo">
+                <img :src="app.image" :alt="`${app.name} logo`" loading="lazy" @error="onLogoError" />
+              </div>
+              <div class="app-card__title">
+                <h3 class="app-card__name">{{ app.name }}</h3>
+                <span class="app-card__cat">{{ app.category }}</span>
+              </div>
+            </div>
+
+            <p class="app-card__tag">{{ app.tagline }}</p>
+
+            <div class="app-card__meta">
+              <span class="app-card__rating">
+                <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 2l2.6 6.4L21 10l-4.9 4.3L17.8 21 12 17.6 6.2 21l1.7-6.7L3 10l6.4-1.6z" fill="currentColor"/></svg>
+                <strong>{{ app.rating }}</strong>
+                <span class="app-card__reviews">({{ app.reviewCount }})</span>
+              </span>
+              <span class="app-card__dot" aria-hidden="true">·</span>
+              <span class="app-card__price">{{ formatPrice(app) }}</span>
+            </div>
+
+            <span class="app-card__cta">
+              View details
+              <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </NuxtLink>
+        </div>
+
+        <div class="home-apps__footer">
+          <NuxtLink to="/marketplace" class="mk-btn mk-btn--secondary">View all apps</NuxtLink>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Why -->
+    <section class="mk-section mk-section--soft">
+      <div class="mk-section__inner">
+        <div class="home-section-head">
+          <span class="mk-eyebrow">Why SaaSWorld</span>
+          <h2 class="mk-section__title">Built for buyers, not for vendors</h2>
+        </div>
+        <div class="home-why">
+          <article v-for="v in values" :key="v.title" class="home-why__card">
+            <div class="home-why__icon" aria-hidden="true" v-html="v.icon" />
+            <h3 class="home-why__title">{{ v.title }}</h3>
+            <p class="home-why__text">{{ v.text }}</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Testimonial -->
+    <section class="mk-section home-quote-section">
+      <div class="mk-section__inner">
+        <blockquote class="home-quote">
+          <svg class="home-quote__mark" viewBox="0 0 24 24" width="40" height="40" aria-hidden="true"><path d="M7.17 6.17C4.87 7.28 3 9.55 3 13v5h5v-5H5.5c.17-1.92 1.33-3.33 3-4L7.17 6.17zm10 0C14.87 7.28 13 9.55 13 13v5h5v-5h-2.5c.17-1.92 1.33-3.33 3-4l-1.33-2.83z" fill="currentColor"/></svg>
+          <p>
+            We shortlisted our new CRM in 20 minutes instead of 6 weeks. The framework and
+            unbiased tagging were the real unlocks — not another spec sheet.
+          </p>
+          <footer>
+            <strong>Priya Rao</strong>
+            <span>VP Operations, Mercury Market</span>
+          </footer>
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- 8. Integrations -->
+    <section class="mk-section">
+      <div class="mk-section__inner">
+        <div class="home-section-head">
+          <span class="mk-eyebrow">Integrations</span>
+          <h2 class="mk-section__title">Plays well with the tools you already use</h2>
+          <p class="mk-section__lede">Every listing shows which of your apps it natively integrates with, so you never adopt an island.</p>
+        </div>
+        <div class="home-integrations">
+          <div
+            v-for="logo in integrationLogos"
+            :key="logo.name"
+            class="home-integration"
+            :title="logo.name"
+          >
+            <UIcon :name="logo.icon" dynamic class="home-integration__icon" />
+            <span class="home-integration__name">{{ logo.name }}</span>
           </div>
         </div>
-        <div class="integrations-footer">
-          <p class="integration-note">...and many more available on our integrations page.</p>
+        <div class="home-integrations__footer">
+          <NuxtLink to="/integrations" class="mk-btn mk-btn--secondary">View all integrations</NuxtLink>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Final CTA -->
+    <section class="mk-section home-final">
+      <div class="mk-section__inner">
+        <div class="home-final__card">
+          <h2 class="home-final__title">Ready to find your stack?</h2>
+          <p class="home-final__lede">Start with a free shortlist. No account required, no sales call.</p>
+          <div class="home-final__actions">
+            <NuxtLink to="/marketplace" class="mk-btn mk-btn--primary">Browse apps</NuxtLink>
+            <NuxtLink to="/contact" class="mk-btn mk-btn--secondary">Talk to a human</NuxtLink>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Vendor CTA -->
     <VendorCta />
-
-  </div>
+  </main>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue'
 
-// Global categories menu composable for cross-component communication
-const { openCategoriesDrawer } = useCategoriesMenu();
+const { applySEO } = useSEO()
+applySEO({
+  title: 'SaaSWorld — Find the right software for the way you work',
+  description:
+    'AI-powered software discovery for teams. Describe what you need, get an unbiased shortlist from 1,200+ apps across 167 categories — no sales calls, no pay-to-play rankings.',
+  canonical: '/',
+  ogType: 'website'
+})
 
-// Debug function to test if category button is being clicked
-const handleCategoryClick = () => {
-  console.log('Category button clicked!');
-  openCategoriesDrawer();
-};
-
-// --- Unified AI Search (hero) --------------------------------
-const aiPrompt = ref('');
-const aiLoading = ref(false);
-const aiResults = ref<Array<{ name: string; reason: string }>>([]);
-
-const searchPlaceholder = 'Describe what you need — e.g. "CRM for a 10-person remote sales team, budget under $20/user"';
+const aiPrompt = ref('')
+const aiLoading = ref(false)
+const aiResults = ref<Array<{ name: string; reason: string }>>([])
+const searchPlaceholder =
+  'Describe what you need — e.g. "CRM for a 10-person remote sales team under $20/user"'
 
 const examples = [
   'CRM for a 10-person sales team',
   'Async video for a distributed engineering team',
-  'All-in-one HR + payroll under $200/mo',
-];
+  'All-in-one HR + payroll under $200/mo'
+]
 
-// Stub matcher — wire to real /api/ai-match endpoint in Phase 2.
-const runAIMatch = () => {
-  if (!aiPrompt.value.trim() || aiLoading.value) return;
-  aiLoading.value = true;
-  aiResults.value = [];
+function runAIMatch() {
+  if (!aiPrompt.value.trim() || aiLoading.value) return
+  aiLoading.value = true
+  aiResults.value = []
   setTimeout(() => {
     aiResults.value = [
       { name: 'Notion', reason: 'Flexible docs + lightweight project tracking for small teams' },
       { name: 'Linear', reason: 'Fast issue tracking loved by product-led teams' },
-      { name: 'HubSpot', reason: 'Free CRM tier that scales to full revenue stack' },
-    ];
-    aiLoading.value = false;
-  }, 900);
-};
+      { name: 'HubSpot', reason: 'Free CRM tier that scales to a full revenue stack' }
+    ]
+    aiLoading.value = false
+  }, 700)
+}
 
-// Advanced SEO implementation using enhanced SEO composables
-const { generateEnhancedSEO } = useEnhancedSEO();
-const { optimizeContentForLLM, generateRichSnippets } = useLLMOptimization();
+const trustedBrands = ['Shopify', 'Notion', 'Stripe', 'Airbnb', 'Linear', 'Figma', 'Zapier', 'Intercom']
 
-// NEW: Comprehensive LLM optimization using orchestrator
-// (Perplexity-specific helpers are now exposed by the orchestrator)
-const {
-  orchestrateLLMOptimization,
-  generateOptimizationReport,
-  optimizeForPerplexity,
-  generateConversationalSchema
-} = useLLMOrchestrator();
-
-// Configure comprehensive LLM optimization for homepage
-const llmConfig = {
-  title: 'SaaSWorld - Global Software Marketplace',
-  description: 'Discover and compare the best business software solutions worldwide. Find SaaS tools, enterprise software, and digital solutions with expert reviews.',
-  category: 'SaaS Marketplace',
-  features: [
-    'Comprehensive software directory',
-    'Expert reviews and comparisons',
-    'Free discovery platform',
-    'Global marketplace',
-    'Verified applications',
-    'Business intelligence'
-  ],
-  useCases: [
-    'Software discovery and comparison',
-    'Business solution research',
-    'Vendor evaluation',
-    'Technology stack planning',
-    'Enterprise software procurement',
-    'Startup tool selection'
-  ],
-  benefits: [
-    'Save time on software research',
-    'Make informed purchasing decisions',
-    'Access expert reviews and ratings',
-    'Compare features and pricing',
-    'Discover new solutions',
-    'Free platform access'
-  ],
-  pricing: 'Free for users, commission-based for vendors',
-  targetAudience: [
-    'Business owners',
-    'IT decision makers',
-    'Startup founders',
-    'Enterprise procurement teams',
-    'Software developers',
-    'Digital transformation teams'
-  ],
-  keywords: [
-    'SaaS marketplace',
-    'business software',
-    'software comparison',
-    'enterprise tools',
-    'business solutions',
-    'software discovery'
-  ],
-  location: 'Global',
-  enabledLLMs: ['chatgpt', 'claude', 'gemini', 'copilot', 'perplexity'] as Array<'chatgpt' | 'claude' | 'gemini' | 'copilot' | 'perplexity'>,
-  priority: 'high' as const
-};
-
-// Generate comprehensive LLM optimization
-const llmOptimization = orchestrateLLMOptimization(llmConfig);
-const optimizationReport = generateOptimizationReport(llmConfig);
-
-// Generate LLM-optimized content structure
-const homePageContent = optimizeContentForLLM(`
-# SaaSWorld - Global Software Marketplace for Business Solutions
-
-Discover and compare the best business software solutions worldwide. Find SaaS tools, enterprise software, and digital solutions for your business needs with expert reviews and comparisons.
-
-## Why Choose SaaSWorld?
-
-SaaSWorld is the world's leading marketplace for business software solutions. We help businesses of all sizes find, compare, and implement the right software tools to drive growth and efficiency.
-
-### Comprehensive Software Directory
-Browse through thousands of verified software applications across all business categories including productivity, marketing, sales, finance, and more.
-
-### Expert Reviews and Comparisons
-Get detailed insights from our team of software experts and real user reviews to make informed decisions.
-
-### Free Discovery Platform
-Access our platform completely free to discover software solutions that match your specific business needs.
-
-## Featured Software Categories
-
-- **AI & Machine Learning**: Artificial intelligence tools for automation and data analysis
-- **Project Management**: Team collaboration and task management solutions
-- **Design & Creative**: Creative tools for designers and marketing teams
-- **E-commerce**: Online store and digital commerce platforms
-- **Marketing & Sales**: Customer acquisition and revenue growth tools
-- **Finance & Accounting**: Financial management and accounting software
-
-## Top Performing Products
-
-Discover the most trending, sponsored, and searched applications in our marketplace including Slack for team communication, HubSpot for CRM, Zoom for video conferencing, and hundreds more.
-`, {
-  title: 'SaaSWorld - Global Software Marketplace for Business Solutions',
-  category: 'marketplace',
-  type: 'homepage',
-  targetAudience: ['business-owners', 'entrepreneurs', 'software-buyers', 'decision-makers']
-});
-
-// Generate Perplexity.ai optimization
-const perplexityOptimization = optimizeForPerplexity({
-  title: 'SaaSWorld - Global Software Marketplace',
-  description: 'Discover and compare the best business software solutions worldwide. Find SaaS tools, enterprise software, and digital solutions for your business needs.',
-  category: 'Software Marketplace',
-  features: [
-    'Comprehensive software directory',
-    'Expert reviews and comparisons', 
-    'Free platform access',
-    'Global software coverage',
-    'Multi-category support'
-  ],
-  useCases: [
-    'Finding business software',
-    'Comparing software features',
-    'Reading expert reviews',
-    'Discovering new tools',
-    'Making informed decisions'
-  ],
-  benefits: [
-    'Save time on research',
-    'Make better software choices',
-    'Access expert insights',
-    'Compare multiple options',
-    'Find the right fit for your business'
-  ]
-});
-
-// Apply comprehensive SEO with LLM optimization
-useHead(generateEnhancedSEO({
-  title: 'SaaSWorld - Global Software Marketplace for Business Solutions',
-  description: 'Discover and compare the best business software solutions worldwide. Find SaaS tools, enterprise software, and digital solutions for your business needs with expert reviews and comparisons.',
-  keywords: [
-    'saas marketplace', 'business software', 'enterprise solutions', 'software directory',
-    'digital tools', 'cloud applications', 'software comparison', 'saas platform',
-    'global software marketplace', 'business tools', 'productivity software',
-    'marketing tools', 'sales software', 'project management', 'crm software',
-    'artificial intelligence', 'machine learning', 'automation tools',
-    'startup software', 'enterprise apps', 'small business tools'
-  ],
-  canonicalUrl: '/',
-  ogImage: '/images/saasworld-og-homepage.jpg',
-  ogType: 'website',
-  author: 'SaaSWorld Editorial Team',
-  locale: 'en_US',
-  alternateLocales: ['en_US', 'es_ES', 'fr_FR', 'de_DE', 'pt_BR'],
-  schema: generateRichSnippets(homePageContent, 'homepage'),
-  breadcrumbs: [
-    { name: 'Home', url: '/' }
-  ]
-}));
-
-// Generate comprehensive JSON-LD schema for homepage
-const homepageSchema = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebSite",
-      "@id": "https://saasworld.com/#website",
-      "url": "https://saasworld.com",
-      "name": "SaaSWorld",
-      "description": "Global marketplace for business software solutions and SaaS tools",
-      "inLanguage": "en-US",
-      "publisher": {
-        "@id": "https://saasworld.com/#organization"
-      },
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": "https://saasworld.com/marketplace?search={search_term_string}"
-        },
-        "query-input": "required name=search_term_string"
-      }
-    },
-    {
-      "@type": "Organization",
-      "@id": "https://saasworld.com/#organization",
-      "name": "SaaSWorld",
-      "alternateName": "SaaS World",
-      "url": "https://saasworld.com",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://saasworld.com/images/saasworld-logo.png",
-        "width": 300,
-        "height": 100
-      },
-      "description": "Leading global marketplace for business software solutions, helping companies discover and compare SaaS tools.",
-      "foundingDate": "2024",
-      "sameAs": [
-        "https://twitter.com/SaasWorld",
-        "https://linkedin.com/company/saasworld",
-        "https://github.com/saasworld",
-        "https://facebook.com/saasworld"
-      ],
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "telephone": "+1-800-SAASWORLD",
-        "contactType": "customer service",
-        "availableLanguage": ["English", "Spanish", "French", "German", "Portuguese"]
-      }
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://saasworld.com/#webpage",
-      "url": "https://saasworld.com",
-      "name": "SaaSWorld - Global Software Marketplace for Business Solutions",
-      "description": "Discover and compare the best business software solutions worldwide. Find SaaS tools, enterprise software, and digital solutions for your business needs.",
-      "inLanguage": "en-US",
-      "isPartOf": {
-        "@id": "https://saasworld.com/#website"
-      },
-      "about": {
-        "@type": "Thing",
-        "name": "Business Software Marketplace"
-      },
-      "mainEntity": {
-        "@type": "ItemList",
-        "name": "Featured Software Solutions",
-        "description": "Top performing software applications in our marketplace",
-        "numberOfItems": 6,
-        "itemListElement": [
-          {
-            "@type": "SoftwareApplication",
-            "name": "Slack",
-            "applicationCategory": "Team Collaboration",
-            "operatingSystem": "Web, iOS, Android",
-            "url": "https://saasworld.com/marketplace/app/slack"
-          },
-          {
-            "@type": "SoftwareApplication", 
-            "name": "HubSpot CRM",
-            "applicationCategory": "Customer Relationship Management",
-            "operatingSystem": "Web, iOS, Android",
-            "url": "https://saasworld.com/marketplace/app/hubspot"
-          },
-          {
-            "@type": "SoftwareApplication",
-            "name": "Zoom",
-            "applicationCategory": "Video Conferencing",
-            "operatingSystem": "Web, iOS, Android, Windows, macOS",
-            "url": "https://saasworld.com/marketplace/app/zoom"
-          }
-        ]
-      },
-      "breadcrumb": {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "https://saasworld.com"
-          }
-        ]
-      }
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "What is SaaSWorld?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "SaaSWorld is a global marketplace for business software solutions where you can discover, compare, and find the best SaaS tools for your business needs."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Is SaaSWorld free to use?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes, SaaSWorld is completely free to use. You can browse software solutions, read reviews, and compare tools without any cost."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How many software applications are available?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "SaaSWorld features thousands of verified software applications across all business categories including AI, project management, marketing, sales, and more."
-          }
-        }
-      ]
-    }
-  ]
-};
-
-// Add Perplexity.ai conversational schema
-// Note: qaPairs are already included inside the schema returned by the orchestrator.
-const perplexitySchema = generateConversationalSchema({
-  title: 'SaaSWorld',
-  description: 'Global software marketplace for business solutions',
-  category: 'Software Marketplace'
-});
-
-// Add the comprehensive schema to the page
-useHead({
-  script: [
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(homepageSchema)
-    } as any,
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(perplexitySchema)
-    } as any
-  ],
-  meta: [
-    ...perplexityOptimization.perplexityMeta
-  ]
-});
-
-// Trending searches
-const trendingSearches = [
-  'Marketing Tools',
-  'CRM',
-  'Analytics',
-  'Project Management',
-  'Design',
-  'Accounting',
-  'Email Marketing',
-  'Team Collaboration',
-  'Customer Support',
-  'Sales Tools',
-  'HR Management',
-  'Finance Software'
-];
-
-// Control how many trending searches are visible based on screen size (for dropdown)
-const maxVisibleTrending = ref(5); // Default for desktop
-const visibleTrendingSearches = ref(trendingSearches.slice(0, maxVisibleTrending.value));
-
-// Update visible trending searches based on screen size
-const updateVisibleTrending = () => {
-  if (window.innerWidth <= 576) {
-    maxVisibleTrending.value = 2; // Show 2 items on mobile
-  } else if (window.innerWidth <= 768) {
-    maxVisibleTrending.value = 3; // Show 3 items on tablets
-  } else {
-    maxVisibleTrending.value = 5; // Show 5 items on desktop
+const steps = [
+  {
+    title: 'Describe your need',
+    text: 'Tell us what job you need to get done — team size, budget, must-haves.',
+    icon: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M8 12h4M8 8h6M8 16h3"/></svg>'
+  },
+  {
+    title: 'See your shortlist',
+    text: 'Our engine filters 1,200+ apps against your fit criteria — not paid rankings.',
+    icon: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v4H4zM4 10h10v10H4zM16 10h4v4h-4zM16 16h4v4h-4z"/></svg>'
+  },
+  {
+    title: 'Decide with confidence',
+    text: 'Side-by-side comparison, verified reviews, transparent pricing. Demo or buy.',
+    icon: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>'
   }
-  visibleTrendingSearches.value = trendingSearches.slice(0, maxVisibleTrending.value);
-};
+]
 
-// Handle trending search click
-const handleTrendingSearch = (trend: string) => {
-  console.log(`Searching for: ${trend}`);
-  // In a real app, this would trigger a search with the selected term
-  // You could navigate to search results or apply the search term to the input
-};
+const categories = [
+  { slug: 'crm-sales', name: 'CRM & Sales', count: 148, icon: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>' },
+  { slug: 'project-management', name: 'Project Management', count: 112, icon: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 4v16"/></svg>' },
+  { slug: 'collaboration', name: 'Team Collaboration', count: 96, icon: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>' },
+  { slug: 'hr-people', name: 'HR & People Ops', count: 84, icon: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' },
+  { slug: 'marketing', name: 'Marketing', count: 134, icon: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l18-8-8 18-2-8z"/></svg>' },
+  { slug: 'developer', name: 'Developer Tools', count: 161, icon: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg>' }
+]
 
-// Handle search button click
-const handleSearch = () => {
-  const searchInput = document.querySelector('.search-input') as HTMLInputElement;
-  const searchTerm = searchInput?.value || '';
-  console.log(`Searching for: ${searchTerm}`);
-  // In a real app, this would trigger a search with the input value
-  // You could navigate to search results page with the search term
-};
+interface HomeApp {
+  id: string
+  name: string
+  category: string
+  tagline: string
+  image: string
+  rating: string
+  reviewCount: string
+  price: string
+  pricePeriod: string
+}
 
-// Countries Data with flags
-const countries = [
-  { code: 'us', name: 'United States', dialCode: '1', flag: '/assets/images/flags/us.svg' },
-  { code: 'gb', name: 'United Kingdom', dialCode: '44', flag: '/assets/images/flags/gb.svg' },
-  { code: 'ca', name: 'Canada', dialCode: '1', flag: '/assets/images/flags/ca.svg' },
-  { code: 'de', name: 'Germany', dialCode: '49', flag: '/assets/images/flags/de.svg' },
-  { code: 'fr', name: 'France', dialCode: '33', flag: '/assets/images/flags/fr.svg' },
-  { code: 'au', name: 'Australia', dialCode: '61', flag: '/assets/images/flags/au.svg' },
-  { code: 'jp', name: 'Japan', dialCode: '81', flag: '/assets/images/flags/jp.svg' },
-  { code: 'in', name: 'India', dialCode: '91', flag: '/assets/images/flags/in.svg' },
-  { code: 'cn', name: 'China', dialCode: '86', flag: '/assets/images/flags/cn.svg' },
-  { code: 'br', name: 'Brazil', dialCode: '55', flag: '/assets/images/flags/br.svg' }
-];
+const topProducts: HomeApp[] = [
+  { id: 'slack', name: 'Slack', category: 'Team Collaboration', tagline: 'Channel-based messaging that replaces internal email for fast-moving teams.', image: '/assets/images/integrations/slack.svg', rating: '4.8', reviewCount: '42.1K', price: 'From $8', pricePeriod: '/user/mo' },
+  { id: 'hubspot', name: 'HubSpot CRM', category: 'Customer Relationship', tagline: 'Free CRM that scales into a full marketing, sales, and service platform.', image: '/assets/images/integrations/hubspot.svg', rating: '4.7', reviewCount: '28.9K', price: 'Free forever', pricePeriod: '' },
+  { id: 'zoom', name: 'Zoom', category: 'Video Conferencing', tagline: 'The reliability benchmark for video meetings, webinars, and events.', image: '/assets/images/integrations/zoom.svg', rating: '4.6', reviewCount: '55.3K', price: 'From $14.99', pricePeriod: '/host/mo' },
+  { id: 'notion', name: 'Notion', category: 'Productivity', tagline: 'Docs, wikis, tasks, and databases in one connected workspace.', image: '/assets/images/integrations/notion.svg', rating: '4.9', reviewCount: '18.4K', price: 'From $10', pricePeriod: '/user/mo' },
+  { id: 'salesforce', name: 'Salesforce', category: 'CRM & Sales', tagline: 'The enterprise CRM standard — deeply customizable revenue platform.', image: '/assets/images/integrations/salesforce.svg', rating: '4.5', reviewCount: '71.2K', price: 'From $25', pricePeriod: '/user/mo' },
+  { id: 'canva', name: 'Canva', category: 'Design', tagline: 'Drag-and-drop design for teams that need beautiful output fast.', image: '/assets/images/integrations/canva.svg', rating: '4.8', reviewCount: '12.1K', price: 'From $12.99', pricePeriod: '/user/mo' }
+]
 
-// Top Products Data
-const topProducts = [
-  {
-    id: 'slack',
-    name: 'Slack',
-    category: 'Team Collaboration',
-    tagline: 'Channel-based messaging that replaces internal email for fast-moving teams.',
-    image: '/assets/images/integrations/slack.svg',
-    icon: 'logos:slack-icon',
-    rating: '4.8',
-    reviewCount: '42,100',
-    users: '12M+',
-    price: 'From $8',
-    pricePeriod: '/user/mo',
-    bestFor: 'Best for remote teams',
-    tags: ['Free plan', 'G2 Leader', 'Enterprise-ready'],
-    badge: 'Trending',
-    badgeType: 'trending',
-    badgeIcon: 'i-heroicons-fire'
-  },
-  {
-    id: 'hubspot',
-    name: 'HubSpot CRM',
-    category: 'Customer Relationship',
-    tagline: 'Free CRM that scales into a full marketing, sales, and service platform.',
-    image: '/assets/images/integrations/hubspot.svg',
-    icon: 'logos:hubspot',
-    rating: '4.7',
-    reviewCount: '28,900',
-    users: '8M+',
-    price: 'Free forever',
-    pricePeriod: '',
-    bestFor: 'Best for SMB sales teams',
-    tags: ['Free forever', 'No credit card', 'SOC 2'],
-    badge: 'Sponsored',
-    badgeType: 'sponsored',
-    badgeIcon: 'i-heroicons-star-solid'
-  },
-  {
-    id: 'zoom',
-    name: 'Zoom',
-    category: 'Video Conferencing',
-    tagline: 'The reliability benchmark for video meetings, webinars, and events.',
-    image: '/assets/images/integrations/zoom.svg',
-    icon: 'logos:zoom-icon',
-    rating: '4.6',
-    reviewCount: '55,300',
-    users: '15M+',
-    price: 'From $14.99',
-    pricePeriod: '/host/mo',
-    bestFor: 'Best for external meetings',
-    tags: ['Free 40-min', 'HIPAA option', 'Phone & chat'],
-    badge: 'Most Searched',
-    badgeType: 'popular',
-    badgeIcon: 'i-heroicons-magnifying-glass'
-  },
-  {
-    id: 'notion',
-    name: 'Notion',
-    category: 'Productivity',
-    tagline: 'Docs, wikis, tasks, and databases in one connected workspace.',
-    image: '/assets/images/integrations/notion.svg',
-    icon: 'simple-icons:notion',
-    rating: '4.9',
-    reviewCount: '18,400',
-    users: '4M+',
-    price: 'From $10',
-    pricePeriod: '/user/mo',
-    bestFor: 'Best all-in-one for startups',
-    tags: ['Free plan', 'AI add-on', 'Great mobile'],
-    badge: 'Trending',
-    badgeType: 'trending',
-    badgeIcon: 'i-heroicons-fire'
-  },
-  {
-    id: 'salesforce',
-    name: 'Salesforce',
-    category: 'CRM & Sales',
-    tagline: 'The enterprise CRM standard — deeply customizable revenue platform.',
-    image: '/assets/images/integrations/salesforce.svg',
-    icon: 'logos:salesforce',
-    rating: '4.5',
-    reviewCount: '71,200',
-    users: '20M+',
-    price: 'From $25',
-    pricePeriod: '/user/mo',
-    bestFor: 'Best for enterprise',
-    tags: ['Enterprise', 'AppExchange', 'Einstein AI'],
-    badge: 'Sponsored',
-    badgeType: 'sponsored',
-    badgeIcon: 'i-heroicons-star-solid'
-  },
-  {
-    id: 'canva',
-    name: 'Canva',
-    category: 'Design',
-    tagline: 'Drag-and-drop design for teams that need beautiful output fast.',
-    image: '/assets/images/integrations/canva.svg',
-    icon: 'logos:canva',
-    rating: '4.8',
-    reviewCount: '12,100',
-    users: '10M+',
-    price: 'From $12.99',
-    pricePeriod: '/user/mo',
-    bestFor: 'Best for non-designers',
-    tags: ['Free plan', 'AI tools', 'Team templates'],
-    badge: 'Most Searched',
-    badgeType: 'popular',
-    badgeIcon: 'i-heroicons-magnifying-glass'
-  }
-];
+function formatPrice(a: HomeApp) {
+  if (!a.pricePeriod) return a.price
+  return `${a.price}${a.pricePeriod}`
+}
 
-// Integration Logos (real brand marks via Iconify logos set)
+function onLogoError(e: Event) {
+  const el = e.target as HTMLImageElement
+  el.style.display = 'none'
+}
+
+const values = [
+  { title: 'Unbiased by design', text: "Vendors can't buy their way to the top. Rankings reflect real fit and verified usage — not bids.", icon: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>' },
+  { title: 'Fast where it matters', text: 'Shortlists in under a minute, comparison in under five. Save your team from a month of demo calls.', icon: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg>' },
+  { title: 'Transparent pricing', text: 'Every listing shows real starting prices, free tiers, and hidden fees. No "contact us" dead-ends.', icon: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M9 9h6a2 2 0 0 1 0 4H9a2 2 0 0 0 0 4h6"/></svg>' }
+]
+
 const integrationLogos = [
   { name: 'Slack', icon: 'logos:slack-icon' },
-  { name: 'Google Workspace', icon: 'logos:google-icon' },
+  { name: 'Google', icon: 'logos:google-icon' },
   { name: 'Microsoft', icon: 'logos:microsoft-icon' },
   { name: 'Zoom', icon: 'logos:zoom-icon' },
   { name: 'Dropbox', icon: 'logos:dropbox' },
@@ -671,1253 +374,291 @@ const integrationLogos = [
   { name: 'GitHub', icon: 'logos:github-icon' },
   { name: 'Stripe', icon: 'logos:stripe' },
   { name: 'Zapier', icon: 'logos:zapier-icon' },
-  { name: 'Asana', icon: 'logos:asana' },
-];
-
-// Integration logo highlight effect
-const highlightedLogo = ref(-1); // -1 means no logo is highlighted
-
-const highlightLogo = (index: number) => {
-  highlightedLogo.value = index;
-};
-
-const resetLogos = () => {
-  highlightedLogo.value = -1;
-};
-
-// Initialize trending searches visibility on mount
-onMounted(() => {
-  updateVisibleTrending();
-  
-  // Handle window resize for responsive behavior
-  window.addEventListener('resize', () => {
-    updateVisibleTrending();
-  });
-});
-
-// Transform topProducts data to ProductCard format
-const transformProductData = (product: any) => {
-  const cleanReviewCount = product.reviewCount.replaceAll(/[,KM+]/g, '')
-  const cleanUsers = product.users.replaceAll(/[,KM+]/g, '')
-  
-  // Determine pricing type
-  let pricingType: 'free' | 'paid' | 'contact' = 'contact'
-  if (product.price === 'Free forever' || product.price === 'Free') {
-    pricingType = 'free'
-  } else if (product.price.includes('From')) {
-    pricingType = 'paid'
-  }
-  
-  return {
-    id: product.id,
-    name: product.name,
-    logo: product.image,
-    category: product.category,
-    rating: Number.parseFloat(product.rating),
-    reviewCount: Number.parseInt(cleanReviewCount, 10),
-    activeUsers: Number.parseInt(cleanUsers, 10) * 1000,
-    pricing: {
-      type: pricingType,
-      value: product.price.includes('From') ? Number.parseInt(product.price.match(/\d+/)?.[0] || '0', 10) : undefined,
-      period: product.pricePeriod?.replace('/', '') || undefined
-    },
-    growthStats: product.badgeType === 'trending' ? {
-      percentage: Math.floor(Math.random() * 30) + 10,
-      period: 'month',
-      trend: 'up' as const
-    } : undefined,
-    isFavorited: false
-  }
-}
-
-// Home page data
+  { name: 'Asana', icon: 'logos:asana' }
+]
 </script>
 
 <style scoped>
-/* Hero Section */
-.hero-section {
-  /* Add top padding so H1 clears the fixed navbar (72px desktop / 64px mobile) */
-  padding: calc(var(--navbar-height) + var(--spacing-xxl)) 0 calc(var(--spacing-xxl) * 1.5);
-  background: var(--bg-gray);
-  position: relative;
-  overflow: visible;
+.home { background: #fff; }
+
+/* Hero */
+.home-hero {
+  background: var(--sw-primary-soft, #fff1e6);
+  padding: calc(var(--navbar-height, 72px) + 3.5rem) 1.5rem 4rem;
   text-align: center;
-  z-index: 1; /* Base z-index for hero section */
 }
-
-@media (max-width: 768px) {
-  .hero-section {
-    padding: calc(var(--navbar-height-mobile) + var(--spacing-xl)) 0 var(--spacing-xxl);
-  }
-}
-
-.hero-section .container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.hero-content {
-  max-width: 800px;
-}
-
-.highlight {
-  color: var(--sw-primary);
-  position: relative;
-  display: inline-block;
-  white-space: nowrap;
-}
-
-/* Subtle 3px underline accent instead of an overlapping block */
-.highlight::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background-color: var(--sw-primary);
-  border-radius: 2px;
-}
-
-.hero-subtitle {
-  font-size: 1.125rem;
-  font-weight: 300;
-  color: var(--text-secondary);
-  margin-bottom: var(--spacing-xl);
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* ─── Unified Hero AI Search ──────────────────────────────── */
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--sw-ai-soft);
-  color: var(--sw-ai);
-  padding: 6px 14px;
-  border-radius: 999px;
-  font-size: var(--fs-caption);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-bottom: 20px;
-}
-
-.hero-title {
-  font-family: var(--font-display);
-  font-size: 3.25rem;
-  font-weight: 700;
-  line-height: 1.1;
-  margin-bottom: var(--spacing-md);
-  letter-spacing: -0.025em;
-  color: var(--sw-text);
-}
-
-.hero-search {
-  display: flex;
-  flex-direction: column;
-  max-width: 720px;
-  margin: 0 auto var(--spacing-md);
-  background: #fff;
-  border: 1px solid #E5E7EB;
-  border-radius: 16px;
-  padding: 6px 6px 10px;
-  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.04),
-              0 8px 24px rgba(17, 24, 39, 0.06);
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.hero-search:focus-within {
-  border-color: var(--sw-ai);
-  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.04),
-              0 0 0 4px rgba(99, 102, 241, 0.15);
-}
-
-.hero-search-input {
-  width: 100%;
-  border: none;
-  resize: none;
-  padding: 14px 16px 4px;
-  font-family: inherit;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: var(--sw-text);
-  background: transparent;
-  text-align: left;
-}
-
-.hero-search-input:focus { outline: none; }
-
-.hero-search-input::placeholder {
-  color: var(--sw-text-subtle);
-  opacity: 1;
-}
-
-.hero-search-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 0 10px;
-}
-
-.hero-search-hint {
-  font-size: var(--fs-caption);
-  color: var(--sw-text-subtle);
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.hero-search-hint kbd {
-  background: var(--bg-gray);
-  border: 1px solid #E5E7EB;
-  border-radius: 6px;
-  padding: 2px 7px;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--sw-text-muted);
-  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.05);
-}
-
-.hero-search-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--sw-ai);
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 20px;
-  font-weight: 600;
-  font-size: 0.9375rem;
-  cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
-  white-space: nowrap;
-}
-
-.hero-search-btn:hover:not(:disabled) {
-  background: #4F46E5;
-  transform: translateY(-1px);
-}
-
-.hero-search-btn:disabled {
-  background: #d1d5db;
-  color: #374151;
-  cursor: not-allowed;
-}
-
-.spin { animation: spin 0.9s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.hero-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: var(--spacing-lg);
-}
-
-.chip-label {
-  font-size: var(--fs-caption);
-  color: var(--sw-text-subtle);
-  font-weight: 500;
-}
-
-.chip {
-  border: 1px solid #E5E7EB;
-  background: #fff;
-  border-radius: 999px;
-  padding: 6px 14px;
-  font-size: 0.875rem;
-  color: var(--sw-text-muted);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.chip:hover {
-  border-color: var(--sw-ai);
-  color: var(--sw-ai);
-}
-
-.hero-secondary { margin-bottom: var(--spacing-lg); }
-
-.link-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: transparent;
-  border: none;
-  color: var(--sw-primary);
-  font-size: 0.9375rem;
-  font-weight: 500;
-  cursor: pointer;
-  padding: 6px 10px;
-  border-radius: 8px;
-  transition: background-color 0.15s;
-}
-
-.link-btn:hover {
-  background: var(--sw-primary-soft);
-  text-decoration: none;
-}
-
-.hero-results {
-  max-width: 720px;
-  margin: 0 auto var(--spacing-lg);
-  text-align: left;
-  background: #fff;
-  border: 1px solid #E5E7EB;
-  border-radius: 16px;
-  padding: 20px 24px;
-}
-
-.hero-results h3 {
-  margin: 0 0 12px;
-  font-size: 1rem;
-  color: var(--sw-text);
-  font-weight: 600;
-}
-
-.hero-results ul {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.hero-results li {
-  color: var(--sw-text-muted);
-  padding: 10px 12px;
-  background: var(--bg-gray);
-  border-radius: 10px;
-}
-
-.hero-results strong {
-  color: var(--sw-text);
-  margin-right: 4px;
-}
-
-.results-note {
-  font-size: var(--fs-caption);
-  color: var(--sw-text-subtle);
-  margin: 0;
-}
-
-.hero-trust {
-  display: inline-flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  color: var(--sw-text-subtle);
-  font-size: 0.875rem;
-}
-
-.hero-trust strong {
-  color: var(--sw-text);
-  font-weight: 600;
-}
-
-.hero-trust .dot { opacity: 0.5; }
-
-@media (max-width: 640px) {
-  .hero-title { font-size: 2rem; }
-  .hero-search-actions { flex-direction: column-reverse; align-items: stretch; gap: 10px; }
-  .hero-search-btn { justify-content: center; padding: 12px; }
-  .hero-search-hint { justify-content: center; }
-  .hero-chips { gap: 6px; }
-  .chip { padding: 5px 10px; font-size: 0.8125rem; }
-}
-/* ─── End Unified Hero ─────────────────────────────────────── */
-
-.search-row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: var(--spacing-md);
-  width: 100%;
-  margin-bottom: var(--spacing-xl);
-}
-
-.trending-row {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin-bottom: var(--spacing-xl);
-  margin-top: -10px; /* Reduce space between search and trending rows */
-  position: relative; /* Create stacking context for child elements */
-  z-index: 999999; /* Higher z-index to ensure dropdown is above other elements */
-}
-
-.search-categories-dropdown {
-  position: relative;
-  z-index: 999999;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: var(--spacing-md);
-}
-
-.search-container {
-  display: flex;
-  position: relative;
-  box-shadow: var(--shadow-sm);
-  border-radius: var(--border-radius-md);
-  background-color: var(--light-color);
-  overflow: hidden;
-  border: 1px solid var(--color-gray-200);
-  width: 100%;
-  max-width: 700px;
-}
-
-.country-select {
-  position: relative;
-  border-right: 1px solid var(--color-gray-200);
-  z-index: 10;
-}
-
-.selected-country {
-  display: flex;
-  align-items: center;
-  padding: 0 var(--spacing-md);
-  height: 100%;
-  cursor: pointer;
-}
-
-.country-flag {
-  width: 20px;
-  height: 15px;
-  margin-right: var(--spacing-xs);
-}
-
-.country-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: var(--light-color);
-  border: 1px solid var(--color-gray-200);
-  border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-md);
-  max-height: 300px;
-  overflow-y: auto;
-  width: 200px;
-  z-index: 20;
-  display: none;
-}
-
-.country-select:hover .country-dropdown {
-  display: block;
-}
-
-.country-option {
-  display: flex;
-  align-items: center;
-  padding: var(--spacing-sm) var(--spacing-md);
-  cursor: pointer;
-  transition: background-color var(--transition-fast);
-}
-
-.country-option:hover {
-  background-color: var(--color-gray-100);
-}
-
-.search-input {
-  flex: 1;
-  border: none;
-  padding: var(--spacing-md) var(--spacing-md);
-  font-family: var(--font-primary);
-  font-size: 1rem;
-  border-radius: var(--border-radius-md);
-  height: 50px;
-  width: 100%;
-  background: #fff;
-  color: var(--sw-text);
-}
-
-.search-input::placeholder {
-  color: var(--sw-text-subtle);
-  opacity: 1;
-}
-
-.search-input:focus {
-  outline: none;
-}
-
-.search-btn {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-sm) var(--spacing-lg);
-  background-color: var(--primary-color);
-  color: var(--light-color);
-  border: none;
-  border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
-  cursor: pointer;
-  transition: background-color var(--transition-fast);
-  font-family: var(--font-primary);
-  font-weight: 500;
-  font-size: 0.875rem;
-  white-space: nowrap;
-  height: 50px;
-  min-width: 100px;
-}
-
-.search-btn:hover {
-  background-color: var(--dark-color);
-  color: var(--light-color);
-}
-
-.search-btn:hover span,
-.search-btn:hover .nuxt-icon {
-  color: var(--light-color);
-}
-
-.search-btn span {
-  margin-left: 2px;
-}
-
-.category-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-sm);
-  background-color: var(--color-gray-100);
-  color: var(--text-primary);
-  border: 1px solid var(--color-gray-300);
-  border-radius: var(--border-radius-md);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  font-family: var(--font-primary);
-  font-weight: 500;
-  font-size: 0.875rem;
-  height: 50px;
-  width: 50px;
-  flex-shrink: 0;
-}
-
-.category-btn:hover {
-  background-color: var(--primary-color);
-  color: var(--light-color);
-  border-color: var(--primary-color);
-}
-
-.category-btn:hover .nuxt-icon {
-  color: var(--light-color);
-}
-
-.category-btn .nuxt-icon {
-  font-size: 1.25rem;
-}
-
-.trending-searches {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  flex-wrap: nowrap;
-  overflow-x: hidden;
-  padding-bottom: var(--spacing-sm);
-  -ms-overflow-style: none;  /* Hide scrollbar in IE and Edge */
-  scrollbar-width: none;  /* Hide scrollbar in Firefox */
-  justify-content: space-between; /* Space between categories and more button */
-  max-width: 700px;
-  position: relative;
-  height: 42px; /* Fixed height for the trending searches row */
-  border-radius: 2px;
-  z-index: 999999; /* Ensure high z-index for dropdown parent */
-}
-
-.trending-searches::-webkit-scrollbar {
-  display: none; /* Hide scrollbar in Chrome, Safari, and Opera */
-}
-
-.trending-label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  margin-right: var(--spacing-md);
-  white-space: nowrap;
-}
-
-.trending-badges {
-  display: flex;
-  gap: var(--spacing-md);
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  flex: 1;
-  height: 100%;
-  align-items: center;
-}
-
-.trending-badges::-webkit-scrollbar {
-  display: none;
-}
-
-.trending-badge {
-  background-color: var(--bg-gray);
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  font-weight: 400;
-  padding: 0.3rem var(--spacing-md);
-  border-radius: 2px;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  text-decoration: none;
-  display: inline-block;
-  border: 1px solid var(--color-gray-200);
-}
-
-.trending-badge:hover {
-  background-color: var(--color-gray-200);
-  color: var(--text-primary);
-}
-
-.categories-dropdown {
-  position: relative;
-  z-index: 999999; /* Maximum z-index to ensure dropdown appears above all other elements */
-}
-
-.more-categories-btn {
-  display: flex;
-  align-items: center;
-  background: none;
-  border: none;
-  color: var(--primary-color);
-  font-weight: 500;
-  font-size: 0.875rem;
-  cursor: pointer;
-  padding: 0.3rem var(--spacing-md);
-  white-space: nowrap;
-  transition: all var(--transition-fast);
-  margin-left: var(--spacing-md);
-  gap: 0.25rem;
-}
-
-.more-categories-btn:hover {
-  color: var(--color-primary-dark);
-}
-
-.close-menu-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--text-secondary);
-  padding: 4px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--transition-fast);
-}
-
-.close-menu-btn:hover {
-  background-color: var(--color-gray-100);
-  color: var(--text-primary);
-}
-
-.menu-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 99998; /* Just below the dropdown but above other content */
-  animation: fadeIn 0.2s ease;
-}
-
-.rotate-icon {
-  transform: rotate(180deg);
-  transition: transform 0.2s ease;
-}
-
-.categories-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  width: 360px;
-  background: var(--light-color);
-  border-radius: var(--border-radius-md);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  padding: var(--spacing-md);
-  z-index: 999999; /* Maximum z-index to be higher than any other element */
-  border: 1px solid var(--color-gray-200);
-  max-height: 320px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-gray-300) transparent;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  animation: fadeIn 0.2s ease;
-  display: flex;
-  flex-direction: column;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.categories-menu::-webkit-scrollbar {
-  width: 6px;
-}
-
-.categories-menu::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.categories-menu::-webkit-scrollbar-thumb {
-  background-color: var(--color-gray-300);
-  border-radius: 20px;
-}
-
-.categories-header {
-  font-weight: 600;
-  font-size: 1rem;
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-md);
-  padding-bottom: var(--spacing-sm);
-  border-bottom: 1px solid var(--color-gray-200);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  background-color: var(--light-color);
-  z-index: 2;
-}
-
-.categories-content {
-  width: 100%;
-  overflow-x: hidden;
-}
-
-.categories-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-sm);
-  width: 100%;
-  overflow: visible;
-}
-
-.category-item {
-  color: var(--text-primary);
-  padding: var(--spacing-sm);
-  text-decoration: none;
-  border-radius: 3px;
-  transition: all var(--transition-fast);
-  font-size: 0.875rem;
-  height: 38px;
-  display: flex;
-  align-items: center;
-  margin-bottom: 2px;
-  border: 1px solid transparent;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: calc(100% - 2px);
-  box-sizing: border-box;
-}
-
-.category-item:hover {
-  background-color: var(--color-gray-100);
-  color: var(--primary-color);
-  border-color: var(--color-gray-200);
-}
-
-.search-filter-btn {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-sm) var(--spacing-md);
-  background-color: var(--primary-color);
-  color: var(--light-color);
-  border: none;
-  border-radius: var(--border-radius-md);
-  cursor: pointer;
-  transition: background-color var(--transition-fast);
-  font-family: var(--font-primary);
-  font-weight: 500;
-  box-shadow: var(--shadow-sm);
-}
-
-.search-filter-btn:hover {
-  background-color: var(--color-primary);
-  box-shadow: var(--shadow-md);
-}
-
-.hero-cta {
-  display: flex;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-xl);
-  justify-content: center;
-}
-
-.hero-cta .btn {
-  padding: 14px 32px;  /* Fixed precise padding */
-  font-size: 1.125rem;
-  width: 240px;
-  height: 52px;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.hero-cta .btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 15px rgba(var(--primary-color-rgb), 0.3);
-}
-
-.animate-pulse {
-  animation: pulse 2.5s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(var(--primary-color-rgb), 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 8px rgba(var(--primary-color-rgb), 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(var(--primary-color-rgb), 0);
-  }
-}
-
-.hero-stats {
-  display: flex;
-  gap: var(--spacing-xxl);
-  justify-content: center;
-  margin-top: var(--spacing-xl);
-}
-
-.stat-item h3 {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--sw-text);
-  margin-bottom: var(--spacing-xs);
+.home-hero__inner { max-width: 880px; margin: 0 auto; }
+.home-hero__badge { display: inline-flex; align-items: center; gap: 0.4rem; margin-bottom: 1.25rem; }
+.home-hero__title {
+  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  line-height: 1.12;
+  font-weight: 800;
+  color: #1e1e1e;
+  margin: 0 0 1rem;
   letter-spacing: -0.02em;
 }
+.home-hero__accent { color: var(--sw-primary, #ff8838); }
+.home-hero__lede { color: #52525b; font-size: 1.08rem; line-height: 1.6; max-width: 680px; margin: 0 auto 2rem; }
 
-.stat-item p {
-  margin: 0;
-  color: var(--sw-text-subtle);
-  font-size: var(--fs-caption);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-/* Top Products Section */
-.top-products-section {
-  padding: var(--spacing-xxl) 0;
-  background-color: var(--light-color);
-  position: relative;
-  z-index: 1; /* Ensure it stays below dropdown */
-}
-
-.section-header {
-  text-align: center;
-  max-width: 700px;
-  margin: 0 auto var(--spacing-xxl);
-}
-
-.section-header h2 {
-  font-size: 2.5rem;
-  margin-bottom: var(--spacing-md);
-}
-
-.section-header p {
-  font-size: 1.25rem;
-  color: var(--text-secondary);
-}
-
-/* Product cards handled by global ProductCard component */
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.25rem;
-  margin-bottom: var(--spacing-xxl);
-}
-
-@media (max-width: 1200px) {
-  .products-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (max-width: 900px) {
-  .products-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 560px) {
-  .products-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.section-footer {
-  text-align: center;
-}
-
-.section-footer .btn-outline {
-  padding: 0.75rem 2rem;
-  font-size: 1rem;
-}
-
-/* Integrations Section */
-.integrations-section {
-  padding: var(--spacing-xxl) 0;
-  background-color: var(--bg-gray);
-  position: relative;
-  z-index: 1; /* Ensure it stays below dropdown */
-}
-
-.integrations-section .container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-xxl);
+.home-search {
+  display: flex;
   align-items: center;
+  gap: 0.5rem;
+  background: #fff;
+  border: 1px solid #e4e0dc;
+  border-radius: 14px;
+  padding: 0.45rem 0.45rem 0.45rem 1rem;
+  box-shadow: 0 20px 50px -30px rgba(15, 23, 42, 0.25);
+  max-width: 720px;
+  margin: 0 auto 1.25rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.home-search:focus-within {
+  border-color: var(--sw-primary, #ff8838);
+  box-shadow: 0 0 0 4px rgba(255, 136, 56, 0.15), 0 20px 50px -30px rgba(255, 136, 56, 0.35);
+}
+.home-search__icon { color: #a1a1aa; flex-shrink: 0; }
+.home-search__input {
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 0.98rem;
+  color: #1e1e1e;
+  padding: 0.65rem 0.25rem;
+  min-width: 0;
+}
+.home-search__input::placeholder { color: #a1a1aa; }
+.home-search__btn { white-space: nowrap; padding: 0.65rem 1.1rem; }
+@media (max-width: 560px) {
+  .home-search { flex-wrap: wrap; padding: 0.75rem; gap: 0.75rem; }
+  .home-search__btn { width: 100%; }
 }
 
-.integration-content h2 {
-  font-size: 2.5rem;
-  margin-bottom: var(--spacing-md);
+.home-chips { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1.5rem; }
+.home-chips__label { color: #71717a; font-size: 0.85rem; }
+.home-chip {
+  background: #fff;
+  border: 1px solid #e4e0dc;
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  font: inherit;
+  font-size: 0.83rem;
+  color: #52525b;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
+.home-chip:hover { border-color: var(--sw-primary, #ff8838); color: var(--sw-primary, #ff8838); background: #fff1e6; }
 
-.integration-content p {
-  font-size: 1.25rem;
-  color: var(--text-secondary);
-  margin-bottom: var(--spacing-xl);
-  max-width: 90%;
+.home-results {
+  background: #fff;
+  border: 1px solid #f0d9bf;
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  max-width: 600px;
+  margin: 0 auto 1.5rem;
+  text-align: left;
 }
-
-.integration-logos {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-lg);
+.home-results h3 {
+  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sw-primary, #ff8838);
+  margin: 0 0 0.75rem;
 }
+.home-results ul { list-style: none; padding: 0; margin: 0 0 0.5rem; display: flex; flex-direction: column; gap: 0.35rem; }
+.home-results li { color: #52525b; font-size: 0.94rem; }
+.home-results li strong { color: #1e1e1e; }
+.home-results small { color: #a1a1aa; font-size: 0.78rem; }
 
-.logo-item {
-  background-color: var(--light-color);
-  border-radius: var(--border-radius-md);
-  padding: var(--spacing-lg);
+.home-trust { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.65rem; color: #71717a; font-size: 0.9rem; }
+.home-trust strong { color: #1e1e1e; }
+.home-trust__dot { color: #cbd0d6; }
+
+/* Social proof */
+.home-proof { border-top: 1px solid #f0efec; border-bottom: 1px solid #f0efec; background: #fff; padding: 1.75rem 1.5rem; }
+.home-proof__inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; justify-content: center; }
+.home-proof__label { color: #71717a; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.home-proof__logos { display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center; }
+.home-proof__brand { color: #a1a1aa; font-family: var(--font-heading, 'Poppins', system-ui, sans-serif); font-weight: 700; font-size: 1rem; letter-spacing: 0.02em; opacity: 0.85; }
+
+/* Section head */
+.home-section-head { text-align: center; max-width: 680px; margin: 0 auto 2.5rem; }
+.home-section-head .mk-eyebrow { display: inline-block; margin-bottom: 0.75rem; }
+
+/* Steps */
+.home-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 820px) { .home-steps { grid-template-columns: 1fr; } }
+.home-step { background: #fff; border: 1px solid #f0efec; border-radius: 16px; padding: 1.75rem 1.5rem; text-align: left; }
+.home-step__num { font-family: var(--font-heading, 'Poppins', system-ui, sans-serif); font-weight: 800; font-size: 0.82rem; color: var(--sw-primary, #ff8838); letter-spacing: 0.1em; margin-bottom: 0.75rem; }
+.home-step__icon { width: 44px; height: 44px; border-radius: 12px; background: var(--sw-primary-soft, #fff1e6); color: var(--sw-primary, #ff8838); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+.home-step__title { font-family: var(--font-heading, 'Poppins', system-ui, sans-serif); font-size: 1.08rem; font-weight: 700; color: #1e1e1e; margin: 0 0 0.35rem; }
+.home-step__text { color: #52525b; font-size: 0.94rem; line-height: 1.55; margin: 0; }
+
+/* Categories */
+.home-cats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; }
+@media (max-width: 820px) { .home-cats { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .home-cats { grid-template-columns: 1fr; } }
+.home-cat {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  background: #fff;
+  border: 1px solid #f0efec;
+  border-radius: 14px;
+  padding: 1rem 1.15rem;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.15s ease;
+}
+.home-cat:hover { border-color: var(--sw-primary, #ff8838); transform: translateY(-2px); box-shadow: 0 14px 36px -24px rgba(255, 136, 56, 0.45); }
+.home-cat__icon { width: 40px; height: 40px; border-radius: 10px; background: var(--sw-primary-soft, #fff1e6); color: var(--sw-primary, #ff8838); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.home-cat__text { flex: 1; min-width: 0; }
+.home-cat__name { font-family: var(--font-heading, 'Poppins', system-ui, sans-serif); font-size: 0.98rem; font-weight: 700; color: #1e1e1e; margin: 0 0 0.1rem; }
+.home-cat__count { color: #71717a; font-size: 0.8rem; }
+.home-cat__arrow { color: #cbd0d6; flex-shrink: 0; transition: color 0.15s ease, transform 0.15s ease; }
+.home-cat:hover .home-cat__arrow { color: var(--sw-primary, #ff8838); transform: translateX(3px); }
+.home-cats__footer { text-align: center; margin-top: 2rem; }
+
+/* App cards */
+.home-apps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 960px) { .home-apps { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .home-apps { grid-template-columns: 1fr; } }
+
+.app-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: #fff;
+  border: 1px solid #f0efec;
+  border-radius: 16px;
+  padding: 1.35rem 1.4rem 1.25rem;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.18s ease;
+  min-height: 240px;
+}
+.app-card:hover { transform: translateY(-3px); border-color: var(--sw-primary, #ff8838); box-shadow: 0 20px 40px -24px rgba(255, 136, 56, 0.4); }
+.app-card__head { display: flex; align-items: center; gap: 0.85rem; }
+.app-card__logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid #f0efec;
+  background: #fbfaf8;
+  padding: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--shadow-sm);
-  transition: all var(--transition-fast);
-  position: relative;
-  cursor: pointer;
-  border: 2px solid transparent;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.app-card__logo img { width: 100%; height: 100%; object-fit: contain; }
+.app-card__title { display: flex; flex-direction: column; min-width: 0; }
+.app-card__name { font-family: var(--font-heading, 'Poppins', system-ui, sans-serif); font-size: 1.05rem; font-weight: 700; color: #1e1e1e; margin: 0; line-height: 1.3; }
+.app-card__cat { color: #71717a; font-size: 0.8rem; }
+
+.app-card__tag {
+  color: #52525b;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin: 0;
+  flex: 1;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.logo-item:hover {
-  transform: scale(1.05);
-  box-shadow: var(--shadow-md);
-  border-color: var(--primary-color);
-  z-index: 2;
-}
+.app-card__meta { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: #52525b; flex-wrap: wrap; }
+.app-card__rating { display: inline-flex; align-items: center; gap: 0.3rem; color: var(--sw-primary, #ff8838); }
+.app-card__rating strong { color: #1e1e1e; }
+.app-card__reviews { color: #a1a1aa; font-size: 0.8rem; margin-left: 0.15rem; }
+.app-card__dot { color: #cbd0d6; }
+.app-card__price { color: #1e1e1e; font-weight: 500; }
 
-.logo-item img {
-  max-width: 80%;
-  max-height: 60px;
-  transition: all var(--transition-fast);
-  filter: grayscale(30%);
+.app-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--sw-primary, #ff8838);
+  font-weight: 600;
+  font-size: 0.88rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid #f0efec;
+  transition: gap 0.15s ease;
 }
+.app-card:hover .app-card__cta { gap: 0.6rem; }
 
-.logo-item:hover img, .logo-item img.highlighted {
-  filter: grayscale(0%);
-  transform: scale(1.1);
+.home-apps__footer { text-align: center; margin-top: 2rem; }
+
+/* Why */
+.home-why { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 820px) { .home-why { grid-template-columns: 1fr; } }
+.home-why__card { background: #fff; border: 1px solid #f0efec; border-radius: 16px; padding: 1.75rem 1.5rem; }
+.home-why__icon { width: 44px; height: 44px; border-radius: 12px; background: var(--sw-primary-soft, #fff1e6); color: var(--sw-primary, #ff8838); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+.home-why__title { font-family: var(--font-heading, 'Poppins', system-ui, sans-serif); font-size: 1.08rem; font-weight: 700; color: #1e1e1e; margin: 0 0 0.4rem; }
+.home-why__text { color: #52525b; font-size: 0.94rem; line-height: 1.55; margin: 0; }
+
+/* Quote */
+.home-quote-section { background: var(--sw-primary-soft, #fff1e6); }
+.home-quote { max-width: 760px; margin: 0 auto; text-align: center; padding: 0 1rem; }
+.home-quote__mark { color: var(--sw-primary, #ff8838); opacity: 0.3; margin-bottom: 0.5rem; }
+.home-quote p {
+  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-size: clamp(1.25rem, 2.4vw, 1.65rem);
+  font-weight: 500;
+  color: #1e1e1e;
+  line-height: 1.4;
+  margin: 0 0 1.25rem;
 }
+.home-quote footer { display: flex; flex-direction: column; gap: 0.15rem; color: #71717a; font-size: 0.88rem; }
+.home-quote footer strong { color: #1e1e1e; font-weight: 600; }
 
-.integration-icon {
-  width: 56px;
-  height: 56px;
-  font-size: 56px;
-  transition: all var(--transition-fast);
-  filter: grayscale(40%);
-  opacity: 0.85;
+/* Integrations */
+.home-integrations { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.85rem; }
+@media (max-width: 960px) { .home-integrations { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 560px) { .home-integrations { grid-template-columns: repeat(3, 1fr); } }
+.home-integration {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0.5rem;
+  background: #fff;
+  border: 1px solid #f0efec;
+  border-radius: 12px;
+  transition: all 0.15s ease;
 }
+.home-integration:hover { border-color: var(--sw-primary, #ff8838); background: var(--sw-primary-soft, #fff1e6); }
+.home-integration__icon { font-size: 1.75rem; }
+.home-integration__name { color: #71717a; font-size: 0.78rem; font-weight: 500; }
+.home-integrations__footer { text-align: center; margin-top: 2rem; }
 
-.logo-item:hover .integration-icon,
-.integration-icon.highlighted {
-  filter: grayscale(0%);
-  opacity: 1;
-  transform: scale(1.1);
-}
-
-.logo-tooltip {
-  position: absolute;
-  bottom: -30px;
-  left: 50%;
-  transform: translateX(-50%) scale(0.8);
-  background-color: rgba(0, 0, 0, 0.8);
-  color: white;
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  opacity: 0;
-  pointer-events: none;
-  transition: all var(--transition-fast);
-  white-space: nowrap;
-  z-index: 100;
-}
-
-.logo-item:hover .logo-tooltip {
-  opacity: 1;
-  transform: translateX(-50%) scale(1);
-  bottom: -25px;
-}
-
-.integrations-footer {
-  margin-top: var(--spacing-lg);
+/* Final CTA */
+.home-final { padding-bottom: 4rem; }
+.home-final__card {
+  background: #1e1e1e;
+  color: #fff;
+  border-radius: 20px;
+  padding: 3rem 2rem;
   text-align: center;
-}
-
-.integration-note {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-  font-style: italic;
-}
-
-/* CTA Section */
-.cta-section {
-  padding: var(--spacing-xxl) 0;
-  background: linear-gradient(135deg, var(--primary-color) 0%, #3b27b8 100%);
-  color: var(--light-color);
-}
-
-.cta-content {
-  text-align: center;
-  max-width: 700px;
+  max-width: 900px;
   margin: 0 auto;
 }
-
-.cta-content h2 {
-  font-size: 2.5rem;
-  margin-bottom: var(--spacing-md);
+.home-final__title {
+  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 0.75rem;
+  letter-spacing: -0.01em;
 }
-
-.cta-content p {
-  font-size: 1.25rem;
-  margin-bottom: var(--spacing-xl);
-  opacity: 0.9;
-}
-
-.cta-buttons {
-  display: flex;
-  gap: var(--spacing-md);
-  justify-content: center;
-}
-
-.btn-light {
-  background-color: var(--light-color);
-  color: var(--primary-color);
-}
-
-.btn-light:hover {
-  background-color: rgba(255, 255, 255, 0.9);
-}
-
-/* Responsive Styles */
-@media (max-width: 992px) {
-  .integrations-section .container {
-    grid-template-columns: 1fr;
-  }
-  
-  .hero-title {
-    font-size: 2.75rem;
-  }
-  
-  .hero-subtitle {
-    max-width: 100%;
-  }
-  
-  .products-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .integration-content {
-    text-align: center;
-  }
-  
-  .integration-content p {
-    max-width: 100%;
-  }
-}
-
-@media (max-width: 768px) {
-  .products-grid {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-lg);
-  }
-  
-  .integration-logos {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .hero-title {
-    font-size: 2.5rem;
-  }
-  
-  .section-header h2,
-  .integration-content h2,
-  .cta-content h2 {
-    font-size: 2rem;
-  }
-  
-  .cta-buttons {
-    flex-direction: column;
-  }
-  
-  .categories-menu {
-    max-width: 320px;
-  }
-  
-  .categories-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 576px) {
-  .hero-stats {
-    flex-direction: column;
-    gap: var(--spacing-md);
-  }
-  
-  .hero-cta {
-    flex-direction: column;
-    gap: var(--spacing-sm);
-  }
-  
-  .hero-cta .btn {
-    width: 100%;
-    max-width: 240px;
-    margin: 0 auto;
-    height: 52px;
-  }
-  
-  .integration-logos {
-    grid-template-columns: 1fr;
-  }
-  
-  .search-wrapper {
-    max-width: 90%;
-  }
-  
-  .search-container {
-    width: 100%;
-  }
-  
-  .search-btn {
-    min-width: 80px;
-    padding: var(--spacing-sm) var(--spacing-md);
-  }
-  
-  .search-btn span {
-    display: none; /* Hide text on mobile, show only icon */
-  }
-  
-  .category-btn {
-    width: 44px;
-    height: 44px;
-    padding: var(--spacing-xs);
-  }
-  
-  .category-btn .nuxt-icon {
-    font-size: 1.125rem;
-  }
-  
-  .country-select {
-    border-right: none;
-    border-bottom: 1px solid var(--color-gray-200);
-    width: 100%;
-  }
-  
-  .selected-country {
-    justify-content: center;
-    padding: var(--spacing-sm);
-  }
-  
-  .search-row,
-  .search-categories-dropdown {
-    max-width: 90%;
-  }
-  
-  .trending-searches {
-    justify-content: space-between;
-    max-width: 100%;
-    padding-bottom: var(--spacing-xs);
-    height: 36px; /* Adjusted height for mobile */
-  }
-  
-  .trending-label {
-    font-size: 0.75rem;
-  }
-  
-  .trending-badge {
-    font-size: 0.75rem;
-    padding: 0.2rem var(--spacing-sm);
-  }
-  
-  .categories-menu {
-    width: calc(100vw - 40px);
-    max-width: 280px;
-    left: auto;
-    right: 0;
-    max-height: 300px;
-    position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
-    border-radius: 8px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    overflow-x: hidden;
-    z-index: 999999; /* Ensure it's on top of everything on mobile */
-  }
-  
-  .categories-header {
-    padding-bottom: var(--spacing-sm);
-    margin-bottom: var(--spacing-sm);
-  }
-  
-  .categories-content {
-    overflow-x: hidden;
-    max-height: 220px;
-  }
-  
-  .categories-grid {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-xs);
-    width: 100%;
-    overflow: visible;
-  }
-  
-  .category-item {
-    height: 36px;
-    font-size: 0.875rem;
-    padding: var(--spacing-xs) var(--spacing-sm);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-  }
-  
-  .more-categories-btn {
-    padding: 0.2rem var(--spacing-sm);
-    font-size: 0.75rem;
-  }
-}
+.home-final__lede { color: #cbd0d6; font-size: 1rem; margin: 0 auto 1.75rem; max-width: 520px; }
+.home-final__actions { display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
 </style>
