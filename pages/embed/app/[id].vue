@@ -103,7 +103,7 @@ useHead({
 * { box-sizing: border-box; }
 
 .embed-shell {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-primary, 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif);
   padding: 12px;
   background: transparent;
 }

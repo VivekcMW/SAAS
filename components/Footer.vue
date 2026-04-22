@@ -23,8 +23,12 @@
             <h3>Product</h3>
             <ul>
               <li><NuxtLink to="/marketplace">Marketplace</NuxtLink></li>
+              <li><NuxtLink to="/solutions">Solutions</NuxtLink></li>
+              <li><NuxtLink to="/compare">Compare tools</NuxtLink></li>
+              <li><NuxtLink to="/alternatives">Alternatives</NuxtLink></li>
               <li><NuxtLink to="/integrations">Integrations</NuxtLink></li>
               <li><NuxtLink to="/pricing">Pricing</NuxtLink></li>
+              <li><NuxtLink to="/demo">Book a demo</NuxtLink></li>
             </ul>
           </div>
 
@@ -40,9 +44,25 @@
             <h3>Company</h3>
             <ul>
               <li><NuxtLink to="/about">About</NuxtLink></li>
+              <li><NuxtLink to="/customers">Customers</NuxtLink></li>
               <li><NuxtLink to="/careers">Careers <span class="pill-soft">Hiring</span></NuxtLink></li>
               <li><NuxtLink to="/blog">Blog</NuxtLink></li>
+              <li><NuxtLink to="/news">Events &amp; news</NuxtLink></li>
+              <li><NuxtLink to="/glossary">Glossary</NuxtLink></li>
               <li><NuxtLink to="/contact">Contact</NuxtLink></li>
+            </ul>
+          </div>
+
+          <div class="footer-links-column">
+            <h3>Legal &amp; trust</h3>
+            <ul>
+              <li><NuxtLink to="/trust">Trust Center</NuxtLink></li>
+              <li><NuxtLink to="/security">Security</NuxtLink></li>
+              <li><NuxtLink to="/accessibility">Accessibility</NuxtLink></li>
+              <li><NuxtLink to="/subprocessors">Subprocessors</NuxtLink></li>
+              <li><NuxtLink to="/dpa">DPA</NuxtLink></li>
+              <li><NuxtLink to="/sla">SLA</NuxtLink></li>
+              <li><NuxtLink to="/acceptable-use">Acceptable use</NuxtLink></li>
             </ul>
           </div>
         </div>
@@ -56,7 +76,17 @@
             <span class="legal-dot">·</span>
             <NuxtLink to="/privacy">Privacy</NuxtLink>
             <span class="legal-dot">·</span>
+            <NuxtLink to="/privacy-choices">Your choices</NuxtLink>
+            <span class="legal-dot">·</span>
             <NuxtLink to="/cookies">Cookies</NuxtLink>
+            <span class="legal-dot">·</span>
+            <NuxtLink to="/licenses">Licenses</NuxtLink>
+            <span class="legal-dot">·</span>
+            <NuxtLink to="/copyright">Copyright</NuxtLink>
+            <span class="legal-dot">·</span>
+            <NuxtLink to="/imprint">Imprint</NuxtLink>
+            <span class="legal-dot">·</span>
+            <NuxtLink to="/sitemap">Sitemap</NuxtLink>
           </nav>
           <NuxtLink to="/status" class="status-link">
             <span class="status-dot" aria-hidden="true"></span>
@@ -106,7 +136,7 @@ const currentLanguage = ref('en');
 /* ── Top grid: brand + 3 link columns ───────────────────── */
 .footer-top {
   display: grid;
-  grid-template-columns: 1.6fr repeat(3, 1fr);
+  grid-template-columns: 1.6fr repeat(4, 1fr);
   gap: 40px;
   padding-bottom: 28px;
   border-bottom: 1px solid #E7E5E4;
@@ -315,7 +345,7 @@ const currentLanguage = ref('en');
 /* ── Responsive ────────────────────────────────────────── */
 @media (max-width: 1024px) {
   .footer-top {
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 32px;
   }
   .footer-brand { grid-column: 1 / -1; }

@@ -1,91 +1,117 @@
 /**
  * Reviews API - POST /api/apps/[id]/reviews
- * Submit a new review for an application
+ * Submit a new review for an application. Stored in DB with status='pending'.
  */
 
+import { createError, defineEventHandler, readBody, getRouterParams } from 'h3'
 import type { Review, ReviewFormData } from '~/types/enhanced-app'
+import { getDb, makeId, type DbAppListing, type DbReview } from '~/server/utils/database'
+import { getSessionUser } from '~/server/utils/auth'
+import { buildReviewNotificationEmail, sendEmail, ADMIN_EMAIL } from '~/server/utils/email'
 
 export default defineEventHandler(async (event) => {
-  const { id } = getRouterParams(event)
-  const body = await readBody(event) as ReviewFormData & { 
-    userName: string
-    userEmail?: string 
+  const params = getRouterParams(event)
+  const appId = params.id
+  if (!appId) {
+    throw createError({ statusCode: 400, statusMessage: 'Missing app id' })
   }
-  
-  try {
-    // Validate required fields
-    if (!body.rating || !body.title || !body.content || !body.userName) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Missing required fields: rating, title, content, userName'
-      })
-    }
 
-    // Validate rating range
-    if (body.rating < 1 || body.rating > 5) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Rating must be between 1 and 5'
-      })
-    }
+  const body = (await readBody(event)) as ReviewFormData & {
+    userName?: string
+    userEmail?: string
+  }
 
-    // Create new review object
-    const newReview: Review = {
-      id: `review_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      userId: undefined, // Will be set if user is authenticated
-      userName: body.userName,
-      userEmail: body.userEmail,
-      rating: body.rating,
-      title: body.title.trim(),
-      content: body.content.trim(),
-      verified: false, // Will be updated based on purchase verification
-      helpfulVotes: 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      status: 'pending', // Reviews start as pending for moderation
-      metadata: {
-        platform: body.platform || 'web',
-        version: body.version
-      }
-    }
+  const sessionUser = getSessionUser(event)
 
-    // In a real implementation, you would:
-    // 1. Save to database
-    // 2. Send notification to app owner
-    // 3. Check for spam/abuse
-    // 4. Verify if user actually uses the app
-    
-    // For now, simulate database save
-    console.log(`Saving review for app ${id}:`, newReview)
-
-    // Update app's rating statistics
-    // This would be done in the database with proper transactions
-    await updateAppRatingStats(id, newReview.rating)
-
-    return {
-      success: true,
-      review: newReview,
-      message: 'Review submitted successfully and is pending moderation'
-    }
-  } catch (error: any) {
-    if (error.statusCode) {
-      throw error
-    }
-    
+  if (!body?.rating || !body?.title || !body?.content) {
     throw createError({
-      statusCode: 500,
-      statusMessage: 'Failed to submit review'
+      statusCode: 400,
+      statusMessage: 'Missing required fields: rating, title, content'
     })
   }
-})
 
-// Helper function to update app rating statistics
-async function updateAppRatingStats(appId: string, newRating: number) {
-  // In a real implementation, this would:
-  // 1. Fetch current rating data from database
-  // 2. Calculate new average rating
-  // 3. Update review count
-  // 4. Update rating breakdown
-  
-  console.log(`Updating rating stats for app ${appId} with new rating: ${newRating}`)
-}
+  const rating = Number(body.rating)
+  if (!Number.isFinite(rating) || rating < 1 || rating > 5) {
+    throw createError({ statusCode: 400, statusMessage: 'Rating must be between 1 and 5' })
+  }
+
+  const userName =
+    (body.userName && String(body.userName).trim()) ||
+    (sessionUser ? `${sessionUser.firstName} ${sessionUser.lastName}`.trim() : '')
+  if (!userName) {
+    throw createError({ statusCode: 400, statusMessage: 'userName is required' })
+  }
+
+  const db = getDb()
+
+  const app = db
+    .prepare('SELECT id, name FROM app_listings WHERE id = ? OR slug = ?')
+    .get(appId, appId) as Pick<DbAppListing, 'id' | 'name'> | undefined
+  if (!app) {
+    throw createError({ statusCode: 404, statusMessage: 'App not found' })
+  }
+
+  const now = new Date().toISOString()
+  const review: DbReview = {
+    id: makeId('review'),
+    app_id: app.id,
+    user_id: sessionUser?.id || null,
+    user_name: userName,
+    user_email: (body.userEmail || sessionUser?.email || null) as string | null,
+    rating,
+    title: String(body.title).trim().slice(0, 200),
+    content: String(body.content).trim().slice(0, 5000),
+    verified: 0,
+    helpful_votes: 0,
+    status: 'pending',
+    platform: body.platform ? String(body.platform).slice(0, 40) : null,
+    version: body.version ? String(body.version).slice(0, 40) : null,
+    created_at: now,
+    updated_at: now
+  }
+
+  db.prepare(
+    `INSERT INTO reviews (
+      id, app_id, user_id, user_name, user_email, rating, title, content,
+      verified, helpful_votes, status, platform, version, created_at, updated_at
+    ) VALUES (
+      @id, @app_id, @user_id, @user_name, @user_email, @rating, @title, @content,
+      @verified, @helpful_votes, @status, @platform, @version, @created_at, @updated_at
+    )`
+  ).run(review)
+
+  // Notify admins (best-effort).
+  sendEmail(
+    buildReviewNotificationEmail({
+      to: ADMIN_EMAIL,
+      appName: app.name,
+      rating,
+      title: review.title
+    })
+  ).catch(() => { /* ignore */ })
+
+  const response: Review = {
+    id: review.id,
+    userId: review.user_id || undefined,
+    userName: review.user_name,
+    userEmail: review.user_email || undefined,
+    rating: review.rating,
+    title: review.title,
+    content: review.content,
+    verified: false,
+    helpfulVotes: 0,
+    createdAt: new Date(review.created_at),
+    updatedAt: new Date(review.updated_at),
+    status: review.status,
+    metadata: {
+      platform: review.platform || undefined,
+      version: review.version || undefined
+    }
+  }
+
+  return {
+    success: true,
+    review: response,
+    message: 'Review submitted successfully and is pending moderation'
+  }
+})

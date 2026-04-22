@@ -1,41 +1,14 @@
 <template>
-  <div class="privacy-page">
-    <div class="container mx-auto px-4 py-12">
-      <div class="max-w-4xl mx-auto">
-        <!-- Header -->
-        <div class="text-center mb-12">
-          <h1 class="text-4xl font-bold text-gray-900 mb-4">Privacy Policy</h1>
-          <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-            Your privacy is important to us. This policy explains how we collect, use, and protect your personal information.
-          </p>
-          <div class="mt-4 text-sm text-gray-500">
-            Last updated: {{ new Date().toLocaleDateString() }}
-          </div>
-        </div>
-
-        <!-- Navigation -->
-        <div class="bg-gray-50 rounded-lg p-6 mb-8">
-          <h2 class="text-lg font-semibold text-gray-900 mb-4">Table of Contents</h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-            <a href="#introduction" class="text-blue-600 hover:text-blue-800">1. Introduction</a>
-            <a href="#information-collection" class="text-blue-600 hover:text-blue-800">2. Information We Collect</a>
-            <a href="#usage" class="text-blue-600 hover:text-blue-800">3. How We Use Information</a>
-            <a href="#sharing" class="text-blue-600 hover:text-blue-800">4. Information Sharing</a>
-            <a href="#security" class="text-blue-600 hover:text-blue-800">5. Data Security</a>
-            <a href="#retention" class="text-blue-600 hover:text-blue-800">6. Data Retention</a>
-            <a href="#rights" class="text-blue-600 hover:text-blue-800">7. Your Rights</a>
-            <a href="#cookies" class="text-blue-600 hover:text-blue-800">8. Cookies and Tracking</a>
-            <a href="#third-party" class="text-blue-600 hover:text-blue-800">9. Third-Party Services</a>
-            <a href="#international" class="text-blue-600 hover:text-blue-800">10. International Transfers</a>
-            <a href="#children" class="text-blue-600 hover:text-blue-800">11. Children's Privacy</a>
-            <a href="#changes" class="text-blue-600 hover:text-blue-800">12. Policy Changes</a>
-            <a href="#contact" class="text-blue-600 hover:text-blue-800">13. Contact Information</a>
-          </div>
-        </div>
-
-        <!-- Content -->
-        <div class="prose prose-lg max-w-none">
-          
+  <LegalShell
+    title="Privacy Policy"
+    eyebrow="Legal · Privacy"
+    lede="Your privacy is important to us. This policy explains what data we collect, how we use it, and the rights you have over it."
+    :updated="updatedAt"
+    contact-email="privacy@saasworld.com"
+    :sections="tocSections"
+  >
+    <div class="prose prose-lg max-w-none">
+      
           <!-- Introduction -->
           <section id="introduction" class="mb-8">
             <h2 class="text-2xl font-bold text-gray-900 mb-4">1. Introduction</h2>
@@ -327,28 +300,33 @@
             </div>
           </section>
 
-        </div>
-
-        <!-- Footer Note -->
-        <div class="mt-12 pt-8 border-t border-gray-200 text-center">
-          <p class="text-sm text-gray-500">
-            This Privacy Policy was last updated on {{ new Date().toLocaleDateString() }}. 
-            For previous versions, please contact our Privacy Office.
-          </p>
-          <div class="mt-4">
-            <NuxtLink to="/terms" class="text-blue-600 hover:text-blue-800 text-sm mr-6">Terms of Service</NuxtLink>
-            <NuxtLink to="/cookies" class="text-blue-600 hover:text-blue-800 text-sm mr-6">Cookie Policy</NuxtLink>
-            <NuxtLink to="/licenses" class="text-blue-600 hover:text-blue-800 text-sm">Licenses</NuxtLink>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
+  </LegalShell>
 </template>
 
 <script setup lang="ts">
 // SEO Configuration
 const { applySEO } = useSEO()
+
+const updatedAt = new Date().toLocaleDateString('en-US', {
+  year: 'numeric', month: 'long', day: 'numeric'
+})
+
+const tocSections = [
+  { id: 'introduction', label: '1. Introduction' },
+  { id: 'information-collection', label: '2. Information We Collect' },
+  { id: 'usage', label: '3. How We Use Information' },
+  { id: 'sharing', label: '4. Information Sharing' },
+  { id: 'security', label: '5. Data Security' },
+  { id: 'retention', label: '6. Data Retention' },
+  { id: 'rights', label: '7. Your Rights' },
+  { id: 'cookies', label: '8. Cookies and Tracking' },
+  { id: 'third-party', label: '9. Third-Party Services' },
+  { id: 'international', label: '10. International Transfers' },
+  { id: 'children', label: "11. Children's Privacy" },
+  { id: 'changes', label: '12. Policy Changes' },
+  { id: 'contact', label: '13. Contact Information' }
+]
 
 applySEO({
   title: 'Privacy Policy | SaaSWorld - Data Protection and Privacy Rights',
@@ -380,380 +358,3 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-.privacy-page {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-}
-
-.container {
-  position: relative;
-}
-
-/* Typography Enhancements */
-.prose {
-  line-height: 1.7;
-  color: #374151;
-}
-
-.prose h1 {
-  color: #0f172a;
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  line-height: 1.2;
-  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.prose h2 {
-  color: #1e40af;
-  font-weight: 700;
-  margin-top: 2.5rem;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 3px solid #3b82f6;
-  scroll-margin-top: 6rem;
-  position: relative;
-}
-
-.prose h2::before {
-  content: "";
-  position: absolute;
-  bottom: -3px;
-  left: 0;
-  width: 60px;
-  height: 3px;
-  background: linear-gradient(90deg, #1e40af 0%, #3b82f6 100%);
-  border-radius: 2px;
-}
-
-.prose h3 {
-  color: #1e40af;
-  font-weight: 600;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  scroll-margin-top: 5rem;
-  position: relative;
-  padding-left: 1rem;
-}
-
-.prose h3::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.25rem;
-  width: 4px;
-  height: 1.5rem;
-  background: linear-gradient(180deg, #3b82f6 0%, #60a5fa 100%);
-  border-radius: 2px;
-}
-
-.prose p {
-  margin-bottom: 1.25rem;
-  text-align: justify;
-  text-justify: inter-word;
-}
-
-/* Enhanced Table of Contents */
-.toc-section {
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-  border: 1px solid #cbd5e1;
-  border-radius: 16px;
-  padding: 2.5rem;
-  margin-bottom: 3rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  position: relative;
-  overflow: hidden;
-}
-
-.toc-section::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
-}
-
-.toc-section h2 {
-  margin-top: 0;
-  margin-bottom: 2rem;
-  color: #1e40af;
-  font-size: 1.375rem;
-  font-weight: 700;
-  border-bottom: none;
-  text-align: center;
-}
-
-.toc-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1rem;
-}
-
-.toc-link {
-  display: flex;
-  align-items: center;
-  padding: 1rem 1.25rem;
-  color: #1e40af;
-  text-decoration: none;
-  border-radius: 12px;
-  transition: all 0.3s ease;
-  border: 1px solid #e2e8f0;
-  background: #ffffff;
-  font-size: 0.875rem;
-  font-weight: 500;
-  position: relative;
-  overflow: hidden;
-}
-
-.toc-link::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent 0%, rgba(59, 130, 246, 0.1) 50%, transparent 100%);
-  transition: left 0.5s ease;
-}
-
-.toc-link:hover {
-  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-  border-color: #3b82f6;
-  color: #1d4ed8;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-
-.toc-link:hover::before {
-  left: 100%;
-}
-
-/* Enhanced Link Styling */
-.prose a {
-  color: #1e40af;
-  text-decoration: none;
-  font-weight: 600;
-  position: relative;
-  transition: all 0.3s ease;
-  border-bottom: 2px solid transparent;
-}
-
-.prose a::after {
-  content: "";
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #1e40af 0%, #3b82f6 100%);
-  transition: width 0.3s ease;
-}
-
-.prose a:hover::after {
-  width: 100%;
-}
-
-.prose a:hover {
-  color: #1d4ed8;
-}
-
-/* Section Styling with Privacy Themes */
-.content-section {
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-  border-radius: 16px;
-  padding: 2.5rem;
-  margin-bottom: 2rem;
-  border: 1px solid #cbd5e1;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.content-section::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background: linear-gradient(90deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
-}
-
-.content-section:hover {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  transform: translateY(-3px);
-}
-
-/* List Enhancements with Privacy Icons */
-.prose ul {
-  list-style-type: none;
-  padding-left: 0;
-}
-
-.prose ul li {
-  position: relative;
-  padding-left: 2.5rem;
-  margin-bottom: 1rem;
-  line-height: 1.6;
-}
-
-.prose ul li::before {
-  content: "🔐";
-  position: absolute;
-  left: 0;
-  top: 0;
-  font-size: 1rem;
-  width: 1.5rem;
-  height: 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-  border-radius: 50%;
-  border: 1px solid #3b82f6;
-}
-
-/* Contact Information with Privacy Theme */
-.contact-box {
-  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-  border-radius: 16px;
-  padding: 2.5rem;
-  margin-top: 2rem;
-  color: white;
-  position: relative;
-  overflow: hidden;
-}
-
-.contact-box::before {
-  content: "";
-  position: absolute;
-  top: -50%;
-  right: -50%;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-  transform: rotate(45deg);
-}
-
-.contact-box h3 {
-  color: #ffffff;
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-  font-size: 1.375rem;
-  font-weight: 700;
-}
-
-/* Footer with Privacy Theme */
-.page-footer {
-  margin-top: 3rem;
-  padding: 2.5rem;
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-  border-radius: 16px;
-  text-align: center;
-  color: white;
-  position: relative;
-  overflow: hidden;
-}
-
-.page-footer::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 50%, #93c5fd 100%);
-}
-
-.footer-links {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-top: 1.5rem;
-  flex-wrap: wrap;
-}
-
-.footer-link {
-  color: #60a5fa;
-  text-decoration: none;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  border: 1px solid rgba(96, 165, 250, 0.3);
-  background: rgba(96, 165, 250, 0.1);
-  backdrop-filter: blur(10px);
-}
-
-.footer-link:hover {
-  background: rgba(96, 165, 250, 0.2);
-  color: #ffffff;
-  transform: translateY(-2px);
-}
-
-/* Smooth Scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Animation for entrance */
-.content-section {
-  animation: slideInUp 0.6s ease-out;
-}
-
-@keyframes slideInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .container {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-  
-  .content-section {
-    padding: 1.5rem;
-  }
-  
-  .toc-section {
-    padding: 1.5rem;
-  }
-  
-  .toc-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .footer-links {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-  
-  .contact-box {
-    padding: 1.5rem;
-  }
-}
-
-/* Focus styles for accessibility */
-.toc-link:focus,
-.prose a:focus,
-.footer-link:focus {
-  outline: 3px solid #60a5fa;
-  outline-offset: 2px;
-  border-radius: 6px;
-}
-</style>

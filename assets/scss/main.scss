@@ -37,9 +37,8 @@
   --color-info: #FF8838;
   --color-white: #FFFFFF;
 
-  /* Font Variables */
-  --font-primary: 'Poppins', sans-serif;
-  --font-heading: 'Poppins', sans-serif;
+  /* Font Variables — source of truth lives in tokens.css.
+     Do not redefine here to avoid overriding Inter (body) / Poppins (headings). */
 
   /* Typography */
   --fs-micro: 0.625rem;
@@ -87,13 +86,17 @@
 
 /* Reset and Global Styles - Override any framework defaults */
 html, body {
-  font-family: var(--font-primary) !important;
-  color: var(--text-primary) !important;
-  font-size: var(--fs-base) !important;
-  line-height: var(--lh-body) !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  scroll-behavior: smooth !important;
+  font-family: var(--font-primary);
+  color: var(--text-primary);
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
 }
 
 h1, h2, h3, h4, h5, h6 {

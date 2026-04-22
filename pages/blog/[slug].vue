@@ -1,1079 +1,696 @@
 <template>
-  <div class="blog-post-page">
-    <!-- Hero Section with Featured Image -->
-    <section class="post-hero" :style="{ backgroundImage: `url(${post.image})` }">
-      <div class="post-hero-overlay">
-        <div class="container">
-          <div class="post-hero-content">
-            <div class="post-meta">
-              <span class="post-category">{{ post.category }}</span>
-              <span class="post-date">{{ formatDate(post.date) }}</span>
-            </div>
-            <h1>{{ post.title }}</h1>
-            <div class="post-author">
-              <div class="author-info">
-                <span class="author-name">{{ post.author }}</span>
-                <span class="author-title">{{ post.authorTitle }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
+  <main class="mk-page bp">
+    <!-- Breadcrumb -->
+    <nav class="bp-crumbs" aria-label="Breadcrumb">
+      <div class="bp-crumbs__inner">
+        <NuxtLink to="/">Home</NuxtLink>
+        <span class="bp-crumbs__sep" aria-hidden="true">/</span>
+        <NuxtLink to="/blog">Blog</NuxtLink>
+        <span class="bp-crumbs__sep" aria-hidden="true">/</span>
+        <span class="bp-crumbs__current">{{ post ? post.category : 'Article' }}</span>
+      </div>
+    </nav>
+
+    <!-- Not found -->
+    <section v-if="!post" class="mk-section">
+      <div class="mk-section__inner bp-missing">
+        <h1 class="bp-missing__title">Article not found</h1>
+        <p class="bp-missing__lede">
+          We couldn't find that article. It may have been renamed or retired.
+        </p>
+        <NuxtLink to="/blog" class="mk-btn mk-btn--primary">Back to the blog</NuxtLink>
       </div>
     </section>
 
-    <!-- Post Content -->
-    <section class="post-content">
-      <div class="container">
-        <div class="content-wrapper">
-          <!-- Main Content -->
-          <div class="main-content">
-            <p class="post-lead">{{ post.excerpt }}</p>
-            
-            <!-- Rendered Content from Markdown -->
-            <div class="post-body" v-html="post.content"></div>
-            
-            <!-- Tags -->
-            <div class="post-tags">
-              <span class="tag" v-for="tag in post.tags" :key="tag">{{ tag }}</span>
+    <template v-else>
+      <!-- Hero -->
+      <header class="bp-hero">
+        <div class="bp-hero__inner">
+          <span class="mk-eyebrow bp-hero__cat">{{ post.category }}</span>
+          <h1 class="bp-hero__title">{{ post.title }}</h1>
+          <p class="bp-hero__lede">{{ post.excerpt }}</p>
+
+          <div class="bp-meta">
+            <div class="bp-meta__author">
+              <div class="bp-meta__avatar" aria-hidden="true">{{ authorInitials }}</div>
+              <div class="bp-meta__author-text">
+                <span class="bp-meta__author-name">{{ post.author }}</span>
+                <span v-if="post.authorTitle" class="bp-meta__author-title">{{ post.authorTitle }}</span>
+              </div>
             </div>
-            
-            <!-- Share Links -->
-            <div class="post-share">
-              <p>Share this article:</p>
-              <div class="share-buttons">
-                <a href="#" class="share-button twitter">
-                  <UIcon dynamic name="i-mdi-twitter" />
-                  Twitter
+            <div class="bp-meta__divider" aria-hidden="true"></div>
+            <div class="bp-meta__facts">
+              <span>{{ formattedDate }}</span>
+              <span class="bp-meta__dot" aria-hidden="true">·</span>
+              <span>{{ post.readMinutes }} min read</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Decorative cover -->
+      <section class="bp-cover-wrap">
+        <div class="bp-cover" aria-hidden="true">
+          <div class="bp-cover__pattern"></div>
+          <div class="bp-cover__badge">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 5h16v3H4zM4 10.5h16v3H4zM4 16h10v3H4z" fill="currentColor"/></svg>
+            <span>{{ post.category }}</span>
+          </div>
+          <div class="bp-cover__stats">
+            <div><strong>{{ post.readMinutes }}</strong><span>min read</span></div>
+            <div><strong>{{ post.toc.length }}</strong><span>sections</span></div>
+            <div><strong>{{ post.tags.length }}</strong><span>topics</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Article + Sidebar -->
+      <section class="mk-section bp-article-section">
+        <div class="mk-section__inner bp-layout">
+          <article class="bp-body">
+            <div v-html="post.content" />
+
+            <!-- Tags -->
+            <div class="bp-tags" aria-label="Tags">
+              <NuxtLink
+                v-for="tag in post.tags"
+                :key="tag"
+                :to="`/blog?tag=${encodeURIComponent(tag)}`"
+                class="bp-tag"
+              >
+                {{ tag }}
+              </NuxtLink>
+            </div>
+
+            <!-- Share -->
+            <div class="bp-share">
+              <span class="bp-share__label">Share this article</span>
+              <div class="bp-share__buttons">
+                <a :href="twitterUrl" target="_blank" rel="noopener" class="bp-share__btn" aria-label="Share on X/Twitter">
+                  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M17.53 3H20.5l-6.48 7.41L22 21h-6.17l-4.82-6.3L5.5 21H2.5l6.94-7.94L2 3h6.33l4.37 5.78z" fill="currentColor"/></svg>
                 </a>
-                <a href="#" class="share-button facebook">
-                  <UIcon dynamic name="i-mdi-facebook" />
-                  Facebook
+                <a :href="linkedinUrl" target="_blank" rel="noopener" class="bp-share__btn" aria-label="Share on LinkedIn">
+                  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.95v5.66H9.35V9h3.42v1.56h.05c.48-.9 1.65-1.85 3.39-1.85 3.62 0 4.29 2.38 4.29 5.48v6.26zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.56V9h3.56v11.45z" fill="currentColor"/></svg>
                 </a>
-                <a href="#" class="share-button linkedin">
-                  <UIcon dynamic name="i-mdi-linkedin" />
-                  LinkedIn
+                <a :href="facebookUrl" target="_blank" rel="noopener" class="bp-share__btn" aria-label="Share on Facebook">
+                  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M13.5 21v-7.5H16l.45-3h-3V8.6c0-.86.26-1.45 1.5-1.45H16.6V4.44A23 23 0 0 0 14.3 4.3c-2.3 0-3.8 1.38-3.8 3.9v2.3H8v3h2.5V21h3z" fill="currentColor"/></svg>
                 </a>
-                <button @click="copyUrl" class="share-button copy">
-                  <UIcon dynamic name="i-heroicons-link" />
-                  Copy Link
+                <button type="button" class="bp-share__btn" :aria-label="copied ? 'Link copied' : 'Copy link'" @click="copyLink">
+                  <svg v-if="!copied" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5 M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <svg v-else viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 6L9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </button>
               </div>
             </div>
-          </div>
-          
-          <!-- Sidebar -->
-          <div class="sidebar">
-            <!-- Table of Contents -->
-            <div class="sidebar-widget toc-widget" v-if="post.tableOfContents && post.tableOfContents.length > 0">
-              <h3>Table of Contents</h3>
-              <ul class="toc-list">
-                <li v-for="(item, index) in post.tableOfContents" :key="index" :class="{ 'active': activeTocItem === item.id }">
-                  <a :href="`#${item.id}`" @click="scrollToSection(item.id)">{{ item.title }}</a>
+          </article>
+
+          <aside class="bp-side">
+            <!-- Sticky TOC -->
+            <div v-if="post.toc.length" class="bp-side__card bp-toc" aria-label="Table of contents">
+              <h3 class="bp-side__title">On this page</h3>
+              <ul>
+                <li v-for="item in post.toc" :key="item.id" :class="{ 'is-active': activeId === item.id }">
+                  <a :href="`#${item.id}`" @click.prevent="scrollTo(item.id)">{{ item.title }}</a>
                 </li>
               </ul>
             </div>
-            
-            <!-- Related Posts -->
-            <div class="sidebar-widget related-posts-widget">
-              <h3>Related Articles</h3>
-              <div class="related-posts">
-                <div v-for="(relatedPost, index) in post.relatedPosts" :key="index" class="related-post">
-                  <NuxtLink :to="`/blog/${relatedPost.slug}`" class="related-post-link">
-                    <div class="related-post-image">
-                      <img :src="relatedPost.image" :alt="relatedPost.title">
-                    </div>
-                    <h4>{{ relatedPost.title }}</h4>
-                    <div class="related-post-meta">
-                      <span class="post-date">{{ formatDate(relatedPost.date) }}</span>
-                    </div>
-                  </NuxtLink>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Newsletter Widget -->
-            <div class="sidebar-widget newsletter-widget">
-              <h3>Subscribe to our newsletter</h3>
-              <p>Get the latest articles and resources straight to your inbox.</p>
-              <form @submit.prevent="subscribeNewsletter" class="sidebar-newsletter-form">
-                <input 
-                  type="email" 
-                  v-model="newsletterEmail" 
-                  placeholder="Your email address" 
-                  required
-                >
-                <button type="submit" class="btn btn-primary btn-block">
-                  Subscribe
+
+            <!-- Newsletter -->
+            <div class="bp-side__card bp-newsletter">
+              <h3 class="bp-side__title">Weekly software memo</h3>
+              <p>One short email. Real buyer insights, zero vendor fluff.</p>
+              <form @submit.prevent="subscribe">
+                <input v-model="newsletterEmail" type="email" required placeholder="you@company.com" aria-label="Email address" />
+                <button type="submit" class="mk-btn mk-btn--primary" :disabled="subscribed">
+                  {{ subscribed ? 'Subscribed' : 'Subscribe' }}
                 </button>
               </form>
+              <small>We'll never share your email.</small>
             </div>
-          </div>
+          </aside>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Next & Previous Posts Navigation -->
-    <section class="post-navigation">
-      <div class="container">
-        <div class="navigation-links">
-          <div class="prev-post" v-if="post.prevPost">
-            <NuxtLink :to="`/blog/${post.prevPost.slug}`" class="nav-link">
-              <div class="nav-direction">
-                <UIcon dynamic name="i-heroicons-arrow-left" />
-                Previous Article
-              </div>
-              <h4>{{ post.prevPost.title }}</h4>
-            </NuxtLink>
-          </div>
-          
-          <div class="back-to-blog">
-            <NuxtLink to="/blog" class="btn btn-outline">
-              <UIcon dynamic name="i-heroicons-squares-2x2" />
-              All Articles
-            </NuxtLink>
-          </div>
-          
-          <div class="next-post" v-if="post.nextPost">
-            <NuxtLink :to="`/blog/${post.nextPost.slug}`" class="nav-link">
-              <div class="nav-direction">
-                Next Article
-                <UIcon dynamic name="i-heroicons-arrow-right" />
-              </div>
-              <h4>{{ post.nextPost.title }}</h4>
-            </NuxtLink>
-          </div>
+      <!-- Prev / Next -->
+      <section v-if="prev || next" class="mk-section mk-section--soft bp-nav-section">
+        <div class="mk-section__inner bp-nav">
+          <NuxtLink v-if="prev" :to="`/blog/${prev.slug}`" class="bp-nav__card bp-nav__card--prev">
+            <span class="bp-nav__dir">&larr; Previous</span>
+            <span class="bp-nav__title">{{ prev.title }}</span>
+          </NuxtLink>
+          <span v-else></span>
+          <NuxtLink v-if="next" :to="`/blog/${next.slug}`" class="bp-nav__card bp-nav__card--next">
+            <span class="bp-nav__dir">Next &rarr;</span>
+            <span class="bp-nav__title">{{ next.title }}</span>
+          </NuxtLink>
+          <span v-else></span>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- More Articles Section -->
-    <section class="more-articles">
-      <div class="container">
-        <div class="section-header centered">
-          <h2>More Articles</h2>
-          <p>Explore our latest resources and insights</p>
-        </div>
-        
-        <div class="articles-grid">
-          <div v-for="(article, index) in post.moreArticles" :key="index" class="article-card">
-            <div class="article-image">
-              <NuxtLink :to="`/blog/${article.slug}`">
-                <img :src="article.image" :alt="article.title">
-              </NuxtLink>
-            </div>
-            <div class="article-content">
-              <div class="article-meta">
-                <span class="article-category">{{ article.category }}</span>
-                <span class="article-date">{{ formatDate(article.date) }}</span>
+      <!-- Related -->
+      <section v-if="related.length" class="mk-section">
+        <div class="mk-section__inner">
+          <h2 class="mk-section__title">More reading</h2>
+          <p class="mk-section__lede">Hand-picked articles from the same category.</p>
+          <div class="bp-related">
+            <NuxtLink
+              v-for="r in related"
+              :key="r.slug"
+              :to="`/blog/${r.slug}`"
+              class="bp-related__card"
+            >
+              <div class="bp-related__thumb">
+                <img :src="r.image" :alt="r.title" loading="lazy" />
               </div>
-              <h3>
-                <NuxtLink :to="`/blog/${article.slug}`">{{ article.title }}</NuxtLink>
-              </h3>
-            </div>
+              <div class="bp-related__text">
+                <span class="bp-related__cat">{{ r.category }}</span>
+                <h3 class="bp-related__title">{{ r.title }}</h3>
+                <span class="bp-related__meta">{{ r.readMinutes }} min read</span>
+              </div>
+            </NuxtLink>
           </div>
         </div>
-        
-        <div class="more-articles-link">
-          <NuxtLink to="/blog" class="btn btn-primary">View All Articles</NuxtLink>
-        </div>
-      </div>
-    </section>
-  </div>
+      </section>
+    </template>
+  </main>
 </template>
 
-<script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
-import { useRoute } from 'vue-router';
+<script setup lang="ts">
+import { computed, onMounted, onBeforeUnmount, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import { getPostBySlug, getRelatedPosts, getAdjacentPosts } from '~/utils/blogPosts'
 
-const route = useRoute();
-const slug = route.params.slug;
-const newsletterEmail = ref('');
-const activeTocItem = ref(null);
+const route = useRoute()
+const slug = computed(() => String(route.params.slug))
+const post = computed(() => getPostBySlug(slug.value))
+const related = computed(() => getRelatedPosts(slug.value, 3))
+const { prev, next } = getAdjacentPosts(slug.value)
 
-// This is sample data - in a real application this would come from a CMS or API
-const post = {
-  title: "10 Essential SaaS Metrics Every Startup Should Track",
-  slug: "saas-metrics-for-startups",
-  excerpt: "Learn the key performance indicators that will help you measure and grow your SaaS business effectively.",
-  category: "Business",
-  date: "2023-11-15",
-  author: "SaaSWorld Team",
-  authorTitle: "Content Team",
-  authorBio: "Sarah has 15+ years of experience in the software industry and previously founded two successful startups. She is passionate about helping businesses leverage technology to grow and scale.",
-  authorSocial: [
-    { platform: "twitter", url: "https://twitter.com/", icon: "mdi:twitter" },
-    { platform: "linkedin", url: "https://linkedin.com/", icon: "mdi:linkedin" }
-  ],
-  image: "/assets/images/blog/featured-metrics.jpg",
-  tags: ["SaaS", "Metrics", "Startups", "Analytics", "Business Growth"],
-  tableOfContents: [
-    { id: "introduction", title: "Introduction" },
-    { id: "mrr-arr", title: "Monthly & Annual Recurring Revenue" },
-    { id: "churn-rate", title: "Customer Churn Rate" },
-    { id: "cac", title: "Customer Acquisition Cost" },
-    { id: "ltv", title: "Customer Lifetime Value" },
-    { id: "gross-margin", title: "Gross Margin" }
-  ],
-  content: `
-    <h2 id="introduction">Introduction</h2>
-    <p>For SaaS startups, tracking the right metrics is crucial for understanding your business health, making informed decisions, and demonstrating value to investors. In this article, we'll explore the essential metrics that every SaaS startup should be monitoring.</p>
-    
-    <p>The SaaS business model is unique because it focuses on recurring revenue rather than one-time sales. This means that understanding customer behavior, retention, and long-term value becomes particularly important.</p>
-    
-    <h2 id="mrr-arr">Monthly & Annual Recurring Revenue (MRR/ARR)</h2>
-    <p>MRR and ARR are the lifeblood of any SaaS business. These metrics represent the predictable revenue your business generates every month or year from subscription customers.</p>
-    
-    <p>To calculate MRR, simply add up all the revenue from your paying customers for a month. ARR is typically MRR multiplied by 12, though some businesses with annual plans may calculate it differently.</p>
-    
-    <p>Breaking down MRR into sub-metrics can provide even more valuable insights:</p>
-    <ul>
-      <li><strong>New MRR:</strong> Revenue from new customers</li>
-      <li><strong>Expansion MRR:</strong> Additional revenue from existing customers (upgrades, add-ons)</li>
-      <li><strong>Contraction MRR:</strong> Lost revenue from downgrades</li>
-      <li><strong>Churned MRR:</strong> Lost revenue from cancellations</li>
-      <li><strong>Net New MRR:</strong> New MRR + Expansion MRR - Contraction MRR - Churned MRR</li>
-    </ul>
-    
-    <h2 id="churn-rate">Customer Churn Rate</h2>
-    <p>Churn rate measures the percentage of customers who cancel or don't renew their subscriptions during a given period. This metric is crucial because it's often easier and more cost-effective to retain existing customers than to acquire new ones.</p>
-    
-    <p>To calculate customer churn rate, divide the number of customers lost during a period by the total number of customers at the beginning of that period, then multiply by 100.</p>
-    
-    <p>For example, if you had 200 customers at the beginning of the month and lost 10 customers, your monthly churn rate would be 5%.</p>
-    
-    <p>A healthy churn rate varies by industry and target market, but generally, you should aim for a monthly churn rate under 2% for B2B and under 5% for B2C SaaS products.</p>
-    
-    <h2 id="cac">Customer Acquisition Cost (CAC)</h2>
-    <p>CAC represents the total cost of acquiring a new customer, including marketing expenses, sales team salaries, commissions, and related overhead.</p>
-    
-    <p>To calculate CAC, divide your total sales and marketing expenses for a period by the number of new customers acquired in that same period.</p>
-    
-    <p>For example, if you spent $10,000 on sales and marketing in a month and acquired 20 new customers, your CAC would be $500 per customer.</p>
-    
-    <p>This metric is most useful when compared to the lifetime value of a customer (LTV), which we'll discuss next.</p>
-    
-    <h2 id="ltv">Customer Lifetime Value (LTV)</h2>
-    <p>LTV predicts the total revenue a business can expect from a single customer account throughout their relationship with the company.</p>
-    
-    <p>A simple way to calculate LTV is to multiply the average revenue per account (ARPA) by the average customer lifespan (which is 1 divided by your churn rate).</p>
-    
-    <p>For example, if your ARPA is $100 per month and your monthly churn rate is 5%, the average customer lifespan is 20 months (1/0.05), making the LTV $2,000.</p>
-    
-    <p>The LTV:CAC ratio is a critical metric for SaaS businesses. A healthy business typically has an LTV that's at least 3 times greater than its CAC, indicating sustainable growth and profitability.</p>
-    
-    <h2 id="gross-margin">Gross Margin</h2>
-    <p>Gross margin represents the percentage of revenue that exceeds your cost of goods sold (COGS). For SaaS businesses, COGS typically includes hosting costs, customer support, and other expenses directly related to delivering your service.</p>
-    
-    <p>To calculate gross margin, subtract your COGS from your revenue, divide by revenue, and multiply by 100.</p>
-    
-    <p>SaaS businesses often enjoy high gross margins, typically 70-80% or higher, due to the relatively low cost of delivering software services compared to physical products.</p>
-    
-    <h2>Conclusion</h2>
-    <p>Tracking these fundamental metrics provides a solid foundation for understanding your SaaS business health and making data-driven decisions. As your business matures, you might want to add more sophisticated metrics, but these core KPIs should remain central to your performance monitoring.</p>
-    
-    <p>Remember that metrics should be viewed holistically rather than in isolation. The relationships between these numbers often tell a more complete story than any single metric can on its own.</p>
-  `,
-  prevPost: {
-    title: "How to Build a Product-Led Growth Strategy",
-    slug: "product-led-growth"
-  },
-  nextPost: {
-    title: "Customer Retention Strategies That Actually Work",
-    slug: "customer-retention-strategies"
-  },
-  relatedPosts: [
-    {
-      title: "The State of SaaS in 2024: Trends and Predictions",
-      slug: "saas-trends-2024",
-      date: "2023-12-28",
-      image: "/assets/images/blog/saas-trends.jpg"
-    },
-    {
-      title: "Optimizing Your SaaS Pricing Strategy",
-      slug: "optimizing-saas-pricing",
-      date: "2023-09-20",
-      image: "/assets/images/blog/pricing.jpg"
-    },
-    {
-      title: "Leveraging Data Analytics for SaaS Growth",
-      slug: "data-analytics-saas-growth",
-      date: "2023-08-25",
-      image: "/assets/images/blog/analytics.jpg"
-    }
-  ],
-  moreArticles: [
-    {
-      title: "How AI is Transforming SaaS Products in 2024",
-      slug: "ai-transforming-saas",
-      excerpt: "Discover how artificial intelligence is revolutionizing SaaS products and creating new opportunities for businesses.",
-      category: "Technology",
-      date: "2024-01-10",
-      image: "/assets/images/blog/ai-saas.jpg"
-    },
-    {
-      title: "Customer Retention Strategies That Actually Work",
-      slug: "customer-retention-strategies",
-      excerpt: "Explore proven strategies to retain customers and reduce churn in your SaaS business.",
-      category: "Business",
-      date: "2023-12-05",
-      image: "/assets/images/blog/retention.jpg"
-    },
-    {
-      title: "Security Best Practices for SaaS Applications",
-      slug: "security-best-practices",
-      excerpt: "Learn essential security practices to protect your SaaS application and customer data.",
-      category: "Security",
-      date: "2023-11-28",
-      image: "/assets/images/blog/security.jpg"
-    }
-  ]
-};
+const { applySEO } = useSEO()
+if (post.value) {
+  applySEO({
+    title: `${post.value.title} | SaaSWorld`,
+    description: post.value.excerpt,
+    canonical: `/blog/${post.value.slug}`,
+    ogType: 'article'
+  })
+} else {
+  applySEO({
+    title: 'Article not found | SaaSWorld',
+    description: 'The requested article is not available.',
+    canonical: `/blog/${slug.value}`,
+    ogType: 'article'
+  })
+}
 
-// SEO Configuration
-useSeoMeta({
-  title: post.title,
-  description: post.excerpt,
-  ogTitle: post.title,
-  ogDescription: post.excerpt,
-  ogImage: post.image,
-  ogType: 'article',
-  twitterCard: 'summary_large_image',
-  twitterTitle: post.title,
-  twitterDescription: post.excerpt,
-  twitterImage: post.image,
-  articleAuthor: 'SaaSWorld Team',
-  articlePublishedTime: post.date,
-  articleSection: post.category,
-  keywords: post.tags.join(', ')
-});
+const formattedDate = computed(() => {
+  if (!post.value) return ''
+  return new Date(post.value.date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
+})
 
-// Structured Data for Rich Snippets
-useHead({
-  script: [
-    {
-      type: 'application/ld+json',
-      children: JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'Article',
-        headline: post.title,
-        description: post.excerpt,
-        image: post.image,
-        author: {
-          '@type': 'Organization',
-          name: 'SaaSWorld Team'
-        },
-        publisher: {
-          '@type': 'Organization',
-          name: 'SaaSWorld',
-          logo: {
-            '@type': 'ImageObject',
-            url: 'https://saasworld.com/logo.png'
-          }
-        },
-        datePublished: post.date,
-        dateModified: post.date,
-        mainEntityOfPage: {
-          '@type': 'WebPage',
-          '@id': `https://saasworld.com/blog/${post.slug}`
-        },
-        articleSection: post.category,
-        keywords: post.tags,
-        articleBody: post.content.replace(/<[^>]*>/g, '').substring(0, 500) + '...'
-      })
-    },
-    {
-      type: 'application/ld+json',
-      children: JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          {
-            '@type': 'ListItem',
-            position: 1,
-            name: 'Home',
-            item: 'https://saasworld.com'
-          },
-          {
-            '@type': 'ListItem',
-            position: 2,
-            name: 'Blog',
-            item: 'https://saasworld.com/blog'
-          },
-          {
-            '@type': 'ListItem',
-            position: 3,
-            name: post.title,
-            item: `https://saasworld.com/blog/${post.slug}`
-          }
-        ]
-      })
-    }
-  ]
-});
+const authorInitials = computed(() => {
+  if (!post.value) return ''
+  return post.value.author
+    .split(' ')
+    .map((w) => w[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase()
+})
 
-// Format date
-const formatDate = (dateStr) => {
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return new Date(dateStr).toLocaleDateString('en-US', options);
-};
+// Share URLs
+const shareUrl = computed(() => {
+  if (globalThis.window === undefined) return `https://saasworld.com/blog/${slug.value}`
+  return globalThis.window.location.href
+})
+const shareText = computed(() => (post.value ? post.value.title : 'SaaSWorld'))
+const twitterUrl = computed(
+  () => `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl.value)}&text=${encodeURIComponent(shareText.value)}`
+)
+const linkedinUrl = computed(
+  () => `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl.value)}`
+)
+const facebookUrl = computed(
+  () => `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl.value)}`
+)
 
-// Copy current URL to clipboard
-const copyUrl = () => {
-  navigator.clipboard.writeText(window.location.href);
-  alert('Link copied to clipboard!');
-};
-
-// Subscribe to newsletter
-const subscribeNewsletter = () => {
-  // In a real implementation, this would send the email to your API
-  console.log('Newsletter subscription:', newsletterEmail.value);
-  alert('Thank you for subscribing!');
-  newsletterEmail.value = '';
-};
-
-// Scroll to section when TOC link is clicked
-const scrollToSection = (id) => {
-  const element = document.getElementById(id);
-  if (element) {
-    element.scrollIntoView({ behavior: 'smooth' });
+const copied = ref(false)
+async function copyLink() {
+  try {
+    await navigator.clipboard.writeText(shareUrl.value)
+    copied.value = true
+    setTimeout(() => (copied.value = false), 1800)
+  } catch {
+    copied.value = false
   }
-};
+}
 
-// Observe headings for TOC highlighting
-const observeHeadings = () => {
-  if (typeof window === 'undefined') return;
-  
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          activeTocItem.value = entry.target.id;
-        }
-      });
-    },
-    { rootMargin: '-100px 0px -80% 0px' }
-  );
-  
-  post.tableOfContents.forEach(item => {
-    const heading = document.getElementById(item.id);
-    if (heading) {
-      observer.observe(heading);
-    }
-  });
-  
-  return observer;
-};
+// Newsletter (mock)
+const newsletterEmail = ref('')
+const subscribed = ref(false)
+function subscribe() {
+  // NOTE: replace with real POST /api/subscribe when backend ready
+  subscribed.value = true
+  newsletterEmail.value = ''
+}
 
-let observer;
+// Scroll-spy active TOC item
+const activeId = ref<string | null>(null)
+let observer: IntersectionObserver | null = null
+
+function scrollTo(id: string) {
+  const el = document.getElementById(id)
+  if (!el) return
+  const top = el.getBoundingClientRect().top + globalThis.window.scrollY - 90
+  globalThis.window.scrollTo({ top, behavior: 'smooth' })
+  activeId.value = id
+}
 
 onMounted(() => {
-  observer = observeHeadings();
-});
+  if (!post.value) return
+  const ids = post.value.toc.map((t) => t.id)
+  const elements = ids.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[]
+  if (!elements.length) return
+  observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries
+        .filter((e) => e.isIntersecting)
+        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
+      if (visible.length) activeId.value = visible[0].target.id
+    },
+    { rootMargin: '-20% 0px -70% 0px', threshold: 0 }
+  )
+  elements.forEach((el) => observer!.observe(el))
+})
 
 onBeforeUnmount(() => {
-  if (observer) {
-    observer.disconnect();
-  }
-});
+  if (observer) observer.disconnect()
+})
 </script>
 
 <style scoped>
-.blog-post-page {
-  padding-top: 80px;
-}
+.bp { background: #fff; }
 
-.post-hero {
-  position: relative;
-  height: 500px;
-  background-size: cover;
-  background-position: center;
-  color: white;
+/* Breadcrumb */
+.bp-crumbs {
+  background: #fbfaf8;
+  border-bottom: 1px solid #f0efec;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.82rem;
+  color: #71717a;
 }
+.bp-crumbs__inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.bp-crumbs a { color: #52525b; text-decoration: none; }
+.bp-crumbs a:hover { color: var(--sw-primary, #ff8838); }
+.bp-crumbs__sep { color: #cbd0d6; }
+.bp-crumbs__current { color: #1e1e1e; font-weight: 500; }
 
-.post-hero-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.8));
-  display: flex;
-  align-items: flex-end;
-  padding-bottom: 60px;
+/* Hero */
+.bp-hero {
+  background: var(--sw-primary-soft, #fff1e6);
+  padding: 3.5rem 1.5rem 2.5rem;
+  text-align: center;
 }
-
-.post-hero-content {
-  max-width: 800px;
-}
-
-.post-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-bottom: 16px;
-  font-size: 0.95rem;
-}
-
-.post-category {
-  background-color: var(--color-primary);
-  color: white;
-  font-weight: 500;
-  padding: 6px 12px;
-  border-radius: 30px;
-}
-
-.post-date {
-  opacity: 0.9;
-}
-
-.post-hero h1 {
-  font-size: 3rem;
-  margin-bottom: 24px;
+.bp-hero__inner { max-width: 820px; margin: 0 auto; }
+.bp-hero__cat { display: inline-block; margin-bottom: 1rem; }
+.bp-hero__title {
+  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
   line-height: 1.2;
+  font-weight: 800;
+  color: #1e1e1e;
+  margin: 0 0 1rem;
+  letter-spacing: -0.01em;
 }
-
-.post-author {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.author-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.author-name {
-  font-weight: 500;
-  font-size: 1.125rem;
-}
-
-.author-title {
-  font-size: 0.875rem;
-  opacity: 0.9;
-}
-
-.post-content {
-  padding: 60px 0;
-}
-
-.content-wrapper {
-  display: flex;
-  gap: 60px;
-}
-
-.main-content {
-  flex: 2;
-}
-
-.sidebar {
-  flex: 1;
-}
-
-.post-lead {
-  font-size: 1.25rem;
-  color: var(--color-gray-700);
-  margin-bottom: 30px;
+.bp-hero__lede {
+  color: #52525b;
+  font-size: 1.05rem;
   line-height: 1.6;
-  font-weight: 500;
+  margin: 0 auto;
+  max-width: 680px;
 }
 
-.post-body {
-  margin-bottom: 40px;
-  font-size: 1.125rem;
-  line-height: 1.8;
-  color: var(--color-gray-800);
-}
-
-.post-body h2 {
-  font-size: 1.75rem;
-  margin: 40px 0 20px;
-  color: var(--color-gray-900);
-}
-
-.post-body p {
-  margin-bottom: 20px;
-}
-
-.post-body ul,
-.post-body ol {
-  margin-bottom: 20px;
-  padding-left: 20px;
-}
-
-.post-body li {
-  margin-bottom: 10px;
-}
-
-.post-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 30px;
-}
-
-.tag {
-  background-color: var(--color-gray-100);
-  color: var(--color-gray-700);
-  padding: 6px 12px;
-  border-radius: 30px;
-  font-size: 0.875rem;
-}
-
-.post-share {
-  margin-bottom: 40px;
-  padding-bottom: 40px;
-  border-bottom: 1px solid var(--color-gray-200);
-}
-
-.post-share p {
-  margin-bottom: 12px;
-  font-weight: 500;
-  color: var(--color-gray-700);
-}
-
-.share-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.share-button {
-  display: flex;
+/* Meta */
+.bp-meta {
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  text-decoration: none;
-  transition: all 0.3s;
+  gap: 1.25rem;
+  margin-top: 1.75rem;
+  padding: 0.75rem 1.25rem;
+  background: #fff;
+  border: 1px solid #f0d9bf;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
-
-.share-button.twitter {
-  background-color: #1da1f2;
-  color: white;
-}
-
-.share-button.facebook {
-  background-color: #1877f2;
-  color: white;
-}
-
-.share-button.linkedin {
-  background-color: #0077b5;
-  color: white;
-}
-
-.share-button.copy {
-  background-color: var(--color-gray-200);
-  color: var(--color-gray-800);
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.share-button:hover {
-  opacity: 0.9;
-}
-
-.author-bio {
-  display: flex;
-  gap: 24px;
-  background-color: var(--color-gray-50);
-  padding: 30px;
-  border-radius: 12px;
-}
-
-.author-bio-avatar {
-  width: 80px;
-  height: 80px;
+.bp-meta__author { display: inline-flex; align-items: center; gap: 0.6rem; }
+.bp-meta__avatar {
+  width: 36px; height: 36px;
   border-radius: 50%;
-  object-fit: cover;
-}
-
-.author-bio-content {
-  flex: 1;
-}
-
-.author-bio h3 {
-  font-size: 1.25rem;
-  margin-bottom: 5px;
-  color: var(--color-gray-900);
-}
-
-.author-bio .author-title {
-  font-size: 0.875rem;
-  color: var(--color-primary);
-  margin-bottom: 12px;
-  font-weight: 500;
-}
-
-.author-description {
-  font-size: 0.95rem;
-  color: var(--color-gray-700);
-  margin-bottom: 15px;
-  line-height: 1.6;
-}
-
-.author-social {
-  display: flex;
-  gap: 12px;
-}
-
-.author-social a {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background-color: var(--color-gray-200);
-  color: var(--color-gray-700);
-  display: flex;
+  background: var(--sw-primary, #ff8838);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.82rem;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s;
+  letter-spacing: 0.02em;
 }
+.bp-meta__author-text { display: flex; flex-direction: column; text-align: left; }
+.bp-meta__author-name { color: #1e1e1e; font-weight: 600; font-size: 0.88rem; }
+.bp-meta__author-title { color: #71717a; font-size: 0.74rem; }
+.bp-meta__divider { width: 1px; height: 20px; background: #f0d9bf; }
+.bp-meta__facts { color: #52525b; display: inline-flex; align-items: center; gap: 0.5rem; }
+.bp-meta__dot { color: #cbd0d6; }
 
-.author-social a:hover {
-  background-color: var(--color-primary);
-  color: white;
-}
-
-.sidebar-widget {
-  background-color: white;
-  border-radius: 12px;
-  padding: 25px;
-  margin-bottom: 30px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-}
-
-.sidebar-widget h3 {
-  font-size: 1.25rem;
-  margin-bottom: 20px;
-  color: var(--color-gray-900);
-}
-
-.toc-list {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-.toc-list li {
-  margin-bottom: 12px;
-  border-left: 2px solid var(--color-gray-200);
-  padding-left: 15px;
-  transition: all 0.3s;
-}
-
-.toc-list li.active {
-  border-left-color: var(--color-primary);
-}
-
-.toc-list a {
-  color: var(--color-gray-700);
-  text-decoration: none;
-  font-size: 0.95rem;
-  display: block;
-  line-height: 1.4;
-  transition: all 0.3s;
-}
-
-.toc-list li.active a {
-  color: var(--color-primary);
-  font-weight: 500;
-}
-
-.toc-list a:hover {
-  color: var(--color-primary);
-}
-
-.related-posts {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.related-post {
-  display: flex;
-  flex-direction: column;
-}
-
-.related-post-link {
-  text-decoration: none;
-  color: inherit;
-}
-
-.related-post-image {
-  height: 120px;
-  border-radius: 8px;
+/* Cover */
+.bp-cover-wrap { padding: 0 1.5rem; }
+.bp-cover {
+  position: relative;
+  max-width: 960px;
+  margin: 2.5rem auto 0;
+  border-radius: 18px;
   overflow: hidden;
-  margin-bottom: 12px;
-}
-
-.related-post-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.related-post:hover .related-post-image img {
-  transform: scale(1.05);
-}
-
-.related-post h4 {
-  font-size: 1rem;
-  margin-bottom: 8px;
-  line-height: 1.4;
-  color: var(--color-gray-900);
-  transition: color 0.3s;
-}
-
-.related-post:hover h4 {
-  color: var(--color-primary);
-}
-
-.related-post-meta {
-  font-size: 0.8125rem;
-  color: var(--color-gray-600);
-}
-
-.sidebar-newsletter-form {
-  margin-top: 15px;
-}
-
-.sidebar-newsletter-form input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid var(--color-gray-300);
-  border-radius: var(--border-radius-input);
-  margin-bottom: 10px;
-  font-size: 0.95rem;
-}
-
-.btn-block {
-  display: block;
-  width: 100%;
-  text-align: center;
-}
-
-.post-navigation {
-  padding: 60px 0;
-  background-color: var(--color-gray-50);
-}
-
-.navigation-links {
+  box-shadow: 0 30px 60px -30px rgba(15, 23, 42, 0.25);
+  border: 1px solid #f0d9bf;
+  background: var(--sw-primary-soft, #fff1e6);
+  padding: 2.5rem 2rem;
+  min-height: 200px;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
+  gap: 2rem;
+}
+.bp-cover__pattern {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(255, 136, 56, 0.18) 1px, transparent 0);
+  background-size: 22px 22px;
+  opacity: 0.65;
+  pointer-events: none;
+}
+.bp-cover__badge {
+  position: relative;
+  display: inline-flex;
   align-items: center;
-  gap: 20px;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  background: #fff;
+  border: 1px solid #f0d9bf;
+  border-radius: 999px;
+  color: var(--sw-primary, #ff8838);
+  font-weight: 600;
+  font-size: 0.84rem;
+  width: fit-content;
 }
-
-.prev-post, .next-post {
-  flex: 1;
-  max-width: 300px;
-}
-
-.next-post {
-  text-align: right;
-}
-
-.nav-link {
-  text-decoration: none;
-  color: inherit;
-  display: block;
-  padding: 20px;
-  border-radius: 12px;
-  background-color: white;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s;
-}
-
-.nav-link:hover {
-  transform: translateY(-5px);
-}
-
-.nav-direction {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.875rem;
-  color: var(--color-gray-600);
-  margin-bottom: 8px;
-}
-
-.next-post .nav-direction {
-  justify-content: flex-end;
-}
-
-.nav-link h4 {
-  font-size: 1rem;
-  color: var(--color-gray-900);
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.more-articles {
-  padding: 80px 0;
-}
-
-.section-header.centered {
-  text-align: center;
-  max-width: 700px;
-  margin: 0 auto 40px;
-}
-
-.section-header h2 {
-  font-size: 2.25rem;
-  margin-bottom: 16px;
-  color: var(--color-gray-900);
-}
-
-.section-header p {
-  font-size: 1.125rem;
-  color: var(--color-gray-700);
-}
-
-.articles-grid {
+.bp-cover__stats {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-  margin-bottom: 40px;
+  gap: 1rem;
+  max-width: 520px;
 }
-
-.article-card {
-  background-color: white;
+.bp-cover__stats > div {
+  background: #fff;
+  border: 1px solid #f0d9bf;
   border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s;
-}
-
-.article-card:hover {
-  transform: translateY(-5px);
-}
-
-.article-image {
-  height: 200px;
-}
-
-.article-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s;
-}
-
-.article-card:hover .article-image img {
-  transform: scale(1.05);
-}
-
-.article-content {
-  padding: 20px;
-}
-
-.article-meta {
+  padding: 0.8rem 1rem;
   display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.bp-cover__stats strong {
+  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-size: 1.4rem;
+  color: #1e1e1e;
+  line-height: 1;
+}
+.bp-cover__stats span {
+  color: #71717a;
+  font-size: 0.78rem;
+}
+@media (max-width: 600px) {
+  .bp-cover { padding: 2rem 1.25rem; }
+  .bp-cover__stats { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+  .bp-cover__stats > div { padding: 0.6rem 0.7rem; }
+  .bp-cover__stats strong { font-size: 1.15rem; }
+}
+
+/* Layout */
+.bp-article-section { padding-top: 3rem; }
+.bp-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 3rem;
+  align-items: start;
+}
+@media (max-width: 960px) {
+  .bp-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+}
+
+/* Body */
+.bp-body { max-width: 760px; font-size: 1.02rem; line-height: 1.75; color: #3f3f46; }
+.bp-body :deep(h2) {
+  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: #1e1e1e;
+  margin: 2.5rem 0 1rem;
+  scroll-margin-top: 90px;
+  line-height: 1.3;
+}
+.bp-body :deep(h3) {
+  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1e1e1e;
+  margin: 2rem 0 0.75rem;
+  scroll-margin-top: 90px;
+}
+.bp-body :deep(p) { margin: 0 0 1.2rem; }
+.bp-body :deep(ul),
+.bp-body :deep(ol) { margin: 0 0 1.2rem; padding-left: 1.25rem; }
+.bp-body :deep(li) { margin-bottom: 0.4rem; }
+.bp-body :deep(strong) { color: #1e1e1e; font-weight: 600; }
+.bp-body :deep(a) { color: var(--sw-primary, #ff8838); text-decoration: underline; text-underline-offset: 3px; }
+.bp-body :deep(blockquote) {
+  border-left: 3px solid var(--sw-primary, #ff8838);
+  margin: 1.5rem 0;
+  padding: 0.5rem 1.25rem;
+  color: #1e1e1e;
+  font-style: italic;
+  background: var(--sw-primary-soft, #fff1e6);
+  border-radius: 0 10px 10px 0;
+}
+.bp-body :deep(code) {
+  background: #f4f3f0;
+  padding: 0.15rem 0.4rem;
+  border-radius: 5px;
+  font-size: 0.9em;
+  color: #1e1e1e;
+}
+.bp-body :deep(pre) {
+  background: #1e1e1e;
+  color: #fbfaf8;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  overflow-x: auto;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  margin: 1.5rem 0;
+}
+.bp-body :deep(img) { max-width: 100%; height: auto; border-radius: 12px; margin: 1.5rem 0; }
+
+/* Tags */
+.bp-tags { margin-top: 2.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.bp-tag {
+  display: inline-block;
+  padding: 0.35rem 0.85rem;
+  background: #fbfaf8;
+  border: 1px solid #f0efec;
+  border-radius: 999px;
+  color: #52525b;
+  font-size: 0.82rem;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+.bp-tag:hover {
+  background: var(--sw-primary-soft, #fff1e6);
+  border-color: #f0d9bf;
+  color: var(--sw-primary, #ff8838);
+}
+
+/* Share */
+.bp-share {
+  margin-top: 2.5rem;
+  padding: 1.25rem 1.5rem;
+  background: #fbfaf8;
+  border: 1px solid #f0efec;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
   flex-wrap: wrap;
-  gap: 16px;
-  margin-bottom: 12px;
-  font-size: 0.8125rem;
+}
+.bp-share__label { font-weight: 600; color: #1e1e1e; font-size: 0.94rem; }
+.bp-share__buttons { display: flex; gap: 0.5rem; }
+.bp-share__btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #e4e0dc;
+  color: #52525b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+.bp-share__btn:hover {
+  background: var(--sw-primary, #ff8838);
+  color: #fff;
+  border-color: var(--sw-primary, #ff8838);
 }
 
-.article-category {
-  color: var(--color-primary);
-  font-weight: 500;
+/* Sidebar */
+.bp-side { display: flex; flex-direction: column; gap: 1rem; position: sticky; top: 90px; }
+@media (max-width: 960px) { .bp-side { position: static; } }
+.bp-side__card { background: #fff; border: 1px solid #f0efec; border-radius: 14px; padding: 1.25rem 1.4rem; }
+.bp-side__title {
+  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #71717a;
+  margin: 0 0 0.9rem;
 }
 
-.article-date {
-  color: var(--color-gray-600);
+/* TOC */
+.bp-toc ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.15rem; }
+.bp-toc li a {
+  display: block;
+  padding: 0.4rem 0.6rem;
+  color: #52525b;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  border-radius: 6px;
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: all 0.12s ease;
+}
+.bp-toc li a:hover { background: #fbfaf8; color: #1e1e1e; }
+.bp-toc li.is-active a {
+  background: var(--sw-primary-soft, #fff1e6);
+  color: var(--sw-primary, #ff8838);
+  border-left-color: var(--sw-primary, #ff8838);
+  font-weight: 600;
 }
 
-.article-content h3 {
-  font-size: 1.125rem;
+/* Newsletter */
+.bp-newsletter p { color: #52525b; font-size: 0.88rem; line-height: 1.5; margin: 0 0 0.9rem; }
+.bp-newsletter form { display: flex; flex-direction: column; gap: 0.5rem; }
+.bp-newsletter input {
+  font: inherit;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #e4e0dc;
+  border-radius: 8px;
+  background: #fff;
+  color: #1e1e1e;
+  width: 100%;
+}
+.bp-newsletter input:focus {
+  outline: none;
+  border-color: var(--sw-primary, #ff8838);
+  box-shadow: 0 0 0 3px rgba(255, 136, 56, 0.15);
+}
+.bp-newsletter small { color: #a1a1aa; font-size: 0.72rem; margin-top: 0.25rem; }
+
+/* Prev / Next */
+.bp-nav-section { padding-top: 3rem; padding-bottom: 3rem; }
+.bp-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 700px) { .bp-nav { grid-template-columns: 1fr; } }
+.bp-nav__card {
+  background: #fff;
+  border: 1px solid #f0efec;
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+.bp-nav__card:hover {
+  border-color: var(--sw-primary, #ff8838);
+  box-shadow: 0 10px 30px -20px rgba(255, 136, 56, 0.45);
+}
+.bp-nav__card--next { text-align: right; }
+.bp-nav__dir { font-size: 0.76rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sw-primary, #ff8838); }
+.bp-nav__title { color: #1e1e1e; font-weight: 600; font-size: 0.96rem; line-height: 1.4; }
+
+/* Related */
+.bp-related {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+.bp-related__card {
+  background: #fff;
+  border: 1px solid #f0efec;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+.bp-related__card:hover {
+  transform: translateY(-2px);
+  border-color: var(--sw-primary, #ff8838);
+  box-shadow: 0 14px 36px -22px rgba(255, 136, 56, 0.45);
+}
+.bp-related__thumb { aspect-ratio: 16 / 9; background: #fbfaf8; overflow: hidden; }
+.bp-related__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bp-related__text { padding: 1.1rem 1.25rem 1.25rem; display: flex; flex-direction: column; gap: 0.4rem; }
+.bp-related__cat {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sw-primary, #ff8838);
+}
+.bp-related__title {
+  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e1e1e;
+  margin: 0;
   line-height: 1.4;
 }
+.bp-related__meta { color: #71717a; font-size: 0.8rem; margin-top: auto; }
 
-.article-content h3 a {
-  color: var(--color-gray-900);
-  text-decoration: none;
-  transition: color 0.3s;
+/* Missing state */
+.bp-missing { text-align: center; padding: 2.5rem 1rem; }
+.bp-missing__title {
+  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1e1e1e;
+  margin: 0 0 0.75rem;
 }
-
-.article-content h3 a:hover {
-  color: var(--color-primary);
-}
-
-.more-articles-link {
-  text-align: center;
-  margin-top: 20px;
-}
-
-/* Responsive styles */
-@media (max-width: 992px) {
-  .content-wrapper {
-    flex-direction: column;
-  }
-  
-  .post-hero {
-    height: 400px;
-  }
-  
-  .post-hero h1 {
-    font-size: 2.25rem;
-  }
-  
-  .articles-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 768px) {
-  .post-hero {
-    height: 350px;
-  }
-  
-  .post-hero h1 {
-    font-size: 2rem;
-  }
-  
-  .author-bio {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-  
-  .author-social {
-    justify-content: center;
-  }
-  
-  .navigation-links {
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .prev-post, .next-post, .back-to-blog {
-    max-width: none;
-    width: 100%;
-  }
-  
-  .articles-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 576px) {
-  .share-buttons {
-    flex-direction: column;
-  }
-  
-  .share-button {
-    width: 100%;
-    justify-content: center;
-  }
-}
+.bp-missing__lede { color: #52525b; margin: 0 auto 1.5rem; max-width: 460px; }
 </style>

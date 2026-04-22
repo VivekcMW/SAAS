@@ -1,122 +1,105 @@
 <template>
-  <div class="login-page">
-    <div class="login-container">
-      <div class="login-form-wrapper">
-        <!-- Login Header -->
-        <div class="login-header">
-          <NuxtLink to="/" class="logo-link">
-            <SaasworldLogo class="logo" />
-          </NuxtLink>
-          <h1>Welcome back</h1>
-          <p>Sign in to your SaaSWorld account</p>
+  <div class="auth-page">
+    <div class="auth-card">
+      <header class="auth-head">
+        <NuxtLink to="/" class="auth-logo" aria-label="SaaSWorld home">
+          <SaasworldLogo class="logo" />
+        </NuxtLink>
+        <h1>Welcome back</h1>
+        <p class="subtitle">Sign in to your SaaSWorld account</p>
+      </header>
+
+      <!-- Social login -->
+      <div class="social-row">
+        <button
+          type="button"
+          class="social-btn"
+          :disabled="isLoading"
+          @click="handleSocial('google')"
+        >
+          <Icon name="logos:google-icon" class="social-icon" />
+          <span>Google</span>
+        </button>
+        <button
+          type="button"
+          class="social-btn"
+          :disabled="isLoading"
+          @click="handleSocial('github')"
+        >
+          <Icon name="logos:github-icon" class="social-icon" />
+          <span>GitHub</span>
+        </button>
+      </div>
+
+      <div class="divider"><span>or continue with email</span></div>
+
+      <form class="auth-form" novalidate @submit.prevent="handleLogin">
+        <div class="field">
+          <label for="email">Email</label>
+          <input
+            id="email"
+            v-model.trim="form.email"
+            type="email"
+            autocomplete="email"
+            placeholder="you@company.com"
+            :disabled="isLoading"
+            :aria-invalid="!!fieldErrors.email"
+            required
+            @input="clearFieldError('email')"
+          />
+          <p v-if="fieldErrors.email" class="field-error">{{ fieldErrors.email }}</p>
         </div>
 
-        <!-- Login Form -->
-        <form @submit.prevent="handleLogin" class="login-form">
-          <div class="form-group">
-            <label for="email">Email address</label>
-            <input
-              id="email"
-              v-model="form.email"
-              type="email"
-              required
-              placeholder="Enter your email"
-              :disabled="isLoading"
-            />
-          </div>
-
-          <div class="form-group">
+        <div class="field">
+          <div class="field-head">
             <label for="password">Password</label>
-            <div class="password-input">
-              <input
-                id="password"
-                v-model="form.password"
-                :type="showPassword ? 'text' : 'password'"
-                required
-                placeholder="Enter your password"
-                :disabled="isLoading"
-              />
-              <button
-                type="button"
-                class="password-toggle"
-                @click="showPassword = !showPassword"
-                :disabled="isLoading"
-              >
-                <UIcon dynamic :name="showPassword ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" />
-              </button>
-            </div>
+            <NuxtLink to="/forgot-password" class="forgot">Forgot?</NuxtLink>
           </div>
-
-          <div class="form-options">
-            <label class="checkbox-wrapper">
-              <input type="checkbox" v-model="form.rememberMe" :disabled="isLoading">
-              <span class="checkmark"></span>
-              Remember me
-            </label>
-            <NuxtLink to="/forgot-password" class="forgot-link">
-              Forgot password?
-            </NuxtLink>
-          </div>
-
-          <button type="submit" class="btn-login" :disabled="isLoading">
-            <span v-if="isLoading">
-              <UIcon dynamic name="i-heroicons-arrow-path" class="spinning" />
-              Signing in...
-            </span>
-            <span v-else>Sign in</span>
-          </button>
-
-          <div class="divider">
-            <span>or</span>
-          </div>
-
-          <!-- Social Login -->
-          <div class="social-login">
-            <button type="button" class="social-btn google" @click="handleSocialLogin('google')" :disabled="isLoading">
-              <UIcon dynamic name="i-logos-google-icon" />
-              Continue with Google
-            </button>
-            <button type="button" class="social-btn github" @click="handleSocialLogin('github')" :disabled="isLoading">
-              <UIcon dynamic name="i-logos-github-icon" />
-              Continue with GitHub
+          <div class="password-wrap">
+            <input
+              id="password"
+              v-model="form.password"
+              :type="showPassword ? 'text' : 'password'"
+              autocomplete="current-password"
+              placeholder="Your password"
+              :disabled="isLoading"
+              :aria-invalid="!!fieldErrors.password"
+              required
+              @input="clearFieldError('password')"
+            />
+            <button
+              type="button"
+              class="eye-btn"
+              :aria-label="showPassword ? 'Hide password' : 'Show password'"
+              :disabled="isLoading"
+              @click="showPassword = !showPassword"
+            >
+              <Icon :name="showPassword ? 'heroicons:eye-slash' : 'heroicons:eye'" />
             </button>
           </div>
-        </form>
-
-        <p v-if="errorMessage" class="auth-error">{{ errorMessage }}</p>
-
-        <!-- Sign up link -->
-        <div class="signup-link">
-          <p>Don't have an account? <NuxtLink to="/signup">Sign up</NuxtLink></p>
+          <p v-if="fieldErrors.password" class="field-error">{{ fieldErrors.password }}</p>
         </div>
-      </div>
 
-      <!-- Login Illustration/Info -->
-      <div class="login-info">
-        <div class="info-content">
-          <h2>Join thousands of businesses</h2>
-          <p>Discover, compare, and integrate the best SaaS tools for your business needs.</p>
-          
-          <div class="features-list">
-            <div class="feature-item">
-              <UIcon dynamic name="i-heroicons-check-circle" class="check-icon" />
-              <span>Access to 1000+ verified SaaS tools</span>
-            </div>
-            <div class="feature-item">
-              <UIcon dynamic name="i-heroicons-check-circle" class="check-icon" />
-              <span>Detailed analytics and insights</span>
-            </div>
-            <div class="feature-item">
-              <UIcon dynamic name="i-heroicons-check-circle" class="check-icon" />
-              <span>Seamless integrations</span>
-            </div>
-            <div class="feature-item">
-              <UIcon dynamic name="i-heroicons-check-circle" class="check-icon" />
-              <span>24/7 customer support</span>
-            </div>
-          </div>
-        </div>
-      </div>
+        <label class="remember">
+          <input v-model="form.rememberMe" type="checkbox" :disabled="isLoading" />
+          <span>Remember me for 30 days</span>
+        </label>
+
+        <p v-if="errorMessage" class="auth-error" role="alert">
+          <Icon name="heroicons:exclamation-triangle" />
+          <span>{{ errorMessage }}</span>
+        </p>
+
+        <button type="submit" class="submit-btn" :disabled="isLoading">
+          <Icon v-if="isLoading" name="heroicons:arrow-path" class="spin" />
+          <span>{{ isLoading ? 'Signing in…' : 'Sign in' }}</span>
+        </button>
+      </form>
+
+      <p class="alt-link">
+        Don't have an account?
+        <NuxtLink to="/signup">Create one</NuxtLink>
+      </p>
     </div>
   </div>
 </template>
@@ -124,444 +107,271 @@
 <script setup lang="ts">
 import { ref, reactive, watchEffect } from 'vue'
 
-// Use auth composable
-const { isAuthenticated, login, isLoading: authLoading } = useAuth()
+definePageMeta({ layout: false })
 
-// SEO
 useHead({
-  title: 'Login - SaaSWorld',
+  title: 'Sign in — SaaSWorld',
   meta: [
-    { name: 'description', content: 'Sign in to your SaaSWorld account to access thousands of verified SaaS tools, analytics, and integrations.' },
-    { name: 'keywords', content: 'login, sign in, SaaSWorld, SaaS tools, business software' }
+    { name: 'description', content: 'Sign in to your SaaSWorld account.' }
   ]
 })
 
-// Redirect if already authenticated (only after auth loading is complete)
+const { isAuthenticated, login, isLoading: authLoading } = useAuth()
+
 watchEffect(() => {
   if (!authLoading.value && isAuthenticated.value) {
-    console.log('User is authenticated, redirecting to dashboard...')
     navigateTo('/dashboard')
   }
 })
 
-// Form state
 const form = reactive({
   email: '',
   password: '',
-  rememberMe: false
+  rememberMe: true
 })
 
+const fieldErrors = reactive<{ email?: string; password?: string }>({})
 const isLoading = ref(false)
 const showPassword = ref(false)
 const errorMessage = ref('')
 
-// Handle form submission
+const clearFieldError = (key: 'email' | 'password') => {
+  fieldErrors[key] = undefined
+  if (errorMessage.value) errorMessage.value = ''
+}
+
+const validate = () => {
+  let ok = true
+  fieldErrors.email = undefined
+  fieldErrors.password = undefined
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)
+  if (!form.email) { fieldErrors.email = 'Email is required'; ok = false }
+  else if (!emailOk) { fieldErrors.email = 'Enter a valid email address'; ok = false }
+  if (!form.password) { fieldErrors.password = 'Password is required'; ok = false }
+  return ok
+}
+
 const handleLogin = async () => {
   if (isLoading.value) return
-
+  if (!validate()) return
   isLoading.value = true
   errorMessage.value = ''
-
   try {
     await login({
       email: form.email,
       password: form.password,
       rememberMe: form.rememberMe
     })
-
     await navigateTo('/dashboard')
   } catch (error: any) {
-    console.error('Login error:', error)
-    errorMessage.value = error?.data?.statusMessage || error?.message || 'Unable to sign in. Please try again.'
+    errorMessage.value =
+      error?.data?.statusMessage || error?.message || 'Unable to sign in. Please check your credentials.'
   } finally {
     isLoading.value = false
   }
 }
 
-// Handle social login
-const handleSocialLogin = async (provider: string) => {
-  errorMessage.value = `${provider.charAt(0).toUpperCase() + provider.slice(1)} sign-in will be connected in a later phase.`
+const handleSocial = (provider: 'google' | 'github') => {
+  errorMessage.value = `${provider === 'google' ? 'Google' : 'GitHub'} sign-in is coming soon.`
 }
 </script>
 
 <style scoped>
-.login-page {
+.auth-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 24px 16px;
+  background: #f8fafc;
 }
 
-.login-container {
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 36px 32px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.auth-head { text-align: center; margin-bottom: 24px; }
+.auth-logo { display: inline-flex; margin-bottom: 18px; }
+.auth-logo .logo { height: 34px; width: auto; }
+.auth-head h1 {
+  margin: 0 0 6px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+.subtitle { margin: 0; font-size: 14px; color: #64748b; }
+
+.social-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  max-width: 1200px;
-  width: 100%;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  min-height: 600px;
-}
-
-.login-form-wrapper {
-  padding: 60px 50px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.login-header {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.logo-link {
-  display: inline-block;
+  gap: 10px;
   margin-bottom: 20px;
 }
-
-.logo {
-  height: 40px;
-  width: auto;
-}
-
-.login-header h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #111827;
-  margin-bottom: 8px;
-}
-
-.login-header p {
-  color: #6b7280;
-  font-size: 1rem;
-}
-
-.login-form {
-  flex: 1;
-}
-
-.form-group {
-  margin-bottom: 24px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-  color: #111827;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 12px 16px;
-  border: 2px solid #e5e7eb;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: all 0.2s ease;
-  background: white;
-  color: #374151;
-}
-
-.form-group input:focus {
-  outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-}
-
-.form-group input:disabled {
-  background: #f3f4f6;
-  cursor: not-allowed;
-  color: #9ca3af;
-}
-
-.password-input {
-  position: relative;
-}
-
-.password-toggle {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #6b7280;
-  padding: 4px;
-  border-radius: 4px;
-  transition: color 0.2s ease;
-}
-
-.password-toggle:hover:not(:disabled) {
-  color: #374151;
-}
-
-.password-toggle:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.form-options {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 32px;
-}
-
-.checkbox-wrapper {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  font-size: 0.9rem;
-  color: #6b7280;
-}
-
-.checkbox-wrapper input[type="checkbox"] {
-  width: auto;
-  margin-right: 8px;
-}
-
-.forgot-link {
-  color: #6366f1;
-  text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.forgot-link:hover {
-  text-decoration: underline;
-}
-
-.btn-login {
-  width: 100%;
-  padding: 14px 24px;
-  background: #6366f1;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-bottom: 24px;
-  display: flex;
+.social-btn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+  padding: 10px 12px;
+  background: #ffffff;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2937;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease;
 }
-
-.btn-login:hover:not(:disabled) {
-  background: #4f46e5;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
-}
-
-.btn-login:disabled {
-  background: #9ca3af;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
-.spinning {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
+.social-btn:hover:not(:disabled) { background: #f9fafb; border-color: #d1d5db; }
+.social-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.social-btn .social-icon { width: 18px; height: 18px; }
 
 .divider {
-  text-align: center;
   position: relative;
-  margin: 24px 0;
+  text-align: center;
+  margin: 18px 0;
 }
-
 .divider::before {
   content: '';
   position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: #e5e7eb;
+  left: 0; right: 0; top: 50%;
+  height: 0.5px; background: #e5e7eb;
 }
-
 .divider span {
-  background: white;
-  padding: 0 16px;
-  color: #6b7280;
-  font-size: 0.9rem;
+  position: relative;
+  background: #ffffff;
+  padding: 0 10px;
+  font-size: 12px;
+  color: #94a3b8;
 }
 
-.social-login {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 32px;
-}
-
-.social-btn {
-  width: 100%;
-  padding: 12px 24px;
-  border: 2px solid #e5e7eb;
-  border-radius: 8px;
-  background: white;
-  color: #374151;
-  font-size: 0.95rem;
+.auth-form { display: flex; flex-direction: column; gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field-head { display: flex; align-items: center; justify-content: space-between; }
+.field label {
+  font-size: 13px;
   font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  color: #334155;
 }
-
-.social-btn:hover:not(:disabled) {
-  border-color: #d1d5db;
-  background: #f9fafb;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  transform: translateY(-1px);
+.field input {
+  width: 100%;
+  padding: 10px 12px;
+  background: #ffffff;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  color: #0f172a;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
 }
-
-.social-btn:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-  transform: none;
+.field input::placeholder { color: #94a3b8; }
+.field input:focus {
+  outline: none;
+  border-color: #ff8838;
+  box-shadow: 0 0 0 3px rgba(255, 136, 56, 0.15);
 }
+.field input[aria-invalid="true"] { border-color: #dc2626; }
+.field input:disabled { background: #f9fafb; color: #94a3b8; cursor: not-allowed; }
+.field-error { margin: 0; font-size: 12px; color: #dc2626; }
 
-.auth-error {
-  margin-top: 1rem;
-  padding: 0.75rem 1rem;
-  border-radius: 0.75rem;
-  background: #fef2f2;
-  color: #b91c1c;
-  font-size: 0.95rem;
-}
-
-.signup-link {
-  text-align: center;
-  margin-top: auto;
-}
-
-.signup-link p {
-  color: #6b7280;
-  font-size: 0.9rem;
-}
-
-.signup-link a {
-  color: #6366f1;
+.forgot {
+  font-size: 12px;
+  color: #ff8838;
   text-decoration: none;
   font-weight: 500;
 }
+.forgot:hover { text-decoration: underline; }
 
-.signup-link a:hover {
-  text-decoration: underline;
-}
-
-.login-info {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  color: white;
-  padding: 60px 50px;
-  display: flex;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.login-info::before {
-  content: '';
+.password-wrap { position: relative; }
+.password-wrap input { padding-right: 40px; }
+.eye-btn {
   position: absolute;
-  top: -50%;
-  right: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
-  animation: float 6s ease-in-out infinite;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: 0;
+  padding: 6px;
+  color: #64748b;
+  cursor: pointer;
+  border-radius: 4px;
+  display: inline-flex;
 }
+.eye-btn:hover:not(:disabled) { color: #0f172a; }
+.eye-btn :deep(svg) { width: 18px; height: 18px; }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(180deg); }
-}
-
-.info-content {
-  position: relative;
-  z-index: 1;
-}
-
-.info-content h2 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 16px;
-  line-height: 1.2;
-}
-
-.info-content > p {
-  font-size: 1.1rem;
-  margin-bottom: 40px;
-  opacity: 0.9;
-  line-height: 1.6;
-}
-
-.features-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.feature-item {
-  display: flex;
+.remember {
+  display: inline-flex;
   align-items: center;
-  gap: 16px;
-  font-size: 1rem;
+  gap: 8px;
+  font-size: 13px;
+  color: #475569;
+  cursor: pointer;
+  user-select: none;
 }
+.remember input { width: 16px; height: 16px; accent-color: #ff8838; }
 
-.check-icon {
-  color: #10b981;
-  font-size: 1.25rem;
-  flex-shrink: 0;
+.auth-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 12px;
+  border: 0.5px solid #fecaca;
+  background: #fef2f2;
+  color: #b91c1c;
+  border-radius: 8px;
+  font-size: 13px;
 }
+.auth-error :deep(svg) { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .login-container {
-    grid-template-columns: 1fr;
-    max-width: 500px;
-  }
-  
-  .login-info {
-    display: none;
-  }
-  
-  .login-form-wrapper {
-    padding: 40px 30px;
-  }
+.submit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 16px;
+  margin-top: 4px;
+  background: #ff8838;
+  color: #ffffff;
+  border: 0;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 150ms ease;
 }
+.submit-btn:hover:not(:disabled) { background: #f97316; }
+.submit-btn:disabled { background: #fbbf77; cursor: not-allowed; }
+.submit-btn :deep(svg) { width: 16px; height: 16px; }
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-@media (max-width: 640px) {
-  .login-page {
-    padding: 10px;
-  }
-  
-  .login-form-wrapper {
-    padding: 30px 20px;
-  }
-  
-  .login-header h1 {
-    font-size: 1.75rem;
-  }
-  
-  .social-login {
-    flex-direction: column;
-  }
+.alt-link {
+  margin: 22px 0 0;
+  text-align: center;
+  font-size: 14px;
+  color: #64748b;
+}
+.alt-link a {
+  color: #ff8838;
+  font-weight: 600;
+  text-decoration: none;
+}
+.alt-link a:hover { text-decoration: underline; }
+
+@media (max-width: 480px) {
+  .auth-card { padding: 28px 20px; border-radius: 12px; }
+  .social-row { grid-template-columns: 1fr; }
 }
 </style>

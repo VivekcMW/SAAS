@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
 
 interface Props {
   url: string
@@ -15,6 +15,32 @@ const copied = ref(false)
 const qrShown = ref(false)
 const menuRef = ref<HTMLElement>()
 const triggerRef = ref<HTMLButtonElement>()
+const panelStyle = ref<Record<string, string>>({})
+
+const PANEL_WIDTH = 340
+const PANEL_GAP = 6
+
+const updatePanelPosition = () => {
+  if (!import.meta.client || !triggerRef.value) return
+  const rect = triggerRef.value.getBoundingClientRect()
+  const vw = window.innerWidth
+  const vh = window.innerHeight
+  let left = rect.right - PANEL_WIDTH
+  if (left < 8) left = 8
+  if (left + PANEL_WIDTH > vw - 8) left = Math.max(8, vw - PANEL_WIDTH - 8)
+  let top = rect.bottom + PANEL_GAP
+  // If not enough room below, flip above
+  const estHeight = 420
+  if (top + estHeight > vh - 8 && rect.top - PANEL_GAP - estHeight > 8) {
+    top = rect.top - PANEL_GAP - estHeight
+  }
+  panelStyle.value = {
+    position: 'fixed',
+    top: `${top}px`,
+    left: `${left}px`,
+    width: `${PANEL_WIDTH}px`
+  }
+}
 
 const encodedUrl = computed(() => encodeURIComponent(props.url))
 const encodedTitle = computed(() => encodeURIComponent(props.title))
@@ -75,7 +101,22 @@ const hasNativeShare = computed(() => import.meta.client && !!(navigator as Navi
 
 const toggle = () => {
   open.value = !open.value
+  if (open.value) {
+    nextTick(updatePanelPosition)
+  }
 }
+
+watch(open, (v) => {
+  if (!import.meta.client) return
+  if (v) {
+    window.addEventListener('scroll', updatePanelPosition, true)
+    window.addEventListener('resize', updatePanelPosition)
+  } else {
+    window.removeEventListener('scroll', updatePanelPosition, true)
+    window.removeEventListener('resize', updatePanelPosition)
+    qrShown.value = false
+  }
+})
 
 const onDocClick = (e: MouseEvent) => {
   if (!open.value) return
@@ -103,7 +144,7 @@ onBeforeUnmount(() => {
   }
 })
 
-defineExpose({ toggle, open: () => (open.value = true) })
+defineExpose({ toggle, open: () => { open.value = true; nextTick(updatePanelPosition) } })
 </script>
 
 <template>
@@ -120,8 +161,9 @@ defineExpose({ toggle, open: () => (open.value = true) })
       <span>Share</span>
     </button>
 
-    <Transition name="sm">
-      <div v-if="open" ref="menuRef" class="share-panel" role="menu">
+    <Teleport to="body">
+      <Transition name="sm">
+        <div v-if="open" ref="menuRef" class="share-panel" role="menu" :style="panelStyle">
         <div class="share-head">
           <h4 class="share-title">Share this app</h4>
           <button
@@ -198,8 +240,9 @@ defineExpose({ toggle, open: () => (open.value = true) })
             </button>
           </div>
         </details>
-      </div>
-    </Transition>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
@@ -225,9 +268,7 @@ defineExpose({ toggle, open: () => (open.value = true) })
 .share-trigger :deep(svg) { width: 16px; height: 16px; }
 
 .share-panel {
-  position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
+  position: fixed;
   width: 340px;
   background: #ffffff;
   border: 0.5px solid #e5e7eb;

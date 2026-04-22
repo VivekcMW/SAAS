@@ -1,113 +1,159 @@
 <template>
-  <div class="blog-page">
-    <!-- Hero Section -->
-    <section class="page-hero">
-      <div class="container">
-        <div class="page-hero-content">
-          <h1>The Software Insider</h1>
-          <p>Expert insights, industry trends, and actionable strategies to help you navigate the world of business software.</p>
-        </div>
+  <div class="blog">
+    <!-- Intro -->
+    <header class="blog__intro">
+      <div class="blog__wrap">
+        <span class="blog__label">Journal</span>
+        <h1 class="blog__headline">The Software Insider.</h1>
+        <p class="blog__lede">
+          Plain-spoken guides, honest comparisons, and practical playbooks for choosing
+          software that actually fits your business.
+        </p>
+      </div>
+    </header>
+
+    <!-- Featured -->
+    <section v-if="featuredPost" class="blog__feature">
+      <div class="blog__wrap">
+        <NuxtLink :to="`/blog/${featuredPost.slug}`" class="feature">
+          <div class="feature__text">
+            <span class="feature__kicker">This week’s read</span>
+            <h2 class="feature__title">{{ featuredPost.title }}</h2>
+            <p class="feature__excerpt">{{ featuredPost.excerpt }}</p>
+            <div class="feature__meta">
+              <span>{{ featuredPost.category }}</span>
+              <span aria-hidden="true">·</span>
+              <span>{{ formatDate(featuredPost.date) }}</span>
+              <span aria-hidden="true">·</span>
+              <span>{{ featuredPost.author }}</span>
+            </div>
+          </div>
+          <div class="feature__media">
+            <img :src="getThumbnail(featuredPost.slug)" :alt="featuredPost.title" loading="lazy" @error="onImgError">
+          </div>
+        </NuxtLink>
       </div>
     </section>
 
-    <!-- Featured Post -->
-    <section class="featured-post" v-if="featuredPost">
-      <div class="container">
-        <div class="featured-post-card">
-          <div class="featured-post-image">
-            <img :src="featuredPost.image" :alt="featuredPost.title">
-            <div class="featured-tag">Featured</div>
-          </div>
-          <div class="featured-post-content">
-            <div class="post-meta">
-              <span class="post-category">{{ featuredPost.category }}</span>
-              <span class="post-date">{{ formatDate(featuredPost.date) }}</span>
-              <span class="post-author">{{ featuredPost.author }}</span>
-            </div>
-            <h2>{{ featuredPost.title }}</h2>
-            <p class="post-excerpt">{{ featuredPost.excerpt }}</p>
-            <NuxtLink :to="`/blog/${featuredPost.slug}`" class="btn btn-primary">Read More</NuxtLink>
-          </div>
+    <!-- Topics bar -->
+    <div class="blog__bar">
+      <div class="blog__wrap">
+        <div class="topics" role="tablist" aria-label="Filter articles by topic">
+          <button
+            type="button"
+            role="tab"
+            class="topic"
+            :class="{ 'topic--on': activeCategory === 'all' }"
+            :aria-selected="activeCategory === 'all'"
+            @click="setCategory('all')"
+          >All</button>
+          <button
+            v-for="category in categories"
+            :key="category"
+            type="button"
+            role="tab"
+            class="topic"
+            :class="{ 'topic--on': activeCategory === category }"
+            :aria-selected="activeCategory === category"
+            @click="setCategory(category)"
+          >{{ category }}</button>
         </div>
-      </div>
-    </section>
 
-    <!-- Blog Posts Grid -->
-    <section class="blog-posts">
-      <div class="container">
-        <!-- Category Filter -->
-        <div class="blog-filters">
-          <div class="category-filter">
-            <span 
-              class="category-item" 
-              :class="{ 'active': activeCategory === 'all' }" 
-              @click="setCategory('all')"
-            >
-              All
-            </span>
-            <span 
-              v-for="category in categories" 
-              :key="category" 
-              class="category-item" 
-              :class="{ 'active': activeCategory === category }" 
-              @click="setCategory(category)"
-            >
-              {{ category }}
-            </span>
-          </div>
-          
-          <div class="search-filter">
-            <div class="search-input">
-              <UIcon dynamic name="i-heroicons-magnifying-glass" />
-              <input 
-                type="text" 
-                placeholder="Search articles..." 
-                v-model="searchQuery" 
-                @input="filterPosts"
-              >
-            </div>
-          </div>
+        <label class="find">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <path d="M21 21l-4.3-4.3" />
+          </svg>
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Search articles"
+            aria-label="Search articles"
+            @input="filterPosts"
+          >
+        </label>
+      </div>
+    </div>
+
+    <!-- List -->
+    <section class="blog__list">
+      <div class="blog__wrap">
+        <div v-if="filteredPosts.length > 0" class="blog__meta-row">
+          <span>
+            Showing <strong>{{ displayedPosts.length }}</strong>
+            of {{ filteredPosts.length }} article<span v-if="filteredPosts.length !== 1">s</span>
+          </span>
+          <span v-if="activeCategory !== 'all' || searchQuery" class="blog__meta-reset">
+            <button type="button" @click="resetFilters">Clear filters</button>
+          </span>
         </div>
-        
-        <!-- Posts Grid -->
-        <div v-if="filteredPosts.length > 0" class="posts-grid">
-          <StaticBlogCard 
-            v-for="post in displayedPosts" 
-            :key="post.slug" 
-            :post="post"
-          />
+
+        <div v-if="filteredPosts.length > 0" class="grid">
+          <article
+            v-for="post in displayedPosts"
+            :key="post.slug"
+            class="post"
+          >
+            <NuxtLink :to="`/blog/${post.slug}`" class="post__link">
+              <div class="post__media">
+                <img :src="getThumbnail(post.slug)" :alt="post.title" loading="lazy" @error="onImgError">
+              </div>
+              <div class="post__body">
+                <div class="post__meta">
+                  <span class="post__tag">{{ post.category }}</span>
+                  <span class="post__date">{{ formatDate(post.date) }}</span>
+                </div>
+                <h3 class="post__title">{{ post.title }}</h3>
+                <p class="post__excerpt">{{ post.excerpt }}</p>
+                <span class="post__cta">
+                  Read article
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M5 12h14" />
+                    <path d="M13 6l6 6-6 6" />
+                  </svg>
+                </span>
+              </div>
+            </NuxtLink>
+          </article>
         </div>
-        
-        <!-- No Results -->
-        <div v-else class="no-results">
-          <UIcon dynamic name="i-heroicons-document-search" />
-          <h2>No articles found</h2>
-          <p>Try adjusting your search or filter to find what you're looking for.</p>
-          <button class="btn btn-outline" @click="resetFilters">Reset Filters</button>
+
+        <!-- Empty -->
+        <div v-else class="empty">
+          <h3>Nothing matches that search.</h3>
+          <p>Try a different keyword, or browse all articles.</p>
+          <button type="button" class="empty__btn" @click="resetFilters">Browse all</button>
         </div>
-        
+
         <!-- Pagination -->
-        <div v-if="filteredPosts.length > 0" class="pagination">
-          <button 
-            class="pagination-btn" 
+        <nav v-if="filteredPosts.length > 0 && totalPages > 1" class="pager" aria-label="Pagination">
+          <button
+            type="button"
+            class="pager__btn"
             :disabled="currentPage === 1"
             @click="setPage(currentPage - 1)"
+            aria-label="Previous page"
           >
-            <UIcon dynamic name="i-heroicons-arrow-left" /> Previous
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M19 12H5" />
+              <path d="M11 6l-6 6 6 6" />
+            </svg>
           </button>
-          
-          <span class="pagination-info">
-            Page {{ currentPage }} of {{ totalPages }}
+          <span class="pager__info">
+            <strong>{{ currentPage }}</strong> / {{ totalPages }}
           </span>
-          
-          <button 
-            class="pagination-btn" 
+          <button
+            type="button"
+            class="pager__btn"
             :disabled="currentPage === totalPages"
             @click="setPage(currentPage + 1)"
+            aria-label="Next page"
           >
-            Next <UIcon dynamic name="i-heroicons-arrow-right" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14" />
+              <path d="M13 6l6 6-6 6" />
+            </svg>
           </button>
-        </div>
+        </nav>
       </div>
     </section>
   </div>
@@ -118,6 +164,15 @@ import { ref, computed, onMounted } from 'vue';
 
 // Import the static thumbnails composable
 const { getThumbnail } = useStaticThumbnails();
+
+// Graceful fallback when a thumbnail fails to load
+const FALLBACK_THUMB = '/assets/images/hero-dashboard.png';
+const onImgError = (e) => {
+  const img = e.target;
+  if (img && img.src && !img.src.endsWith(FALLBACK_THUMB)) {
+    img.src = FALLBACK_THUMB;
+  }
+};
 
 // Featured Post
 const featuredPost = {
@@ -760,386 +815,381 @@ onMounted(() => {
 });
 </script>
 
+
 <style scoped>
-.blog-page {
-  padding-top: 80px;
-}
+/* Shell ---------------------------------------------------------- */
+.blog { background: #ffffff; color: #1e1e1e; }
+.blog__wrap { max-width: 1160px; margin: 0 auto; padding: 0 1.5rem; }
 
-.page-hero {
-  background-color: var(--color-primary-light);
-  padding: 80px 0;
-  text-align: center;
+/* Intro ---------------------------------------------------------- */
+.blog__intro {
+  padding: 5rem 0 2.75rem;
+  border-bottom: 1px solid #f0efec;
 }
-
-.page-hero h1 {
-  font-size: 3rem;
+.blog__label {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--sw-primary, #ff8838);
   margin-bottom: 1rem;
-  color: var(--color-primary);
 }
-
-.page-hero p {
-  font-size: 1.25rem;
-  max-width: 700px;
-  margin: 0 auto;
-  color: var(--color-gray-700);
+.blog__headline {
+  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-size: clamp(2.25rem, 5vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: #1e1e1e;
+  margin: 0 0 1rem;
+  max-width: 720px;
 }
-
-/* Featured Post */
-.featured-post {
-  padding: 60px 0;
-}
-
-.featured-post-card {
-  display: flex;
-  background-color: white;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-}
-
-.featured-post-image {
-  flex: 1;
-  min-height: 400px;
-  position: relative;
-  overflow: hidden;
-}
-
-.featured-post-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 15% center;
-  transition: transform 0.3s ease;
-}
-
-.featured-post-card:hover .featured-post-image img {
-  transform: scale(1.02);
-}
-
-.featured-tag {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  background-color: var(--color-primary);
-  color: white;
-  font-weight: 600;
-  font-size: 0.875rem;
-  padding: 6px 12px;
-  border-radius: 30px;
-}
-
-.featured-post-content {
-  flex: 1;
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.post-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-bottom: 16px;
-  font-size: 0.875rem;
-}
-
-.post-category {
-  color: var(--color-primary);
-  font-weight: 600;
-}
-
-.post-date, .post-author {
-  color: var(--color-gray-600);
-}
-
-.featured-post-content h2 {
-  font-size: 2.25rem;
-  margin-bottom: 16px;
-  color: var(--color-gray-900);
-}
-
-.post-excerpt {
-  margin-bottom: 24px;
-  color: var(--color-gray-700);
-  font-size: 1.125rem;
+.blog__lede {
+  font-size: 1.0625rem;
   line-height: 1.6;
+  color: #52525b;
+  margin: 0;
+  max-width: 620px;
 }
 
-/* Blog Posts Section */
-.blog-posts {
-  padding: 80px 0;
-  background-color: var(--color-gray-50);
-}
-
-.blog-filters {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-bottom: 40px;
-  gap: 20px;
-}
-
-.category-filter {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.category-item {
-  padding: 8px 16px;
-  border-radius: 30px;
-  background-color: white;
-  color: var(--color-gray-700);
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.category-item:hover {
-  background-color: var(--color-gray-100);
-}
-
-.category-item.active {
-  background-color: var(--color-primary);
-  color: white;
-}
-
-.search-input {
-  display: flex;
-  align-items: center;
-  background-color: white;
-  border-radius: var(--border-radius-input);
-  padding: 0 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.search-input input {
-  border: none;
-  padding: 12px;
-  outline: none;
-  font-size: 0.95rem;
-  width: 200px;
-}
-
-.search-input svg {
-  color: var(--color-gray-500);
-}
-
-/* Posts Grid */
-.posts-grid {
+/* Featured ------------------------------------------------------- */
+.blog__feature { padding: 3rem 0 1rem; }
+.feature {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 30px;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 3rem;
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
 }
-
-.post-card {
-  background-color: white;
-  border-radius: 12px;
+.feature__kicker {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sw-primary, #ff8838);
+  margin-bottom: 1rem;
+}
+.feature__title {
+  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-size: clamp(1.625rem, 3vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  color: #1e1e1e;
+  margin: 0 0 1rem;
+  transition: color 0.2s ease;
+}
+.feature:hover .feature__title { color: var(--sw-primary, #ff8838); }
+.feature__excerpt {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: #3f3f46;
+  margin: 0 0 1.25rem;
+}
+.feature__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: #71717a;
+}
+.feature__meta span:first-child { font-weight: 600; color: #1e1e1e; }
+.feature__media {
+  aspect-ratio: 4 / 3;
+  background: var(--sw-primary-soft, #fff1e6);
+  border-radius: 18px;
   overflow: hidden;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease;
+  display: grid;
+  place-items: center;
 }
-
-.post-card:hover {
-  transform: translateY(-5px);
-}
-
-.post-image {
-  height: 200px;
-  overflow: hidden;
-}
-
-.post-image img {
+.feature__media img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  display: block;
+  padding: 1.25rem;
   transition: transform 0.5s ease;
 }
+.feature:hover .feature__media img { transform: scale(1.03); }
 
-.post-card:hover .post-image img {
-  transform: scale(1.05);
+/* Topics bar ----------------------------------------------------- */
+.blog__bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: saturate(180%) blur(8px);
+  border-top: 1px solid #f0efec;
+  border-bottom: 1px solid #f0efec;
+  margin-top: 2rem;
 }
-
-.post-content {
-  padding: 24px;
+.blog__bar .blog__wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
 }
-
-.post-content h3 {
-  font-size: 1.375rem;
-  margin-bottom: 12px;
+.topics {
+  display: flex;
+  gap: 0.25rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex: 1 1 auto;
+  min-width: 0;
 }
-
-.post-content h3 a {
-  color: var(--color-gray-900);
-  text-decoration: none;
-  transition: color 0.3s;
+.topics::-webkit-scrollbar { display: none; }
+.topic {
+  background: transparent;
+  border: none;
+  color: #71717a;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  border-radius: 0;
+  position: relative;
+  font-family: inherit;
+  transition: color 0.15s ease;
 }
-
-.post-content h3 a:hover {
-  color: var(--color-primary);
+.topic:hover { color: #1e1e1e; }
+.topic--on {
+  color: #1e1e1e;
+  font-weight: 600;
 }
+.topic--on::after {
+  content: '';
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: -0.75rem;
+  height: 2px;
+  background: var(--sw-primary, #ff8838);
+}
+.find {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 40px;
+  padding: 0 0.85rem;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #e4e4e7;
+  transition: border-color 0.15s ease;
+  flex-shrink: 0;
+  width: 240px;
+}
+.find:focus-within {
+  border-color: var(--sw-primary, #ff8838);
+}
+.find svg {
+  width: 16px;
+  height: 16px;
+  color: #a1a1aa;
+  flex-shrink: 0;
+}
+.find input {
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+  height: 100%;
+  font-size: 0.9375rem;
+  color: #1e1e1e;
+  font-family: inherit;
+}
+.find input::placeholder { color: #a1a1aa; }
 
-.post-footer {
+/* List ----------------------------------------------------------- */
+.blog__list { padding: 3rem 0 6rem; }
+.blog__meta-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px;
+  font-size: 0.875rem;
+  color: #71717a;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.blog__meta-row strong { color: #1e1e1e; font-weight: 700; }
+.blog__meta-reset button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--sw-primary, #ff8838);
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-.post-author {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.875rem;
-  color: var(--color-gray-700);
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem 2rem;
 }
 
-.read-more {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  color: var(--color-primary);
-  font-size: 0.875rem;
-  font-weight: 500;
+.post { border: none; background: transparent; }
+.post__link {
+  display: block;
+  color: inherit;
   text-decoration: none;
 }
-
-.read-more:hover {
-  text-decoration: underline;
+.post__media {
+  aspect-ratio: 16 / 10;
+  background: var(--sw-primary-soft, #fff1e6);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  display: grid;
+  place-items: center;
 }
-
-/* No Results */
-.no-results {
-  text-align: center;
-  padding: 60px 0;
-  color: var(--color-gray-600);
+.post__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  padding: 0.75rem;
+  transition: transform 0.4s ease;
 }
-
-.no-results svg {
-  margin-bottom: 20px;
-  opacity: 0.5;
-}
-
-.no-results h2 {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-}
-
-.no-results p {
-  margin-bottom: 20px;
-}
-
-/* Pagination */
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
-  margin-top: 60px;
-}
-
-.pagination-btn {
+.post__link:hover .post__media img { transform: scale(1.04); }
+.post__meta {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 10px 20px;
-  border: none;
-  background-color: var(--color-gray-100);
-  color: var(--color-gray-800);
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+  margin-bottom: 0.5rem;
 }
-
-.pagination-btn:hover:not(:disabled) {
-  background-color: var(--color-primary-light);
-  color: var(--color-primary);
+.post__tag {
+  font-weight: 700;
+  color: var(--sw-primary, #ff8838);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
-
-.pagination-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.post__date { color: #a1a1aa; }
+.post__title {
+  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #1e1e1e;
+  margin: 0 0 0.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.15s ease;
 }
-
-.pagination-info {
+.post__link:hover .post__title { color: var(--sw-primary, #ff8838); }
+.post__excerpt {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: #52525b;
+  margin: 0 0 0.85rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.post__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   font-size: 0.875rem;
-  color: var(--color-gray-600);
+  font-weight: 600;
+  color: #1e1e1e;
+  transition: color 0.15s ease, gap 0.15s ease;
+}
+.post__cta svg { width: 14px; height: 14px; }
+.post__link:hover .post__cta {
+  color: var(--sw-primary, #ff8838);
+  gap: 0.55rem;
 }
 
-/* Responsive styles */
-@media (max-width: 992px) {
-  .featured-post-card {
-    flex-direction: column;
-  }
-  
-  .featured-post-image {
-    height: 300px;
-  }
-  
-  .featured-post-image img {
-    object-position: center center;
-  }
-  
-  .featured-post-content {
-    padding: 30px;
-  }
-  
-  .posts-grid {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  }
-  
-  .newsletter-card {
-    padding: 40px 20px;
-  }
+/* Empty ---------------------------------------------------------- */
+.empty {
+  text-align: center;
+  padding: 4.5rem 1.5rem;
+  border: 1px dashed #e4e4e7;
+  border-radius: 16px;
+  background: #fbfaf8;
 }
-
-@media (max-width: 768px) {
-  .page-hero h1 {
-    font-size: 2.5rem;
-  }
-  
-  .featured-post-content h2 {
-    font-size: 1.75rem;
-  }
-  
-  .blog-filters {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .form-input {
-    flex-direction: column;
-  }
-  
-  .form-input input {
-    border-radius: 8px;
-    margin-bottom: 10px;
-  }
-  
-  .form-input button {
-    border-radius: 8px;
-    justify-content: center;
-    padding: 12px;
-  }
+.empty h3 {
+  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e1e1e;
+  margin: 0 0 0.5rem;
 }
+.empty p { color: #52525b; margin: 0 0 1.5rem; font-size: 0.9375rem; }
+.empty__btn {
+  background: #1e1e1e;
+  color: #ffffff;
+  border: none;
+  padding: 0.65rem 1.5rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s ease;
+}
+.empty__btn:hover { background: var(--sw-primary, #ff8838); }
 
-@media (max-width: 576px) {
-  .category-filter {
-    justify-content: center;
-  }
-  
-  .post-footer {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-  
-  .posts-grid {
-    grid-template-columns: 1fr;
-  }
+/* Pager ---------------------------------------------------------- */
+.pager {
+  margin-top: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+}
+.pager__btn {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #e4e4e7;
+  background: #ffffff;
+  color: #1e1e1e;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.pager__btn:hover:not(:disabled) {
+  border-color: var(--sw-primary, #ff8838);
+  color: var(--sw-primary, #ff8838);
+}
+.pager__btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.pager__btn svg { width: 16px; height: 16px; }
+.pager__info {
+  font-size: 0.9375rem;
+  color: #71717a;
+  font-variant-numeric: tabular-nums;
+}
+.pager__info strong { color: #1e1e1e; font-weight: 700; }
+
+/* Responsive ----------------------------------------------------- */
+@media (max-width: 960px) {
+  .feature { grid-template-columns: 1fr; gap: 1.75rem; }
+  .feature__media { order: -1; aspect-ratio: 16 / 10; }
+  .grid { grid-template-columns: repeat(2, 1fr); gap: 2rem 1.5rem; }
+}
+@media (max-width: 640px) {
+  .blog__intro { padding: 3.5rem 0 2rem; }
+  .blog__feature { padding: 2rem 0 0.5rem; }
+  .blog__list { padding: 2.5rem 0 4rem; }
+  .blog__bar .blog__wrap { flex-direction: column; align-items: stretch; gap: 0.75rem; }
+  .find { width: 100%; }
+  .topic--on::after { bottom: -0.5rem; }
+  .grid { grid-template-columns: 1fr; gap: 2rem; }
 }
 </style>

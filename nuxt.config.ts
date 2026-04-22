@@ -90,6 +90,7 @@ export default defineNuxtConfig({
     '~/assets/css/main.css',      // Base elements + utility classes
     '~/assets/scss/main.scss',    // SCSS component styles
     '~/assets/css/responsive-fixes.css',
+    '~/assets/css/marketing.css', // Tier 3 marketing/SEO page styles
   ],
 
   // Vite configuration for SCSS

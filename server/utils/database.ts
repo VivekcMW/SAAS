@@ -53,6 +53,62 @@ export interface DbAppListing {
   updated_at: string
 }
 
+export interface DbReview {
+  id: string
+  app_id: string
+  user_id: string | null
+  user_name: string
+  user_email: string | null
+  rating: number
+  title: string
+  content: string
+  verified: number
+  helpful_votes: number
+  status: 'pending' | 'approved' | 'rejected'
+  platform: string | null
+  version: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface DbOnboardingSubmission {
+  id: string
+  user_id: string | null
+  product_name: string
+  company_name: string
+  contact_email: string | null
+  payload: string
+  status: 'submitted' | 'in_review' | 'approved' | 'rejected'
+  admin_notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface DbEvent {
+  id: string
+  slug: string
+  title: string
+  summary: string
+  description: string
+  category: string
+  event_type: 'webinar' | 'conference' | 'meetup' | 'launch' | 'workshop' | 'other'
+  location: string
+  is_online: number
+  starts_at: string
+  ends_at: string | null
+  timezone: string
+  cover_image: string | null
+  register_url: string | null
+  host_name: string | null
+  host_email: string | null
+  status: 'pending' | 'approved' | 'rejected' | 'cancelled'
+  featured: number
+  created_by: string | null
+  admin_notes: string | null
+  created_at: string
+  updated_at: string
+}
+
 let database: Database.Database | null = null
 
 function getDatabasePath() {
@@ -131,6 +187,69 @@ function createSchema(db: Database.Database) {
       created_at TEXT NOT NULL,
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     );
+
+    CREATE TABLE IF NOT EXISTS reviews (
+      id TEXT PRIMARY KEY,
+      app_id TEXT NOT NULL,
+      user_id TEXT,
+      user_name TEXT NOT NULL,
+      user_email TEXT,
+      rating INTEGER NOT NULL,
+      title TEXT NOT NULL,
+      content TEXT NOT NULL,
+      verified INTEGER NOT NULL DEFAULT 0,
+      helpful_votes INTEGER NOT NULL DEFAULT 0,
+      status TEXT NOT NULL DEFAULT 'pending',
+      platform TEXT,
+      version TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_reviews_app_id ON reviews(app_id);
+    CREATE INDEX IF NOT EXISTS idx_reviews_status ON reviews(status);
+
+    CREATE TABLE IF NOT EXISTS onboarding_submissions (
+      id TEXT PRIMARY KEY,
+      user_id TEXT,
+      product_name TEXT NOT NULL,
+      company_name TEXT NOT NULL,
+      contact_email TEXT,
+      payload TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'submitted',
+      admin_notes TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_onboarding_status ON onboarding_submissions(status);
+    CREATE INDEX IF NOT EXISTS idx_onboarding_created ON onboarding_submissions(created_at);
+
+    CREATE TABLE IF NOT EXISTS events (
+      id TEXT PRIMARY KEY,
+      slug TEXT NOT NULL UNIQUE,
+      title TEXT NOT NULL,
+      summary TEXT NOT NULL,
+      description TEXT NOT NULL DEFAULT '',
+      category TEXT NOT NULL DEFAULT 'General',
+      event_type TEXT NOT NULL DEFAULT 'webinar',
+      location TEXT NOT NULL DEFAULT 'Online',
+      is_online INTEGER NOT NULL DEFAULT 1,
+      starts_at TEXT NOT NULL,
+      ends_at TEXT,
+      timezone TEXT NOT NULL DEFAULT 'UTC',
+      cover_image TEXT,
+      register_url TEXT,
+      host_name TEXT,
+      host_email TEXT,
+      status TEXT NOT NULL DEFAULT 'pending',
+      featured INTEGER NOT NULL DEFAULT 0,
+      created_by TEXT,
+      admin_notes TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_events_status ON events(status);
+    CREATE INDEX IF NOT EXISTS idx_events_starts_at ON events(starts_at);
+    CREATE INDEX IF NOT EXISTS idx_events_featured ON events(featured);
   `)
 }
 

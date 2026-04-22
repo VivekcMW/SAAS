@@ -1,16 +1,16 @@
 <template>
-  <div class="legal-page">
-    <div class="legal-container">
-      <!-- Header -->
-      <div class="legal-header">
-        <h1>Terms of Service</h1>
-        <p class="last-updated">Last updated: August 18, 2025</p>
-      </div>
-
-      <!-- Content -->
-      <div class="legal-content">
+  <LegalShell
+    title="Terms of Service"
+    eyebrow="Legal · Terms"
+    lede="The rules for using SaaSWorld — what we promise to do, and what we ask of you in return."
+    :updated="updatedAt"
+    contact-email="legal@saasworld.com"
+    :sections="tocSections"
+  >
+    <div class="terms-content">
+      
         <!-- Introduction -->
-        <section class="legal-section">
+        <section id="introduction" class="legal-section">
           <h2>1. Introduction</h2>
           <p>
             Welcome to SaaSWorld ("we," "our," or "us"). These Terms of Service ("Terms") govern your use of our website located at saasworld.com (the "Service") operated by SaaSWorld Inc.
@@ -21,7 +21,7 @@
         </section>
 
         <!-- Definitions -->
-        <section class="legal-section">
+        <section id="definitions" class="legal-section">
           <h2>2. Definitions</h2>
           <div class="definition-list">
             <div class="definition-item">
@@ -40,7 +40,7 @@
         </section>
 
         <!-- User Accounts -->
-        <section class="legal-section">
+        <section id="accounts" class="legal-section">
           <h2>3. User Accounts</h2>
           <h3>3.1 Account Creation</h3>
           <p>
@@ -57,7 +57,7 @@
         </section>
 
         <!-- Platform Usage -->
-        <section class="legal-section">
+        <section id="usage" class="legal-section">
           <h2>4. Platform Usage</h2>
           <h3>4.1 Permitted Uses</h3>
           <ul class="legal-list">
@@ -79,7 +79,7 @@
         </section>
 
         <!-- Vendor Obligations -->
-        <section class="legal-section">
+        <section id="vendors" class="legal-section">
           <h2>5. Vendor Obligations</h2>
           <h3>5.1 Listing Requirements</h3>
           <p>
@@ -96,7 +96,7 @@
         </section>
 
         <!-- Intellectual Property -->
-        <section class="legal-section">
+        <section id="ip" class="legal-section">
           <h2>6. Intellectual Property</h2>
           <h3>6.1 Our Rights</h3>
           <p>
@@ -113,7 +113,7 @@
         </section>
 
         <!-- Privacy and Data -->
-        <section class="legal-section">
+        <section id="privacy" class="legal-section">
           <h2>7. Privacy and Data Protection</h2>
           <p>
             Your privacy is important to us. Please review our <NuxtLink to="/privacy" class="legal-link">Privacy Policy</NuxtLink>, which governs how we collect, use, and protect your information.
@@ -124,7 +124,7 @@
         </section>
 
         <!-- Disclaimers -->
-        <section class="legal-section">
+        <section id="disclaimers" class="legal-section">
           <h2>8. Disclaimers</h2>
           <h3>8.1 Service Availability</h3>
           <p>
@@ -141,7 +141,7 @@
         </section>
 
         <!-- Limitation of Liability -->
-        <section class="legal-section">
+        <section id="liability" class="legal-section">
           <h2>9. Limitation of Liability</h2>
           <p>
             TO THE MAXIMUM EXTENT PERMITTED BY LAW, SAASWORLD SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS OR REVENUES.
@@ -152,7 +152,7 @@
         </section>
 
         <!-- Governing Law -->
-        <section class="legal-section">
+        <section id="law" class="legal-section">
           <h2>10. Governing Law</h2>
           <p>
             These Terms shall be governed by and construed in accordance with the laws of the State of Delaware, United States, without regard to conflict of law principles.
@@ -163,7 +163,7 @@
         </section>
 
         <!-- Changes to Terms -->
-        <section class="legal-section">
+        <section id="changes" class="legal-section">
           <h2>11. Changes to Terms</h2>
           <p>
             We reserve the right to modify these Terms at any time. We will notify users of material changes by posting the updated Terms on our website and updating the "Last updated" date.
@@ -174,7 +174,7 @@
         </section>
 
         <!-- Contact Information -->
-        <section class="legal-section">
+        <section id="contact" class="legal-section">
           <h2>12. Contact Information</h2>
           <p>
             If you have any questions about these Terms of Service, please contact us:
@@ -185,24 +185,30 @@
             <p><strong>Phone:</strong> +1 (555) 123-4567</p>
           </div>
         </section>
-      </div>
-
-      <!-- Footer Links -->
-      <div class="legal-footer">
-        <div class="footer-links">
-          <NuxtLink to="/privacy" class="footer-link">Privacy Policy</NuxtLink>
-          <NuxtLink to="/cookies" class="footer-link">Cookie Policy</NuxtLink>
-          <NuxtLink to="/licenses" class="footer-link">Licenses</NuxtLink>
-          <NuxtLink to="/contact" class="footer-link">Contact Us</NuxtLink>
-        </div>
-      </div>
     </div>
-  </div>
+  </LegalShell>
 </template>
 
 <script setup lang="ts">
 // SEO Configuration
 const { applySEO } = useSEO()
+
+const updatedAt = 'August 18, 2025'
+
+const tocSections = [
+  { id: 'introduction', label: '1. Introduction' },
+  { id: 'definitions', label: '2. Definitions' },
+  { id: 'accounts', label: '3. User Accounts' },
+  { id: 'usage', label: '4. Platform Usage' },
+  { id: 'vendors', label: '5. Vendor Obligations' },
+  { id: 'ip', label: '6. Intellectual Property' },
+  { id: 'privacy', label: '7. Privacy & Data' },
+  { id: 'disclaimers', label: '8. Disclaimers' },
+  { id: 'liability', label: '9. Limitation of Liability' },
+  { id: 'law', label: '10. Governing Law' },
+  { id: 'changes', label: '11. Changes to Terms' },
+  { id: 'contact', label: '12. Contact' }
+]
 
 applySEO({
   title: 'Terms of Service | SaaSWorld - Legal Terms and Conditions',
@@ -234,379 +240,3 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-.terms-page {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-}
-
-.container {
-  position: relative;
-}
-
-/* Typography Enhancements */
-.prose {
-  line-height: 1.7;
-  color: #374151;
-}
-
-.prose h1 {
-  color: #111827;
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  line-height: 1.2;
-}
-
-.prose h2 {
-  color: #1f2937;
-  font-weight: 700;
-  margin-top: 2.5rem;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e5e7eb;
-  scroll-margin-top: 6rem;
-}
-
-.prose h3 {
-  color: #374151;
-  font-weight: 600;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  scroll-margin-top: 5rem;
-}
-
-.prose p {
-  margin-bottom: 1.25rem;
-  text-align: justify;
-}
-
-.prose ul, .prose ol {
-  margin-bottom: 1.5rem;
-  padding-left: 1.5rem;
-}
-
-.prose li {
-  margin-bottom: 0.5rem;
-  line-height: 1.6;
-}
-
-/* Enhanced Table of Contents */
-.toc-section {
-  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 2rem;
-  margin-bottom: 2.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-
-.toc-section h2 {
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-  color: #1f2937;
-  font-size: 1.25rem;
-  font-weight: 600;
-  border-bottom: none;
-}
-
-.toc-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 0.75rem;
-}
-
-.toc-link {
-  display: block;
-  padding: 0.75rem 1rem;
-  color: #2563eb;
-  text-decoration: none;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  border: 1px solid transparent;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.toc-link:hover {
-  background-color: #dbeafe;
-  border-color: #93c5fd;
-  color: #1d4ed8;
-  transform: translateX(4px);
-}
-
-/* Enhanced Link Styling */
-.prose a {
-  color: #2563eb;
-  text-decoration: underline;
-  text-decoration-color: #93c5fd;
-  text-underline-offset: 3px;
-  transition: all 0.2s ease;
-  font-weight: 500;
-}
-
-.prose a:hover {
-  color: #1d4ed8;
-  text-decoration-color: #2563eb;
-  text-decoration-thickness: 2px;
-}
-
-/* Section Styling */
-.content-section {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 2.5rem;
-  margin-bottom: 2rem;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease;
-}
-
-.content-section:hover {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  transform: translateY(-2px);
-}
-
-/* Contact Information Styling */
-.contact-box {
-  background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%);
-  border: 1px solid #d1d5db;
-  border-radius: 12px;
-  padding: 2rem;
-  margin-top: 1.5rem;
-}
-
-.contact-box h3 {
-  color: #1f2937;
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-  font-size: 1.25rem;
-  font-weight: 600;
-}
-
-.contact-details {
-  display: grid;
-  gap: 0.75rem;
-}
-
-.contact-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-}
-
-.contact-label {
-  font-weight: 600;
-  color: #374151;
-  min-width: 80px;
-}
-
-.contact-value {
-  color: #6b7280;
-  line-height: 1.5;
-}
-
-/* Footer Styling */
-.page-footer {
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 2px solid #e5e7eb;
-  text-align: center;
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 2rem;
-}
-
-.footer-links {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-top: 1rem;
-  flex-wrap: wrap;
-}
-
-.footer-link {
-  color: #2563eb;
-  text-decoration: none;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-}
-
-.footer-link:hover {
-  background-color: #dbeafe;
-  color: #1d4ed8;
-}
-
-/* Smooth Scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
-/* List Enhancements */
-.prose ul {
-  list-style-type: none;
-  padding-left: 0;
-}
-
-.prose ul li {
-  position: relative;
-  padding-left: 2rem;
-  margin-bottom: 0.75rem;
-}
-
-.prose ul li::before {
-  content: "•";
-  color: #2563eb;
-  font-weight: bold;
-  position: absolute;
-  left: 0.5rem;
-  font-size: 1.25em;
-}
-
-.prose ol {
-  counter-reset: list-counter;
-  list-style: none;
-  padding-left: 0;
-}
-
-.prose ol li {
-  position: relative;
-  padding-left: 2.5rem;
-  margin-bottom: 0.75rem;
-  counter-increment: list-counter;
-}
-
-.prose ol li::before {
-  content: counter(list-counter) ".";
-  color: #2563eb;
-  font-weight: 600;
-  position: absolute;
-  left: 0;
-  top: 0;
-  background: #dbeafe;
-  border-radius: 50%;
-  width: 1.5rem;
-  height: 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.875rem;
-}
-
-/* Important Notice Styling */
-.important-notice {
-  background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%);
-  border: 1px solid #f59e0b;
-  border-radius: 10px;
-  padding: 1.5rem;
-  margin: 1.5rem 0;
-  border-left: 4px solid #f59e0b;
-}
-
-.important-notice p {
-  margin: 0;
-  color: #92400e;
-  font-weight: 500;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .container {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-  
-  .content-section {
-    padding: 1.5rem;
-  }
-  
-  .toc-section {
-    padding: 1.5rem;
-  }
-  
-  .toc-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .footer-links {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-  
-  .prose h1 {
-    font-size: 2rem;
-  }
-  
-  .prose h2 {
-    font-size: 1.5rem;
-  }
-}
-
-/* Print Styles */
-@media print {
-  .terms-page {
-    background: white;
-  }
-  
-  .content-section {
-    box-shadow: none;
-    border: 1px solid #ccc;
-    page-break-inside: avoid;
-  }
-  
-  .toc-section {
-    display: none;
-  }
-  
-  .footer-links {
-    display: none;
-  }
-}
-
-/* Animation for smooth entrance */
-.content-section {
-  animation: fadeInUp 0.6s ease-out;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Focus styles for accessibility */
-.toc-link:focus,
-.prose a:focus,
-.footer-link:focus {
-  outline: 2px solid #2563eb;
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
-/* Dark mode support (future enhancement) */
-@media (prefers-color-scheme: dark) {
-  .terms-page {
-    background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
-  }
-  
-  .content-section {
-    background: #374151;
-    border-color: #4b5563;
-  }
-  
-  .prose {
-    color: #e5e7eb;
-  }
-  
-  .prose h1, .prose h2, .prose h3 {
-    color: #f9fafb;
-  }
-}
-</style>

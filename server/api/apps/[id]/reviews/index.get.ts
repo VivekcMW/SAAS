@@ -1,116 +1,104 @@
 /**
  * Reviews API - GET /api/apps/[id]/reviews
- * Retrieve paginated reviews for an application
+ * Retrieve paginated reviews for an application from the database.
  */
 
+import { createError, defineEventHandler, getQuery, getRouterParams } from 'h3'
 import type { PaginatedReviews, Review } from '~/types/enhanced-app'
+import { getDb, type DbReview } from '~/server/utils/database'
+
+function mapReview(row: DbReview): Review {
+  return {
+    id: row.id,
+    userId: row.user_id || undefined,
+    userName: row.user_name,
+    userEmail: row.user_email || undefined,
+    rating: row.rating,
+    title: row.title,
+    content: row.content,
+    verified: row.verified === 1,
+    helpfulVotes: row.helpful_votes,
+    createdAt: new Date(row.created_at),
+    updatedAt: new Date(row.updated_at),
+    status: row.status,
+    metadata: {
+      platform: row.platform || undefined,
+      version: row.version || undefined
+    }
+  }
+}
 
 export default defineEventHandler(async (event) => {
-  const { id } = getRouterParams(event)
-  const query = getQuery(event)
-  
-  const page = Number(query.page) || 1
-  const limit = Number(query.limit) || 10
-  const sort = (query.sort as string) || 'newest'
-  const rating = query.rating ? Number(query.rating) : undefined
-  
-  try {
-    // Mock data for now - replace with actual database query
-    const mockReviews: Review[] = [
-      {
-        id: '1',
-        userId: 'user1',
-        userName: 'John Doe',
-        userEmail: 'john@example.com',
-        rating: 5,
-        title: 'Excellent tool for our team!',
-        content: 'This application has significantly improved our workflow. The interface is intuitive and the features are exactly what we needed.',
-        verified: true,
-        helpfulVotes: 12,
-        createdAt: new Date('2024-01-15'),
-        updatedAt: new Date('2024-01-15'),
-        status: 'approved',
-        metadata: {
-          platform: 'web',
-          version: '2.1.0'
-        }
-      },
-      {
-        id: '2',
-        userId: 'user2',
-        userName: 'Sarah Smith',
-        userEmail: 'sarah@company.com',
-        rating: 4,
-        title: 'Good but could use improvements',
-        content: 'Overall satisfied with the application. Some features could be more polished, but it gets the job done.',
-        verified: true,
-        helpfulVotes: 8,
-        createdAt: new Date('2024-01-10'),
-        updatedAt: new Date('2024-01-10'),
-        status: 'approved',
-        metadata: {
-          platform: 'web',
-          version: '2.0.5'
-        }
-      }
-    ]
-
-    // Filter by rating if specified
-    const filteredReviews = rating 
-      ? mockReviews.filter(review => review.rating === rating)
-      : mockReviews
-
-    // Sort reviews
-    const sortedReviews = [...filteredReviews].sort((a, b) => {
-      switch (sort) {
-        case 'oldest':
-          return a.createdAt.getTime() - b.createdAt.getTime()
-        case 'rating_high':
-          return b.rating - a.rating
-        case 'rating_low':
-          return a.rating - b.rating
-        case 'helpful':
-          return b.helpfulVotes - a.helpfulVotes
-        case 'newest':
-        default:
-          return b.createdAt.getTime() - a.createdAt.getTime()
-      }
-    })
-
-    // Paginate results
-    const startIndex = (page - 1) * limit
-    const paginatedReviews = sortedReviews.slice(startIndex, startIndex + limit)
-
-    // Calculate rating breakdown
-    const ratingBreakdown = {
-      1: mockReviews.filter(r => r.rating === 1).length,
-      2: mockReviews.filter(r => r.rating === 2).length,
-      3: mockReviews.filter(r => r.rating === 3).length,
-      4: mockReviews.filter(r => r.rating === 4).length,
-      5: mockReviews.filter(r => r.rating === 5).length,
-      total: mockReviews.length
-    }
-
-    // Calculate average rating
-    const averageRating = mockReviews.length > 0 
-      ? mockReviews.reduce((sum, review) => sum + review.rating, 0) / mockReviews.length
-      : 0
-
-    const response: PaginatedReviews = {
-      reviews: paginatedReviews,
-      total: filteredReviews.length,
-      page,
-      limit,
-      hasMore: startIndex + limit < filteredReviews.length,
-      averageRating: Math.round(averageRating * 10) / 10,
-      ratingBreakdown
-    }
-
-    return response
-  } catch (error) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Failed to fetch reviews'
-    })
+  const params = getRouterParams(event)
+  const appId = params.id
+  if (!appId) {
+    throw createError({ statusCode: 400, statusMessage: 'Missing app id' })
   }
+
+  const query = getQuery(event)
+  const page = Math.max(1, Number(query.page) || 1)
+  const limit = Math.min(50, Math.max(1, Number(query.limit) || 10))
+  const sort = (query.sort as string) || 'newest'
+  const ratingFilter = query.rating ? Number(query.rating) : undefined
+
+  const db = getDb()
+
+  let orderBy: string
+  switch (sort) {
+    case 'oldest': orderBy = 'created_at ASC'; break
+    case 'rating_high': orderBy = 'rating DESC, created_at DESC'; break
+    case 'rating_low': orderBy = 'rating ASC, created_at DESC'; break
+    case 'helpful': orderBy = 'helpful_votes DESC, created_at DESC'; break
+    default: orderBy = 'created_at DESC'
+  }
+
+  const whereClauses = ['app_id = ?', "status = 'approved'"]
+  const whereParams: unknown[] = [appId]
+  if (ratingFilter) {
+    whereClauses.push('rating = ?')
+    whereParams.push(ratingFilter)
+  }
+  const whereSql = whereClauses.join(' AND ')
+
+  const totalRow = db
+    .prepare(`SELECT COUNT(*) as count FROM reviews WHERE ${whereSql}`)
+    .get(...whereParams) as { count: number }
+  const total = totalRow.count
+
+  const offset = (page - 1) * limit
+  const rows = db
+    .prepare(`SELECT * FROM reviews WHERE ${whereSql} ORDER BY ${orderBy} LIMIT ? OFFSET ?`)
+    .all(...whereParams, limit, offset) as DbReview[]
+
+  const breakdownRows = db
+    .prepare(
+      `SELECT rating, COUNT(*) as count FROM reviews WHERE app_id = ? AND status = 'approved' GROUP BY rating`
+    )
+    .all(appId) as Array<{ rating: number; count: number }>
+
+  const ratingBreakdown = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, total: 0 }
+  breakdownRows.forEach(r => {
+    const key = r.rating as 1 | 2 | 3 | 4 | 5
+    if (key >= 1 && key <= 5) {
+      ratingBreakdown[key] = r.count
+      ratingBreakdown.total += r.count
+    }
+  })
+
+  const avgRow = db
+    .prepare(`SELECT AVG(rating) as avg FROM reviews WHERE app_id = ? AND status = 'approved'`)
+    .get(appId) as { avg: number | null }
+  const averageRating = avgRow.avg ? Math.round(avgRow.avg * 10) / 10 : 0
+
+  const response: PaginatedReviews = {
+    reviews: rows.map(mapReview),
+    total,
+    page,
+    limit,
+    hasMore: offset + rows.length < total,
+    averageRating,
+    ratingBreakdown
+  }
+
+  return response
 })
