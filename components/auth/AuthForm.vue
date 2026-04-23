@@ -127,7 +127,40 @@
       <div v-if="loginErrors.general" class="general-error">
         {{ loginErrors.general }}
       </div>
-      
+
+      <!-- Demo credentials -->
+      <div class="demo-box">
+        <div class="demo-head">
+          <span class="demo-label">Demo accounts</span>
+          <span class="demo-hint">Click to auto-fill</span>
+        </div>
+        <div class="demo-row-list">
+          <button
+            v-for="d in demoAccounts"
+            :key="d.role"
+            type="button"
+            class="demo-btn"
+            :disabled="isLoading"
+            @click="useDemoAccount(d)"
+          >
+            <div class="demo-btn__top">
+              <span class="demo-btn__role">{{ d.label }}</span>
+              <span class="demo-btn__badge">{{ d.desc }}</span>
+            </div>
+            <div class="demo-btn__creds">
+              <span class="demo-btn__cred">
+                <UIcon dynamic name="i-heroicons-envelope" />
+                <code>{{ d.email }}</code>
+              </span>
+              <span class="demo-btn__cred">
+                <UIcon dynamic name="i-heroicons-key" />
+                <code>{{ d.password }}</code>
+              </span>
+            </div>
+          </button>
+        </div>
+      </div>
+
       <div class="social-login">
         <p>Or login with</p>
         <div class="social-buttons">
@@ -835,6 +868,39 @@ const socialLogin = (provider: string) => {
     });
   }, 1000);
 };
+
+// Demo accounts — visible credentials for quick sign-in
+interface DemoAccount {
+  role: 'buyer' | 'vendor' | 'admin'
+  label: string
+  desc: string
+  email: string
+  password: string
+}
+
+const demoAccounts: DemoAccount[] = [
+  { role: 'buyer', label: 'Buyer', desc: 'Discover & compare', email: 'buyer@saasworld.com', password: 'buyer123' },
+  { role: 'vendor', label: 'Vendor', desc: 'Manage listings', email: 'demo@saasworld.com', password: 'demo123' },
+  { role: 'admin', label: 'Admin', desc: 'Full access', email: 'admin@saasworld.com', password: 'admin123' }
+];
+
+const useDemoAccount = async (d: DemoAccount) => {
+  loginForm.email = d.email;
+  loginForm.password = d.password;
+  loginForm.rememberMe = true;
+  try {
+    const { login } = useAuth();
+    isLoading.value = true;
+    loginErrors.general = '';
+    await login({ email: d.email, password: d.password, rememberMe: true });
+    emit('login-success', { email: d.email, userTypes: [d.role] });
+    await navigateTo('/dashboard');
+  } catch (error: any) {
+    loginErrors.general = error?.data?.statusMessage || error?.message || 'Unable to start demo session.';
+  } finally {
+    isLoading.value = false;
+  }
+};
 </script>
 
 <style scoped>
@@ -1482,5 +1548,91 @@ input.error {
   .user-type-info p {
     font-size: var(--fs-caption);
   }
+}
+
+/* Demo accounts box */
+.demo-box {
+  margin-top: 14px;
+  padding: 12px 12px 10px;
+  background: #fff8f1;
+  border: 0.5px solid #ffd9b5;
+  border-radius: 10px;
+}
+.demo-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.demo-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ff8838;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.demo-hint { font-size: 11px; color: #94a3b8; }
+.demo-row-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.demo-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  padding: 8px 10px;
+  background: #fff;
+  border: 0.5px solid #ffd9b5;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 150ms ease;
+  text-align: left;
+}
+.demo-btn:hover:not(:disabled) {
+  border-color: #ff8838;
+  box-shadow: 0 6px 14px -10px rgba(255, 136, 56, 0.5);
+}
+.demo-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.demo-btn__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.demo-btn__role {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e1e1e;
+}
+.demo-btn__badge {
+  font-size: 10px;
+  font-weight: 600;
+  color: #ff8838;
+  background: #fff3e6;
+  padding: 2px 6px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.demo-btn__creds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+}
+.demo-btn__cred {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  color: #475569;
+}
+.demo-btn__cred code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  color: #0f172a;
+  background: transparent;
+  padding: 0;
 }
 </style>

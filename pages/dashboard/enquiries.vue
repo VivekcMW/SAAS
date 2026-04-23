@@ -28,6 +28,11 @@
       </div>
     </div>
 
+    <div v-if="enquiryToast" class="enquiries-toast">
+      <UIcon dynamic name="i-heroicons-check-circle" />
+      <span>{{ enquiryToast }}</span>
+    </div>
+
     <!-- Status Overview Cards -->
     <div class="status-overview">
       <div class="status-card new">
@@ -563,12 +568,20 @@ const markAsResolved = ref(false);
 const sendEmailNotification = ref(true);
 const hasMoreEnquiries = ref(true);
 
-// Current user
-const currentUser = ref({
-  name: 'Support Manager',
-  role: 'Customer Success',
-  avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face'
-});
+// Current user (from auth)
+const { currentUser: authUser } = useAuth()
+const currentUser = computed(() => ({
+  name: authUser.value?.fullName || authUser.value?.name || 'Support Manager',
+  role: authUser.value?.displayRole || 'Customer Success',
+  avatar: authUser.value?.avatar || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face'
+}));
+
+// Toast
+const enquiryToast = ref('');
+const flashEnquiry = (msg: string) => {
+  enquiryToast.value = msg;
+  setTimeout(() => (enquiryToast.value = ''), 2500);
+};
 
 // Mock data for status overview
 const statusData = ref({
@@ -952,7 +965,8 @@ const submitResponse = (enquiry: any) => {
   if (sendEmailNotification.value) {
     console.log('Email notification sent to:', enquiry.email);
   }
-  
+  flashEnquiry(markAsResolved.value ? 'Response sent and marked resolved.' : 'Response sent.');
+
   // Clear form
   activeResponseForm.value = null;
   responseText.value = '';
@@ -961,24 +975,52 @@ const submitResponse = (enquiry: any) => {
 };
 
 const assignEnquiry = (enquiry: any) => {
-  console.log('Assigning enquiry:', enquiry.id);
-  // Implement assignment functionality
+  const assignee = window.prompt(`Assign enquiry from ${enquiry.name} to:`, enquiry.assignedTo || currentUser.value.name);
+  if (!assignee) return;
+  enquiry.assignedTo = assignee;
+  flashEnquiry(`Enquiry assigned to ${assignee}.`);
 };
 
+const STATUS_FLOW: Record<string, string> = {
+  new: 'pending',
+  pending: 'resolved',
+  resolved: 'closed',
+  closed: 'new'
+};
 const updateStatus = (enquiry: any) => {
-  console.log('Updating status for enquiry:', enquiry.id);
-  // Implement status update functionality
+  const next = STATUS_FLOW[enquiry.status] || 'pending';
+  enquiry.status = next;
+  flashEnquiry(`Status moved to ${next}.`);
 };
 
 const convertLead = (enquiry: any) => {
-  console.log('Converting lead to customer:', enquiry.id);
-  // Implement lead conversion functionality
+  if (!window.confirm(`Convert ${enquiry.name}'s enquiry into a customer?`)) return;
+  enquiry.status = 'resolved';
+  enquiry.converted = true;
+  statusData.value.leads = Math.max(0, statusData.value.leads - 1);
+  flashEnquiry(`${enquiry.name} converted to customer.`);
 };
 
 const loadMoreEnquiries = () => {
-  console.log('Loading more enquiries...');
-  // Implement pagination
-  hasMoreEnquiries.value = false;
+  // Append a batch of demo items — replace with paginated fetch when API is ready
+  const base = enquiriesData.value.length;
+  const batch = Array.from({ length: 5 }).map((_, i) => ({
+    id: Date.now() + i,
+    name: `Guest ${base + i + 1}`,
+    email: `guest${base + i + 1}@example.com`,
+    company: 'New lead',
+    subject: 'Interested in your platform',
+    message: 'Could you share more details about enterprise pricing and onboarding?',
+    status: 'new',
+    priority: 'medium',
+    type: 'general',
+    date: new Date().toISOString(),
+    responseTime: 2,
+    responses: []
+  }));
+  enquiriesData.value.push(...batch);
+  if (enquiriesData.value.length >= base + 20) hasMoreEnquiries.value = false;
+  flashEnquiry(`Loaded ${batch.length} more enquiries.`);
 };
 
 // Initialize component
@@ -989,11 +1031,23 @@ onMounted(() => {
 
 <style scoped>
 .enquiries-page {
-  min-height: 100vh;
-  background: #ffffff;
-  margin-top: 144px;
-  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
+
+.enquiries-toast {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+.enquiries-toast :deep(svg) { width: 18px; height: 18px; }
 
 /* Standardized thin border radius for all cards */
 .enquiries-page .card,
@@ -1131,19 +1185,19 @@ onMounted(() => {
 }
 
 .status-card.new .status-icon {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  background: #0073e6;
 }
 
 .status-card.pending .status-icon {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
+  background: #f97316;
 }
 
 .status-card.leads .status-icon {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
+  background: #ef4444;
 }
 
 .status-card.conversion .status-icon {
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: #14b8a6;
 }
 
 .status-info {

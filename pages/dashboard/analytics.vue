@@ -1,559 +1,613 @@
 <template>
   <div class="analytics-page">
-    <!-- Page Header -->
-    <div class="page-header">
-      <div class="header-content">
-        <div class="title-section">
-          <h1>Analytics</h1>
-          <p>Detailed insights and performance metrics</p>
+    <header class="page-header">
+      <div>
+        <h1>Analytics</h1>
+        <p>Detailed insights and performance metrics across your products.</p>
+      </div>
+      <div class="header-actions">
+        <select v-model="selectedPeriod" class="period-select" aria-label="Select period">
+          <option value="7d">Last 7 days</option>
+          <option value="30d">Last 30 days</option>
+          <option value="90d">Last 90 days</option>
+        </select>
+        <button type="button" class="btn btn-ghost" @click="refreshData">
+          <UIcon dynamic name="i-heroicons-arrow-path" :class="{ spin: isRefreshing }" />
+          <span>Refresh</span>
+        </button>
+        <button type="button" class="btn btn-primary" @click="exportReport">
+          <UIcon dynamic name="i-heroicons-arrow-down-tray" />
+          <span>Export CSV</span>
+        </button>
+      </div>
+    </header>
+
+    <output v-if="toastMsg" class="toast toast-success">
+      <UIcon dynamic name="i-heroicons-check-circle" />
+      <span>{{ toastMsg }}</span>
+    </output>
+
+    <!-- KPI Stats -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-blue">
+          <UIcon dynamic name="i-heroicons-eye" />
         </div>
-        
-        <div class="header-actions">
-          <select v-model="selectedPeriod" class="period-select">
-            <option value="7d">Last 7 days</option>
-            <option value="30d">Last 30 days</option>
-            <option value="90d">Last 90 days</option>
-          </select>
+        <div class="stat-info">
+          <span class="stat-label">Total Views</span>
+          <span class="stat-value">{{ formatNumber(totalViews) }}</span>
+          <span class="stat-change positive">
+            <UIcon dynamic name="i-heroicons-arrow-trending-up" /> +12.5%
+          </span>
         </div>
       </div>
-    </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-      <!-- Analytics Grid -->
-      <div class="analytics-grid">
-        <!-- Main Chart -->
-        <div class="analytics-card main-chart">
-          <div class="card-header">
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-teal">
+          <UIcon dynamic name="i-heroicons-cursor-arrow-rays" />
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">Total Clicks</span>
+          <span class="stat-value">{{ formatNumber(totalClicks) }}</span>
+          <span class="stat-change positive">
+            <UIcon dynamic name="i-heroicons-arrow-trending-up" /> +8.3%
+          </span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-orange">
+          <UIcon dynamic name="i-heroicons-arrow-trending-up" />
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">Conversion Rate</span>
+          <span class="stat-value">{{ conversionRate }}%</span>
+          <span class="stat-change negative">
+            <UIcon dynamic name="i-heroicons-arrow-trending-down" /> -2.1%
+          </span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-purple">
+          <UIcon dynamic name="i-heroicons-currency-dollar" />
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">Total Revenue</span>
+          <span class="stat-value">${{ formatNumber(totalRevenue) }}</span>
+          <span class="stat-change positive">
+            <UIcon dynamic name="i-heroicons-arrow-trending-up" /> +15.7%
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <div class="analytics-grid">
+      <!-- Main Chart -->
+      <section class="card main-chart">
+        <div class="card-head">
+          <div>
             <h3>Performance Overview</h3>
+            <p>Views, clicks and revenue trend for the selected period.</p>
           </div>
-          <div class="card-content">
-            <DashboardAnalytics :data="analyticsData" :period="selectedPeriod" />
+          <div class="segmented">
+            <button
+              v-for="m in metricOptions"
+              :key="m.value"
+              type="button"
+              :class="['segmented-btn', { active: activeMetric === m.value }]"
+              @click="activeMetric = m.value"
+            >
+              {{ m.label }}
+            </button>
           </div>
         </div>
+        <div class="card-body">
+          <DashboardAnalytics :data="analyticsData" :period="selectedPeriod" />
+        </div>
+      </section>
 
-        <!-- Geographic Data -->
-        <div class="analytics-card geo-chart">
-          <div class="card-header">
+      <!-- Top pages -->
+      <section class="card top-pages">
+        <div class="card-head">
+          <div>
+            <h3>Top Products</h3>
+            <p>Ranked by views this period.</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <ul class="rank-list">
+            <li v-for="(item, idx) in topProducts" :key="item.name" class="rank-row">
+              <span class="rank-index">{{ idx + 1 }}</span>
+              <div class="rank-meta">
+                <span class="rank-name">{{ item.name }}</span>
+                <span class="rank-sub">{{ item.category }}</span>
+              </div>
+              <div class="rank-value">
+                <span>{{ formatNumber(item.views) }}</span>
+                <span class="rank-trend" :class="item.trend >= 0 ? 'positive' : 'negative'">
+                  {{ item.trend >= 0 ? '+' : '' }}{{ item.trend }}%
+                </span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Geo distribution -->
+      <section class="card geo-card">
+        <div class="card-head">
+          <div>
             <h3>Geographic Distribution</h3>
-          </div>
-          <div class="card-content">
-            <DashboardGeoMap :countries="geoData" />
+            <p>Where your visitors are coming from.</p>
           </div>
         </div>
+        <div class="card-body">
+          <DashboardGeoMap :countries="geoData" />
+        </div>
+      </section>
 
-        <!-- Detailed Stats -->
-        <div class="analytics-card stats-card">
-          <div class="card-header">
-            <h3>Detailed Statistics</h3>
-          </div>
-          <div class="card-content">
-            <div class="stats-grid">
-              <div class="stat-item">
-                <div class="stat-icon views">
-                  <UIcon dynamic name="i-heroicons-eye" />
-                </div>
-                <div class="stat-details">
-                  <div class="stat-value">{{ formatNumber(totalViews) }}</div>
-                  <div class="stat-label">Total Views</div>
-                  <div class="stat-change positive">+12.5%</div>
-                </div>
-              </div>
-              
-              <div class="stat-item">
-                <div class="stat-icon clicks">
-                  <UIcon dynamic name="i-heroicons-cursor-arrow-rays" />
-                </div>
-                <div class="stat-details">
-                  <div class="stat-value">{{ formatNumber(totalClicks) }}</div>
-                  <div class="stat-label">Total Clicks</div>
-                  <div class="stat-change positive">+8.3%</div>
-                </div>
-              </div>
-              
-              <div class="stat-item">
-                <div class="stat-icon conversion">
-                  <UIcon dynamic name="i-heroicons-arrow-trending-up" />
-                </div>
-                <div class="stat-details">
-                  <div class="stat-value">{{ conversionRate }}%</div>
-                  <div class="stat-label">Conversion Rate</div>
-                  <div class="stat-change negative">-2.1%</div>
-                </div>
-              </div>
-              
-              <div class="stat-item">
-                <div class="stat-icon revenue">
-                  <UIcon dynamic name="i-heroicons-currency-dollar" />
-                </div>
-                <div class="stat-details">
-                  <div class="stat-value">${{ formatNumber(totalRevenue) }}</div>
-                  <div class="stat-label">Total Revenue</div>
-                  <div class="stat-change positive">+15.7%</div>
-                </div>
-              </div>
-            </div>
+      <!-- Traffic sources -->
+      <section class="card sources-card">
+        <div class="card-head">
+          <div>
+            <h3>Traffic Sources</h3>
+            <p>Breakdown by channel.</p>
           </div>
         </div>
-      </div>
+        <div class="card-body">
+          <ul class="source-list">
+            <li v-for="src in trafficSources" :key="src.name" class="source-row">
+              <div class="source-head">
+                <span class="source-name">{{ src.name }}</span>
+                <span class="source-val">{{ src.percent }}%</span>
+              </div>
+              <div class="bar">
+                <div class="bar-fill" :style="{ width: src.percent + '%', background: src.color }" />
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed } from 'vue'
 
-// Use auth composable
-const { isAuthenticated, currentUser, handleLogin, handleLogout } = useAuth();
+useSeoMeta({
+  title: 'Analytics — SaaSWorld Dashboard',
+  description: 'Detailed analytics and performance insights for your products.'
+})
 
-// Meta tags
-useHead({
-  title: 'Analytics - SaaSWorld Dashboard',
-  meta: [
-    { name: 'description', content: 'Detailed analytics and performance insights for your products' }
-  ]
-});
+definePageMeta({ layout: false })
 
 // State
-const selectedPeriod = ref('30d');
-const filtersActive = ref(false);
+const selectedPeriod = ref('30d')
+const activeMetric = ref<'views' | 'clicks' | 'revenue'>('views')
+const isRefreshing = ref(false)
+const toastMsg = ref('')
 
-// Dashboard stats
-const dashboardStats = ref({
-  totalViews: 12540,
-  revenue: 3850,
-  products: 3
-});
+const flash = (msg: string) => {
+  toastMsg.value = msg
+  setTimeout(() => (toastMsg.value = ''), 2500)
+}
 
-// Analytics data
-const totalViews = ref(12540);
-const totalClicks = ref(890);
-const totalRevenue = ref(3850);
+const metricOptions = [
+  { value: 'views' as const, label: 'Views' },
+  { value: 'clicks' as const, label: 'Clicks' },
+  { value: 'revenue' as const, label: 'Revenue' }
+]
 
-const conversionRate = computed(() => {
-  return ((totalClicks.value / totalViews.value) * 100).toFixed(2);
-});
+// KPI values
+const totalViews = ref(12540)
+const totalClicks = ref(890)
+const totalRevenue = ref(3850)
 
-// Mock analytics data
+const conversionRate = computed(() =>
+  ((totalClicks.value / totalViews.value) * 100).toFixed(2)
+)
+
+const PERIOD_DAYS: Record<string, number> = { '7d': 7, '30d': 30, '90d': 90 }
+
+// Chart data
 const analyticsData = computed(() => {
-  const days = selectedPeriod.value === '7d' ? 7 : selectedPeriod.value === '30d' ? 30 : 90;
-  const data = [];
-  
+  const days = PERIOD_DAYS[selectedPeriod.value] ?? 30
+  const data = [] as Array<{ date: string; views: number; clicks: number; revenue: number }>
   for (let i = days - 1; i >= 0; i--) {
-    const date = new Date();
-    date.setDate(date.getDate() - i);
-    const views = Math.floor(Math.random() * 500) + 100;
-    const clicks = Math.floor(views * (Math.random() * 0.15 + 0.05));
-    
+    const date = new Date()
+    date.setDate(date.getDate() - i)
+    const views = Math.floor(Math.random() * 500) + 100
+    const clicks = Math.floor(views * (Math.random() * 0.15 + 0.05))
     data.push({
       date: date.toISOString().split('T')[0],
       views,
       clicks,
       revenue: Math.floor(clicks * (Math.random() * 10 + 5))
-    });
+    })
   }
-  
-  return data;
-});
+  return data
+})
 
-// Geographic data
+// Top products
+const topProducts = ref([
+  { name: 'CloudSync Pro', category: 'Productivity', views: 4820, trend: 18 },
+  { name: 'InsightBoard', category: 'Analytics', views: 3510, trend: 9 },
+  { name: 'SecureVault', category: 'Security', views: 2230, trend: -4 },
+  { name: 'FlowDocs', category: 'Collaboration', views: 1640, trend: 12 },
+  { name: 'PixelKit', category: 'Design', views: 980, trend: 3 }
+])
+
+// Geo data
 const geoData = ref([
   { country: 'United States', visitors: 3542, percentage: 28.2 },
   { country: 'United Kingdom', visitors: 2103, percentage: 16.8 },
-  { country: 'Germany', visitors: 1876, percentage: 15.0 },
-  { country: 'Canada', visitors: 1254, percentage: 10.0 },
+  { country: 'Germany', visitors: 1876, percentage: 15 },
+  { country: 'Canada', visitors: 1254, percentage: 10 },
   { country: 'France', visitors: 987, percentage: 7.9 },
   { country: 'Australia', visitors: 765, percentage: 6.1 },
   { country: 'Netherlands', visitors: 543, percentage: 4.3 },
   { country: 'Others', visitors: 1470, percentage: 11.7 }
-]);
+])
 
-// Methods
+// Traffic sources
+const trafficSources = ref([
+  { name: 'Organic Search', percent: 42, color: '#0073e6' },
+  { name: 'Direct', percent: 24, color: '#14b8a6' },
+  { name: 'Referral', percent: 18, color: '#f97316' },
+  { name: 'Social', percent: 11, color: '#a855f7' },
+  { name: 'Email', percent: 5, color: '#64748b' }
+])
+
+// Helpers
 const formatNumber = (num: number) => {
-  if (num >= 1000000) {
-    return (num / 1000000).toFixed(1) + 'M';
-  } else if (num >= 1000) {
-    return (num / 1000).toFixed(1) + 'K';
-  }
-  return num.toString();
-};
+  if (num >= 1_000_000) return (num / 1_000_000).toFixed(1) + 'M'
+  if (num >= 1_000) return (num / 1_000).toFixed(1) + 'K'
+  return num.toString()
+}
 
-const handleToggleFilters = () => {
-  filtersActive.value = !filtersActive.value;
-};
+const refreshData = () => {
+  isRefreshing.value = true
+  setTimeout(() => {
+    totalViews.value = 10_000 + Math.floor(Math.random() * 5000)
+    totalClicks.value = 600 + Math.floor(Math.random() * 500)
+    totalRevenue.value = 3000 + Math.floor(Math.random() * 2000)
+    isRefreshing.value = false
+    flash('Analytics data refreshed.')
+  }, 500)
+}
 
-const handleSearch = (query: string) => {
-  console.log('Search analytics:', query);
-};
-
-const handleAddProduct = () => {
-  navigateTo('/list-product');
-};
-
-const handleCreateReport = () => {
-  console.log('Create analytics report');
-};
-
-const handleScheduleDemo = () => {
-  console.log('Schedule analytics demo');
-};
-
-const handleExportData = () => {
-  console.log('Export analytics data');
-};
+const exportReport = () => {
+  const rows = [
+    ['Metric', 'Value'],
+    ['Total Views', String(totalViews.value)],
+    ['Total Clicks', String(totalClicks.value)],
+    ['Conversion Rate (%)', conversionRate.value],
+    ['Total Revenue ($)', String(totalRevenue.value)],
+    [],
+    ['Top Products', 'Views', 'Trend (%)'],
+    ...topProducts.value.map(p => [p.name, String(p.views), String(p.trend)]),
+    [],
+    ['Country', 'Visitors', 'Percentage'],
+    ...geoData.value.map(g => [g.country, String(g.visitors), String(g.percentage)])
+  ]
+  const csv = rows.map(r => r.map(v => `"${String(v).replaceAll('"', '""')}"`).join(',')).join('\n')
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `analytics-${selectedPeriod.value}-${new Date().toISOString().split('T')[0]}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
+  flash('Report exported.')
+}
 </script>
 
 <style scoped>
-/* Analytics Page Layout */
 .analytics-page {
-  min-height: 100vh;
-  background: #ffffff;
-  /* Account for FIXED subnav positioning - prevents content overlap */
-  /* Main navbar (72px) + DashboardSubnav (~72px) = ~144px total */
-  margin-top: 144px;
-  padding: var(--spacing-lg);
-  position: relative;
-}
-
-/* Standardized thin border radius for all cards */
-.analytics-page .card,
-.analytics-page .analytics-card,
-.analytics-page .chart-card,
-.analytics-page .stats-card {
-  border-radius: 6px !important;
-}
-
-/* Page Header */
-.page-header {
-  background: white;
-  border-bottom: 1px solid #e2e8f0;
-  padding: 2rem;
-  margin: 0 0 2rem 0;
-}
-
-.header-content {
-  max-width: 100%;
-  margin: 0;
-  padding: 0 2rem;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 1.5rem;
+  color: #0f172a;
+}
+
+/* Header */
+.page-header {
+  display: flex;
   align-items: flex-start;
-  gap: 2rem;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
 }
-
-.title-section h1 {
-  font-size: 2rem;
+.page-header h1 {
+  font-size: 1.75rem;
   font-weight: 700;
-  color: #1e293b;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.25rem;
+  color: #0f172a;
 }
-
-.title-section p {
-  color: #64748b;
-  font-size: 1rem;
+.page-header p {
   margin: 0;
+  color: #64748b;
+  font-size: 0.9375rem;
 }
-
 .header-actions {
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .period-select {
-  padding: 0.5rem 1rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.5rem;
-  background: white;
-  color: #374151;
+  height: 38px;
+  padding: 0 2rem 0 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: #fff;
   font-size: 0.875rem;
+  color: #0f172a;
+  cursor: pointer;
+}
+.period-select:focus {
+  outline: none;
+  border-color: #0073e6;
+  box-shadow: 0 0 0 3px rgba(0, 115, 230, 0.15);
 }
 
+/* Buttons */
 .btn {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  font-weight: 500;
+  height: 38px;
+  padding: 0 1rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
   font-size: 0.875rem;
-  text-decoration: none;
-  transition: all 0.2s;
+  font-weight: 500;
   cursor: pointer;
-  border: none;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.btn :deep(svg) { width: 16px; height: 16px; }
+.btn-primary { background: #0073e6; color: #fff; }
+.btn-primary:hover { background: #005cb8; }
+.btn-ghost { background: transparent; color: #334155; border-color: #e2e8f0; }
+.btn-ghost:hover { background: #f1f5f9; }
+
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Toast */
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+.toast :deep(svg) { width: 18px; height: 18px; }
+.toast-success {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
 }
 
-.btn-secondary {
-  background: #f1f5f9;
-  color: #475569;
-  border: 1px solid #d1d5db;
-}
-
-.btn-secondary:hover {
-  background: #e2e8f0;
-}
-
-/* Main Content */
-.main-content {
-  max-width: 100%;
-  margin: 0;
-  padding: 0 4rem 2rem 4rem;
-}
-
-/* Analytics Grid */
-.analytics-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  grid-template-rows: auto auto;
-  gap: 2rem;
-}
-
-.main-chart {
-  grid-column: 1 / 2;
-  grid-row: 1 / 3;
-}
-
-.geo-chart {
-  grid-column: 2 / 3;
-  grid-row: 1 / 2;
-}
-
-.stats-card {
-  grid-column: 2 / 3;
-  grid-row: 2 / 3;
-}
-
-/* Analytics Cards */
-.analytics-card {
-  background: white;
-  border-radius: 0.75rem;
-  border: 1px solid #e2e8f0;
-  overflow: hidden;
-  transition: all 0.2s;
-}
-
-.analytics-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.card-header {
-  padding: 1.5rem 2rem 1rem 2rem;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.card-header h3 {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #1e293b;
-  margin: 0;
-}
-
-.card-content {
-  padding: 0px;
-}
-
-/* Stats Grid */
+/* Stats */
 .stats-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
 }
-
-.stat-item {
+.stat-card {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1rem;
-  background: #ffffff;
-  border-radius: 0.5rem;
+  padding: 1.25rem;
+  background: #fff;
   border: 1px solid #e2e8f0;
+  border-radius: 8px;
 }
-
 .stat-icon {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 0.75rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
-  color: white;
+  color: #fff;
+  flex-shrink: 0;
 }
+.stat-icon :deep(svg) { width: 22px; height: 22px; }
+.stat-icon-blue { background: #0073e6; }
+.stat-icon-teal { background: #14b8a6; }
+.stat-icon-orange { background: #f97316; }
+.stat-icon-purple { background: #a855f7; }
 
-.stat-icon.views {
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
 }
-
-.stat-icon.clicks {
-  background: linear-gradient(135deg, #10b981, #059669);
+.stat-label {
+  font-size: 0.8125rem;
+  color: #64748b;
 }
-
-.stat-icon.conversion {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-}
-
-.stat-icon.revenue {
-  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-}
-
-.stat-details {
-  flex: 1;
-}
-
 .stat-value {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #1e293b;
-  margin-bottom: 0.25rem;
+  color: #0f172a;
+  line-height: 1.2;
 }
-
-.stat-label {
-  color: #64748b;
-  font-size: 0.875rem;
-  margin-bottom: 0.25rem;
-}
-
 .stat-change {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
   font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 0.125rem;
+}
+.stat-change :deep(svg) { width: 14px; height: 14px; }
+.stat-change.positive { color: #059669; }
+.stat-change.negative { color: #dc2626; }
+
+/* Layout grid */
+.analytics-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1rem;
+}
+.main-chart { grid-column: 1 / -1; }
+.geo-card, .sources-card, .top-pages { grid-column: auto; }
+
+@media (max-width: 960px) {
+  .analytics-grid { grid-template-columns: 1fr; }
+}
+
+/* Cards */
+.card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #f1f5f9;
+  flex-wrap: wrap;
+}
+.card-head h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+.card-head p {
+  margin: 0.25rem 0 0;
+  font-size: 0.8125rem;
+  color: #64748b;
+}
+.card-body {
+  padding: 1.25rem;
+}
+
+/* Segmented control */
+.segmented {
+  display: inline-flex;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 2px;
+  background: #f8fafc;
+}
+.segmented-btn {
+  border: none;
+  background: transparent;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 500;
-  padding: 0.125rem 0.375rem;
-  border-radius: 0.25rem;
+  color: #64748b;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.segmented-btn.active {
+  background: #fff;
+  color: #0073e6;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
 }
 
-.stat-change.positive {
-  background: #dcfce7;
-  color: #166534;
+/* Rank list (top products) */
+.rank-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
-
-.stat-change.negative {
-  background: #fef2f2;
-  color: #dc2626;
+.rank-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
 }
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .header-content {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1.5rem;
-    padding: 0 1rem;
-  }
-
-  .main-content {
-    padding: 0 2rem 2rem 2rem;
-  }
-
-  .analytics-grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
-  }
-
-  .main-chart {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .geo-chart {
-    grid-column: 1;
-    grid-row: 2;
-  }
-
-  .stats-card {
-    grid-column: 1;
-    grid-row: 3;
-  }
+.rank-row + .rank-row { border-top: 1px solid #f1f5f9; padding-top: 0.75rem; }
+.rank-index {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
+.rank-meta { flex: 1; min-width: 0; }
+.rank-name {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+.rank-sub {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+.rank-value {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+.rank-value > span:first-child {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+.rank-trend { font-size: 0.75rem; font-weight: 600; }
+.rank-trend.positive { color: #059669; }
+.rank-trend.negative { color: #dc2626; }
 
-@media (max-width: 768px) {
-  .analytics-page {
-    /* Account for mobile navbar (64px) + subnav content (~72px) = ~136px total */
-    /* Fixed subnav positioning requires explicit margin */
-    margin-top: 136px;
-    padding: var(--spacing-md);
-  }
-
-  .page-header {
-    padding: var(--spacing-lg) var(--spacing-md);
-  }
-
-  .header-content {
-    padding: 0;
-    flex-direction: column;
-    gap: var(--spacing-md);
-    align-items: stretch;
-  }
-
-  .main-content {
-    padding: 0 var(--spacing-md) 2rem var(--spacing-md);
-  }
-
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .card-header,
-  .card-content {
-    padding: 1rem 1.5rem;
-  }
+/* Traffic sources */
+.source-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+.source-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8125rem;
+  color: #334155;
+  margin-bottom: 0.375rem;
+}
+.source-name { font-weight: 500; }
+.source-val { font-weight: 600; color: #0f172a; }
+.bar {
+  height: 8px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.3s ease;
 }
 
 @media (max-width: 640px) {
-  .page-header {
-    padding: var(--spacing-md);
-  }
-
-  .header-actions {
-    flex-direction: column;
-    gap: var(--spacing-md);
-  }
-
-  .main-content {
-    padding: 0 var(--spacing-md) var(--spacing-lg) var(--spacing-md);
-  }
-
-  .analytics-grid {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-md);
-  }
-}
-
-@media (max-width: 480px) {
-  .analytics-page {
-    padding: var(--spacing-sm);
-    margin-top: 130px;
-  }
-
-  .page-header {
-    padding: var(--spacing-sm);
-  }
-
-  .main-content {
-    padding: 0 var(--spacing-sm) var(--spacing-md) var(--spacing-sm);
-  }
-
-  .header-content {
-    gap: var(--spacing-sm);
-  }
-
-  .stats-grid {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-sm);
-  }
-
-  .analytics-grid {
-    gap: var(--spacing-md);
-  }
-
-  .stat-item {
-    flex-direction: column;
-    text-align: center;
-    gap: var(--spacing-sm);
-  }
-
-  .card-header,
-  .card-content {
-    padding: var(--spacing-sm);
-  }
+  .page-header { flex-direction: column; align-items: stretch; }
+  .header-actions { justify-content: flex-start; }
+  .stat-value { font-size: 1.25rem; }
 }
 </style>
-

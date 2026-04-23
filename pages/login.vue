@@ -104,8 +104,8 @@
       <!-- Try demo -->
       <div class="demo-box">
         <div class="demo-head">
-          <span class="demo-label">Try a demo account</span>
-          <span class="demo-hint">No signup · instant access</span>
+          <span class="demo-label">Demo accounts</span>
+          <span class="demo-hint">Click to sign in instantly</span>
         </div>
         <div class="demo-row">
           <button
@@ -116,8 +116,20 @@
             :disabled="isLoading"
             @click="tryDemo(d)"
           >
-            <span class="demo-btn__role">{{ d.label }}</span>
-            <span class="demo-btn__desc">{{ d.desc }}</span>
+            <div class="demo-btn__top">
+              <span class="demo-btn__role">{{ d.label }}</span>
+              <span class="demo-btn__badge">{{ d.desc }}</span>
+            </div>
+            <div class="demo-btn__creds">
+              <span class="demo-btn__cred">
+                <Icon name="heroicons:envelope" />
+                <code>{{ d.email }}</code>
+              </span>
+              <span class="demo-btn__cred">
+                <Icon name="heroicons:key" />
+                <code>{{ d.password }}</code>
+              </span>
+            </div>
           </button>
         </div>
       </div>
@@ -444,15 +456,15 @@ const tryDemo = async (d: DemoAccount) => {
 .demo-hint { font-size: 11px; color: #94a3b8; }
 .demo-row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
   gap: 8px;
 }
 .demo-btn {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-  padding: 9px 10px;
+  align-items: stretch;
+  gap: 6px;
+  padding: 10px 12px;
   background: #fff;
   border: 0.5px solid #ffd9b5;
   border-radius: 8px;
@@ -468,12 +480,47 @@ const tryDemo = async (d: DemoAccount) => {
   box-shadow: 0 6px 14px -10px rgba(255, 136, 56, 0.5);
 }
 .demo-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.demo-btn__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
 .demo-btn__role {
   font-size: 13px;
   font-weight: 600;
   color: #1e1e1e;
 }
-.demo-btn__desc { font-size: 11px; color: #71717a; }
+.demo-btn__badge {
+  font-size: 10px;
+  font-weight: 600;
+  color: #ff8838;
+  background: #fff3e6;
+  padding: 2px 6px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.demo-btn__creds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+.demo-btn__cred {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  color: #475569;
+}
+.demo-btn__cred :deep(svg) { width: 12px; height: 12px; color: #94a3b8; }
+.demo-btn__cred code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  color: #0f172a;
+  background: transparent;
+  padding: 0;
+}
 
 @media (max-width: 480px) {
   .auth-card { padding: 28px 20px; border-radius: 12px; }

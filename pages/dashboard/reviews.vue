@@ -6,6 +6,11 @@
       :description="headerDesc"
     />
 
+    <div v-if="toast" class="toast toast-success">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 12l2 2 4-4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+      <span>{{ toast }}</span>
+    </div>
+
     <!-- Summary -->
     <div class="reviews__stats">
       <DashStatCard
@@ -19,8 +24,8 @@
       />
     </div>
 
-    <!-- Rating breakdown (vendor only) -->
-    <section v-if="role === 'vendor'" class="card breakdown">
+    <!-- Rating breakdown (vendor + admin) -->
+    <section v-if="viewMode === 'vendor'" class="card breakdown">
       <header class="card__head">
         <h2>Rating breakdown</h2>
         <span class="breakdown__overall">
@@ -102,15 +107,28 @@
             {{ sentimentLabel(r.sentiment) }}
           </span>
           <div class="review__actions">
-            <button v-if="role === 'vendor' && !r.reply" type="button" class="btn-ghost" @click="onReply(r)">
-              Reply
+            <button v-if="viewMode === 'vendor' && !r.reply" type="button" class="btn-ghost" @click="onReply(r)">
+              {{ replyingId === r.id ? 'Cancel' : 'Reply' }}
             </button>
-            <button v-if="role === 'vendor'" type="button" class="btn-ghost" @click="onFlag(r)">
+            <button v-if="viewMode === 'vendor'" type="button" class="btn-ghost" @click="onFlag(r)">
               Flag
             </button>
             <NuxtLink v-if="role === 'buyer'" :to="`/app/${r.productSlug}`" class="btn-ghost">View on app</NuxtLink>
           </div>
         </footer>
+
+        <!-- Inline reply composer -->
+        <div v-if="replyingId === r.id" class="review__composer">
+          <textarea
+            v-model="replyDraft"
+            rows="3"
+            placeholder="Write a reply to this review…"
+          />
+          <div class="review__composer-actions">
+            <button type="button" class="btn-ghost" @click="cancelReply">Cancel</button>
+            <button type="button" class="btn-primary" :disabled="!replyDraft.trim()" @click="submitReply(r)">Post reply</button>
+          </div>
+        </div>
       </article>
     </div>
 
@@ -135,11 +153,15 @@ const { currentUser } = useAuth()
 useHead({ title: 'Reviews — SaaSWorld Dashboard' })
 
 const role = computed(() => currentUser.value?.role || 'buyer')
+// For reviews, admin shares the vendor view (full list + moderation)
+const viewMode = computed<'vendor' | 'buyer'>(() => (role.value === 'buyer' ? 'buyer' : 'vendor'))
 
-const headerTitle = computed(() => role.value === 'vendor' ? 'Reviews' : 'My reviews')
-const headerEyebrow = computed(() => role.value === 'vendor' ? 'Customer feedback' : "What you've shared")
-const headerDesc = computed(() => role.value === 'vendor'
-  ? 'Track ratings, sentiment and reply to every review your customers leave.'
+const headerTitle = computed(() => viewMode.value === 'vendor' ? (role.value === 'admin' ? 'Reviews moderation' : 'Reviews') : 'My reviews')
+const headerEyebrow = computed(() => viewMode.value === 'vendor' ? (role.value === 'admin' ? 'Platform feedback' : 'Customer feedback') : "What you've shared")
+const headerDesc = computed(() => viewMode.value === 'vendor'
+  ? (role.value === 'admin'
+      ? 'Track all reviews across the marketplace. Reply on behalf of vendors or flag abusive content.'
+      : 'Track ratings, sentiment and reply to every review your customers leave.')
   : "Reviews you've posted on apps across the SaaSWorld marketplace.")
 
 interface Reply { author: string; time: string; body: string }
@@ -172,7 +194,7 @@ const buyerReviews: Review[] = [
   { id: 'br2', author: 'Demo Buyer', initials: 'DB', avatarBg: '#FFF1E6', company: 'Acme Corp', product: 'HubSpot', productSlug: 'hubspot', rating: 4, title: 'Powerful but steep learning curve', body: 'CRM and marketing automation in one is great, but the configuration is overwhelming for small teams. Onboarding templates would help.', time: '2 weeks ago', sentiment: 'positive', verified: true, reply: { author: 'HubSpot Team', time: '1 week ago', body: 'Thanks for the honest feedback — check out our new Starter Playbooks at the Academy, they cut setup time in half.' } }
 ]
 
-const reviews = computed(() => role.value === 'vendor' ? vendorReviews : buyerReviews)
+const reviews = computed(() => viewMode.value === 'vendor' ? vendorReviews : buyerReviews)
 
 // Icons
 const ICONS = {
@@ -197,7 +219,7 @@ const stats = computed(() => {
   const pctPos = list.length ? Math.round((positive / list.length) * 100) : 0
   const replied = list.filter(r => r.reply).length
 
-  if (role.value === 'vendor') {
+  if (viewMode.value === 'vendor') {
     return [
       { label: 'Total reviews', value: String(list.length), delta: '+12%', tone: 'up' as const, icon: ICONS.chat },
       { label: 'Overall rating', value: overallRating.value.toFixed(1), delta: '+0.3', tone: 'up' as const, icon: ICONS.star },
@@ -247,17 +269,47 @@ function sentimentLabel(s: string) {
   return map[s] || s
 }
 
-const emptyTitle = computed(() => role.value === 'vendor' ? 'No reviews yet' : 'No reviews posted yet')
-const emptyDesc = computed(() => role.value === 'vendor'
+const emptyTitle = computed(() => viewMode.value === 'vendor' ? 'No reviews yet' : 'No reviews posted yet')
+const emptyDesc = computed(() => viewMode.value === 'vendor'
   ? 'Reviews will appear here as customers share feedback on your apps.'
   : 'Leave a review on an app you use to help other buyers.')
 
-function onReply(r: Review) {
-  // NOTE: wire to API — local demo appends a stub reply
-  r.reply = { author: 'Demo Vendor', time: 'Just now', body: 'Thanks for the feedback — our team will reach out shortly.' }
+// Inline reply state
+const replyingId = ref<string | null>(null)
+const replyDraft = ref('')
+const toast = ref('')
+function flash(msg: string) {
+  toast.value = msg
+  setTimeout(() => (toast.value = ''), 2500)
 }
-function onFlag(_r: Review) {
-  // NOTE: flag-to-moderation hook
+
+function onReply(r: Review) {
+  replyingId.value = replyingId.value === r.id ? null : r.id
+  replyDraft.value = ''
+}
+
+function submitReply(r: Review) {
+  const body = replyDraft.value.trim()
+  if (!body) return
+  r.reply = {
+    author: role.value === 'admin' ? 'SaaSWorld Admin' : (currentUser.value?.fullName || 'Vendor'),
+    time: 'Just now',
+    body
+  }
+  replyingId.value = null
+  replyDraft.value = ''
+  flash('Reply posted.')
+}
+
+function cancelReply() {
+  replyingId.value = null
+  replyDraft.value = ''
+}
+
+function onFlag(r: Review) {
+  const reason = window.prompt(`Flag this review by ${r.author}?\nEnter a short reason:`, 'Abusive language')
+  if (!reason) return
+  flash(`Review flagged for moderation: “${reason}”`)
 }
 </script>
 
@@ -520,4 +572,50 @@ function onFlag(_r: Review) {
   transition: all 0.15s ease;
 }
 .btn-ghost:hover { background: #fbfaf8; color: #1e1e1e; border-color: #e4e0dc; }
+.btn-ghost:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.review__composer {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: #fbfaf8;
+  border: 1px solid #f0efec;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.review__composer textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 70px;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid #e4e0dc;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-family: inherit;
+  color: #1e1e1e;
+  background: #fff;
+}
+.review__composer textarea:focus {
+  outline: none;
+  border-color: #ff8838;
+  box-shadow: 0 0 0 3px rgba(255, 136, 56, 0.15);
+}
+.review__composer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
 </style>

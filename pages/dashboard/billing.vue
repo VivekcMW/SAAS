@@ -21,8 +21,12 @@
       </div>
     </div>
 
+    <div v-if="toast" class="toast toast-success" role="status">
+      <UIcon dynamic name="i-heroicons-check-circle" />
+      <span>{{ toast }}</span>
+    </div>
+
     <!-- Main Content -->
-        <!-- Main Content -->
     <div class="main-content">
       <!-- Billing Overview Cards -->
       <div class="billing-overview">
@@ -236,11 +240,47 @@
         </div>
       </div>
     </div>
+
+    <!-- Payment method modal -->
+    <div v-if="showPaymentModal" class="modal-backdrop" @click.self="showPaymentModal = false">
+      <div class="modal">
+        <div class="modal-head">
+          <h3>Update payment method</h3>
+          <button type="button" class="modal-close" @click="showPaymentModal = false">
+            <UIcon dynamic name="i-heroicons-x-mark" />
+          </button>
+        </div>
+        <form class="modal-body" @submit.prevent="savePaymentMethod">
+          <div class="modal-field">
+            <label>Cardholder name</label>
+            <input v-model="newPaymentMethod.name" type="text" required placeholder="Jane Doe" />
+          </div>
+          <div class="modal-field">
+            <label>Card number</label>
+            <input v-model="newPaymentMethod.cardNumber" type="text" required placeholder="4242 4242 4242 4242" maxlength="19" />
+          </div>
+          <div class="modal-row">
+            <div class="modal-field">
+              <label>Expiry</label>
+              <input v-model="newPaymentMethod.expiry" type="text" required placeholder="MM/YY" maxlength="5" />
+            </div>
+            <div class="modal-field">
+              <label>CVC</label>
+              <input v-model="newPaymentMethod.cvc" type="text" required placeholder="123" maxlength="4" />
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" @click="showPaymentModal = false">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save card</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, reactive, computed } from 'vue';
 
 // Use auth composable
 const { isAuthenticated, currentUser, handleLogin, handleLogout } = useAuth();
@@ -429,79 +469,133 @@ const handleExportData = () => {
   console.log('Export billing data');
 };
 
+// Toast feedback
+const toast = ref('');
+const flash = (msg: string) => {
+  toast.value = msg;
+  setTimeout(() => (toast.value = ''), 2800);
+};
+
 const downloadInvoice = (invoiceId?: string) => {
-  console.log('Download invoice:', invoiceId);
-  // Implement invoice download
+  const id = invoiceId || `INV-${new Date().toISOString().slice(0, 7).replace('-', '')}`;
+  const lines = [
+    'SaaSWorld — Invoice',
+    `Invoice ID: ${id}`,
+    `Date: ${new Date().toLocaleDateString()}`,
+    `Billed to: ${billingEmail.value}`,
+    '',
+    `Plan: ${currentPlan.value.name}`,
+    `Amount: $${currentPlan.value.price}.00 / ${currentPlan.value.billing}`,
+    '',
+    'Thank you for your business.'
+  ].join('\n');
+  const blob = new Blob([lines], { type: 'text/plain;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${id}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  flash(`Invoice ${id} downloaded.`);
 };
 
 const upgradePlan = () => {
-  console.log('Upgrade plan');
-  // Implement plan upgrade flow
+  const next = availablePlans.value.find(p => p.price > currentPlan.value.price);
+  if (next) {
+    selectPlan(next);
+  } else {
+    flash('You are already on the highest plan.');
+  }
 };
 
 const managePlan = () => {
-  console.log('Manage plan');
-  // Implement plan management
+  document.querySelector('.plans-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  flash('Choose a plan below to change.');
 };
 
+const showPaymentModal = ref(false);
+const newPaymentMethod = reactive({ cardNumber: '', expiry: '', cvc: '', name: '' });
+
 const updatePaymentMethod = () => {
-  console.log('Update payment method');
-  // Implement payment method update
+  newPaymentMethod.cardNumber = '';
+  newPaymentMethod.expiry = '';
+  newPaymentMethod.cvc = '';
+  newPaymentMethod.name = '';
+  showPaymentModal.value = true;
+};
+
+const savePaymentMethod = () => {
+  showPaymentModal.value = false;
+  flash('Payment method updated.');
 };
 
 const exportPayments = () => {
-  console.log('Export payment history');
-  // Implement payment export
+  const rows = [
+    ['Date', 'Description', 'Amount', 'Status', 'Invoice'],
+    ...paymentHistory.value.map(p => [p.date, p.description, `$${p.amount}`, p.status, p.invoiceId])
+  ];
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `payments-${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  flash('Payment history exported.');
 };
 
 const selectPlan = (plan: any) => {
-  console.log('Select plan:', plan.name);
-  // Implement plan selection
+  if (plan.id === currentPlan.value.id) return;
+  const direction = plan.price > currentPlan.value.price ? 'Upgraded' : 'Downgraded';
+  currentPlan.value = { id: plan.id, name: plan.name, price: plan.price, billing: plan.billing };
+  planLimits.value = {
+    products: plan.id === 'starter' ? 3 : plan.id === 'enterprise' ? 999 : 10,
+    apiCalls: plan.id === 'starter' ? 1000 : plan.id === 'enterprise' ? 999999 : 10000,
+    storage: plan.id === 'starter' ? 1 : plan.id === 'enterprise' ? 50 : 5
+  };
+  flash(`${direction} to ${plan.name} plan.`);
 };
 </script>
 
 <style scoped>
 .billing-page {
-  padding: 0 !important;
-  margin: 0 !important;
-  min-height: 100vh;
-  background: #ffffff;
-  /* Account for FIXED subnav positioning - prevents content overlap */
-  /* Main navbar (72px) + DashboardSubnav (~72px) = ~144px total */
-  /* Since subnav is now position: fixed, we need padding-top to prevent content hiding */
-  padding-top: 144px !important;
-  /* Ensure page is positioned relative for proper stacking */
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .page-header {
-  background: white;
-  border-bottom: 1px solid #e2e8f0;
-  padding: 2rem 0;
+  background: transparent;
+  border-bottom: 0;
+  padding: 0;
 }
 
 .header-content {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 2rem;
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  gap: 2rem;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .title-section h1 {
-  font-size: 2.25rem;
+  font-size: 1.75rem;
   font-weight: 700;
-  color: #1a202c;
-  margin: 0 0 0.5rem 0;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.25rem 0;
 }
 
 .title-section p {
-  font-size: 1.125rem;
-  color: #718096;
+  font-size: 0.95rem;
+  color: #64748b;
   margin: 0;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 .header-actions {
@@ -547,9 +641,9 @@ const selectPlan = (plan: any) => {
 }
 
 .main-content {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .billing-overview {
@@ -921,12 +1015,6 @@ const selectPlan = (plan: any) => {
 }
 
 @media (max-width: 768px) {
-  .billing-page {
-    /* Account for mobile navbar (64px) + subnav content (~72px) = ~136px total */
-    /* Fixed subnav positioning requires explicit padding */
-    padding-top: 136px !important;
-  }
-
   .container {
     padding: 0 var(--spacing-md);
   }
@@ -962,10 +1050,6 @@ const selectPlan = (plan: any) => {
 }
 
 @media (max-width: 480px) {
-  .billing-page {
-    padding-top: 130px !important;
-  }
-
   .container {
     padding: 0 var(--spacing-sm);
   }
@@ -978,4 +1062,69 @@ const selectPlan = (plan: any) => {
     gap: var(--spacing-xs);
   }
 }
+
+/* Toast */
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+.toast :deep(svg) { width: 18px; height: 18px; }
+.toast-success { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+
+/* Payment method modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 1rem;
+}
+.modal {
+  background: #fff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 20px 50px -10px rgba(15, 23, 42, 0.3);
+  overflow: hidden;
+}
+.modal-head {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.modal-head h3 { margin: 0; font-size: 1.05rem; font-weight: 600; color: #0f172a; }
+.modal-close {
+  background: transparent;
+  border: 0;
+  padding: 0.35rem;
+  border-radius: 6px;
+  color: #64748b;
+  cursor: pointer;
+}
+.modal-close:hover { background: #f1f5f9; color: #0f172a; }
+.modal-close :deep(svg) { width: 18px; height: 18px; }
+.modal-body { padding: 1.25rem; display: flex; flex-direction: column; gap: 0.875rem; }
+.modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.modal-field { display: flex; flex-direction: column; gap: 0.3rem; }
+.modal-field label { font-size: 0.8rem; font-weight: 500; color: #334155; }
+.modal-field input {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-family: inherit;
+  color: #0f172a;
+  background: #fff;
+}
+.modal-field input:focus { outline: none; border-color: #0073e6; box-shadow: 0 0 0 3px rgba(0,115,230,0.15); }
+.modal-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.25rem; }
 </style>
