@@ -78,6 +78,16 @@
 </template>
 
 <script setup lang="ts">
+import { watchEffect } from 'vue'
+
+// Guard: buyers don't currently have documents content
+const { currentUser } = useAuth()
+watchEffect(() => {
+  if (import.meta.client && currentUser.value?.role === 'buyer') {
+    navigateTo('/dashboard/overview', { replace: true })
+  }
+})
+
 // SEO and meta tags
 useSeoMeta({
   title: 'Documents - File & Document Management',
@@ -85,9 +95,9 @@ useSeoMeta({
   keywords: 'documents, invoices, reports, files, document management'
 });
 
-// Page layout
+// Page layout (dashboard shell is provided by pages/dashboard.vue)
 definePageMeta({
-  layout: 'default'
+  layout: false
 });
 </script>
 

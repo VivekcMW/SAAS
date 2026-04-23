@@ -1,5 +1,6 @@
 <template>
-  <div class="billing-page">
+  <BuyerBilling v-if="role === 'buyer'" />
+  <div v-else class="billing-page">
     <!-- Page Header -->
     <div class="page-header">
       <div class="header-content">
@@ -284,6 +285,7 @@ import { ref, reactive, computed } from 'vue';
 
 // Use auth composable
 const { isAuthenticated, currentUser, handleLogin, handleLogout } = useAuth();
+const role = computed(() => currentUser.value?.role || 'buyer')
 
 // Meta tags
 useHead({

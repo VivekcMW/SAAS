@@ -114,16 +114,22 @@ const buyerGroups: NavGroup[] = [
     items: [
       { to: '/dashboard/overview', label: 'Overview', icon: ICONS.home },
       { to: '/dashboard/products', label: 'Saved apps', icon: ICONS.saved },
-      { to: '/dashboard/analytics', label: 'Comparisons', icon: ICONS.compare },
-      { to: '/dashboard/enquiries', label: 'My enquiries', icon: ICONS.inbox },
-      { to: '/dashboard/reviews', label: 'My reviews', icon: ICONS.star }
+      { to: '/dashboard/compare', label: 'Compare', icon: ICONS.compare },
+      { to: '/dashboard/enquiries', label: 'Enquiries', icon: ICONS.inbox },
+      { to: '/dashboard/reviews', label: 'Reviews', icon: ICONS.star }
+    ]
+  },
+  {
+    title: 'Discover',
+    items: [
+      { to: '/dashboard/recommendations', label: 'Recommendations', icon: ICONS.apps },
+      { to: '/dashboard/deals', label: 'Deals', icon: ICONS.budget },
+      { to: '/dashboard/digest', label: 'Weekly digest', icon: ICONS.chart }
     ]
   },
   {
     title: 'Account',
     items: [
-      { to: '/dashboard/budget', label: 'Budget', icon: ICONS.budget },
-      { to: '/dashboard/documents', label: 'Documents', icon: ICONS.file },
       { to: '/dashboard/profile', label: 'Profile', icon: ICONS.user },
       { to: '/dashboard/billing', label: 'Billing', icon: ICONS.card }
     ]

@@ -1,5 +1,6 @@
 <template>
-  <div class="analytics-page">
+  <BuyerCompare v-if="role === 'buyer'" />
+  <div v-else class="analytics-page">
     <header class="page-header">
       <div>
         <h1>Analytics</h1>
@@ -175,6 +176,9 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+
+const { currentUser } = useAuth()
+const role = computed(() => currentUser.value?.role || 'buyer')
 
 useSeoMeta({
   title: 'Analytics — SaaSWorld Dashboard',

@@ -1,5 +1,6 @@
 <template>
-  <div class="profile-page">
+  <BuyerProfile v-if="role === 'buyer'" />
+  <div v-else class="profile-page">
     <header class="page-header">
       <div>
         <h1>Profile Management</h1>
@@ -174,6 +175,7 @@ useSeoMeta({
 definePageMeta({ layout: false })
 
 const { currentUser } = useAuth()
+const role = computed(() => currentUser.value?.role || 'buyer')
 
 const isEditing = ref(false)
 const isSaving = ref(false)

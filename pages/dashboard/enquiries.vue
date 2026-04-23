@@ -1,5 +1,6 @@
 <template>
-  <div class="enquiries-page">
+  <BuyerEnquiries v-if="role === 'buyer'" />
+  <div v-else class="enquiries-page">
     <!-- Page Header -->
     <div class="page-header">
       <div class="header-content">
@@ -542,6 +543,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 
+const { currentUser: buyerAuthUser } = useAuth()
+const role = computed(() => buyerAuthUser.value?.role || 'buyer')
+
 // SEO and meta tags
 useSeoMeta({
   title: 'Enquiries & Leads - Customer Enquiries Management',
@@ -549,9 +553,9 @@ useSeoMeta({
   keywords: 'enquiries, leads, customer requests, sales leads, support requests'
 });
 
-// Page layout
+// Page layout (dashboard shell is provided by pages/dashboard.vue)
 definePageMeta({
-  layout: 'default'
+  layout: false
 });
 
 // State

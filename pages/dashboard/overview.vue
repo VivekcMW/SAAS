@@ -1,5 +1,6 @@
 <template>
-  <div class="overview">
+  <BuyerOverview v-if="role === 'buyer'" :first-name="currentUser?.firstName" />
+  <div v-else class="overview">
     <DashPageHeader
       :title="greeting"
       :description="headerDesc"

@@ -342,7 +342,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watchEffect } from 'vue';
+
+// Guard: buyers shouldn't see the promotion/budget tool
+const { currentUser } = useAuth()
+watchEffect(() => {
+  if (import.meta.client && currentUser.value?.role === 'buyer') {
+    navigateTo('/dashboard/overview', { replace: true })
+  }
+})
 
 // SEO and meta tags
 useSeoMeta({
@@ -351,9 +359,9 @@ useSeoMeta({
   keywords: 'promotion, advertising, budget, campaign, marketing, product promotion'
 });
 
-// Page layout
+// Page layout (dashboard shell is provided by pages/dashboard.vue)
 definePageMeta({
-  layout: 'default'
+  layout: false
 });
 
 // State

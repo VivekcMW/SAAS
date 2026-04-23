@@ -1,5 +1,6 @@
 <template>
-  <div class="products">
+  <BuyerSavedApps v-if="role === 'buyer'" />
+  <div v-else class="products">
     <DashPageHeader
       :title="headerTitle"
       :eyebrow="headerEyebrow"
