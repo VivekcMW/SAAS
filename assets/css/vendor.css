@@ -1,0 +1,228 @@
+/* ==========================================================================
+   Vendor Workspace Design System (vw-*) — builds on buyer.css tokens
+   ========================================================================== */
+
+:root {
+  /* Vendor brand accent (same orange, different role) */
+  --vw-primary: var(--bw-primary);
+  --vw-primary-50: var(--bw-primary-50);
+  --vw-primary-100: var(--bw-primary-100);
+
+  /* AI accent (distinct but cohesive) */
+  --vw-ai: #6b5cff;
+  --vw-ai-50: #eeebff;
+  --vw-ai-100: #dcd6ff;
+  --vw-ai-text: #4a3fd1;
+
+  /* Data viz palette (solid only, no gradients) */
+  --vw-viz-1: #ff8838;   /* primary */
+  --vw-viz-2: #2563eb;   /* blue */
+  --vw-viz-3: #10b981;   /* green */
+  --vw-viz-4: #6b5cff;   /* ai-purple */
+  --vw-viz-5: #f59e0b;   /* amber */
+  --vw-viz-6: #ef4444;   /* red */
+
+  /* Health score bands */
+  --vw-health-poor: #ef4444;
+  --vw-health-fair: #f59e0b;
+  --vw-health-good: #10b981;
+
+  /* Shared tokens re-exported so vw-* works even without bw-* */
+  --vw-surface: var(--bw-surface);
+  --vw-surface-2: var(--bw-surface-2);
+  --vw-border: var(--bw-border);
+  --vw-border-strong: var(--bw-border-strong);
+  --vw-text: var(--bw-text);
+  --vw-text-muted: var(--bw-text-muted);
+  --vw-text-subtle: var(--bw-text-subtle);
+  --vw-radius: var(--bw-radius);
+  --vw-shadow: var(--bw-shadow);
+}
+
+/* ---------- AI chip / banner ---------- */
+.vw-ai-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--vw-ai-50);
+  color: var(--vw-ai-text);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.vw-ai-chip svg { width: 12px; height: 12px; }
+
+.vw-ai-card {
+  background: var(--vw-ai-50);
+  border: 1px solid var(--vw-ai-100);
+  border-radius: var(--vw-radius);
+  padding: 16px 18px;
+}
+.vw-ai-card__title {
+  font-weight: 700;
+  color: var(--vw-ai-text);
+  font-size: 0.88rem;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---------- Health score ring / bar ---------- */
+.vw-health {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 0.82rem;
+}
+.vw-health__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.vw-health--good { color: var(--vw-health-good); }
+.vw-health--good .vw-health__dot { background: var(--vw-health-good); }
+.vw-health--fair { color: var(--vw-health-fair); }
+.vw-health--fair .vw-health__dot { background: var(--vw-health-fair); }
+.vw-health--poor { color: var(--vw-health-poor); }
+.vw-health--poor .vw-health__dot { background: var(--vw-health-poor); }
+
+.vw-health-bar {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--vw-surface-2);
+  overflow: hidden;
+}
+.vw-health-bar__fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width .3s ease;
+}
+.vw-health-bar__fill--good { background: var(--vw-health-good); }
+.vw-health-bar__fill--fair { background: var(--vw-health-fair); }
+.vw-health-bar__fill--poor { background: var(--vw-health-poor); }
+
+/* ---------- Simple bar chart ---------- */
+.vw-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 120px;
+}
+.vw-bars__bar {
+  flex: 1;
+  background: var(--vw-primary-50);
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  min-height: 4px;
+  transition: background .15s ease;
+}
+.vw-bars__bar--active { background: var(--vw-primary); }
+.vw-bars__labels {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+.vw-bars__label {
+  flex: 1;
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--vw-text-subtle);
+}
+
+/* ---------- Funnel ---------- */
+.vw-funnel { display: flex; flex-direction: column; gap: 8px; }
+.vw-funnel__step {
+  display: grid;
+  grid-template-columns: 140px 1fr 100px;
+  gap: 14px;
+  align-items: center;
+  padding: 10px 0;
+}
+.vw-funnel__label { font-size: 0.85rem; font-weight: 600; color: var(--vw-text); }
+.vw-funnel__bar {
+  height: 28px;
+  background: var(--vw-primary);
+  border-radius: 6px;
+  min-width: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  color: white;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.vw-funnel__rate { text-align: right; font-size: 0.82rem; color: var(--vw-text-muted); }
+
+/* ---------- Lead thread layout ---------- */
+.vw-thread {
+  display: grid;
+  grid-template-columns: 320px 1fr 320px;
+  gap: 16px;
+  min-height: 500px;
+}
+.vw-thread__list { border: 1px solid var(--vw-border); border-radius: var(--vw-radius); background: var(--vw-surface); overflow: hidden; }
+.vw-thread__item {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--vw-border);
+  cursor: pointer;
+  transition: background .12s ease;
+}
+.vw-thread__item:hover { background: var(--vw-surface-2); }
+.vw-thread__item.is-active { background: var(--vw-primary-50); }
+.vw-thread__item:last-child { border-bottom: none; }
+.vw-thread__main { border: 1px solid var(--vw-border); border-radius: var(--vw-radius); background: var(--vw-surface); display: flex; flex-direction: column; }
+.vw-thread__ai { }
+@media (max-width: 1100px) {
+  .vw-thread { grid-template-columns: 280px 1fr; }
+  .vw-thread__ai { grid-column: 1 / -1; }
+}
+@media (max-width: 768px) {
+  .vw-thread { grid-template-columns: 1fr; }
+}
+
+/* ---------- Chat / copilot ---------- */
+.vw-chat {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 200px);
+  min-height: 500px;
+  border: 1px solid var(--vw-border);
+  border-radius: var(--vw-radius);
+  background: var(--vw-surface);
+}
+.vw-chat__log { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.vw-chat__msg { max-width: 80%; padding: 12px 14px; border-radius: 14px; font-size: 0.9rem; line-height: 1.5; }
+.vw-chat__msg--user { align-self: flex-end; background: var(--vw-primary); color: white; border-bottom-right-radius: 4px; }
+.vw-chat__msg--ai { align-self: flex-start; background: var(--vw-ai-50); color: var(--vw-text); border-bottom-left-radius: 4px; }
+.vw-chat__composer { border-top: 1px solid var(--vw-border); padding: 14px; display: flex; gap: 10px; }
+.vw-chat__input { flex: 1; resize: none; }
+
+/* ---------- Sidebar AI badge ---------- */
+.vw-nav-badge-ai {
+  background: var(--vw-ai-50);
+  color: var(--vw-ai-text);
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+/* ---------- Tab counts ---------- */
+.bw-tab__count {
+  margin-left: 6px;
+  font-size: 0.72rem;
+  background: var(--vw-surface-2);
+  color: var(--vw-text-muted);
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+.bw-tab.is-active .bw-tab__count {
+  background: var(--vw-primary-50);
+  color: var(--vw-primary);
+}

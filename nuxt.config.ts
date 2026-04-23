@@ -92,6 +92,7 @@ export default defineNuxtConfig({
     '~/assets/css/responsive-fixes.css',
     '~/assets/css/marketing.css', // Tier 3 marketing/SEO page styles
     '~/assets/css/buyer.css',     // Buyer workspace design system
+    '~/assets/css/vendor.css',    // Vendor workspace design system
   ],
 
   // Vite configuration for SCSS

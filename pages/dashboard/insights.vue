@@ -1,6 +1,6 @@
 <template>
-  <VendorAnalytics v-if="role === 'vendor'" />
-  <div v-else class="vendor-only bw-empty">Analytics are available for vendors.</div>
+  <VendorInsights v-if="role === 'vendor'" />
+  <div v-else class="vendor-only bw-empty">AI insights are available for vendors.</div>
 </template>
 
 <script setup lang="ts">
@@ -10,7 +10,7 @@ const { currentUser } = useAuth()
 const role = computed(() => currentUser.value?.role || 'buyer')
 const router = useRouter()
 onMounted(() => { if (role.value === 'buyer') router.replace('/dashboard/overview') })
-useHead({ title: 'Analytics · SaasWorld' })
+useHead({ title: 'Insights · SaasWorld' })
 </script>
 
 <style scoped>

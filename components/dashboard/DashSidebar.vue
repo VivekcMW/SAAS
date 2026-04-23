@@ -141,26 +141,33 @@ const vendorGroups: NavGroup[] = [
     title: 'Workspace',
     items: [
       { to: '/dashboard/overview', label: 'Overview', icon: ICONS.home },
-      { to: '/dashboard/products', label: 'My apps', icon: ICONS.apps },
-      { to: '/dashboard/analytics', label: 'Analytics', icon: ICONS.chart },
-      { to: '/dashboard/enquiries', label: 'Enquiries', icon: ICONS.inbox },
+      { to: '/dashboard/products', label: 'Listings', icon: ICONS.apps },
+      { to: '/dashboard/leads', label: 'Leads', icon: ICONS.inbox },
       { to: '/dashboard/reviews', label: 'Reviews', icon: ICONS.star }
     ]
   },
   {
-    title: 'Setup',
+    title: 'Grow',
     items: [
-      { to: '/dashboard/integrations/all', label: 'Integrations', icon: ICONS.plug },
-      { to: '/dashboard/documents', label: 'Documents', icon: ICONS.file },
-      { to: '/dashboard/user-management', label: 'Team', icon: ICONS.team }
+      { to: '/dashboard/analytics', label: 'Analytics', icon: ICONS.chart },
+      { to: '/dashboard/promotions', label: 'Promotions', icon: ICONS.budget },
+      { to: '/dashboard/similar-vendors', label: 'Similar vendors', icon: ICONS.compare }
+    ]
+  },
+  {
+    title: 'AI Studio',
+    items: [
+      { to: '/dashboard/copilot', label: 'Copilot', icon: ICONS.chart, badge: 'AI' },
+      { to: '/dashboard/content-assistant', label: 'Content assistant', icon: ICONS.file, badge: 'AI' },
+      { to: '/dashboard/insights', label: 'Insights', icon: ICONS.saved, badge: 'AI' }
     ]
   },
   {
     title: 'Account',
     items: [
-      { to: '/dashboard/profile', label: 'Profile', icon: ICONS.user },
-      { to: '/dashboard/billing', label: 'Billing', icon: ICONS.card },
-      { to: '/dashboard/subscriptions', label: 'Plan', icon: ICONS.budget }
+      { to: '/dashboard/profile', label: 'Company profile', icon: ICONS.user },
+      { to: '/dashboard/billing', label: 'Billing & plan', icon: ICONS.card },
+      { to: '/dashboard/team', label: 'Team & API', icon: ICONS.team }
     ]
   }
 ]
@@ -179,7 +186,7 @@ const adminGroups: NavGroup[] = [
   {
     title: 'Admin',
     items: [
-      { to: '/dashboard/user-management', label: 'Users & roles', icon: ICONS.team },
+      { to: '/dashboard/team', label: 'Users & roles', icon: ICONS.team },
       { to: '/admin', label: 'Admin panel', icon: ICONS.shield }
     ]
   },

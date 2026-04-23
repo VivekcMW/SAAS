@@ -1,7 +1,6 @@
 <template>
-  <BuyerOverview v-if="role === 'buyer'" :first-name="currentUser?.firstName" />
-  <VendorOverview v-else-if="role === 'vendor'" />
-  <div v-else class="p-8">Loading…</div>
+  <VendorLeads v-if="role === 'vendor'" />
+  <BuyerEnquiries v-else />
 </template>
 
 <script setup lang="ts">
@@ -9,5 +8,5 @@ import { computed } from 'vue'
 definePageMeta({ layout: false })
 const { currentUser } = useAuth()
 const role = computed(() => currentUser.value?.role || 'buyer')
-useHead({ title: 'Overview · SaasWorld' })
+useHead({ title: 'Leads · SaasWorld' })
 </script>
