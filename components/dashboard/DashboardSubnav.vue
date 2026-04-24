@@ -228,9 +228,9 @@ const toggleUserDropdown = () => {
 };
 
 const handleLogout = async () => {
-  authLogout();
-  await navigateTo('/');
   showUserDropdown.value = false;
+  await authLogout();
+  await navigateTo('/');
 };
 
 const closeUserDropdown = (event: Event) => {

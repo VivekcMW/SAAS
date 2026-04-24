@@ -506,17 +506,10 @@ const forgotPasswordForm = ref({
   email: ''
 });
 
-// Use global auth state
-const {
-  authState,
-  openRegister,
-  openLogin,
-  logout: globalLogout
-} = useGlobalAuth();
-
-// User authentication state (using global auth)
-const isAuthenticated = computed(() => authState.isAuthenticated);
-const currentUser = computed(() => authState.user);
+// Real cookie-based auth (single source of truth)
+const { isAuthenticated, currentUser, handleLogout: authLogout } = useAuth();
+// Keep legacy modal helpers available for any legacy callers, but do not drive state from them
+const { openRegister, openLogin } = useGlobalAuth();
 
 // User dropdown state
 const isUserDropdownOpen = ref(false);
@@ -572,17 +565,13 @@ const openAuthModal = () => {
   showAuthModal.value = true;
 };
 
-// Open sign up modal
+// Navigate to real auth pages (cookie-based flow)
 const openSignUpModal = () => {
-  // Use global auth system instead
-  const { openRegister } = useGlobalAuth();
-  openRegister();
+  navigateTo('/signup');
 };
 
-// Open sign in modal
 const openSignInModal = () => {
-  const { openLogin } = useGlobalAuth();
-  openLogin();
+  navigateTo('/login');
 };
 
 // Trigger global search (dispatches event picked up by GlobalSearch component)
@@ -793,15 +782,10 @@ const handleSocialLogin = async (provider: string) => {
   }
 };
 
-// Handle login event (renamed to avoid conflict)
-const handleUserLogin = (userData: any) => {
-  // In a real app, you would store the user data in a state management solution
-  // and set the authentication token in localStorage/cookies
-  currentUser.value = userData;
-  isAuthenticated.value = true;
-  
-  // You might also want to redirect to a dashboard or home page
-  // (Handled by your router)
+// Handle login event (legacy modal path — kept as a no-op; auth happens on /login page now)
+const handleUserLogin = (_userData: any) => {
+  // Real login flow lives at /login. Modal-based login was removed to avoid dual auth state.
+  navigateTo('/login');
 };
 
 // Handle sign up form submission
@@ -857,14 +841,11 @@ const signUpWithGitHub = () => {
   // Implement GitHub OAuth
 };
 
-// Handle logout
-const handleLogout = () => {
-  // Use global logout function
-  globalLogout();
+// Handle logout (awaits server cookie clear before navigating)
+const handleLogout = async () => {
   isUserDropdownOpen.value = false;
-  
-  // Redirect to home page
-  navigateTo('/');
+  await authLogout();
+  await navigateTo('/');
 };
 
 // Close dropdowns when clicking outside

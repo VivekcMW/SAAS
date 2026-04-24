@@ -132,7 +132,7 @@ export const useAuth = () => {
     }
   }
 
-  if (process.client && !initialized.value && !isLoading.value) {
+  if (import.meta.client && !initialized.value && !isLoading.value) {
     refreshAuth()
   }
 
