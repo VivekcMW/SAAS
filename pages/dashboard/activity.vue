@@ -1,5 +1,5 @@
 <template>
-  <AdminAuditLog v-if="role === 'admin'" />
+  <AdminActivity v-if="role === 'admin'" />
   <div v-else class="p-8">Loading…</div>
 </template>
 
@@ -9,7 +9,7 @@ definePageMeta({ layout: false })
 const { currentUser } = useAuth()
 const router = useRouter()
 const role = computed(() => currentUser.value?.role)
-useHead({ title: 'Audit log · SaasWorld' })
+useHead({ title: 'Activity · SaasWorld' })
 onMounted(() => {
   if (currentUser.value && currentUser.value.role !== 'admin') router.replace('/dashboard/overview')
 })

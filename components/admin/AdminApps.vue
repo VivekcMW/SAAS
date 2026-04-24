@@ -2,11 +2,11 @@
   <div class="aw">
     <header class="bw-head">
       <div>
-        <h1 class="bw-head__title">All apps</h1>
-        <p class="bw-head__sub">{{ kpis.totalListings }} live listings across the platform.</p>
+        <h1 class="bw-head__title">Apps</h1>
+        <p class="bw-head__sub">{{ kpis.liveApps }} live · {{ kpis.pendingApps }} pending approval.</p>
       </div>
       <div class="bw-head__actions">
-        <NuxtLink to="/dashboard/pending-apps" class="bw-btn bw-btn--primary">Review queue · {{ kpis.pendingApps }}</NuxtLink>
+        <NuxtLink v-if="kpis.pendingApps > 0" to="/dashboard/pending-apps" class="bw-btn bw-btn--primary">Review pending · {{ kpis.pendingApps }}</NuxtLink>
       </div>
     </header>
 
@@ -14,8 +14,9 @@
       <input v-model="q" class="bw-input" placeholder="Search apps or vendors…" style="max-width: 340px;" />
       <select v-model="filter" class="bw-select" style="max-width: 200px;">
         <option value="all">All statuses</option>
-        <option value="live">Live</option>
-        <option value="pending">Pending review</option>
+        <option value="approved">Live</option>
+        <option value="pending">Pending</option>
+        <option value="rejected">Rejected</option>
       </select>
     </div>
 
@@ -27,8 +28,7 @@
             <th>Vendor</th>
             <th>Category</th>
             <th>Status</th>
-            <th>AI risk</th>
-            <th></th>
+            <th>Submitted</th>
           </tr>
         </thead>
         <tbody>
@@ -41,13 +41,8 @@
             </td>
             <td>{{ a.vendorName }}</td>
             <td>{{ a.category }}</td>
-            <td><span class="bw-chip" :class="statusChip(a.status)">{{ a.status }}</span></td>
-            <td>
-              <span class="aw-risk" :class="riskBand(a.aiRiskScore)">{{ a.aiRiskScore }}</span>
-            </td>
-            <td style="text-align: right;">
-              <button class="bw-btn bw-btn--ghost bw-btn--sm">View</button>
-            </td>
+            <td><span class="bw-chip" :class="statusChip(a.status)">{{ statusLabel(a.status) }}</span></td>
+            <td style="font-size: 0.85rem; color: var(--aw-text-muted);">{{ a.submittedAt }}</td>
           </tr>
         </tbody>
       </table>
@@ -57,14 +52,13 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-const { pendingApps, kpis } = useAdminData()
+const { apps, kpis } = useAdminData()
 
 const q = ref('')
 const filter = ref('all')
 
-const rows = computed(() => pendingApps.value.filter(a => {
-  if (filter.value === 'live' && a.status !== 'approved') return false
-  if (filter.value === 'pending' && a.status !== 'pending') return false
+const rows = computed(() => apps.value.filter(a => {
+  if (filter.value !== 'all' && a.status !== filter.value) return false
   if (q.value && !`${a.name} ${a.vendorName}`.toLowerCase().includes(q.value.toLowerCase())) return false
   return true
 }))
@@ -74,7 +68,9 @@ function statusChip(s: string) {
   if (s === 'rejected') return 'bw-chip--danger'
   return 'bw-chip--warning'
 }
-function riskBand(n: number) { return n < 30 ? 'aw-risk--low' : n < 60 ? 'aw-risk--med' : 'aw-risk--high' }
+function statusLabel(s: string) {
+  return s === 'approved' ? 'Live' : s === 'rejected' ? 'Rejected' : 'Pending'
+}
 </script>
 
 <style scoped>

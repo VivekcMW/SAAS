@@ -2,146 +2,103 @@
   <div class="aw">
     <header class="bw-head">
       <div>
-        <h1 class="bw-head__title">Pending apps</h1>
-        <p class="bw-head__sub">AI-scored review queue. Approve, reject, or defer with one click.</p>
-      </div>
-      <div class="bw-head__actions">
-        <button class="bw-btn bw-btn--subtle" @click="autoApproveSafe">
-          <span class="aw-ai-chip">AI</span>
-          Auto-approve low-risk ({{ lowRiskCount }})
-        </button>
+        <h1 class="bw-head__title">Pending approvals</h1>
+        <p class="bw-head__sub">{{ pendingApps.length }} {{ pendingApps.length === 1 ? 'app' : 'apps' }} awaiting review.</p>
       </div>
     </header>
 
-    <div class="aw-queue">
-      <!-- Queue list -->
-      <div class="aw-queue__list">
-        <div
-          v-for="a in pendingList"
-          :key="a.id"
-          class="aw-queue__item"
-          :class="{ 'is-active': active?.id === a.id }"
-          @click="activeId = a.id"
-        >
-          <div style="display: flex; gap: 10px; align-items: center;">
-            <div class="q-logo" :style="{ background: a.color }">{{ a.logo }}</div>
-            <div style="flex: 1; min-width: 0;">
-              <div style="font-weight: 600; font-size: 0.88rem;">{{ a.name }}</div>
-              <div style="font-size: 0.76rem; color: var(--aw-text-subtle);">{{ a.vendorName }} · {{ a.submittedAt }}</div>
-            </div>
-            <span class="aw-risk" :class="riskBand(a.aiRiskScore)">{{ a.aiRiskScore }}</span>
-          </div>
-        </div>
-        <div v-if="pendingList.length === 0" style="padding: 40px 16px; text-align: center; color: var(--aw-text-muted);">Queue is clear.</div>
-      </div>
-
-      <!-- Detail -->
-      <div v-if="active" class="aw-queue__main">
-        <div class="detail-head">
-          <div class="q-logo" :style="{ background: active.color, width: 48, height: 48 }">{{ active.logo }}</div>
-          <div style="flex: 1;">
-            <h2 style="font-family: 'Poppins'; margin: 0;">{{ active.name }}</h2>
-            <div style="color: var(--aw-text-muted); font-size: 0.88rem;">{{ active.vendorName }} · {{ active.vendorEmail }} · {{ active.category }}</div>
-          </div>
-        </div>
-
-        <p style="margin: 14px 0; line-height: 1.55; color: var(--aw-text);">{{ active.description }}</p>
-
-        <!-- AI assessment -->
-        <div class="aw-ai-card" style="margin-bottom: 16px;">
-          <div class="aw-ai-card__title">
-            <span class="aw-ai-chip">AI</span>
-            Risk assessment
-          </div>
-          <div class="risk-row">
-            <div class="risk-col">
-              <div class="risk-col__label">Risk score</div>
-              <div class="aw-risk-bar" style="margin-bottom: 6px;">
-                <div class="aw-risk-bar__fill" :class="riskBarFill(active.aiRiskScore)" :style="{ width: active.aiRiskScore + '%' }" />
-              </div>
-              <strong>{{ active.aiRiskScore }}/100</strong>
-            </div>
-            <div class="risk-col">
-              <div class="risk-col__label">Recommendation</div>
-              <span class="aw-risk" :class="recBand(active.aiRecommendation)">{{ active.aiRecommendation }}</span>
-            </div>
-            <div class="risk-col">
-              <div class="risk-col__label">Confidence</div>
-              <div class="aw-conf">
-                <div class="aw-conf__bar"><div class="aw-conf__fill" :style="{ width: active.aiConfidence + '%' }" /></div>
-                <strong>{{ active.aiConfidence }}%</strong>
-              </div>
-            </div>
-          </div>
-          <p style="margin: 12px 0 0; font-size: 0.88rem; line-height: 1.55;">{{ active.aiSummary }}</p>
-          <div v-if="active.aiFlags.length" style="margin-top: 12px;">
-            <div style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--aw-text-subtle); font-weight: 700; margin-bottom: 6px;">Flags</div>
-            <ul class="flag-list">
-              <li v-for="(f, i) in active.aiFlags" :key="i">{{ f }}</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Actions -->
-        <div class="detail-actions">
-          <button class="bw-btn bw-btn--primary" @click="decide(active.id, 'approved')">Approve listing</button>
-          <button class="bw-btn bw-btn--subtle" @click="decide(active.id, 'rejected')">Reject</button>
-          <button class="bw-btn bw-btn--ghost">Request changes</button>
-        </div>
-      </div>
-      <div v-else class="aw-queue__main" style="text-align: center; padding: 60px; color: var(--aw-text-muted);">
-        Select an app from the queue to review.
-      </div>
+    <div v-if="pendingApps.length === 0" class="bw-card" style="text-align: center; padding: 48px 24px;">
+      <h2 class="bw-card__title" style="margin-bottom: 8px;">All caught up.</h2>
+      <p style="color: var(--aw-text-muted); margin: 0;">No apps are waiting for approval.</p>
     </div>
 
-    <div v-if="toast" class="bw-toast-fixed">{{ toast }}</div>
+    <div v-else class="bw-grid bw-grid--main-aside">
+      <!-- List -->
+      <section class="bw-card" style="padding: 12px;">
+        <ul class="pq-list">
+          <li
+            v-for="a in pendingApps"
+            :key="a.id"
+            :class="{ 'pq-item--active': selected?.id === a.id }"
+            class="pq-item"
+            @click="selectedId = a.id"
+          >
+            <div class="q-logo" :style="{ background: a.color }">{{ a.logo }}</div>
+            <div style="flex: 1; min-width: 0;">
+              <div class="pq-name">{{ a.name }}</div>
+              <div class="pq-meta">{{ a.vendorName }}</div>
+              <div class="pq-meta pq-meta--muted">{{ a.submittedAt }}</div>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Detail -->
+      <section v-if="selected" class="bw-card">
+        <div style="display: flex; gap: 14px; align-items: center; margin-bottom: 16px;">
+          <div class="q-logo" :style="{ background: selected.color, width: '56px', height: '56px', fontSize: '1.2rem' }">{{ selected.logo }}</div>
+          <div>
+            <h2 style="font-family: 'Poppins', sans-serif; font-size: 1.25rem; margin: 0;">{{ selected.name }}</h2>
+            <p style="font-size: 0.88rem; color: var(--aw-text-muted); margin: 2px 0 0;">{{ selected.category }} · submitted {{ selected.submittedAt }}</p>
+          </div>
+        </div>
+
+        <div class="pq-meta-grid">
+          <div>
+            <div class="pq-label">Vendor</div>
+            <div>{{ selected.vendorName }}</div>
+            <div style="font-size: 0.78rem; color: var(--aw-text-subtle);">{{ selected.vendorEmail }}</div>
+          </div>
+          <div>
+            <div class="pq-label">Category</div>
+            <div>{{ selected.category }}</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px;">
+          <div class="pq-label">Description</div>
+          <p style="font-size: 0.92rem; line-height: 1.6;">{{ selected.description }}</p>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--aw-border);">
+          <button class="bw-btn bw-btn--primary" @click="decide('approved')">Approve</button>
+          <button class="bw-btn bw-btn--ghost" @click="decide('rejected')">Reject</button>
+        </div>
+      </section>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-const { pendingApps, decideApp } = useAdminData()
+import { ref, computed, watch } from 'vue'
+const { apps, decideApp } = useAdminData()
 
-const activeId = ref<string | null>(pendingApps.value.find(a => a.status === 'pending')?.id || null)
-const toast = ref('')
+const pendingApps = computed(() => apps.value.filter(a => a.status === 'pending'))
+const selectedId = ref<string | null>(pendingApps.value[0]?.id ?? null)
+const selected = computed(() => pendingApps.value.find(a => a.id === selectedId.value))
 
-const pendingList = computed(() => pendingApps.value.filter(a => a.status === 'pending'))
-const active = computed(() => pendingApps.value.find(a => a.id === activeId.value) || null)
-const lowRiskCount = computed(() => pendingList.value.filter(a => a.aiRecommendation === 'approve' && a.aiRiskScore < 30).length)
+watch(pendingApps, (list) => {
+  if (!list.find(a => a.id === selectedId.value)) {
+    selectedId.value = list[0]?.id ?? null
+  }
+})
 
-function riskBand(n: number) { return n < 30 ? 'aw-risk--low' : n < 60 ? 'aw-risk--med' : 'aw-risk--high' }
-function riskBarFill(n: number) { return n < 30 ? 'aw-risk-bar__fill--low' : n < 60 ? 'aw-risk-bar__fill--med' : 'aw-risk-bar__fill--high' }
-function recBand(r: string) { return r === 'approve' ? 'aw-risk--low' : r === 'reject' ? 'aw-risk--high' : 'aw-risk--med' }
-
-function decide(id: string, d: 'approved' | 'rejected') {
-  decideApp(id, d)
-  toast.value = d === 'approved' ? 'Listing approved' : 'Listing rejected'
-  setTimeout(() => toast.value = '', 1800)
-  const next = pendingList.value[0]
-  activeId.value = next?.id || null
-}
-
-function autoApproveSafe() {
-  const safe = pendingList.value.filter(a => a.aiRecommendation === 'approve' && a.aiRiskScore < 30)
-  safe.forEach(a => decideApp(a.id, 'approved'))
-  toast.value = `AI auto-approved ${safe.length} low-risk listing(s)`
-  setTimeout(() => toast.value = '', 2400)
-  activeId.value = pendingList.value[0]?.id || null
+function decide(d: 'approved' | 'rejected') {
+  if (selectedId.value) decideApp(selectedId.value, d)
 }
 </script>
 
 <style scoped>
-.q-logo { width: 32px; height: 32px; border-radius: 8px; color: white; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.pq-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
+.pq-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 10px; cursor: pointer; transition: background 0.12s; }
+.pq-item:hover { background: var(--aw-surface-2); }
+.pq-item--active { background: var(--aw-accent-50); }
+.pq-item--active .pq-name { color: var(--aw-accent-text); }
+.q-logo { width: 40px; height: 40px; border-radius: 8px; color: white; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+.pq-name { font-weight: 600; font-size: 0.92rem; }
+.pq-meta { font-size: 0.78rem; color: var(--aw-text-muted); }
+.pq-meta--muted { font-size: 0.72rem; color: var(--aw-text-subtle); }
 
-.detail-head { display: flex; align-items: center; gap: 14px; }
-
-.risk-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.risk-col__label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--aw-text-subtle); font-weight: 700; margin-bottom: 6px; }
-
-.flag-list { margin: 0; padding-left: 20px; font-size: 0.85rem; color: var(--aw-text); }
-.flag-list li { margin-bottom: 4px; }
-
-.detail-actions { display: flex; gap: 8px; padding-top: 16px; border-top: 1px solid var(--aw-border); }
-
-.bw-toast-fixed { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #111827; color: white; padding: 10px 16px; border-radius: 10px; font-size: 0.88rem; z-index: 1000; }
+.pq-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 0.88rem; }
+.pq-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--aw-text-subtle); font-weight: 600; margin-bottom: 4px; }
 </style>

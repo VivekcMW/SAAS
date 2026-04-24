@@ -1,11 +1,11 @@
 import { ref, computed } from 'vue'
 
-export type PendingAppStatus = 'pending' | 'approved' | 'rejected'
+export type AppStatus = 'pending' | 'approved' | 'rejected'
 export type UserStatus = 'active' | 'suspended' | 'pending'
-export type FlagStatus = 'open' | 'dismissed' | 'actioned'
-export type DisputeStatus = 'open' | 'mediating' | 'resolved'
+export type TicketStatus = 'open' | 'resolved'
+export type TicketKind = 'dispute' | 'flag' | 'report'
 
-export interface PendingApp {
+export interface AppListing {
   id: string
   name: string
   logo: string
@@ -13,13 +13,8 @@ export interface PendingApp {
   vendorName: string
   vendorEmail: string
   category: string
+  status: AppStatus
   submittedAt: string
-  status: PendingAppStatus
-  aiRiskScore: number          // 0-100
-  aiRecommendation: 'approve' | 'reject' | 'review'
-  aiConfidence: number         // 0-100
-  aiFlags: string[]
-  aiSummary: string
   description: string
 }
 
@@ -28,269 +23,147 @@ export interface PlatformUser {
   name: string
   email: string
   role: 'buyer' | 'vendor' | 'admin'
+  companyName?: string
   status: UserStatus
   joinedAt: string
   lastActive: string
-  companyName?: string
-  listings?: number
-  enquiries?: number
-  aiTrustScore: number  // 0-100
 }
 
-export interface FlaggedContent {
+export interface SupportTicket {
   id: string
-  kind: 'review' | 'listing' | 'message'
-  reportedBy: string
-  target: string
-  body: string
-  reportedAt: string
-  status: FlagStatus
-  aiCategory: 'spam' | 'abuse' | 'fake' | 'off-topic' | 'safe'
-  aiConfidence: number
-  aiAction: 'auto-remove' | 'human-review' | 'keep'
-}
-
-export interface Dispute {
-  id: string
-  buyerName: string
-  vendorName: string
-  listingName: string
+  kind: TicketKind
   subject: string
-  amount: number
+  from: string
+  against?: string
+  amount?: number
   openedAt: string
-  status: DisputeStatus
-  aiSummary: string
-  aiRecommendedResolution: string
+  status: TicketStatus
+  description: string
 }
 
-export interface AuditEvent {
+export interface ActivityEvent {
   id: string
+  at: string
   actor: string
-  actorRole: 'admin' | 'vendor' | 'buyer' | 'system'
+  actorRole: 'admin' | 'system' | 'vendor' | 'buyer'
   action: string
   target: string
-  at: string
 }
 
-export interface Anomaly {
-  id: string
-  severity: 'high' | 'med' | 'low'
-  title: string
-  body: string
-  metric: string
-  cta?: { label: string; href: string }
-}
-
-const pendingApps = ref<PendingApp[]>([
-  {
-    id: 'pa1',
-    name: 'FlowDesk Pro',
-    logo: 'FD',
-    color: '#3b82f6',
-    vendorName: 'FlowDesk Inc.',
-    vendorEmail: 'hello@flowdesk.example',
-    category: 'Project Management',
-    submittedAt: '4h ago',
-    status: 'pending',
-    aiRiskScore: 18,
-    aiRecommendation: 'approve',
-    aiConfidence: 92,
-    aiFlags: [],
-    aiSummary: 'Legitimate listing. Vendor has verified domain (flowdesk.example), clear pricing ($19–79/mo), detailed description (340 words), and 8 working integration links. No policy concerns detected.',
-    description: 'A Kanban and sprint planning tool for small engineering teams with built-in standups and retros.'
-  },
-  {
-    id: 'pa2',
-    name: 'MagicCRM AI',
-    logo: 'MC',
-    color: '#ec4899',
-    vendorName: 'SmartSell LLC',
-    vendorEmail: 'contact@smartsell.example',
-    category: 'CRM',
-    submittedAt: '1d ago',
-    status: 'pending',
-    aiRiskScore: 68,
-    aiRecommendation: 'review',
-    aiConfidence: 81,
-    aiFlags: [
-      'Description contains unverifiable claims ("10× more leads guaranteed")',
-      'Vendor domain registered 11 days ago',
-      'Screenshots appear to be stock UI kit'
-    ],
-    aiSummary: 'Medium-risk listing. Marketing language is aggressive with unverifiable performance claims. Vendor is new (domain <2 weeks old). Manual review recommended before approval.',
-    description: 'AI-powered CRM that automatically scores leads, writes emails, and closes deals faster than any human salesperson.'
-  },
-  {
-    id: 'pa3',
-    name: 'Nebula Analytics',
-    logo: 'NA',
-    color: '#8b5cf6',
-    vendorName: 'Nebula Data Co.',
-    vendorEmail: 'team@nebula-data.example',
-    category: 'Analytics',
-    submittedAt: '2d ago',
-    status: 'pending',
-    aiRiskScore: 12,
-    aiRecommendation: 'approve',
-    aiConfidence: 96,
-    aiFlags: [],
-    aiSummary: 'Low-risk, well-formed listing. SOC 2 badge verified, GDPR compliance documented, pricing tiers clearly listed, and vendor has 2 published case studies.',
-    description: 'Product analytics for SaaS teams. Event tracking, funnels, cohorts, and retention curves — no sampling.'
-  },
-  {
-    id: 'pa4',
-    name: 'QuickBill',
-    logo: 'QB',
-    color: '#10b981',
-    vendorName: 'BillCorp',
-    vendorEmail: 'admin@billcorp.example',
-    category: 'Finance',
-    submittedAt: '3d ago',
-    status: 'pending',
-    aiRiskScore: 84,
-    aiRecommendation: 'reject',
-    aiConfidence: 88,
-    aiFlags: [
-      'Name and copy are near-identical to existing listing "QuickBills Pro"',
-      'No website provided',
-      'Logo appears to be AI-generated trademarked lookalike'
-    ],
-    aiSummary: 'High-risk listing. Likely trademark infringement on existing marketplace vendor "QuickBills Pro". Missing required vendor website. Recommend rejection pending legal review.',
-    description: 'Invoicing and billing for small business. Send invoices, accept payments, track expenses.'
-  }
+const apps = ref<AppListing[]>([
+  { id: 'a1', name: 'FlowDesk Pro', logo: 'FD', color: '#3b82f6', vendorName: 'FlowDesk Inc.', vendorEmail: 'team@flowdesk.io', category: 'Productivity', status: 'pending', submittedAt: '2 hours ago', description: 'Project management tool with Kanban, Gantt, and team chat built in.' },
+  { id: 'a2', name: 'MagicCRM AI', logo: 'MC', color: '#ec4899', vendorName: 'MagicCRM Labs', vendorEmail: 'hello@magiccrm.ai', category: 'CRM', status: 'pending', submittedAt: '6 hours ago', description: 'AI-powered CRM with automated lead scoring and follow-up suggestions.' },
+  { id: 'a3', name: 'Nebula Analytics', logo: 'NA', color: '#10b981', vendorName: 'Nebula Data Co.', vendorEmail: 'admin@nebula.dev', category: 'Analytics', status: 'pending', submittedAt: '1 day ago', description: 'Self-serve analytics dashboards for SaaS teams.' },
+  { id: 'a4', name: 'Acme CRM', logo: 'AC', color: '#f59e0b', vendorName: 'Acme Technologies', vendorEmail: 'demo@saasworld.com', category: 'CRM', status: 'approved', submittedAt: '14 days ago', description: 'All-in-one CRM for mid-market teams.' },
+  { id: 'a5', name: 'Acme Inbox', logo: 'AI', color: '#6366f1', vendorName: 'Acme Technologies', vendorEmail: 'demo@saasworld.com', category: 'Support', status: 'approved', submittedAt: '22 days ago', description: 'Shared inbox for customer support teams.' },
+  { id: 'a6', name: 'QuickBill', logo: 'QB', color: '#ef4444', vendorName: 'BillCorp', vendorEmail: 'team@billcorp.io', category: 'Billing', status: 'rejected', submittedAt: '3 days ago', description: 'Invoicing and billing automation.' }
 ])
 
 const users = ref<PlatformUser[]>([
-  { id: 'u1', name: 'Priya Shah', email: 'priya@nimbus.example', role: 'buyer', status: 'active', joinedAt: 'Jul 12, 2025', lastActive: '2h ago', companyName: 'Nimbus Retail', enquiries: 14, aiTrustScore: 96 },
-  { id: 'u2', name: 'Yuki Tanaka', email: 'yuki@solace-health.example', role: 'buyer', status: 'active', joinedAt: 'Aug 3, 2025', lastActive: '1h ago', companyName: 'Solace Health', enquiries: 8, aiTrustScore: 94 },
-  { id: 'u3', name: 'Acme Technologies', email: 'demo@saasworld.com', role: 'vendor', status: 'active', joinedAt: 'Jan 15, 2024', lastActive: 'now', companyName: 'Acme Technologies', listings: 4, aiTrustScore: 98 },
-  { id: 'u4', name: 'SmartSell LLC', email: 'contact@smartsell.example', role: 'vendor', status: 'pending', joinedAt: '11 days ago', lastActive: '1d ago', companyName: 'SmartSell LLC', listings: 1, aiTrustScore: 42 },
-  { id: 'u5', name: 'Rahul Menon', email: 'rahul@acme.example', role: 'vendor', status: 'active', joinedAt: 'Mar 2, 2025', lastActive: '3h ago', companyName: 'Acme Technologies', aiTrustScore: 91 },
-  { id: 'u6', name: 'BillCorp', email: 'admin@billcorp.example', role: 'vendor', status: 'suspended', joinedAt: '5 days ago', lastActive: '2d ago', companyName: 'BillCorp', listings: 1, aiTrustScore: 18 },
-  { id: 'u7', name: 'Admin User', email: 'admin@saasworld.com', role: 'admin', status: 'active', joinedAt: 'Jan 1, 2024', lastActive: 'now', aiTrustScore: 100 },
-  { id: 'u8', name: 'Oakline Legal', email: 'procurement@oakline.example', role: 'buyer', status: 'active', joinedAt: 'Sep 22, 2025', lastActive: '5h ago', companyName: 'Oakline Legal', enquiries: 5, aiTrustScore: 89 }
+  { id: 'u1', name: 'Priya Shah', email: 'priya@example.com', role: 'buyer', companyName: 'Truenorth', status: 'active', joinedAt: 'Jan 14', lastActive: '2h ago' },
+  { id: 'u2', name: 'Yuki Tanaka', email: 'yuki@example.com', role: 'buyer', companyName: 'Kita Co.', status: 'active', joinedAt: 'Feb 02', lastActive: '1d ago' },
+  { id: 'u3', name: 'Acme Technologies', email: 'demo@saasworld.com', role: 'vendor', companyName: 'Acme Technologies', status: 'active', joinedAt: 'Oct 12', lastActive: '12m ago' },
+  { id: 'u4', name: 'SmartSell LLC', email: 'ops@smartsell.io', role: 'vendor', companyName: 'SmartSell LLC', status: 'pending', joinedAt: 'Apr 20', lastActive: '1h ago' },
+  { id: 'u5', name: 'Rahul Menon', email: 'rahul@example.com', role: 'buyer', companyName: 'Oakline Legal', status: 'active', joinedAt: 'Mar 08', lastActive: '4h ago' },
+  { id: 'u6', name: 'BillCorp', email: 'team@billcorp.io', role: 'vendor', companyName: 'BillCorp', status: 'suspended', joinedAt: 'Feb 18', lastActive: '8d ago' },
+  { id: 'u7', name: 'Admin User', email: 'admin@saasworld.com', role: 'admin', status: 'active', joinedAt: 'Jan 01', lastActive: 'now' },
+  { id: 'u8', name: 'Oakline Legal', email: 'buyer@saasworld.com', role: 'buyer', companyName: 'Oakline Legal', status: 'active', joinedAt: 'Dec 20', lastActive: '30m ago' }
 ])
 
-const flags = ref<FlaggedContent[]>([
-  {
-    id: 'f1', kind: 'review', reportedBy: 'Acme Technologies', target: 'Review on Acme CRM',
-    body: 'This product is absolute garbage, do NOT buy. The owners are scammers and the support team is incompetent.',
-    reportedAt: '2h ago', status: 'open',
-    aiCategory: 'abuse', aiConfidence: 87, aiAction: 'human-review'
-  },
-  {
-    id: 'f2', kind: 'review', reportedBy: 'Nebula Data Co.', target: 'Review on Nebula Analytics',
-    body: 'Great product!!! Buy my course at www.fake-spam-link.example to learn more!!! Click here!!!',
-    reportedAt: '4h ago', status: 'open',
-    aiCategory: 'spam', aiConfidence: 98, aiAction: 'auto-remove'
-  },
-  {
-    id: 'f3', kind: 'listing', reportedBy: 'buyer_anon', target: 'MagicCRM AI listing',
-    body: 'Listing makes false claims ("10× more leads guaranteed") and uses stock screenshots.',
-    reportedAt: '1d ago', status: 'open',
-    aiCategory: 'fake', aiConfidence: 76, aiAction: 'human-review'
-  },
-  {
-    id: 'f4', kind: 'message', reportedBy: 'Priya Shah', target: 'DM from vendor SmartSell',
-    body: 'Unsolicited promo message from a vendor I never enquired with.',
-    reportedAt: '2d ago', status: 'dismissed',
-    aiCategory: 'off-topic', aiConfidence: 62, aiAction: 'human-review'
+const tickets = ref<SupportTicket[]>([
+  { id: 't1', kind: 'dispute', subject: 'Refund request — Acme CRM', from: 'Oakline Legal', against: 'Acme Technologies', amount: 290, openedAt: '1 day ago', status: 'open', description: 'Buyer reports that the integration with their invoicing tool failed. Requesting a full refund within the 30-day window.' },
+  { id: 't2', kind: 'dispute', subject: 'Review dispute — Acme Inbox', from: 'Truenorth', against: 'Acme Technologies', openedAt: '2 days ago', status: 'open', description: 'Reviewer left a 2-star review citing missing SSO. Vendor claims SSO is on the paid tier only.' },
+  { id: 't3', kind: 'flag', subject: 'Abusive review on "FlowDesk Pro"', from: 'Community report', openedAt: '3 hours ago', status: 'open', description: 'A review contains profanity and personal attacks on the vendor team.' },
+  { id: 't4', kind: 'flag', subject: 'Spam review on "MagicCRM AI"', from: 'Auto-detected', openedAt: '5 hours ago', status: 'open', description: 'Short review text contains external promo URL.' },
+  { id: 't5', kind: 'report', subject: 'Listing accuracy — QuickBill', from: 'Priya Shah', openedAt: '2 days ago', status: 'resolved', description: 'Screenshots in the listing do not match the actual product.' }
+])
+
+const activity = ref<ActivityEvent[]>([
+  { id: 'e1', at: '12m ago', actor: 'Admin User', actorRole: 'admin', action: 'approved', target: 'Nebula Analytics' },
+  { id: 'e2', at: '1h ago', actor: 'System', actorRole: 'system', action: 'auto-suspended', target: 'BillCorp' },
+  { id: 'e3', at: '2h ago', actor: 'Acme Technologies', actorRole: 'vendor', action: 'updated listing', target: 'Acme CRM' },
+  { id: 'e4', at: '3h ago', actor: 'Admin User', actorRole: 'admin', action: 'resolved dispute', target: 'Truenorth vs Acme' },
+  { id: 'e5', at: '5h ago', actor: 'Priya Shah', actorRole: 'buyer', action: 'submitted report', target: 'QuickBill' },
+  { id: 'e6', at: '1d ago', actor: 'Admin User', actorRole: 'admin', action: 'updated settings', target: 'Platform fee' }
+])
+
+const mrrTrend = [42100, 43800, 44900, 46200, 47800, 49600, 51200, 53900, 55400, 57600, 59200, 61400]
+const signupsByDay = [8, 12, 15, 10, 18, 22, 19]
+
+const kpis = computed(() => {
+  const totalBuyers = users.value.filter(u => u.role === 'buyer').length
+  const totalVendors = users.value.filter(u => u.role === 'vendor').length
+  const activeUsers = users.value.filter(u => u.status === 'active').length
+  const pendingApps = apps.value.filter(a => a.status === 'pending').length
+  const liveApps = apps.value.filter(a => a.status === 'approved').length
+  const openTickets = tickets.value.filter(t => t.status === 'open').length
+  const mrr = mrrTrend.at(-1) || 0
+  const firstMrr = mrrTrend[0] || 1
+  const mrrGrowth = Number(((mrr - firstMrr) / firstMrr * 100).toFixed(1))
+  return {
+    totalUsers: users.value.length,
+    totalBuyers,
+    totalVendors,
+    activeUsers,
+    pendingApps,
+    liveApps,
+    openTickets,
+    mrr,
+    mrrGrowth,
+    platformFee: Math.round(mrr * 0.23)
   }
-])
+})
 
-const disputes = ref<Dispute[]>([
-  {
-    id: 'd1',
-    buyerName: 'Oakline Legal', vendorName: 'Acme Technologies', listingName: 'Acme CRM',
-    subject: 'Refund request after 14-day trial',
-    amount: 290, openedAt: '3d ago', status: 'open',
-    aiSummary: 'Buyer claims core feature (bulk contact import) did not work as advertised. Vendor logs confirm 2 failed import attempts. Buyer is within refund window per marketplace terms.',
-    aiRecommendedResolution: 'Full refund. The failed import is documented; terms favour the buyer.'
-  },
-  {
-    id: 'd2',
-    buyerName: 'Truenorth Co', vendorName: 'Acme Technologies', listingName: 'Acme Inbox',
-    subject: 'Negative review dispute — factual inaccuracy',
-    amount: 0, openedAt: '5d ago', status: 'mediating',
-    aiSummary: 'Vendor disputes a 2★ review that claims "no SSO support" — product does ship SSO on the Pro plan. Review appears to be from a Free-tier user.',
-    aiRecommendedResolution: 'Attach vendor response clarifying SSO availability. Do not remove review — reviewer\'s experience on Free tier is accurate for that tier.'
-  }
-])
+function decideApp(id: string, decision: 'approved' | 'rejected') {
+  const a = apps.value.find(x => x.id === id)
+  if (a) a.status = decision
+  activity.value.unshift({
+    id: `e-${Date.now()}`,
+    at: 'just now',
+    actor: 'Admin User',
+    actorRole: 'admin',
+    action: decision === 'approved' ? 'approved' : 'rejected',
+    target: a?.name || id
+  })
+}
 
-const auditLog = ref<AuditEvent[]>([
-  { id: 'a1', actor: 'admin@saasworld.com', actorRole: 'admin', action: 'approved listing', target: 'Nebula Analytics', at: '2h ago' },
-  { id: 'a2', actor: 'system', actorRole: 'system', action: 'auto-removed review', target: 'spam review on Nebula Analytics', at: '4h ago' },
-  { id: 'a3', actor: 'admin@saasworld.com', actorRole: 'admin', action: 'suspended user', target: 'admin@billcorp.example', at: '5h ago' },
-  { id: 'a4', actor: 'demo@saasworld.com', actorRole: 'vendor', action: 'published listing', target: 'Acme Analytics', at: '1d ago' },
-  { id: 'a5', actor: 'system', actorRole: 'system', action: 'flagged listing for review', target: 'MagicCRM AI', at: '1d ago' },
-  { id: 'a6', actor: 'priya@nimbus.example', actorRole: 'buyer', action: 'submitted enquiry', target: 'Acme CRM', at: '2d ago' }
-])
+function updateUserStatus(id: string, status: UserStatus) {
+  const u = users.value.find(x => x.id === id)
+  if (u) u.status = status
+  activity.value.unshift({
+    id: `e-${Date.now()}`,
+    at: 'just now',
+    actor: 'Admin User',
+    actorRole: 'admin',
+    action: status === 'active' ? 'activated' : status === 'suspended' ? 'suspended' : 'updated',
+    target: u?.name || id
+  })
+}
 
-const anomalies = ref<Anomaly[]>([
-  {
-    id: 'an1', severity: 'high',
-    title: 'Suspicious review burst on MagicCRM AI',
-    body: '7 five-star reviews posted within 40 minutes from accounts created this week. Likely review manipulation.',
-    metric: '7 reviews / 40 min',
-    cta: { label: 'Open in Fraud detection', href: '/dashboard/fraud' }
-  },
-  {
-    id: 'an2', severity: 'med',
-    title: 'Signup spike from single IP range',
-    body: '12 buyer signups in the last 6 hours from a single /24 block. Could be legitimate team rollout, or farming.',
-    metric: '12 signups · 1 subnet',
-    cta: { label: 'Review signups', href: '/dashboard/users' }
-  },
-  {
-    id: 'an3', severity: 'low',
-    title: 'Payment retries above baseline',
-    body: 'Stripe retry rate is 4.1% (baseline 2.2%). Mostly card-expiry, not fraud.',
-    metric: '4.1% vs 2.2%',
-    cta: { label: 'See revenue', href: '/dashboard/revenue' }
-  }
-])
-
-const mrrTrend = [42100, 43800, 45200, 46100, 48300, 49800, 51200, 52400, 54100, 55800, 58200, 61400]
-const signupsByDay = [24, 31, 28, 45, 52, 48, 61]
+function resolveTicket(id: string) {
+  const t = tickets.value.find(x => x.id === id)
+  if (t) t.status = 'resolved'
+  activity.value.unshift({
+    id: `e-${Date.now()}`,
+    at: 'just now',
+    actor: 'Admin User',
+    actorRole: 'admin',
+    action: 'resolved',
+    target: t?.subject || id
+  })
+}
 
 export function useAdminData() {
-  const kpis = computed(() => ({
-    totalUsers: users.value.length,
-    totalBuyers: users.value.filter(u => u.role === 'buyer').length,
-    totalVendors: users.value.filter(u => u.role === 'vendor').length,
-    activeUsers: users.value.filter(u => u.status === 'active').length,
-    pendingApps: pendingApps.value.filter(a => a.status === 'pending').length,
-    openFlags: flags.value.filter(f => f.status === 'open').length,
-    openDisputes: disputes.value.filter(d => d.status !== 'resolved').length,
-    totalListings: 128,
-    mrr: mrrTrend[mrrTrend.length - 1],
-    mrrGrowth: ((mrrTrend[mrrTrend.length - 1] - mrrTrend[0]) / mrrTrend[0] * 100).toFixed(1),
-    platformFee: 14280
-  }))
-
-  function decideApp(id: string, decision: 'approved' | 'rejected') {
-    const app = pendingApps.value.find(a => a.id === id)
-    if (app) app.status = decision
-  }
-
-  function updateUserStatus(id: string, status: UserStatus) {
-    const u = users.value.find(u => u.id === id)
-    if (u) u.status = status
-  }
-
-  function resolveFlag(id: string, action: FlagStatus) {
-    const f = flags.value.find(f => f.id === id)
-    if (f) f.status = action
-  }
-
-  function resolveDispute(id: string) {
-    const d = disputes.value.find(d => d.id === id)
-    if (d) d.status = 'resolved'
-  }
-
   return {
-    pendingApps, users, flags, disputes, auditLog, anomalies,
-    mrrTrend, signupsByDay, kpis,
-    decideApp, updateUserStatus, resolveFlag, resolveDispute
+    apps,
+    users,
+    tickets,
+    activity,
+    mrrTrend,
+    signupsByDay,
+    kpis,
+    decideApp,
+    updateUserStatus,
+    resolveTicket
   }
 }

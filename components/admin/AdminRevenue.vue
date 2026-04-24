@@ -10,22 +10,22 @@
     <div class="bw-kpis">
       <div class="bw-kpi">
         <div class="bw-kpi__label">MRR</div>
-        <div class="bw-kpi__value">${{ fmt(kpis.mrr) }}</div>
+        <div class="bw-kpi__value">${{ kpis.mrr.toLocaleString() }}</div>
         <div class="bw-kpi__foot">+{{ kpis.mrrGrowth }}% 12-mo</div>
       </div>
       <div class="bw-kpi">
         <div class="bw-kpi__label">Platform fee</div>
-        <div class="bw-kpi__value">${{ fmt(kpis.platformFee) }}</div>
+        <div class="bw-kpi__value">${{ kpis.platformFee.toLocaleString() }}</div>
         <div class="bw-kpi__foot">23% take rate</div>
+      </div>
+      <div class="bw-kpi">
+        <div class="bw-kpi__label">ARR (run rate)</div>
+        <div class="bw-kpi__value">${{ (kpis.mrr * 12).toLocaleString() }}</div>
       </div>
       <div class="bw-kpi">
         <div class="bw-kpi__label">Paid vendors</div>
         <div class="bw-kpi__value">8</div>
         <div class="bw-kpi__foot">+2 this quarter</div>
-      </div>
-      <div class="bw-kpi">
-        <div class="bw-kpi__label">ARR (run rate)</div>
-        <div class="bw-kpi__value">${{ fmt(kpis.mrr * 12) }}</div>
       </div>
     </div>
 
@@ -36,7 +36,7 @@
         </div>
         <div class="rev-chart">
           <div v-for="(v, i) in mrrTrend" :key="i" class="rev-bar" :style="{ height: (v / maxMrr * 100) + '%' }" :title="`$${v.toLocaleString()}`">
-            <span class="rev-bar__label" v-if="i % 2 === 0 || i === mrrTrend.length - 1">{{ months[i] }}</span>
+            <span v-if="i % 2 === 0 || i === mrrTrend.length - 1" class="rev-bar__label">{{ months[i] }}</span>
           </div>
         </div>
       </section>
@@ -51,16 +51,6 @@
         </ul>
       </aside>
     </div>
-
-    <div class="aw-ai-card" style="margin-top: 20px;">
-      <div class="aw-ai-card__title">
-        <span class="aw-ai-chip">AI</span>
-        Revenue insight
-      </div>
-      <p style="margin: 0; font-size: 0.9rem; line-height: 1.55;">
-        Growth is driven by vendor mix — MRR per vendor is up 14% YoY. Biggest risk: <strong>2 Free-tier vendors</strong> went inactive in the last 30 days. Forecast: if growth holds, MRR hits <strong>~$72k</strong> by end of next quarter.
-      </p>
-    </div>
   </div>
 </template>
 
@@ -69,12 +59,10 @@ import { computed } from 'vue'
 const { kpis, mrrTrend } = useAdminData()
 const maxMrr = computed(() => Math.max(...mrrTrend))
 const months = ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr']
-
-function fmt(n: number) { return n.toLocaleString() }
 </script>
 
 <style scoped>
-.rev-chart { display: flex; align-items: flex-end; gap: 6px; height: 180px; padding: 0 4px; }
+.rev-chart { display: flex; align-items: flex-end; gap: 6px; height: 180px; padding: 0 4px 24px; }
 .rev-bar { flex: 1; background: var(--aw-accent); border-radius: 4px 4px 0 0; min-height: 4px; position: relative; transition: opacity 0.15s; }
 .rev-bar:hover { opacity: 0.8; }
 .rev-bar__label { position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%); font-size: 0.7rem; color: var(--aw-text-subtle); }

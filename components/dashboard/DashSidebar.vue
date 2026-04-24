@@ -177,31 +177,22 @@ const adminGroups: NavGroup[] = [
     title: 'Platform',
     items: [
       { to: '/dashboard/overview', label: 'Overview', icon: ICONS.home },
-      { to: '/dashboard/products', label: 'All apps', icon: ICONS.apps },
       { to: '/dashboard/users', label: 'Users', icon: ICONS.team },
+      { to: '/dashboard/products', label: 'Apps', icon: ICONS.apps },
       { to: '/dashboard/revenue', label: 'Revenue', icon: ICONS.card }
     ]
   },
   {
-    title: 'Moderation',
+    title: 'Operations',
     items: [
-      { to: '/dashboard/pending-apps', label: 'Pending apps', icon: ICONS.file },
-      { to: '/dashboard/flagged', label: 'Flagged content', icon: ICONS.shield },
-      { to: '/dashboard/disputes', label: 'Disputes', icon: ICONS.inbox }
-    ]
-  },
-  {
-    title: 'AI Ops',
-    items: [
-      { to: '/dashboard/ai-moderator', label: 'AI moderator', icon: ICONS.shield, badge: 'AI' },
-      { to: '/dashboard/fraud', label: 'Fraud detection', icon: ICONS.chart, badge: 'AI' },
-      { to: '/dashboard/trends', label: 'Trends & forecast', icon: ICONS.chart, badge: 'AI' }
+      { to: '/dashboard/pending-apps', label: 'Pending approvals', icon: ICONS.file },
+      { to: '/dashboard/support', label: 'Support', icon: ICONS.inbox }
     ]
   },
   {
     title: 'System',
     items: [
-      { to: '/dashboard/audit-log', label: 'Audit log', icon: ICONS.file },
+      { to: '/dashboard/activity', label: 'Activity log', icon: ICONS.file },
       { to: '/dashboard/settings', label: 'Settings', icon: ICONS.user }
     ]
   }

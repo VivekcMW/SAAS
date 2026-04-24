@@ -3,7 +3,7 @@
     <header class="bw-head">
       <div>
         <h1 class="bw-head__title">Users</h1>
-        <p class="bw-head__sub">{{ users.length }} users · {{ kpis.activeUsers }} active · AI trust scoring on all accounts.</p>
+        <p class="bw-head__sub">{{ users.length }} total · {{ kpis.activeUsers }} active.</p>
       </div>
     </header>
 
@@ -30,10 +30,9 @@
             <th>User</th>
             <th>Role</th>
             <th>Status</th>
-            <th>AI trust</th>
             <th>Joined</th>
             <th>Last active</th>
-            <th></th>
+            <th />
           </tr>
         </thead>
         <tbody>
@@ -49,14 +48,6 @@
             </td>
             <td><span class="aw-role" :class="`aw-role--${u.role}`">{{ u.role }}</span></td>
             <td><span class="bw-chip" :class="statusChip(u.status)">{{ u.status }}</span></td>
-            <td>
-              <div style="display: flex; gap: 8px; align-items: center;">
-                <div class="aw-conf__bar" style="width: 60px;">
-                  <div class="aw-conf__fill" :style="{ width: u.aiTrustScore + '%', background: trustColor(u.aiTrustScore) }" />
-                </div>
-                <strong style="font-size: 0.85rem;">{{ u.aiTrustScore }}</strong>
-              </div>
-            </td>
             <td style="font-size: 0.85rem;">{{ u.joinedAt }}</td>
             <td style="font-size: 0.85rem; color: var(--aw-text-muted);">{{ u.lastActive }}</td>
             <td style="text-align: right;">
@@ -102,11 +93,6 @@ function statusChip(s: string) {
   if (s === 'active') return 'bw-chip--success'
   if (s === 'suspended') return 'bw-chip--danger'
   return 'bw-chip--warning'
-}
-function trustColor(n: number) {
-  if (n >= 80) return 'var(--aw-risk-low)'
-  if (n >= 50) return 'var(--aw-risk-med)'
-  return 'var(--aw-risk-high)'
 }
 </script>
 

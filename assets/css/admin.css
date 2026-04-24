@@ -1,126 +1,61 @@
-/* ============================================================
-   Admin Console — design tokens + utilities
-   Prefix: aw-*  (admin workspace)
-   Extends buyer.css / vendor.css for shared primitives.
-   ============================================================ */
-
+/* Admin workspace tokens — simple, purple accent */
 :root {
-  /* Core admin accent — purple/shield */
   --aw-accent: #7c3aed;
   --aw-accent-600: #6d28d9;
   --aw-accent-50: #f5f3ff;
-  --aw-accent-100: #ede9fe;
   --aw-accent-text: #5b21b6;
 
-  /* AI tokens (match vendor for consistency) */
-  --aw-ai: #6b5cff;
-  --aw-ai-50: #eeebff;
-  --aw-ai-100: #dcd8ff;
-  --aw-ai-text: #4a3fd1;
-
-  /* Risk bands */
-  --aw-risk-low: #10b981;
-  --aw-risk-med: #f59e0b;
-  --aw-risk-high: #ef4444;
-  --aw-risk-low-50: #d1fae5;
-  --aw-risk-med-50: #fef3c7;
-  --aw-risk-high-50: #fee2e2;
-
-  /* Re-use buyer spatial tokens */
-  --aw-border: var(--bw-border);
-  --aw-surface: var(--bw-surface);
-  --aw-surface-2: var(--bw-surface-2);
-  --aw-text: var(--bw-text);
-  --aw-text-muted: var(--bw-text-muted);
-  --aw-text-subtle: var(--bw-text-subtle);
+  --aw-surface: #ffffff;
+  --aw-surface-2: #f9fafb;
+  --aw-border: #e5e7eb;
+  --aw-text: #0f172a;
+  --aw-text-muted: #475569;
+  --aw-text-subtle: #64748b;
 }
 
-/* ---------- AI & accent chips ---------- */
-.aw-ai-chip {
-  display: inline-flex; align-items: center; gap: 4px;
-  background: var(--aw-ai-50); color: var(--aw-ai-text);
-  font-size: 0.68rem; font-weight: 700; padding: 2px 8px;
-  border-radius: 999px; text-transform: uppercase; letter-spacing: 0.05em;
-}
-.aw-ai-chip svg { width: 10px; height: 10px; }
+.aw { padding: 24px; color: var(--aw-text); }
 
+/* Accent chip */
 .aw-accent-chip {
-  display: inline-flex; align-items: center; gap: 4px;
-  background: var(--aw-accent-50); color: var(--aw-accent-text);
-  font-size: 0.68rem; font-weight: 700; padding: 2px 8px;
-  border-radius: 999px; text-transform: uppercase; letter-spacing: 0.05em;
-}
-
-/* ---------- AI card ---------- */
-.aw-ai-card {
-  background: linear-gradient(180deg, var(--aw-ai-50) 0%, var(--aw-surface) 100%);
-  border: 1px solid var(--aw-ai-100);
-  border-radius: 12px; padding: 14px 16px;
-}
-.aw-ai-card__title {
-  display: flex; align-items: center; gap: 8px;
-  font-weight: 700; font-family: 'Poppins', sans-serif;
-  font-size: 0.95rem; margin: 0 0 8px;
-}
-
-/* ---------- Risk pills / bars ---------- */
-.aw-risk { display: inline-flex; align-items: center; gap: 4px; font-weight: 600; font-size: 0.78rem; padding: 2px 8px; border-radius: 999px; }
-.aw-risk--low { background: var(--aw-risk-low-50); color: #065f46; }
-.aw-risk--med { background: var(--aw-risk-med-50); color: #92400e; }
-.aw-risk--high { background: var(--aw-risk-high-50); color: #991b1b; }
-
-.aw-risk-bar { height: 6px; background: var(--aw-surface-2); border-radius: 3px; overflow: hidden; }
-.aw-risk-bar__fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
-.aw-risk-bar__fill--low { background: var(--aw-risk-low); }
-.aw-risk-bar__fill--med { background: var(--aw-risk-med); }
-.aw-risk-bar__fill--high { background: var(--aw-risk-high); }
-
-/* ---------- Confidence meter ---------- */
-.aw-conf {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 0.78rem; color: var(--aw-text-muted);
-}
-.aw-conf__bar { width: 70px; height: 4px; background: var(--aw-surface-2); border-radius: 2px; overflow: hidden; }
-.aw-conf__fill { height: 100%; background: var(--aw-ai); }
-
-/* ---------- Queue layout (list + detail) ---------- */
-.aw-queue { display: grid; grid-template-columns: 380px 1fr; gap: 16px; align-items: start; }
-@media (max-width: 960px) { .aw-queue { grid-template-columns: 1fr; } }
-.aw-queue__list { background: var(--aw-surface); border: 1px solid var(--aw-border); border-radius: 12px; overflow: hidden; max-height: 70vh; overflow-y: auto; }
-.aw-queue__item { padding: 12px 14px; border-bottom: 1px solid var(--aw-border); cursor: pointer; transition: background 0.15s; }
-.aw-queue__item:hover { background: var(--aw-surface-2); }
-.aw-queue__item.is-active { background: var(--aw-accent-50); border-left: 3px solid var(--aw-accent); }
-.aw-queue__item:last-child { border-bottom: none; }
-.aw-queue__main { background: var(--aw-surface); border: 1px solid var(--aw-border); border-radius: 12px; padding: 20px; }
-
-/* ---------- Sparkline bars ---------- */
-.aw-spark { display: flex; align-items: flex-end; gap: 3px; height: 48px; }
-.aw-spark__bar { flex: 1; background: var(--aw-accent); border-radius: 2px 2px 0 0; min-height: 4px; opacity: 0.7; transition: opacity 0.2s; }
-.aw-spark__bar:last-child { opacity: 1; }
-
-/* ---------- Anomaly card ---------- */
-.aw-anomaly { display: flex; gap: 12px; align-items: flex-start; padding: 14px; background: var(--aw-surface); border: 1px solid var(--aw-border); border-radius: 12px; border-left: 4px solid transparent; }
-.aw-anomaly--high { border-left-color: var(--aw-risk-high); }
-.aw-anomaly--med { border-left-color: var(--aw-risk-med); }
-.aw-anomaly--low { border-left-color: var(--aw-risk-low); }
-.aw-anomaly__icon { width: 36px; height: 36px; border-radius: 10px; background: var(--aw-surface-2); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--aw-text-muted); }
-.aw-anomaly--high .aw-anomaly__icon { background: var(--aw-risk-high-50); color: var(--aw-risk-high); }
-.aw-anomaly--med .aw-anomaly__icon { background: var(--aw-risk-med-50); color: var(--aw-risk-med); }
-.aw-anomaly__title { font-weight: 700; font-size: 0.92rem; margin: 0 0 4px; font-family: 'Poppins'; }
-.aw-anomaly__body { font-size: 0.85rem; color: var(--aw-text-muted); line-height: 1.5; margin: 0; }
-
-/* ---------- Sidebar admin AI badge (overrides vendor's) ---------- */
-.aw-nav-badge-ai {
-  background: var(--aw-ai-50);
-  color: var(--aw-ai-text);
-  font-size: 0.65rem;
-  padding: 2px 6px;
-  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--aw-accent-50);
+  color: var(--aw-accent-text);
+  font-size: 0.72rem;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-right: 6px;
 }
 
-/* ---------- Role chip ---------- */
-.aw-role { font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
-.aw-role--admin { background: var(--aw-accent-50); color: var(--aw-accent-text); }
+/* Role badges */
+.aw-role {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.aw-role--admin { background: #ede9fe; color: #5b21b6; }
 .aw-role--vendor { background: #fef3c7; color: #92400e; }
-.aw-role--buyer { background: var(--aw-surface-2); color: var(--aw-text-muted); }
+.aw-role--buyer { background: #e0e7ff; color: #3730a3; }
+
+/* Simple spark bars */
+.aw-spark {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 100px;
+}
+.aw-spark__bar {
+  flex: 1;
+  min-height: 4px;
+  background: var(--aw-accent);
+  border-radius: 3px 3px 0 0;
+  opacity: 0.85;
+}
+.aw-spark__bar:hover { opacity: 1; }
