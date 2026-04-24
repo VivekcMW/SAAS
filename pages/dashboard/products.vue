@@ -1,5 +1,6 @@
 <template>
-  <BuyerSavedApps v-if="role === 'buyer'" />
+  <AdminApps v-if="role === 'admin'" />
+  <BuyerSavedApps v-else-if="role === 'buyer'" />
   <VendorListings v-else />
 </template>
 

@@ -1,6 +1,7 @@
 <template>
-  <BuyerOverview v-if="role === 'buyer'" :first-name="currentUser?.firstName" />
+  <AdminOverview v-if="role === 'admin'" />
   <VendorOverview v-else-if="role === 'vendor'" />
+  <BuyerOverview v-else-if="role === 'buyer'" :first-name="currentUser?.firstName" />
   <div v-else class="p-8">Loading…</div>
 </template>
 

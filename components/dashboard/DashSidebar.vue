@@ -177,24 +177,32 @@ const adminGroups: NavGroup[] = [
     title: 'Platform',
     items: [
       { to: '/dashboard/overview', label: 'Overview', icon: ICONS.home },
-      { to: '/dashboard/analytics', label: 'Analytics', icon: ICONS.chart },
       { to: '/dashboard/products', label: 'All apps', icon: ICONS.apps },
-      { to: '/dashboard/enquiries', label: 'Enquiries', icon: ICONS.inbox },
-      { to: '/dashboard/reviews', label: 'Reviews', icon: ICONS.star }
+      { to: '/dashboard/users', label: 'Users', icon: ICONS.team },
+      { to: '/dashboard/revenue', label: 'Revenue', icon: ICONS.card }
     ]
   },
   {
-    title: 'Admin',
+    title: 'Moderation',
     items: [
-      { to: '/dashboard/team', label: 'Users & roles', icon: ICONS.team },
-      { to: '/admin', label: 'Admin panel', icon: ICONS.shield }
+      { to: '/dashboard/pending-apps', label: 'Pending apps', icon: ICONS.file },
+      { to: '/dashboard/flagged', label: 'Flagged content', icon: ICONS.shield },
+      { to: '/dashboard/disputes', label: 'Disputes', icon: ICONS.inbox }
     ]
   },
   {
-    title: 'Account',
+    title: 'AI Ops',
     items: [
-      { to: '/dashboard/profile', label: 'Profile', icon: ICONS.user },
-      { to: '/dashboard/billing', label: 'Billing', icon: ICONS.card }
+      { to: '/dashboard/ai-moderator', label: 'AI moderator', icon: ICONS.shield, badge: 'AI' },
+      { to: '/dashboard/fraud', label: 'Fraud detection', icon: ICONS.chart, badge: 'AI' },
+      { to: '/dashboard/trends', label: 'Trends & forecast', icon: ICONS.chart, badge: 'AI' }
+    ]
+  },
+  {
+    title: 'System',
+    items: [
+      { to: '/dashboard/audit-log', label: 'Audit log', icon: ICONS.file },
+      { to: '/dashboard/settings', label: 'Settings', icon: ICONS.user }
     ]
   }
 ]

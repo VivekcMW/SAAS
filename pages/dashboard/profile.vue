@@ -1,5 +1,5 @@
 <template>
-  <BuyerProfile v-if="role === 'buyer'" />
+  <BuyerProfile v-if="role === 'buyer' || role === 'admin'" />
   <VendorCompanyProfile v-else />
 </template>
 
