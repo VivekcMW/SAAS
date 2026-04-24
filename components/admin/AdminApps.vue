@@ -6,62 +6,102 @@
         <p class="bw-head__sub">{{ kpis.liveApps }} live · {{ kpis.pendingApps }} pending approval.</p>
       </div>
       <div class="bw-head__actions">
-        <NuxtLink v-if="kpis.pendingApps > 0" to="/dashboard/pending-apps" class="bw-btn bw-btn--primary">Review pending · {{ kpis.pendingApps }}</NuxtLink>
+        <NuxtLink v-if="kpis.pendingApps > 0" to="/dashboard/pending-apps" class="bw-btn bw-btn--primary">
+          Review pending · {{ kpis.pendingApps }}
+        </NuxtLink>
       </div>
     </header>
 
-    <div class="bw-toolbar">
-      <input v-model="q" class="bw-input" placeholder="Search apps or vendors…" style="max-width: 340px;" />
-      <select v-model="filter" class="bw-select" style="max-width: 200px;">
-        <option value="all">All statuses</option>
-        <option value="approved">Live</option>
-        <option value="pending">Pending</option>
-        <option value="rejected">Rejected</option>
-      </select>
-    </div>
+    <AdminGridTable
+      :columns="columns"
+      :rows="filteredByStatus"
+      row-key="id"
+      search-placeholder="Search apps or vendors…"
+      :selectable="true"
+      :bulk-actions="bulkActions"
+      :exportable="true"
+      export-file-name="apps-export"
+      @bulk-action="handleBulkAction"
+    >
+      <!-- Status filter in toolbar -->
+      <template #toolbar-extra>
+        <select v-model="statusFilter" class="bw-select" style="max-width: 200px;">
+          <option value="all">All statuses</option>
+          <option value="approved">Live</option>
+          <option value="pending">Pending</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </template>
 
-    <div class="bw-card">
-      <table class="bw-table">
-        <thead>
-          <tr>
-            <th>App</th>
-            <th>Vendor</th>
-            <th>Category</th>
-            <th>Status</th>
-            <th>Submitted</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="a in rows" :key="a.id">
-            <td>
-              <div style="display: flex; gap: 10px; align-items: center;">
-                <div class="q-logo" :style="{ background: a.color }">{{ a.logo }}</div>
-                <strong>{{ a.name }}</strong>
-              </div>
-            </td>
-            <td>{{ a.vendorName }}</td>
-            <td>{{ a.category }}</td>
-            <td><span class="bw-chip" :class="statusChip(a.status)">{{ statusLabel(a.status) }}</span></td>
-            <td style="font-size: 0.85rem; color: var(--aw-text-muted);">{{ a.submittedAt }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      <!-- App cell: logo + name -->
+      <template #cell-name="{ row }">
+        <div class="app-cell">
+          <div class="app-logo" :style="{ background: row.color }">{{ row.logo }}</div>
+          <div>
+            <strong>{{ row.name }}</strong>
+            <div class="app-meta">{{ row.category }}</div>
+          </div>
+        </div>
+      </template>
+
+      <!-- Status chip -->
+      <template #cell-status="{ row }">
+        <span class="bw-chip" :class="statusChip(row.status)">{{ statusLabel(row.status) }}</span>
+      </template>
+
+      <!-- Submitted muted -->
+      <template #cell-submittedAt="{ row }">
+        <span style="font-size: 0.85rem; color: var(--bw-text-muted);">{{ row.submittedAt }}</span>
+      </template>
+
+      <!-- Actions -->
+      <template #cell-_actions="{ row }">
+        <div style="display:flex; gap:6px; justify-content:flex-end;">
+          <button
+            v-if="row.status === 'pending'"
+            class="bw-btn bw-btn--primary bw-btn--sm"
+            @click.stop="decideApp(row.id, 'approved')"
+          >Approve</button>
+          <button
+            v-if="row.status === 'pending'"
+            class="bw-btn bw-btn--ghost bw-btn--sm"
+            @click.stop="decideApp(row.id, 'rejected')"
+          >Reject</button>
+        </div>
+      </template>
+    </AdminGridTable>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-const { apps, kpis } = useAdminData()
+const { apps, kpis, decideApp } = useAdminData()
 
-const q = ref('')
-const filter = ref('all')
+const statusFilter = ref('all')
 
-const rows = computed(() => apps.value.filter(a => {
-  if (filter.value !== 'all' && a.status !== filter.value) return false
-  if (q.value && !`${a.name} ${a.vendorName}`.toLowerCase().includes(q.value.toLowerCase())) return false
-  return true
-}))
+const filteredByStatus = computed(() =>
+  statusFilter.value === 'all'
+    ? apps.value
+    : apps.value.filter(a => a.status === statusFilter.value)
+)
+
+const columns = [
+  { key: 'name',        label: 'App',       sortable: true,  hideable: false },
+  { key: 'vendorName',  label: 'Vendor',    sortable: true,  hideable: true  },
+  { key: 'category',    label: 'Category',  sortable: true,  hideable: true  },
+  { key: 'status',      label: 'Status',    sortable: true,  hideable: true  },
+  { key: 'submittedAt', label: 'Submitted', sortable: false, hideable: true  },
+  { key: '_actions',    label: '',          sortable: false, hideable: false, width: '160px', align: 'right' as const },
+]
+
+const bulkActions = [
+  { action: 'approve', label: 'Approve all', variant: 'primary' as const },
+  { action: 'reject',  label: 'Reject all',  variant: 'danger'  as const },
+]
+
+function handleBulkAction({ action, rows }: { action: string; rows: any[] }) {
+  rows.forEach(r => decideApp(r.id, action === 'approve' ? 'approved' : 'rejected'))
+}
 
 function statusChip(s: string) {
   if (s === 'approved') return 'bw-chip--success'
@@ -69,10 +109,14 @@ function statusChip(s: string) {
   return 'bw-chip--warning'
 }
 function statusLabel(s: string) {
-  return s === 'approved' ? 'Live' : s === 'rejected' ? 'Rejected' : 'Pending'
+  if (s === 'approved') return 'Live'
+  if (s === 'rejected') return 'Rejected'
+  return 'Pending'
 }
 </script>
 
 <style scoped>
-.q-logo { width: 30px; height: 30px; border-radius: 8px; color: white; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; }
+.app-cell { display: flex; gap: 10px; align-items: center; }
+.app-logo { width: 32px; height: 32px; border-radius: 8px; color: white; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; }
+.app-meta { font-size: 0.75rem; color: var(--bw-text-subtle); margin-top: 1px; }
 </style>

@@ -210,3 +210,128 @@ The review is pending moderation.
     text
   }
 }
+
+export function buildWelcomeEmail(data: {
+  to: string
+  firstName: string
+  role: 'buyer' | 'vendor' | 'admin'
+  verifyUrl: string
+}): EmailMessage {
+  const dashboardPath = data.role === 'vendor' ? '/dashboard/listings' : '/dashboard/overview'
+  const roleDesc = data.role === 'vendor' ? 'vendor' : 'buyer'
+  const text = `Hi ${data.firstName},
+
+Welcome to SaaSWorld! We're excited to have you on board.
+
+Before you get started, please verify your email address by clicking the link below:
+
+${data.verifyUrl}
+
+This link expires in 24 hours.
+
+${data.role === 'vendor'
+  ? `As a ${roleDesc} you can list and manage your products, track leads, and grow your pipeline from your dashboard.`
+  : `As a ${roleDesc} you can discover, compare, and save SaaS tools tailored to your team's needs.`}
+
+Get started: https://saasworld.com${dashboardPath}
+
+— The SaaSWorld Team
+`
+  return {
+    to: data.to,
+    subject: 'Welcome to SaaSWorld — please verify your email',
+    text,
+    html: `<p>Hi ${data.firstName},</p>
+<p>Welcome to SaaSWorld! Please verify your email address:</p>
+<p><a href="${data.verifyUrl}" style="background:#FF8838;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;display:inline-block">Verify my email</a></p>
+<p>This link expires in 24 hours.</p>
+<p>— The SaaSWorld Team</p>`
+  }
+}
+
+export function buildPasswordResetEmail(data: {
+  to: string
+  firstName: string
+  resetUrl: string
+}): EmailMessage {
+  const text = `Hi ${data.firstName},
+
+We received a request to reset the password for your SaaSWorld account.
+
+Click the link below to choose a new password:
+
+${data.resetUrl}
+
+This link expires in 1 hour. If you didn't request a password reset, you can safely ignore this email — your password won't change.
+
+— The SaaSWorld Team
+`
+  return {
+    to: data.to,
+    subject: 'Reset your SaaSWorld password',
+    text,
+    html: `<p>Hi ${data.firstName},</p>
+<p>We received a request to reset your SaaSWorld password.</p>
+<p><a href="${data.resetUrl}" style="background:#FF8838;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;display:inline-block">Reset my password</a></p>
+<p>This link expires in 1 hour. If you didn't request this, ignore this email.</p>
+<p>— The SaaSWorld Team</p>`
+  }
+}
+
+export function buildListingStatusEmail(data: {
+  to: string
+  vendorName: string
+  productName: string
+  status: 'approved' | 'rejected'
+  adminNotes?: string
+}): EmailMessage {
+  const approved = data.status === 'approved'
+  const text = approved
+    ? `Hi ${data.vendorName},
+
+Great news! Your listing for "${data.productName}" has been approved and is now live on SaaSWorld.
+
+View your listing: https://saasworld.com/marketplace
+
+— The SaaSWorld Team`
+    : `Hi ${data.vendorName},
+
+We've reviewed your listing for "${data.productName}" and unfortunately it doesn't meet our listing guidelines at this time.
+
+${data.adminNotes ? `Reason: ${data.adminNotes}\n\n` : ''}Please update your listing and resubmit from your vendor dashboard.
+
+— The SaaSWorld Team`
+
+  return {
+    to: data.to,
+    subject: approved
+      ? `Your SaaSWorld listing "${data.productName}" is live!`
+      : `Your SaaSWorld listing "${data.productName}" needs updates`,
+    text
+  }
+}
+
+export function buildEnquiryNotificationEmail(data: {
+  to: string
+  vendorName: string
+  appName: string
+  buyerName: string
+  buyerEmail: string
+  message: string
+}): EmailMessage {
+  const text = `Hi ${data.vendorName},
+
+You have a new enquiry for ${data.appName} from ${data.buyerName} (${data.buyerEmail}).
+
+Message:
+${data.message}
+
+Respond from your vendor dashboard: https://saasworld.com/dashboard/leads
+
+— The SaaSWorld Team`
+  return {
+    to: data.to,
+    subject: `New enquiry for ${data.appName} from ${data.buyerName}`,
+    text
+  }
+}

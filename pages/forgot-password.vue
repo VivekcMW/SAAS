@@ -52,6 +52,8 @@
               </span>
               <span v-else>Send reset link</span>
             </button>
+
+            <p v-if="errorMessage" class="form-error">{{ errorMessage }}</p>
           </form>
 
           <div class="back-to-login">
@@ -110,23 +112,22 @@ const form = reactive({
 
 const isLoading = ref(false)
 const emailSent = ref(false)
+const errorMessage = ref('')
 
 // Handle form submission
 const handleSubmit = async () => {
   if (isLoading.value) return
-
   isLoading.value = true
-  
+  errorMessage.value = ''
+
   try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    // Show success state
+    await $fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      body: { email: form.email }
+    })
     emailSent.value = true
-    
-  } catch (error) {
-    console.error('Forgot password error:', error)
-    // Handle error (show notification, etc.)
+  } catch (err: any) {
+    errorMessage.value = err?.data?.statusMessage || 'Something went wrong. Please try again.'
   } finally {
     isLoading.value = false
   }
@@ -135,6 +136,7 @@ const handleSubmit = async () => {
 // Reset form to try again
 const resetForm = () => {
   emailSent.value = false
+  errorMessage.value = ''
   form.email = ''
 }
 </script>

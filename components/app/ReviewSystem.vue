@@ -29,7 +29,7 @@
             </div>
             <div>
               <div class="flex items-center gap-1 mb-1">
-                <StarRating :rating="overallRating" size="lg" />
+                <Rating :model-value="overallRating" readonly size="lg" />
               </div>
               <div class="text-sm text-gray-600 dark:text-gray-400">
                 Based on {{ totalReviews }} reviews
@@ -111,7 +111,7 @@
                 </span>
               </div>
               <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                <StarRating :rating="review.rating" size="sm" />
+                <Rating :model-value="review.rating" readonly size="sm" />
                 <span>{{ formatDate(review.createdAt) }}</span>
               </div>
             </div>

@@ -32,7 +32,7 @@
 
     <div class="bw-grid bw-grid--main-aside bw-section">
       <section>
-        <section v-if="pendingApps.length > 0" class="bw-card" style="margin-bottom: 16px;">
+        <section v-if="pendingApps.length > 0" class="bw-card bw-section">
           <div class="bw-card__head">
             <h2 class="bw-card__title">Needs your attention</h2>
             <NuxtLink to="/dashboard/pending-apps" class="bw-card__link">Open queue →</NuxtLink>
@@ -40,7 +40,7 @@
           <ul class="q-list">
             <li v-for="a in pendingApps" :key="a.id" class="q-item">
               <div class="q-logo" :style="{ background: a.color }">{{ a.logo }}</div>
-              <div style="flex: 1; min-width: 0;">
+              <div class="q-item__body">
                 <div class="q-name">{{ a.name }}</div>
                 <div class="q-meta">{{ a.vendorName }} · submitted {{ a.submittedAt }}</div>
               </div>
@@ -57,15 +57,15 @@
           <ul class="activity-list">
             <li v-for="e in activity.slice(0, 6)" :key="e.id">
               <span class="aw-role" :class="`aw-role--${e.actorRole === 'system' ? 'admin' : e.actorRole}`">{{ e.actorRole }}</span>
-              <span style="flex: 1;"><strong>{{ e.actor }}</strong> {{ e.action }} <strong>{{ e.target }}</strong></span>
-              <span style="color: var(--aw-text-subtle); font-size: 0.78rem; white-space: nowrap;">{{ e.at }}</span>
+              <span class="act-body"><strong>{{ e.actor }}</strong> {{ e.action }} <strong>{{ e.target }}</strong></span>
+              <span class="act-time">{{ e.at }}</span>
             </li>
           </ul>
         </section>
       </section>
 
       <aside>
-        <section class="bw-card" style="margin-bottom: 16px;">
+        <section class="bw-card">
           <div class="bw-card__head">
             <h2 class="bw-card__title">Signups (7d)</h2>
           </div>
@@ -84,8 +84,8 @@
           </div>
           <ul class="ticket-list">
             <li v-for="t in openTickets.slice(0, 3)" :key="t.id">
-              <div style="font-size: 0.88rem; font-weight: 600;">{{ t.subject }}</div>
-              <div style="font-size: 0.76rem; color: var(--aw-text-subtle);">{{ t.kind }} · {{ t.openedAt }}</div>
+              <div class="ticket-title">{{ t.subject }}</div>
+              <div class="ticket-meta">{{ t.kind }} · {{ t.openedAt }}</div>
             </li>
           </ul>
         </section>
@@ -103,19 +103,27 @@ const openTickets = computed(() => tickets.value.filter(t => t.status === 'open'
 </script>
 
 <style scoped>
-.q-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.q-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
 .q-item { display: flex; align-items: center; gap: 12px; padding: 10px; background: var(--aw-surface-2); border-radius: 10px; }
+.q-item__body { flex: 1; min-width: 0; }
 .q-logo { width: 34px; height: 34px; border-radius: 8px; color: white; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
-.q-name { font-weight: 600; font-size: 0.9rem; }
-.q-meta { font-size: 0.78rem; color: var(--aw-text-subtle); }
+.q-name { font-weight: 600; font-size: 0.88rem; }
+.q-meta { font-size: 0.75rem; color: var(--aw-text-subtle); }
 
 .activity-list { list-style: none; padding: 0; margin: 0; }
-.activity-list li { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--aw-border); font-size: 0.88rem; }
+.activity-list li { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--aw-border); font-size: 0.85rem; }
 .activity-list li:last-child { border-bottom: none; }
+.act-body { flex: 1; }
+.act-time { color: var(--aw-text-subtle); font-size: 0.75rem; white-space: nowrap; }
 
-.day-labels { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--aw-text-subtle); margin-top: 6px; }
+.day-labels { display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--aw-text-subtle); margin-top: 6px; }
 
 .ticket-list { list-style: none; padding: 0; margin: 0; }
-.ticket-list li { padding: 10px 0; border-bottom: 1px solid var(--aw-border); }
+.ticket-list li { padding: 9px 0; border-bottom: 1px solid var(--aw-border); }
 .ticket-list li:last-child { border-bottom: none; }
+.ticket-title { font-size: 0.85rem; font-weight: 600; }
+.ticket-meta  { font-size: 0.75rem; color: var(--aw-text-subtle); margin-top: 2px; }
+
+aside { display: flex; flex-direction: column; gap: 16px; }
+.bw-section { margin-bottom: 16px; }
 </style>

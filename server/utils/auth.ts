@@ -301,3 +301,99 @@ export function getVendorProfileForUser(userId: string) {
     status: string
   } | undefined
 }
+
+// ─── Password Reset ──────────────────────────────────────────────────────────
+
+const RESET_TOKEN_TTL_MS = 1000 * 60 * 60 // 1 hour
+
+/** Generate a secure reset token, persist its hash, return the raw token for emailing. */
+export function createPasswordResetToken(email: string): string | null {
+  const db = getDb()
+  const user = findUserByEmail(email)
+  if (!user) return null // Don't reveal whether account exists — caller sends "if found" email
+
+  // Invalidate any previous unused tokens for this user
+  db.prepare('DELETE FROM password_reset_tokens WHERE user_id = ?').run(user.id)
+
+  const rawToken = randomBytes(32).toString('hex')
+  const tokenHash = createHash('sha256').update(rawToken).digest('hex')
+  const now = new Date()
+  const expiresAt = new Date(now.getTime() + RESET_TOKEN_TTL_MS).toISOString()
+
+  db.prepare(`
+    INSERT INTO password_reset_tokens (id, user_id, token_hash, expires_at, used, created_at)
+    VALUES (?, ?, ?, ?, 0, ?)
+  `).run(makeId('prt'), user.id, tokenHash, expiresAt, now.toISOString())
+
+  return rawToken
+}
+
+/** Validate token, reset password, invalidate token. Returns true on success. */
+export function resetPasswordWithToken(rawToken: string, newPassword: string): boolean {
+  const db = getDb()
+  const tokenHash = createHash('sha256').update(rawToken).digest('hex')
+
+  const row = db.prepare(`
+    SELECT * FROM password_reset_tokens
+    WHERE token_hash = ? AND used = 0 AND expires_at > ?
+  `).get(tokenHash, new Date().toISOString()) as { id: string; user_id: string } | undefined
+
+  if (!row) return false
+
+  const newHash = hashPassword(newPassword)
+  const now = new Date().toISOString()
+
+  db.prepare('UPDATE users SET password_hash = ?, updated_at = ? WHERE id = ?')
+    .run(newHash, now, row.user_id)
+  db.prepare('UPDATE password_reset_tokens SET used = 1 WHERE id = ?')
+    .run(row.id)
+  // Invalidate all sessions for this user after password change
+  db.prepare('DELETE FROM sessions WHERE user_id = ?').run(row.user_id)
+
+  return true
+}
+
+// ─── Email Verification ──────────────────────────────────────────────────────
+
+const VERIFY_TOKEN_TTL_MS = 1000 * 60 * 60 * 24 // 24 hours
+
+/** Generate an email verification token. Returns raw token for emailing. */
+export function createEmailVerificationToken(userId: string): string {
+  const db = getDb()
+
+  // Remove any previous unverified tokens
+  db.prepare('DELETE FROM email_verifications WHERE user_id = ? AND verified_at IS NULL').run(userId)
+
+  const rawToken = randomBytes(32).toString('hex')
+  const tokenHash = createHash('sha256').update(rawToken).digest('hex')
+  const now = new Date()
+  const expiresAt = new Date(now.getTime() + VERIFY_TOKEN_TTL_MS).toISOString()
+
+  db.prepare(`
+    INSERT INTO email_verifications (id, user_id, token_hash, expires_at, verified_at, created_at)
+    VALUES (?, ?, ?, ?, NULL, ?)
+  `).run(makeId('ev'), userId, tokenHash, expiresAt, now.toISOString())
+
+  return rawToken
+}
+
+/** Verify the token, mark user email as verified. Returns true on success. */
+export function verifyEmailToken(rawToken: string): boolean {
+  const db = getDb()
+  const tokenHash = createHash('sha256').update(rawToken).digest('hex')
+
+  const row = db.prepare(`
+    SELECT * FROM email_verifications
+    WHERE token_hash = ? AND verified_at IS NULL AND expires_at > ?
+  `).get(tokenHash, new Date().toISOString()) as { id: string; user_id: string } | undefined
+
+  if (!row) return false
+
+  const now = new Date().toISOString()
+  db.prepare('UPDATE users SET email_verified = 1, updated_at = ? WHERE id = ?')
+    .run(now, row.user_id)
+  db.prepare('UPDATE email_verifications SET verified_at = ? WHERE id = ?')
+    .run(now, row.id)
+
+  return true
+}

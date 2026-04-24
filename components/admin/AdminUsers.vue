@@ -7,70 +7,85 @@
       </div>
     </header>
 
-    <div class="bw-toolbar">
-      <input v-model="q" class="bw-input" placeholder="Search name, email, company…" style="max-width: 320px;" />
-      <select v-model="roleF" class="bw-select" style="max-width: 160px;">
-        <option value="all">All roles</option>
-        <option value="buyer">Buyers</option>
-        <option value="vendor">Vendors</option>
-        <option value="admin">Admins</option>
-      </select>
-      <select v-model="statusF" class="bw-select" style="max-width: 180px;">
-        <option value="all">All statuses</option>
-        <option value="active">Active</option>
-        <option value="pending">Pending</option>
-        <option value="suspended">Suspended</option>
-      </select>
-    </div>
+    <AdminGridTable
+      :columns="columns"
+      :rows="filteredByRoleStatus"
+      row-key="id"
+      search-placeholder="Search name, email, company…"
+      :selectable="true"
+      :bulk-actions="bulkActions"
+      :exportable="true"
+      export-file-name="users-export"
+      @bulk-action="handleBulkAction"
+    >
+      <!-- Role + Status filters in toolbar -->
+      <template #toolbar-extra>
+        <select v-model="roleF" class="bw-select" style="max-width: 160px;">
+          <option value="all">All roles</option>
+          <option value="buyer">Buyers</option>
+          <option value="vendor">Vendors</option>
+          <option value="admin">Admins</option>
+        </select>
+        <select v-model="statusF" class="bw-select" style="max-width: 180px;">
+          <option value="all">All statuses</option>
+          <option value="active">Active</option>
+          <option value="pending">Pending</option>
+          <option value="suspended">Suspended</option>
+        </select>
+      </template>
 
-    <div class="bw-card">
-      <table class="bw-table">
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Role</th>
-            <th>Status</th>
-            <th>Joined</th>
-            <th>Last active</th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="u in rows" :key="u.id">
-            <td>
-              <div style="display: flex; gap: 10px; align-items: center;">
-                <div class="u-avatar" :class="`u-avatar--${u.role}`">{{ u.name.charAt(0) }}</div>
-                <div>
-                  <strong>{{ u.name }}</strong>
-                  <div style="font-size: 0.78rem; color: var(--aw-text-subtle);">{{ u.email }}</div>
-                </div>
-              </div>
-            </td>
-            <td><span class="aw-role" :class="`aw-role--${u.role}`">{{ u.role }}</span></td>
-            <td><span class="bw-chip" :class="statusChip(u.status)">{{ u.status }}</span></td>
-            <td style="font-size: 0.85rem;">{{ u.joinedAt }}</td>
-            <td style="font-size: 0.85rem; color: var(--aw-text-muted);">{{ u.lastActive }}</td>
-            <td style="text-align: right;">
-              <button
-                v-if="u.status === 'active' && u.role !== 'admin'"
-                class="bw-btn bw-btn--subtle bw-btn--sm"
-                @click="updateUserStatus(u.id, 'suspended')"
-              >Suspend</button>
-              <button
-                v-else-if="u.status === 'suspended'"
-                class="bw-btn bw-btn--ghost bw-btn--sm"
-                @click="updateUserStatus(u.id, 'active')"
-              >Restore</button>
-              <button
-                v-else-if="u.status === 'pending'"
-                class="bw-btn bw-btn--primary bw-btn--sm"
-                @click="updateUserStatus(u.id, 'active')"
-              >Approve</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      <!-- User cell: avatar + name + email -->
+      <template #cell-name="{ row }">
+        <div class="user-cell">
+          <div class="u-avatar" :class="`u-avatar--${row.role}`">{{ row.name.charAt(0) }}</div>
+          <div>
+            <strong>{{ row.name }}</strong>
+            <div class="user-email">{{ row.email }}</div>
+          </div>
+        </div>
+      </template>
+
+      <!-- Role chip -->
+      <template #cell-role="{ row }">
+        <span class="aw-role" :class="`aw-role--${row.role}`">{{ row.role }}</span>
+      </template>
+
+      <!-- Status chip -->
+      <template #cell-status="{ row }">
+        <span class="bw-chip" :class="statusChip(row.status)">{{ row.status }}</span>
+      </template>
+
+      <!-- Joined muted -->
+      <template #cell-joinedAt="{ row }">
+        <span style="font-size: 0.85rem;">{{ row.joinedAt }}</span>
+      </template>
+
+      <!-- Last active muted -->
+      <template #cell-lastActive="{ row }">
+        <span style="font-size: 0.85rem; color: var(--bw-text-muted);">{{ row.lastActive }}</span>
+      </template>
+
+      <!-- Actions -->
+      <template #cell-_actions="{ row }">
+        <div style="display:flex; gap:6px; justify-content:flex-end;">
+          <button
+            v-if="row.status === 'active' && row.role !== 'admin'"
+            class="bw-btn bw-btn--subtle bw-btn--sm"
+            @click.stop="updateUserStatus(row.id, 'suspended')"
+          >Suspend</button>
+          <button
+            v-else-if="row.status === 'suspended'"
+            class="bw-btn bw-btn--ghost bw-btn--sm"
+            @click.stop="updateUserStatus(row.id, 'active')"
+          >Restore</button>
+          <button
+            v-else-if="row.status === 'pending'"
+            class="bw-btn bw-btn--primary bw-btn--sm"
+            @click.stop="updateUserStatus(row.id, 'active')"
+          >Approve</button>
+        </div>
+      </template>
+    </AdminGridTable>
   </div>
 </template>
 
@@ -78,27 +93,53 @@
 import { ref, computed } from 'vue'
 const { users, kpis, updateUserStatus } = useAdminData()
 
-const q = ref('')
-const roleF = ref('all')
+const roleF   = ref('all')
 const statusF = ref('all')
 
-const rows = computed(() => users.value.filter(u => {
-  if (roleF.value !== 'all' && u.role !== roleF.value) return false
-  if (statusF.value !== 'all' && u.status !== statusF.value) return false
-  if (q.value && !`${u.name} ${u.email} ${u.companyName || ''}`.toLowerCase().includes(q.value.toLowerCase())) return false
-  return true
-}))
+const filteredByRoleStatus = computed(() =>
+  users.value.filter(u => {
+    if (roleF.value   !== 'all' && u.role   !== roleF.value)   return false
+    if (statusF.value !== 'all' && u.status !== statusF.value) return false
+    return true
+  })
+)
+
+const columns = [
+  { key: 'name',       label: 'User',        sortable: true,  hideable: false },
+  { key: 'role',       label: 'Role',        sortable: true,  hideable: true  },
+  { key: 'status',     label: 'Status',      sortable: true,  hideable: true  },
+  { key: 'joinedAt',   label: 'Joined',      sortable: false, hideable: true  },
+  { key: 'lastActive', label: 'Last active', sortable: false, hideable: true  },
+  { key: '_actions',   label: '',            sortable: false, hideable: false, width: '120px', align: 'right' as const },
+]
+
+const bulkActions = [
+  { action: 'suspend', label: 'Suspend',  variant: 'danger'  as const },
+  { action: 'approve', label: 'Approve',  variant: 'primary' as const },
+]
+
+function handleBulkAction({ action, rows }: { action: string; rows: any[] }) {
+  rows.forEach(u => {
+    if (action === 'suspend' && u.status === 'active' && u.role !== 'admin') {
+      updateUserStatus(u.id, 'suspended')
+    } else if (action === 'approve' && u.status === 'pending') {
+      updateUserStatus(u.id, 'active')
+    }
+  })
+}
 
 function statusChip(s: string) {
-  if (s === 'active') return 'bw-chip--success'
+  if (s === 'active')    return 'bw-chip--success'
   if (s === 'suspended') return 'bw-chip--danger'
   return 'bw-chip--warning'
 }
 </script>
 
 <style scoped>
-.u-avatar { width: 34px; height: 34px; border-radius: 50%; color: white; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; font-size: 0.88rem; flex-shrink: 0; }
-.u-avatar--admin { background: var(--aw-accent); }
+.user-cell  { display: flex; gap: 10px; align-items: center; }
+.user-email { font-size: 0.78rem; color: var(--bw-text-subtle); margin-top: 1px; }
+.u-avatar   { width: 34px; height: 34px; border-radius: 50%; color: white; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; font-size: 0.88rem; flex-shrink: 0; }
+.u-avatar--admin  { background: var(--aw-accent); }
 .u-avatar--vendor { background: #f59e0b; }
-.u-avatar--buyer { background: #3b82f6; }
+.u-avatar--buyer  { background: #3b82f6; }
 </style>

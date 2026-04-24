@@ -15,6 +15,7 @@ export interface DbUser {
   phone_number: string | null
   role: 'buyer' | 'vendor' | 'admin'
   plan: string
+  email_verified: number
   created_at: string
   updated_at: string
 }
@@ -140,6 +141,7 @@ function createSchema(db: Database.Database) {
       phone_number TEXT,
       role TEXT NOT NULL DEFAULT 'vendor',
       plan TEXT NOT NULL DEFAULT 'Professional',
+      email_verified INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
     );
@@ -187,6 +189,40 @@ function createSchema(db: Database.Database) {
       created_at TEXT NOT NULL,
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     );
+
+    CREATE TABLE IF NOT EXISTS password_reset_tokens (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      token_hash TEXT NOT NULL UNIQUE,
+      expires_at TEXT NOT NULL,
+      used INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_prt_token_hash ON password_reset_tokens(token_hash);
+    CREATE INDEX IF NOT EXISTS idx_prt_user ON password_reset_tokens(user_id);
+
+    CREATE TABLE IF NOT EXISTS email_verifications (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      token_hash TEXT NOT NULL UNIQUE,
+      expires_at TEXT NOT NULL,
+      verified_at TEXT,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_ev_token_hash ON email_verifications(token_hash);
+
+    CREATE TABLE IF NOT EXISTS user_favorites (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      app_id TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      UNIQUE(user_id, app_id),
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (app_id) REFERENCES app_listings(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_uf_user ON user_favorites(user_id);
 
     CREATE TABLE IF NOT EXISTS reviews (
       id TEXT PRIMARY KEY,
@@ -251,6 +287,14 @@ function createSchema(db: Database.Database) {
     CREATE INDEX IF NOT EXISTS idx_events_starts_at ON events(starts_at);
     CREATE INDEX IF NOT EXISTS idx_events_featured ON events(featured);
   `)
+
+  // Idempotent column migrations for existing databases
+  const alterations = [
+    `ALTER TABLE users ADD COLUMN email_verified INTEGER NOT NULL DEFAULT 0`
+  ]
+  for (const sql of alterations) {
+    try { db.exec(sql) } catch { /* column already exists */ }
+  }
 }
 
 function createId(prefix: string) {

@@ -21,18 +21,18 @@
       </select>
     </div>
 
-    <div v-if="rows.length === 0" class="bw-card" style="text-align: center; padding: 48px 24px;">
-      <h2 class="bw-card__title">Nothing here.</h2>
-      <p style="color: var(--aw-text-muted); margin: 8px 0 0;">No tickets match this filter.</p>
+    <div v-if="rows.length === 0" class="bw-empty">
+      <p class="bw-empty__title">Nothing here.</p>
+      <p class="bw-empty__desc">No tickets match this filter.</p>
     </div>
 
     <ul v-else class="sp-list">
       <li v-for="t in rows" :key="t.id" class="bw-card">
-        <div style="display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap;">
+        <div class="sp-item-head">
           <span class="bw-chip" :class="kindChip(t.kind)">{{ kindLabel(t.kind) }}</span>
-          <div style="flex: 1; min-width: 240px;">
-            <h3 style="font-size: 1rem; font-weight: 700; margin: 0 0 4px;">{{ t.subject }}</h3>
-            <div style="font-size: 0.82rem; color: var(--aw-text-muted);">
+          <div class="sp-item-body">
+            <h3 class="sp-item-title">{{ t.subject }}</h3>
+            <div class="sp-item-meta">
               From <strong>{{ t.from }}</strong>
               <template v-if="t.against"> · against <strong>{{ t.against }}</strong></template>
               <template v-if="t.amount"> · ${{ t.amount }}</template>
@@ -41,8 +41,8 @@
           </div>
           <span class="bw-chip" :class="t.status === 'open' ? 'bw-chip--warning' : 'bw-chip--success'">{{ t.status }}</span>
         </div>
-        <p style="font-size: 0.9rem; line-height: 1.6; margin: 14px 0 0;">{{ t.description }}</p>
-        <div v-if="t.status === 'open'" style="display: flex; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--aw-border);">
+        <p class="sp-desc">{{ t.description }}</p>
+        <div v-if="t.status === 'open'" class="sp-actions">
           <button class="bw-btn bw-btn--primary bw-btn--sm" @click="resolveTicket(t.id)">Resolve</button>
         </div>
       </li>
@@ -75,5 +75,11 @@ function kindLabel(k: string) {
 </script>
 
 <style scoped>
-.sp-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
+.sp-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+.sp-item-head { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+.sp-item-body { flex: 1; min-width: 240px; }
+.sp-item-title { font-size: 0.95rem; font-weight: 700; margin: 0 0 4px; }
+.sp-item-meta { font-size: 0.82rem; color: var(--aw-text-muted); }
+.sp-desc { font-size: 0.88rem; line-height: 1.6; margin: 12px 0 0; color: var(--aw-text); }
+.sp-actions { display: flex; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--aw-border); }
 </style>

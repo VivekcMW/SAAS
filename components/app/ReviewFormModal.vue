@@ -65,11 +65,9 @@
             Rating *
           </label>
           <div class="flex items-center gap-4">
-            <StarRating 
-              :rating="formData.rating"
+            <Rating 
+              v-model="formData.rating"
               size="lg"
-              interactive
-              @rate="formData.rating = $event"
             />
             <span class="text-lg font-semibold text-gray-900 dark:text-white">
               {{ formData.rating > 0 ? `${formData.rating}/5` : 'Select rating' }}

@@ -9,6 +9,12 @@
         <p class="subtitle">Sign in to your SaaSWorld account</p>
       </header>
 
+      <!-- Email verified banner -->
+      <div v-if="route.query.verified === '1'" class="verified-banner" role="status">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Email verified! You can now sign in.
+      </div>
+
       <!-- Social login -->
       <div class="social-row">
         <button
@@ -142,6 +148,8 @@ import { ref, reactive, watchEffect } from 'vue'
 
 definePageMeta({ layout: false })
 
+const route = useRoute()
+
 useHead({
   title: 'Sign in — SaaSWorld',
   meta: [
@@ -259,6 +267,20 @@ const tryDemo = async (d: DemoAccount) => {
 }
 
 .auth-head { text-align: center; margin-bottom: 24px; }
+
+.verified-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: var(--bw-radius-sm, 8px);
+  color: #166534;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 10px 14px;
+  margin-bottom: 20px;
+}
 .auth-logo { display: inline-flex; margin-bottom: 18px; }
 .auth-logo .logo { height: 34px; width: auto; }
 .auth-head h1 {

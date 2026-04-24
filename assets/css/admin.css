@@ -13,7 +13,7 @@
   --aw-text-subtle: #64748b;
 }
 
-.aw { padding: 24px; color: var(--aw-text); }
+.aw { padding: 0; color: var(--aw-text); }
 
 /* Accent chip */
 .aw-accent-chip {

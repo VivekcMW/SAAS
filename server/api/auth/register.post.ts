@@ -1,6 +1,13 @@
-import { createSession, createUser, getSessionUser } from '~/server/utils/auth'
+import { createEmailVerificationToken, createSession, createUser, getSessionUser } from '~/server/utils/auth'
+import { buildWelcomeEmail, sendEmail } from '~/server/utils/email'
+import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
 
 export default defineEventHandler(async (event) => {
+  // 5 registrations per hour per IP
+  if (!checkRateLimit(getClientIp(event), { limit: 5, windowMs: 60 * 60 * 1000, prefix: 'register' })) {
+    throw createError({ statusCode: 429, statusMessage: 'Too many registration attempts. Please try again later.' })
+  }
+
   const body = await readBody(event)
 
   if (!body?.firstName || !body?.lastName || !body?.email || !body?.password) {
@@ -38,6 +45,21 @@ export default defineEventHandler(async (event) => {
   }
 
   createSession(event, user.id, true)
+
+  // Send welcome + email verification (fire-and-forget)
+  try {
+    const rawToken = createEmailVerificationToken(user.id)
+    const baseUrl = process.env.SITE_URL || 'http://localhost:3000'
+    const verifyUrl = `${baseUrl}/api/auth/verify-email?token=${rawToken}`
+    sendEmail(buildWelcomeEmail({
+      to: user.email,
+      firstName: user.firstName,
+      role: user.role,
+      verifyUrl
+    })).catch(err => console.error('[register] welcome email failed:', err))
+  } catch (err) {
+    console.error('[register] failed to create verification token:', err)
+  }
 
   return {
     success: true,

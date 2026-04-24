@@ -1,4 +1,5 @@
 import { getMarketplaceAppByIdOrSlug } from '~/server/utils/apps'
+import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
 
 /**
  * POST /api/ai/app-summary
@@ -10,6 +11,10 @@ import { getMarketplaceAppByIdOrSlug } from '~/server/utils/apps'
  * Body: { appId: string, context?: 'default' | 'sales' | 'engineering' | 'marketing' }
  */
 export default defineEventHandler(async (event) => {
+  if (!checkRateLimit(getClientIp(event), { limit: 20, windowMs: 60 * 60 * 1000, prefix: 'ai-summary' })) {
+    throw createError({ statusCode: 429, statusMessage: 'AI rate limit reached. Please try again later.' })
+  }
+
   const body = await readBody<{ appId?: string; context?: string }>(event)
   const appId = body?.appId
 

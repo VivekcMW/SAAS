@@ -40,15 +40,6 @@
         </NuxtLink>
       </template>
     </nav>
-
-    <div class="dash-sidebar__foot">
-      <button type="button" class="dash-sidebar__link dash-sidebar__logout" @click="$emit('logout')" :title="collapsed ? 'Sign out' : undefined">
-        <span class="dash-sidebar__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
-        </span>
-        <span v-if="!collapsed" class="dash-sidebar__label">Sign out</span>
-      </button>
-    </div>
   </aside>
 </template>
 
@@ -71,10 +62,7 @@ const props = defineProps<{
   collapsed: boolean
 }>()
 
-defineEmits<{
-  (e: 'toggle'): void
-  (e: 'logout'): void
-}>()
+defineEmits<{ (e: 'toggle'): void }>()
 
 const route = useRoute()
 
@@ -189,14 +177,8 @@ const adminGroups: NavGroup[] = [
       { to: '/dashboard/support', label: 'Support', icon: ICONS.inbox }
     ]
   },
-  {
-    title: 'System',
-    items: [
-      { to: '/dashboard/activity', label: 'Activity log', icon: ICONS.file },
-      { to: '/dashboard/settings', label: 'Settings', icon: ICONS.user }
-    ]
-  }
 ]
+// System items moved to topbar user dropdown
 
 const groups = computed<NavGroup[]>(() => {
   if (props.role === 'vendor') return vendorGroups
@@ -225,9 +207,9 @@ const groups = computed<NavGroup[]>(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 16px;
+  padding: 10px 16px;
   border-bottom: 1px solid #f0efec;
-  min-height: 68px;
+  min-height: 52px;
 }
 .dash-sidebar__logo {
   display: inline-flex;
@@ -352,14 +334,6 @@ const groups = computed<NavGroup[]>(() => {
 
 .dash-sidebar.is-collapsed .dash-sidebar__nav { padding: 12px 8px 20px; }
 .dash-sidebar.is-collapsed .dash-sidebar__link { justify-content: center; padding: 10px 8px; }
-
-.dash-sidebar__foot {
-  padding: 10px 12px 16px;
-  border-top: 1px solid #f0efec;
-}
-.dash-sidebar__logout { color: #52525b; }
-.dash-sidebar__logout:hover { background: #fef2f2; color: #dc2626; }
-.dash-sidebar__logout:hover .dash-sidebar__icon { color: #dc2626; }
 
 /* Mobile — hide sidebar by default, overlay when open */
 @media (max-width: 900px) {

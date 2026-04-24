@@ -37,13 +37,44 @@ export default defineNuxtConfig({
 
   // Per-route headers — embed pages must be iframe-safe
   routeRules: {
+    // Default security headers for all routes
+    '/**': {
+      headers: {
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'SAMEORIGIN',
+        'X-XSS-Protection': '1; mode=block',
+        'Referrer-Policy': 'strict-origin-when-cross-origin',
+        'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+        'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+        'Content-Security-Policy': [
+          "default-src 'self'",
+          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://www.googletagmanager.com",
+          "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+          "font-src 'self' https://fonts.gstatic.com",
+          "img-src 'self' data: blob: https:",
+          "connect-src 'self' https://api.openai.com https://api.stability.ai",
+          "frame-ancestors 'self'",
+          "base-uri 'self'",
+          "form-action 'self'"
+        ].join('; ')
+      }
+    },
+    // Embed pages must allow cross-origin iframing
     '/embed/**': {
       headers: {
         'X-Frame-Options': 'ALLOWALL',
         'Content-Security-Policy': "frame-ancestors *",
         'Cache-Control': 'public, max-age=300, s-maxage=600'
       }
-    }
+    },
+    // Cache static marketplace pages
+    '/marketplace': { headers: { 'Cache-Control': 'public, max-age=60, s-maxage=300' } },
+    '/marketplace/**': { headers: { 'Cache-Control': 'public, max-age=60, s-maxage=300' } },
+    // Never cache auth or dashboard routes
+    '/login': { headers: { 'Cache-Control': 'no-store' } },
+    '/signup': { headers: { 'Cache-Control': 'no-store' } },
+    '/dashboard/**': { headers: { 'Cache-Control': 'no-store' } },
+    '/api/auth/**': { headers: { 'Cache-Control': 'no-store' } }
   },
 
   // Configure @nuxt/icon

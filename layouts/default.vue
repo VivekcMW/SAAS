@@ -3,7 +3,6 @@
   <div class="site-layout">
     <GlobalMarketBanner />
     <Navbar />
-    <!-- <CategoriesMenu /> -->
     <main class="site-main">
       <slot />
     </main>
@@ -18,8 +17,6 @@
 </template>
 
 <script setup lang="ts">
-// Import components
-// import CategoriesMenu from '~/components/CategoriesMenu.vue';
 </script>
 
 <style scoped>

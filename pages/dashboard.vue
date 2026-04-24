@@ -4,11 +4,10 @@
       :role="currentUser?.role ?? null"
       :collapsed="sidebarCollapsed"
       @toggle="sidebarCollapsed = !sidebarCollapsed"
-      @logout="onLogout"
     />
 
     <div class="dash-shell__main">
-      <DashTopbar :user="currentUser" @toggleSidebar="sidebarCollapsed = !sidebarCollapsed" />
+      <DashTopbar :user="currentUser" @toggleSidebar="sidebarCollapsed = !sidebarCollapsed" @logout="onLogout" />
       <main class="dash-shell__content">
         <NuxtPage />
       </main>
@@ -55,7 +54,7 @@ const onLogout = async () => {
 <style scoped>
 .dash-shell {
   min-height: 100vh;
-  background: #fbfaf8;
+  background: var(--bw-bg, #FAFAF7);
 }
 
 .dash-shell__main {
@@ -69,13 +68,14 @@ const onLogout = async () => {
 
 .dash-shell__content {
   flex: 1;
-  padding: 2rem 2rem 3rem;
-  max-width: 1400px;
+  padding: 24px;
   width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 @media (max-width: 900px) {
   .dash-shell__main { margin-left: 0 !important; }
-  .dash-shell__content { padding: 1.5rem 1rem 2.5rem; }
+  .dash-shell__content { padding: 16px; }
 }
 </style>
