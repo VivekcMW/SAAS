@@ -120,7 +120,7 @@ const dynamicTitle = computed(() => {
     case 'forgot-password':
       return 'Reset Password';
     default:
-      return 'Welcome to SaaSWorld';
+      return 'Welcome to Moonmart';
   }
 });
 
@@ -253,7 +253,7 @@ watch(() => props.initialMode, (newMode) => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(7, 9, 15, 0.75);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -273,13 +273,12 @@ watch(() => props.initialMode, (newMode) => {
   width: 100%;
   max-width: 600px;
   min-height: 600px;
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  background-color: var(--mm-s1);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lg);
   overflow: hidden;
   transform: translateY(-50px);
-  opacity: 0;
-  transition: all 0.3s ease;
   opacity: 0;
   transition: transform 0.3s ease, opacity 0.3s ease;
   display: flex;
@@ -301,32 +300,32 @@ watch(() => props.initialMode, (newMode) => {
   align-items: center;
   justify-content: space-between;
   padding: 1.5rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 0.5px solid var(--b1);
 }
 
 .modal-header h2 {
   margin: 0;
   font-size: 1.5rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--mm-pearl);
 }
 
 .close-button {
   background: transparent;
   border: none;
-  color: #6b7280;
+  color: var(--mm-slate);
   cursor: pointer;
   padding: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: var(--r-md);
   transition: all 0.2s ease;
 }
 
 .close-button:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-  color: #1f2937;
+  background-color: var(--mm-s3);
+  color: var(--mm-pearl);
 }
 
 .modal-body {
@@ -346,7 +345,7 @@ watch(() => props.initialMode, (newMode) => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: white;
+  background-color: var(--mm-s1);
   padding: var(--spacing-lg);
   display: flex;
   flex-direction: column;
@@ -365,7 +364,7 @@ watch(() => props.initialMode, (newMode) => {
 .back-button {
   background: none;
   border: none;
-  color: var(--primary-color);
+  color: var(--mm-gold);
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
@@ -384,7 +383,7 @@ watch(() => props.initialMode, (newMode) => {
 }
 
 .forgot-password-container p {
-  color: var(--text-secondary);
+  color: var(--mm-slate);
   margin-bottom: var(--spacing-lg);
 }
 
@@ -400,10 +399,10 @@ watch(() => props.initialMode, (newMode) => {
   align-items: flex-start;
   gap: var(--spacing-sm);
   padding: var(--spacing-md);
-  background-color: rgba(82, 196, 26, 0.1);
-  border: 1px solid rgba(82, 196, 26, 0.3);
-  border-radius: var(--border-radius-md);
-  color: #52c41a;
+  background-color: var(--mm-sea-soft);
+  border: 0.5px solid var(--mm-sea);
+  border-radius: var(--r-sm);
+  color: var(--mm-seal);
 }
 
 .success-message p {
@@ -421,29 +420,31 @@ label {
   display: block;
   font-weight: 500;
   margin-bottom: var(--spacing-xs);
-  color: var(--text-primary);
+  color: var(--mm-silver);
 }
 
 input[type="email"] {
   padding: var(--spacing-md);
-  border: 1px solid var(--color-gray-300);
-  border-radius: var(--border-radius-md);
+  background: var(--mm-s2);
+  color: var(--mm-pearl);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
   font-size: 1rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 input:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.2);
+  border-color: var(--mm-gold);
+  box-shadow: 0 0 0 3px var(--mm-gold-soft);
 }
 
 input.error {
-  border-color: #ff4d4f;
+  border-color: #dc2626;
 }
 
 .error-message {
-  color: #ff4d4f;
+  color: #dc2626;
   font-size: 0.85rem;
   margin-top: var(--spacing-xs);
   margin-bottom: 0;
@@ -452,10 +453,10 @@ input.error {
 .submit-button {
   width: 100%;
   padding: var(--spacing-md);
-  background-color: var(--primary-color);
-  color: white;
+  background-color: var(--mm-gold);
+  color: #0A0700;
   border: none;
-  border-radius: var(--border-radius-md);
+  border-radius: var(--r-sm);
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
@@ -467,11 +468,12 @@ input.error {
 }
 
 .forgot-password-container .submit-button:hover {
-  background-color: var(--color-primary-dark);
+  background-color: var(--mm-goldl);
 }
 
 .submit-button:disabled {
-  background-color: var(--color-gray-400);
+  background-color: var(--mm-s3);
+  color: var(--mm-slate);
   cursor: not-allowed;
 }
 

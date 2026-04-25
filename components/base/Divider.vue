@@ -24,15 +24,15 @@ withDefaults(defineProps<Props>(), {
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #9ca3af;
-  font-size: 12px;
+  color: var(--mm-slate);
+  font-size: var(--t-xs);
 }
 .divider-h::before,
 .divider-h::after {
   content: "";
   flex: 1;
   height: 0.5px;
-  background: #e5e7eb;
+  background: var(--b1);
 }
 .divider-h:not(:has(.divider-label))::after { display: none; }
 
@@ -46,7 +46,7 @@ withDefaults(defineProps<Props>(), {
   display: inline-block;
   width: 0.5px;
   align-self: stretch;
-  background: #e5e7eb;
+  background: var(--b1);
   margin: 0 8px;
 }
 </style>

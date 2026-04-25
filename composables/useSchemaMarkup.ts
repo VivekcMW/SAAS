@@ -9,11 +9,11 @@ export const useSchemaMarkup = () => {
     return {
       '@context': 'https://schema.org',
       '@type': 'Organization',
-      name: 'SaaSWorld',
-      url: 'https://saasworld.com',
+      name: 'Moonmart',
+      url: 'https://moonmart.ai',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://saasworld.com/assets/images/logo.png',
+        url: 'https://moonmart.ai/assets/images/logo.png',
         width: 400,
         height: 400
       },
@@ -26,8 +26,8 @@ export const useSchemaMarkup = () => {
       contactPoint: {
         '@type': 'ContactPoint',
         contactType: 'customer service',
-        email: 'support@saasworld.com',
-        url: 'https://saasworld.com/contact'
+        email: 'support@moonmart.ai',
+        url: 'https://moonmart.ai/contact'
       },
       sameAs: [
         'https://twitter.com/saasworld',
@@ -42,23 +42,23 @@ export const useSchemaMarkup = () => {
     return {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
-      name: 'SaaSWorld',
-      url: 'https://saasworld.com',
+      name: 'Moonmart',
+      url: 'https://moonmart.ai',
       description: 'Global software marketplace for business solutions',
       potentialAction: {
         '@type': 'SearchAction',
         target: {
           '@type': 'EntryPoint',
-          urlTemplate: 'https://saasworld.com/marketplace?search={search_term_string}'
+          urlTemplate: 'https://moonmart.ai/marketplace?search={search_term_string}'
         },
         'query-input': 'required name=search_term_string'
       },
       publisher: {
         '@type': 'Organization',
-        name: 'SaaSWorld',
+        name: 'Moonmart',
         logo: {
           '@type': 'ImageObject',
-          url: 'https://saasworld.com/assets/images/logo.png'
+          url: 'https://moonmart.ai/assets/images/logo.png'
         }
       }
     }
@@ -107,8 +107,8 @@ export const useSchemaMarkup = () => {
       featureList: app.features,
       publisher: {
         '@type': 'Organization',
-        name: 'SaaSWorld',
-        url: 'https://saasworld.com'
+        name: 'Moonmart',
+        url: 'https://moonmart.ai'
       }
     }
   }
@@ -220,10 +220,10 @@ export const useSchemaMarkup = () => {
       },
       publisher: {
         '@type': 'Organization',
-        name: 'SaaSWorld',
+        name: 'Moonmart',
         logo: {
           '@type': 'ImageObject',
-          url: 'https://saasworld.com/assets/images/logo.png'
+          url: 'https://moonmart.ai/assets/images/logo.png'
         }
       },
       image: post.image ? {

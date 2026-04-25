@@ -1,13 +1,13 @@
 /**
- * Advanced Robots.txt Generation for SaasWorld
+ * Advanced Robots.txt Generation for Moonmart
  * Implements strategic crawling directives for optimal indexing
  * Based on the Global SEO Strategy guidelines
  */
 
 export default defineEventHandler(async (event) => {
-  const baseUrl = 'https://saasworld.com'
+  const baseUrl = 'https://moonmart.ai'
   
-  const robotsTxt = `# SaaSWorld Robots.txt - Optimized for Global SEO Strategy
+  const robotsTxt = `# Moonmart Robots.txt - Optimized for Global SEO Strategy
 # Generated: ${new Date().toISOString()}
 
 # Allow all crawlers by default

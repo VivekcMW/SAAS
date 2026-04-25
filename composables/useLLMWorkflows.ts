@@ -132,8 +132,8 @@ export const useLLMWorkflows = () => {
           dependencies: ['analyze-results']
         }
       ],
-      onSuccess: ['admin@saasworld.com'],
-      onFailure: ['admin@saasworld.com', 'dev@saasworld.com']
+      onSuccess: ['admin@moonmart.ai'],
+      onFailure: ['admin@moonmart.ai', 'dev@moonmart.ai']
     },
     
     'quick-optimization': {

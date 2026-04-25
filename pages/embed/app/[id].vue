@@ -43,7 +43,7 @@ const detailsUrl = computed(() => {
 })
 
 useHead({
-  title: app.value ? `${app.value.name} | SaaSWorld` : 'SaaSWorld',
+  title: app.value ? `${app.value.name} | Moonmart` : 'Moonmart',
   meta: [
     { name: 'robots', content: 'noindex, follow' }
   ]
@@ -54,7 +54,7 @@ useHead({
   <div class="embed-shell">
     <div v-if="error || !app" class="embed-empty">
       <p>App not found.</p>
-      <a href="https://saasworld.app/marketplace" target="_blank" rel="noopener">Browse SaaSWorld</a>
+      <a href="https://saasworld.app/marketplace" target="_blank" rel="noopener">Browse Moonmart</a>
     </div>
 
     <article v-else class="embed-card">
@@ -67,7 +67,7 @@ useHead({
           <p v-if="app.provider" class="embed-provider">by {{ app.provider }}</p>
         </div>
         <a class="embed-brand" href="https://saasworld.app" target="_blank" rel="noopener">
-          SaaSWorld
+          Moonmart
         </a>
       </header>
 
@@ -91,9 +91,9 @@ useHead({
 
       <footer class="embed-footer">
         <a class="embed-cta" :href="detailsUrl" target="_blank" rel="noopener">
-          View on SaaSWorld
+          View on Moonmart
         </a>
-        <span class="embed-fineprint">Embed by SaaSWorld</span>
+        <span class="embed-fineprint">Embed by Moonmart</span>
       </footer>
     </article>
   </div>
@@ -103,7 +103,7 @@ useHead({
 * { box-sizing: border-box; }
 
 .embed-shell {
-  font-family: var(--font-primary, 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif);
+  font-family: var(--font-primary, 'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif);
   padding: 12px;
   background: transparent;
 }

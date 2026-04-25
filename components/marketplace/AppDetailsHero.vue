@@ -151,8 +151,8 @@ const emit = defineEmits<{
 <style scoped>
 .app-hero {
   padding: 3rem 0;
-  background: linear-gradient(to bottom, rgba(249, 250, 251, 0.8), white);
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--mm-bg);
+  border-bottom: .5px solid var(--b1);
 }
 
 .container {
@@ -176,11 +176,11 @@ const emit = defineEmits<{
 .app-logo {
   width: 120px;
   height: 120px;
-  border-radius: 16px;
+  border-radius: var(--r-lg);
   overflow: hidden;
-  background: white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e5e7eb;
+  background: var(--mm-s2);
+  box-shadow: var(--shadow-sm);
+  border: .5px solid var(--b2);
 }
 
 .app-logo img {
@@ -198,12 +198,12 @@ const emit = defineEmits<{
   font-size: 2.5rem;
   font-weight: 700;
   margin: 0 0 0.5rem;
-  color: #111827;
+  color: var(--mm-pearl);
 }
 
 .app-provider {
   font-size: 1.1rem;
-  color: #4b5563;
+  color: var(--mm-silver);
   margin: 0 0 1rem;
 }
 
@@ -226,21 +226,21 @@ const emit = defineEmits<{
 }
 
 .stars i {
-  color: #d1d5db;
+  color: var(--b3);
 }
 
 .stars i.filled {
-  color: #fbbf24;
+  color: var(--mm-gold);
 }
 
 .rating-score {
   font-weight: 600;
   margin-left: 0.5rem;
-  color: #111827;
+  color: var(--mm-pearl);
 }
 
 .rating-count {
-  color: #6b7280;
+  color: var(--mm-slate);
   font-size: 0.9rem;
 }
 
@@ -252,11 +252,12 @@ const emit = defineEmits<{
 
 .category-tag {
   padding: 0.25rem 0.75rem;
-  background-color: #f3f4f6;
-  color: #374151;
-  border-radius: 1rem;
-  font-size: 0.875rem;
+  background: var(--mm-s3);
+  color: var(--mm-silver);
+  border-radius: var(--r-full);
+  font-size: var(--t-sm);
   font-weight: 500;
+  border: .5px solid var(--b1);
 }
 
 .hero-actions {
@@ -275,7 +276,7 @@ const emit = defineEmits<{
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+  border-radius: var(--r-full);
   font-weight: 500;
   transition: all 0.2s ease;
   cursor: pointer;
@@ -287,58 +288,61 @@ const emit = defineEmits<{
 }
 
 .btn-primary {
-  background: #2563eb;
-  color: white;
+  background: var(--mm-gold);
+  color: #0A0700;
   border: none;
 }
 
 .btn-primary:hover {
-  background: #1d4ed8;
+  background: var(--mm-goldl);
   transform: translateY(-1px);
 }
 
 .btn-outline {
-  background: white;
-  color: #2563eb;
-  border: 2px solid #2563eb;
+  background: transparent;
+  color: var(--mm-gold);
+  border: .5px solid var(--mm-gold);
 }
 
 .btn-outline:hover {
-  background: rgba(37, 99, 235, 0.05);
+  background: var(--mm-gold-soft);
   transform: translateY(-1px);
 }
 
 .btn-outline.is-favorite {
-  background: #2563eb;
-  color: white;
+  background: var(--mm-gold);
+  color: #0A0700;
 }
 
 .pricing-badge {
   padding: 0.5rem 1rem;
-  border-radius: 8px;
+  border-radius: var(--r-full);
   font-weight: 600;
   font-size: 1.1rem;
 }
 
 .pricing-badge.free {
-  background: #dcfce7;
-  color: #15803d;
+  background: var(--mm-sea-soft);
+  color: var(--mm-seal);
+  border: .5px solid var(--mm-sea);
 }
 
 .pricing-badge.paid {
-  background: #dbeafe;
-  color: #1e40af;
+  background: var(--mm-blue-soft);
+  color: var(--mm-bluel);
+  border: .5px solid var(--mm-blue);
 }
 
 .pricing-badge.custom {
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--mm-gold-soft);
+  color: var(--mm-goldl);
+  border: .5px solid var(--mm-gold);
 }
 
 .app-description {
   font-size: 1.1rem;
   line-height: 1.6;
-  color: #4b5563;
+  color: var(--mm-silver);
   max-width: 800px;
 }
 
@@ -354,18 +358,18 @@ const emit = defineEmits<{
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  border: 1px solid #e5e7eb;
+  background: var(--mm-s2);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  border: .5px solid var(--b1);
 }
 
 .stat-item i {
   font-size: 1.5rem;
-  color: #2563eb;
-  background: rgba(37, 99, 235, 0.1);
+  color: var(--mm-goldl);
+  background: var(--mm-gold-soft);
   padding: 1rem;
-  border-radius: 10px;
+  border-radius: var(--r-md);
 }
 
 .stat-info {
@@ -376,12 +380,12 @@ const emit = defineEmits<{
 .stat-value {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--mm-pearl);
 }
 
 .stat-label {
-  font-size: 0.875rem;
-  color: #6b7280;
+  font-size: var(--t-sm);
+  color: var(--mm-slate);
 }
 
 @media (max-width: 768px) {

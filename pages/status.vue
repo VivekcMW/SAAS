@@ -35,22 +35,22 @@
 const { applySEO, generateHreflangTags } = useSEO()
 
 applySEO({
-  title: 'System Status - SaasWorld',
-  description: 'Real-time status of SaasWorld systems, services, and integrations. Check current uptime, incidents, and maintenance schedules.',
+  title: 'System Status - Moonmart',
+  description: 'Real-time status of Moonmart systems, services, and integrations. Check current uptime, incidents, and maintenance schedules.',
   keywords: 'saasworld status, system status, uptime, service health, api status, integration status, incidents, maintenance',
-  canonical: 'https://saasworld.com/status',
+  canonical: 'https://moonmart.ai/status',
   ogType: 'website',
   hreflang: generateHreflangTags('/status'),
   jsonLd: {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
-    name: 'SaasWorld System Status',
-    description: 'Real-time status page showing the health of SaasWorld systems and services',
-    url: 'https://saasworld.com/status',
+    name: 'Moonmart System Status',
+    description: 'Real-time status page showing the health of Moonmart systems and services',
+    url: 'https://moonmart.ai/status',
     mainEntity: {
       '@type': 'MonitoringSystem',
-      name: 'SaasWorld Status Monitor',
-      description: 'Continuous monitoring of SaasWorld platform health'
+      name: 'Moonmart Status Monitor',
+      description: 'Continuous monitoring of Moonmart platform health'
     }
   }
 })
@@ -65,14 +65,14 @@ const {
 
 // Page Title
 useHead({
-  title: 'System Status - SaasWorld'
+  title: 'System Status - Moonmart'
 })
 </script>
 
 <style scoped>
 .status-page {
   min-height: 100vh;
-  background: #f9fafb;
+  background: var(--mm-bg);
 }
 
 .container {
@@ -91,12 +91,12 @@ useHead({
 
 .uptime-section {
   padding: 2rem 0;
-  background: #f9fafb;
+  background: var(--mm-s1);
 }
 
 .incidents-section {
   padding: 3rem 0;
-  background: white;
+  background: var(--mm-bg);
 }
 
 /* Responsive */

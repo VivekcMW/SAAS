@@ -4,7 +4,7 @@
     eyebrow="Legal · Privacy rights"
     lede="Exercise the rights you have over your personal data under GDPR, CCPA/CPRA, and similar laws — in one place."
     :updated="updatedAt"
-    contact-email="privacy@saasworld.com"
+    contact-email="privacy@moonmart.ai"
     :sections="tocSections"
   >
     <div class="prose prose-lg max-w-none">
@@ -14,7 +14,7 @@
           No matter where you live, you can ask us to tell you what personal data we hold
           about you, correct it, export it, or delete it. If you are in the EU/EEA/UK or
           California, additional rights apply — summarised below. To exercise any of them,
-          email <a href="mailto:privacy@saasworld.com">privacy@saasworld.com</a> from the
+          email <a href="mailto:privacy@moonmart.ai">privacy@moonmart.ai</a> from the
           address associated with your account.
         </p>
       </section>
@@ -63,7 +63,7 @@
           Residents of <strong>Brazil</strong> (LGPD), <strong>Canada</strong> (PIPEDA) and
           a growing list of US states (Colorado, Virginia, Connecticut, Utah and others)
           have broadly similar rights. Contact us at
-          <a href="mailto:privacy@saasworld.com">privacy@saasworld.com</a> and we will apply
+          <a href="mailto:privacy@moonmart.ai">privacy@moonmart.ai</a> and we will apply
           the protections your local law requires.
         </p>
       </section>
@@ -71,7 +71,7 @@
       <section id="how">
         <h2>5. How to submit a request</h2>
         <ol>
-          <li>Email <a href="mailto:privacy@saasworld.com">privacy@saasworld.com</a> from the address on your account.</li>
+          <li>Email <a href="mailto:privacy@moonmart.ai">privacy@moonmart.ai</a> from the address on your account.</li>
           <li>Tell us which right you're exercising and, if relevant, the data you're asking about.</li>
           <li>We will confirm receipt within <strong>5 business days</strong>.</li>
           <li>We will respond substantively within the statutory window — generally <strong>30 days</strong> (GDPR) or <strong>45 days</strong> (CCPA), extendable once when necessary.</li>
@@ -104,8 +104,8 @@
       <section id="contact">
         <h2>8. Contact</h2>
         <div class="contact-info">
-          <p><strong>Privacy team:</strong> <a href="mailto:privacy@saasworld.com">privacy@saasworld.com</a></p>
-          <p><strong>Data Protection Officer (EU):</strong> <a href="mailto:dpo@saasworld.com">dpo@saasworld.com</a></p>
+          <p><strong>Privacy team:</strong> <a href="mailto:privacy@moonmart.ai">privacy@moonmart.ai</a></p>
+          <p><strong>Data Protection Officer (EU):</strong> <a href="mailto:dpo@moonmart.ai">dpo@moonmart.ai</a></p>
           <p><strong>Related:</strong> <NuxtLink to="/privacy">Privacy Policy</NuxtLink> · <NuxtLink to="/cookies">Cookie Policy</NuxtLink> · <NuxtLink to="/dpa">DPA</NuxtLink></p>
         </div>
       </section>
@@ -132,9 +132,9 @@ const tocSections = [
 ]
 
 applySEO({
-  title: 'Your privacy choices | SaaSWorld',
+  title: 'Your privacy choices | Moonmart',
   description: 'Exercise your rights under GDPR, CCPA and similar privacy laws.',
-  canonical: 'https://saasworld.com/privacy-choices',
+  canonical: 'https://moonmart.ai/privacy-choices',
   ogType: 'website'
 })
 </script>

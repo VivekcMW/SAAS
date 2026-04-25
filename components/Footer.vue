@@ -1,15 +1,15 @@
-<!-- Footer component for SaaSWorld -->
+<!-- Footer component for Moonmart -->
 <template>
   <footer class="footer">
     <div class="container">
       <div class="footer-top">
         <div class="footer-brand">
           <NuxtLink to="/" class="footer-logo">
-            <SaasworldLogo class="logo-icon" />
-            <span>SaaS<span class="logo-accent">World</span></span>
+            <MoonmartLogo class="logo-icon" variant="nav" />
+            <span>Moon<span class="logo-accent">mart</span></span>
           </NuxtLink>
           <p class="brand-description">
-            The global software marketplace — compare, shortlist and deploy SaaS tools for every team.
+            Your world of software, connected. Discover, compare, and launch the right SaaS for every team.
           </p>
           <div class="social-links">
             <a href="#" aria-label="Twitter"><UIcon dynamic name="i-simple-icons-twitter" /></a>
@@ -70,7 +70,7 @@
 
       <div class="footer-bottom">
         <div class="footer-bottom-left">
-          <p class="copyright">&copy; {{ new Date().getFullYear() }} SaaSWorld, Inc.</p>
+          <p class="copyright">&copy; {{ new Date().getFullYear() }} Moonmart, Inc.</p>
           <nav class="legal-links" aria-label="Legal">
             <NuxtLink to="/terms">Terms</NuxtLink>
             <span class="legal-dot">·</span>
@@ -117,14 +117,14 @@ const currentLanguage = ref('en');
 
 <style scoped>
 /* ───────────────────────────────────────────────────────────
-   SaaSWorld Footer — light, theme-aligned
+   Moonmart Footer — dark theme
    ─────────────────────────────────────────────────────────── */
 .footer {
-  background-color: #FAFAF9;
-  color: var(--sw-text-muted);
+  background-color: var(--mm-s1, #0F1220);
+  color: var(--mm-silver, #A8B5CC);
   padding: 44px 0 20px;
-  border-top: 1px solid #E7E5E4;
-  font-family: var(--font-primary);
+  border-top: 0.5px solid var(--mm-border, rgba(168,180,204,.1));
+  font-family: var(--f-ui);
 }
 
 .container {
@@ -133,13 +133,13 @@ const currentLanguage = ref('en');
   padding: 0 24px;
 }
 
-/* ── Top grid: brand + 3 link columns ───────────────────── */
+/* ── Top grid: brand + 4 link columns ───────────────────── */
 .footer-top {
   display: grid;
   grid-template-columns: 1.6fr repeat(4, 1fr);
   gap: 40px;
   padding-bottom: 28px;
-  border-bottom: 1px solid #E7E5E4;
+  border-bottom: 0.5px solid var(--mm-border, rgba(168,180,204,.1));
 }
 
 /* Brand column */
@@ -149,20 +149,20 @@ const currentLanguage = ref('en');
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: var(--sw-text);
-  font-family: var(--font-display);
+  color: var(--mm-pearl, #F2F4F8);
+  font-family: var(--f-display);
   font-size: 1.25rem;
   font-weight: 700;
   text-decoration: none;
   margin-bottom: 14px;
 }
 .logo-icon { width: 32px; height: 32px; flex-shrink: 0; }
-.logo-accent { color: var(--sw-primary); }
+.logo-accent { color: var(--mm-gold, #D4A843); }
 
 .brand-description {
-  color: var(--sw-text-muted);
+  color: var(--mm-silver, #A8B5CC);
   font-size: 0.875rem;
-  line-height: 1.5;
+  line-height: 1.55;
   margin: 0 0 16px;
   max-width: 340px;
 }
@@ -178,16 +178,17 @@ const currentLanguage = ref('en');
   justify-content: center;
   width: 34px;
   height: 34px;
-  background: #fff;
-  border: 1px solid #E7E5E4;
-  border-radius: 6px;
-  color: var(--sw-text-muted);
+  background: var(--mm-s2, #161B2E);
+  border: 0.5px solid var(--mm-border, rgba(168,180,204,.1));
+  border-radius: var(--r-sm, 6px);
+  color: var(--mm-slate, #68788F);
   text-decoration: none;
-  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+  transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
 }
 .social-links a:hover {
-  color: var(--sw-primary);
-  border-color: var(--sw-primary);
+  color: var(--mm-gold, #D4A843);
+  border-color: var(--mm-gold, #D4A843);
+  background: var(--mm-gold-soft, rgba(212,168,67,.08));
   transform: translateY(-1px);
 }
 .social-links :deep(.nuxt-icon),
@@ -195,16 +196,16 @@ const currentLanguage = ref('en');
 
 /* ── Link columns ──────────────────────────────────────── */
 .footer-links {
-  display: contents; /* let the outer grid position each column */
+  display: contents;
 }
 
 .footer-links-column h3 {
-  font-family: var(--font-display);
-  font-size: 0.8125rem;
+  font-family: var(--f-ui);
+  font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--sw-text);
+  color: var(--mm-pearl, #F2F4F8);
   margin: 4px 0 16px;
 }
 .footer-links-column ul {
@@ -214,17 +215,17 @@ const currentLanguage = ref('en');
 }
 .footer-links-column li { margin-bottom: 8px; }
 .footer-links-column a {
-  color: var(--sw-text-muted);
+  color: var(--mm-silver, #A8B5CC);
   font-size: 0.875rem;
   text-decoration: none;
-  transition: color 0.15s ease;
+  transition: color var(--transition-fast);
   display: inline-flex;
   align-items: center;
   gap: 6px;
 }
-.footer-links-column a:hover { color: var(--sw-primary); }
+.footer-links-column a:hover { color: var(--mm-gold, #D4A843); }
 
-/* Soft "we're hiring" pill */
+/* "Hiring" pill */
 .pill-soft {
   display: inline-block;
   padding: 1px 7px;
@@ -232,8 +233,8 @@ const currentLanguage = ref('en');
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #047857;
-  background: #D1FAE5;
+  color: var(--mm-sea, #2A9D8F);
+  background: var(--mm-sea-soft, rgba(42,157,143,.12));
   border-radius: 4px;
   line-height: 1.4;
 }
@@ -243,12 +244,12 @@ const currentLanguage = ref('en');
   display: inline-flex !important;
   align-items: center;
   gap: 8px !important;
-  color: var(--sw-text-muted);
+  color: var(--mm-slate, #68788F);
   text-decoration: none;
   font-size: 0.8125rem;
-  transition: color 0.15s ease;
+  transition: color var(--transition-fast);
 }
-.status-link:hover { color: var(--sw-text); }
+.status-link:hover { color: var(--mm-silver, #A8B5CC); }
 .status-dot {
   width: 8px;
   height: 8px;
@@ -258,7 +259,7 @@ const currentLanguage = ref('en');
   flex-shrink: 0;
 }
 
-/* ── SEO hidden categories ─────────────────────────────── */
+/* ── SEO hidden ─────────────────────────────────────────── */
 .seo-hidden {
   position: absolute;
   left: -10000px;
@@ -268,7 +269,7 @@ const currentLanguage = ref('en');
   overflow: hidden;
 }
 
-/* ── Bottom bar ────────────────────────────────────────── */
+/* ── Bottom bar ─────────────────────────────────────────── */
 .footer-bottom {
   display: flex;
   align-items: center;
@@ -286,7 +287,7 @@ const currentLanguage = ref('en');
 .copyright {
   margin: 0;
   font-size: 0.8125rem;
-  color: var(--sw-text-subtle);
+  color: var(--mm-slate, #68788F);
 }
 .legal-links {
   display: inline-flex;
@@ -295,37 +296,37 @@ const currentLanguage = ref('en');
   font-size: 0.8125rem;
 }
 .legal-links a {
-  color: var(--sw-text-muted);
+  color: var(--mm-slate, #68788F);
   text-decoration: none;
-  transition: color 0.15s ease;
+  transition: color var(--transition-fast);
 }
-.legal-links a:hover { color: var(--sw-primary); }
-.legal-dot { color: var(--sw-text-subtle); opacity: 0.5; }
+.legal-links a:hover { color: var(--mm-gold, #D4A843); }
+.legal-dot { color: var(--mm-slate, #68788F); opacity: 0.4; }
 
 /* Language selector */
 .language-selector {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: #fff;
-  border: 1px solid #E7E5E4;
-  border-radius: 6px;
+  background: var(--mm-s2, #161B2E);
+  border: 0.5px solid var(--mm-border, rgba(168,180,204,.1));
+  border-radius: var(--r-sm, 6px);
   padding: 6px 10px 6px 12px;
   position: relative;
-  transition: border-color 0.15s ease;
+  transition: border-color var(--transition-fast);
 }
-.language-selector:hover { border-color: #D6D3D1; }
+.language-selector:hover { border-color: rgba(168,180,204,.3); }
 .globe-icon {
   width: 14px;
   height: 14px;
-  color: var(--sw-text-subtle);
+  color: var(--mm-slate, #68788F);
 }
 .language-selector select {
   background: transparent;
-  color: var(--sw-text);
+  color: var(--mm-silver, #A8B5CC);
   border: 0;
   cursor: pointer;
-  font-family: var(--font-primary);
+  font-family: var(--f-ui);
   font-size: 0.8125rem;
   font-weight: 500;
   padding: 0 18px 0 0;
@@ -338,11 +339,11 @@ const currentLanguage = ref('en');
   right: 10px;
   width: 12px;
   height: 12px;
-  color: var(--sw-text-subtle);
+  color: var(--mm-slate, #68788F);
   pointer-events: none;
 }
 
-/* ── Responsive ────────────────────────────────────────── */
+/* ── Responsive ─────────────────────────────────────────── */
 @media (max-width: 1024px) {
   .footer-top {
     grid-template-columns: 1fr 1fr 1fr 1fr;

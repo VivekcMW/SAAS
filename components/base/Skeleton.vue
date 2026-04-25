@@ -25,8 +25,8 @@ withDefaults(defineProps<Props>(), {
 <style scoped>
 .skeleton {
   display: inline-block;
-  background: #f3f4f6;
-  background-image: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+  background: var(--mm-s3);
+  background-image: linear-gradient(90deg, var(--mm-s3) 0%, var(--mm-s2) 50%, var(--mm-s3) 100%);
   background-size: 200% 100%;
   animation: shimmer 1.2s ease-in-out infinite;
 }

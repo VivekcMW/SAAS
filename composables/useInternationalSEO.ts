@@ -39,7 +39,7 @@ export const useInternationalSEO = () => {
       currency: 'USD',
       timeZone: 'America/New_York',
       searchEngine: 'google',
-      localDomains: ['saasworld.com'],
+      localDomains: ['moonmart.ai'],
       culturalFactors: {
         businessStyle: 'direct-aggressive',
         communicationPreference: 'results-focused',
@@ -99,7 +99,7 @@ export const useInternationalSEO = () => {
       currency: 'BRL',
       timeZone: 'America/Sao_Paulo',
       searchEngine: 'google',
-      localDomains: ['saasworld.com.br'],
+      localDomains: ['moonmart.ai.br'],
       culturalFactors: {
         businessStyle: 'relationship-based',
         communicationPreference: 'enthusiastic-personal',
@@ -179,7 +179,7 @@ export const useInternationalSEO = () => {
       hreflangTags.push({
         rel: 'alternate',
         hreflang: market.language,
-        href: `https://saasworld.com${localizedPath}`
+        href: `https://moonmart.ai${localizedPath}`
       })
     })
 
@@ -187,7 +187,7 @@ export const useInternationalSEO = () => {
     hreflangTags.push({
       rel: 'alternate',
       hreflang: 'x-default',
-      href: `https://saasworld.com${basePath}`
+      href: `https://moonmart.ai${basePath}`
     })
 
     return hreflangTags
@@ -267,8 +267,8 @@ export const useInternationalSEO = () => {
     const baseSchema = {
       '@context': 'https://schema.org',
       '@type': 'Organization',
-      name: 'SaaSWorld',
-      url: `https://saasworld.com/${market.code === 'us' ? '' : `${market.code}/`}`,
+      name: 'Moonmart',
+      url: `https://moonmart.ai/${market.code === 'us' ? '' : `${market.code}/`}`,
       address: {
         '@type': 'PostalAddress',
         addressCountry: market.code.toUpperCase(),
@@ -361,7 +361,7 @@ export const useInternationalSEO = () => {
     let qualityScore = 0.5 // Base score
 
     // Check for preserved brand names and technical terms
-    const brandTerms = ['SaaSWorld', 'SaaS', 'API', 'CRM', 'ERP']
+    const brandTerms = ['Moonmart', 'SaaS', 'API', 'CRM', 'ERP']
     const preservedTerms = brandTerms.filter(term => 
       originalText.includes(term) && translatedText.includes(term)
     )

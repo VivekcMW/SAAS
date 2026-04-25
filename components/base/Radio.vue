@@ -56,8 +56,8 @@ const inputId = props.id || `rb-${Math.random().toString(36).slice(2, 9)}`
   justify-content: center;
   width: 16px;
   height: 16px;
-  background: #ffffff;
-  border: 0.5px solid #d1d5db;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
   border-radius: 50%;
   flex-shrink: 0;
   margin-top: 1px;
@@ -67,15 +67,15 @@ const inputId = props.id || `rb-${Math.random().toString(36).slice(2, 9)}`
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #ff8838;
+  background: var(--mm-gold);
   transform: scale(0);
   transition: transform 150ms ease;
 }
-.radio-input:checked + .radio-box { border-color: #ff8838; }
+.radio-input:checked + .radio-box { border-color: var(--mm-gold); }
 .radio-input:checked + .radio-box .radio-dot { transform: scale(1); }
-.radio-input:focus-visible + .radio-box { outline: 2px solid #ff8838; outline-offset: 2px; }
+.radio-input:focus-visible + .radio-box { outline: 2px solid var(--mm-gold); outline-offset: 2px; }
 
 .radio-text { display: flex; flex-direction: column; gap: 2px; line-height: 1.3; }
-.radio-label { font-size: 14px; color: #374151; }
-.radio-hint { font-size: 12px; color: #6b7280; }
+.radio-label { font-size: var(--t-base); color: var(--mm-silver); }
+.radio-hint { font-size: var(--t-xs); color: var(--mm-slate); }
 </style>

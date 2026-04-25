@@ -76,9 +76,9 @@
 <script setup lang="ts">
 const { applySEO } = useSEO()
 applySEO({
-  title: 'Solutions by team, industry & size | SaaSWorld',
+  title: 'Solutions by team, industry & size | Moonmart',
   description: 'Curated SaaS stacks for sales, marketing, product, engineering, HR and finance — by industry and company size.',
-  canonical: 'https://saasworld.com/solutions',
+  canonical: 'https://moonmart.ai/solutions',
   ogType: 'website'
 })
 

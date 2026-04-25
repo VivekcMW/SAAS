@@ -4,7 +4,7 @@
  */
 
 export default defineEventHandler(async (event) => {
-  const baseUrl = 'https://saasworld.com'
+  const baseUrl = 'https://moonmart.ai'
   const currentDate = new Date().toISOString().split('T')[0]
   
   // Blog posts by category for better organization and SEO
@@ -306,7 +306,7 @@ ${allContentPages.map(page => {
   const newsExtension = isRecentArticle ? `
     <news:news>
       <news:publication>
-        <news:name>SaaSWorld Blog</news:name>
+        <news:name>Moonmart Blog</news:name>
         <news:language>en</news:language>
       </news:publication>
       <news:publication_date>${page.lastmod}</news:publication_date>

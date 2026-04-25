@@ -4,7 +4,7 @@
     eyebrow="Legal · SLA"
     lede="Our uptime commitment, exclusions and service-credit remedy for eligible paid plans."
     :updated="updatedAt"
-    contact-email="support@saasworld.com"
+    contact-email="support@moonmart.ai"
     :sections="tocSections"
   >
     <div class="prose prose-lg max-w-none">
@@ -12,7 +12,7 @@
         <h2>1. Scope</h2>
         <p>
           This Service Level Agreement ("SLA") applies to customers on a <strong>paid</strong>
-          SaaSWorld plan that is in good standing. It does not apply to free trials, beta
+          Moonmart plan that is in good standing. It does not apply to free trials, beta
           features or add-ons expressly labelled as "early access".
         </p>
       </section>
@@ -20,7 +20,7 @@
       <section id="definitions">
         <h2>2. Definitions</h2>
         <ul>
-          <li><strong>Service</strong> — the core SaaSWorld web application and API available under the customer's plan.</li>
+          <li><strong>Service</strong> — the core Moonmart web application and API available under the customer's plan.</li>
           <li><strong>Downtime</strong> — minutes during which the Service is unavailable, excluding the events listed in §5.</li>
           <li><strong>Monthly uptime %</strong> = (total minutes in month − downtime) ÷ total minutes × 100.</li>
           <li><strong>Monthly fee</strong> — the recurring fee paid for the affected service in the month of the incident.</li>
@@ -30,7 +30,7 @@
       <section id="commitment">
         <h2>3. Uptime commitment</h2>
         <p>
-          SaaSWorld commits to a monthly uptime percentage of <strong>99.9%</strong> for
+          Moonmart commits to a monthly uptime percentage of <strong>99.9%</strong> for
           Business and Enterprise plans, and <strong>99.5%</strong> for Starter plans.
           Real-time status is published at <NuxtLink to="/status">/status</NuxtLink>.
         </p>
@@ -83,7 +83,7 @@
         <p>
           To receive a credit you must request it within <strong>30 days</strong> of the end
           of the month in which the downtime occurred. Email
-          <a href="mailto:support@saasworld.com">support@saasworld.com</a> with:
+          <a href="mailto:support@moonmart.ai">support@moonmart.ai</a> with:
         </p>
         <ul>
           <li>Your account identifier.</li>
@@ -105,8 +105,8 @@
       <section id="contact">
         <h2>8. Contact</h2>
         <div class="contact-info">
-          <p><strong>Support:</strong> <a href="mailto:support@saasworld.com">support@saasworld.com</a></p>
-          <p><strong>Status:</strong> <NuxtLink to="/status">saasworld.com/status</NuxtLink></p>
+          <p><strong>Support:</strong> <a href="mailto:support@moonmart.ai">support@moonmart.ai</a></p>
+          <p><strong>Status:</strong> <NuxtLink to="/status">moonmart.ai/status</NuxtLink></p>
         </div>
       </section>
     </div>
@@ -132,9 +132,9 @@ const tocSections = [
 ]
 
 applySEO({
-  title: 'Service Level Agreement | SaaSWorld',
-  description: 'SaaSWorld uptime commitment, exclusions and service-credit remedy.',
-  canonical: 'https://saasworld.com/sla',
+  title: 'Service Level Agreement | Moonmart',
+  description: 'Moonmart uptime commitment, exclusions and service-credit remedy.',
+  canonical: 'https://moonmart.ai/sla',
   ogType: 'website'
 })
 </script>
@@ -142,8 +142,8 @@ applySEO({
 <style scoped>
 .lic-table-wrap {
   overflow-x: auto;
-  border: 1px solid #f0efec;
-  border-radius: 12px;
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-md);
   margin: 0 0 1.5rem;
 }
 .lic-table {
@@ -156,15 +156,15 @@ applySEO({
 .lic-table td {
   padding: 0.7rem 0.9rem;
   text-align: left;
-  border-bottom: 1px solid #f0efec;
+  border-bottom: 0.5px solid var(--b1);
 }
 .lic-table tbody tr:last-child td { border-bottom: none; }
 .lic-table th {
-  background: #fbfaf8;
+  background: var(--mm-s2);
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #71717a;
+  color: var(--mm-slate);
 }
 </style>

@@ -56,7 +56,7 @@
       <p class="post-excerpt">{{ post.excerpt }}</p>
       
       <div class="post-footer">
-        <span class="post-author">By {{ post.author || 'SaaSWorld Team' }}</span>
+        <span class="post-author">By {{ post.author || 'Moonmart Team' }}</span>
         <NuxtLink :to="`/blog/${post.slug}`" class="read-more">
           Read More <Icon name="ph:arrow-right" />
         </NuxtLink>

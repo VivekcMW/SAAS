@@ -10,7 +10,7 @@ export const useLocalSEO = () => {
     const locationString = [city, region, country].filter(Boolean).join(', ')
     
     return {
-      title: `Best SaaS Software in ${locationString} | SaaSWorld`,
+      title: `Best SaaS Software in ${locationString} | Moonmart`,
       description: `Discover top-rated business software solutions available in ${locationString}. Compare local and international SaaS tools with pricing in local currency.`,
       keywords: [
         ...locationKeywords,
@@ -40,9 +40,9 @@ export const useLocalSEO = () => {
     return {
       '@context': 'https://schema.org',
       '@type': 'Organization',
-      name: 'SaaSWorld',
-      url: 'https://saasworld.com',
-      logo: 'https://saasworld.com/assets/images/logo.png',
+      name: 'Moonmart',
+      url: 'https://moonmart.ai',
+      logo: 'https://moonmart.ai/assets/images/logo.png',
       description: 'Global marketplace for business software solutions',
       areaServed: {
         '@type': 'Country',

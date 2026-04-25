@@ -37,12 +37,12 @@ defineProps<Props>()
   align-items: center;
   gap: 5px;
   padding: 4px 10px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 4px;
+  background: var(--mm-s3);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-xs);
   font-size: 11px;
   font-weight: 500;
-  color: #374151;
+  color: var(--mm-silver);
 }
-.trust-icon { width: 12px; height: 12px; color: #6b7280; }
+.trust-icon { width: 12px; height: 12px; color: var(--mm-slate); }
 </style>

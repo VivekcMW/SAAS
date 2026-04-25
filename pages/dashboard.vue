@@ -21,8 +21,8 @@ import { ref, watchEffect } from 'vue'
 definePageMeta({ layout: false })
 
 useHead({
-  title: 'Dashboard — SaaSWorld',
-  meta: [{ name: 'description', content: 'Manage your apps, enquiries, and analytics on SaaSWorld.' }]
+  title: 'Dashboard — Moonmart',
+  meta: [{ name: 'description', content: 'Manage your apps, enquiries, and analytics on Moonmart.' }]
 })
 
 const { isAuthenticated, currentUser, isLoading, initialized, handleLogout } = useAuth()

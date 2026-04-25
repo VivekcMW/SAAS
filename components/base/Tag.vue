@@ -36,7 +36,7 @@ defineEmits<{ remove: [] }>()
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  border-radius: 4px;
+  border-radius: var(--r-sm);
   line-height: 1;
   font-weight: 500;
   white-space: nowrap;
@@ -45,9 +45,9 @@ defineEmits<{ remove: [] }>()
 .tag-sm { padding: 3px 8px; font-size: 11px; }
 .tag-md { padding: 5px 10px; font-size: 12px; }
 
-.tag-default { background: #f3f4f6; color: #374151; }
-.tag-filled  { background: #1f2937; color: #ffffff; }
-.tag-outline { background: transparent; color: #374151; border: 0.5px solid #e5e7eb; }
+.tag-default { background: var(--mm-s3); color: var(--mm-silver); }
+.tag-filled  { background: var(--mm-s1); color: var(--mm-pearl); }
+.tag-outline { background: transparent; color: var(--mm-silver); border: 0.5px solid var(--b2); }
 
 .tag-remove {
   background: transparent;

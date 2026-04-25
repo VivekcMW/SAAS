@@ -31,15 +31,15 @@ defineProps<Props>()
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 0;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 10px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-lg);
   overflow: hidden;
 }
 
 .stat {
   padding: 16px;
-  border-right: 0.5px solid #e5e7eb;
+  border-right: 0.5px solid var(--b1);
 }
 .stat:last-child { border-right: none; }
 
@@ -49,36 +49,36 @@ defineProps<Props>()
   gap: 6px;
   margin-bottom: 6px;
 }
-.stat-icon { width: 14px; height: 14px; color: #9ca3af; }
+.stat-icon { width: 14px; height: 14px; color: var(--mm-slate); }
 .stat-label {
   font-size: 11px;
   font-weight: 500;
-  color: #6b7280;
+  color: var(--mm-slate);
   text-transform: uppercase;
   letter-spacing: 0.4px;
 }
 .stat-value {
   font-size: 18px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--mm-pearl);
   line-height: 1.2;
 }
 .stat-hint {
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--mm-slate);
   margin-top: 2px;
 }
 
 @media (max-width: 900px) {
   .stats-strip { grid-template-columns: repeat(3, 1fr); }
   .stat:nth-child(3n) { border-right: none; }
-  .stat:nth-child(n+4) { border-top: 0.5px solid #e5e7eb; }
+  .stat:nth-child(n+4) { border-top: 0.5px solid var(--b1); }
 }
 @media (max-width: 500px) {
   .stats-strip { grid-template-columns: repeat(2, 1fr); }
-  .stat { border-right: 0.5px solid #e5e7eb; }
+  .stat { border-right: 0.5px solid var(--b1); }
   .stat:nth-child(2n) { border-right: none; }
-  .stat:nth-child(n+3) { border-top: 0.5px solid #e5e7eb; }
-  .stat:nth-child(3n) { border-right: 0.5px solid #e5e7eb; }
+  .stat:nth-child(n+3) { border-top: 0.5px solid var(--b1); }
+  .stat:nth-child(3n) { border-right: 0.5px solid var(--b1); }
 }
 </style>

@@ -1,7 +1,7 @@
 /**
  * LLM Engine Profiles
  *
- * Data-only definitions of every LLM/AI search engine SaaSWorld optimizes for.
+ * Data-only definitions of every LLM/AI search engine Moonmart optimizes for.
  * One profile = one engine. Keep engine-specific quirks as data, not code.
  */
 

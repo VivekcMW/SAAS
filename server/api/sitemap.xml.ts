@@ -1,5 +1,5 @@
 /**
- * Advanced Sitemap Generation for SaasWorld
+ * Advanced Sitemap Generation for Moonmart
  * Implements comprehensive sitemap strategy from the Global SEO Strategy
  * Includes hreflang, prioritization, and strategic URL structure
  */
@@ -7,7 +7,7 @@
 import { allCategoryKeywords } from '~/seo/keywords/index'
 
 export default defineEventHandler(async (event) => {
-  const baseUrl = 'https://saasworld.com'
+  const baseUrl = 'https://moonmart.ai'
   const currentDate = new Date().toISOString()
   
   // High-priority pages optimized for lead generation and traffic

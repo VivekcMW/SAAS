@@ -119,7 +119,7 @@ export const useVoiceSearchSEO = () => {
         text: answer,
         author: {
           '@type': 'Organization',
-          name: 'SaaSWorld'
+          name: 'Moonmart'
         }
       }
     }

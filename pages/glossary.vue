@@ -59,9 +59,9 @@
 <script setup lang="ts">
 const { applySEO } = useSEO()
 applySEO({
-  title: 'SaaS glossary | SaaSWorld',
+  title: 'SaaS glossary | Moonmart',
   description: 'Plain-English definitions for 50+ SaaS, GTM, product and finance terms you meet every day.',
-  canonical: 'https://saasworld.com/glossary',
+  canonical: 'https://moonmart.ai/glossary',
   ogType: 'website'
 })
 
@@ -157,22 +157,22 @@ const filteredGroups = computed(() => {
 
 <style scoped>
 .gl-search { max-width: 520px; margin: 0 auto 1.25rem; }
-.gl-search__input { width: 100%; padding: 0.8rem 1.1rem; border-radius: 999px; border: 1px solid #f0d9bf; background: #fff; font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
-.gl-search__input:focus { border-color: var(--sw-primary, #ff8838); }
+.gl-search__input { width: 100%; padding: 0.8rem 1.1rem; border-radius: var(--r-full); border: 0.5px solid var(--b1); background: var(--mm-s2); font-size: 0.95rem; outline: none; color: var(--mm-pearl); transition: border-color 0.2s; }
+.gl-search__input:focus { border-color: var(--mm-gold); }
 
 .gl-alpha { display: flex; flex-wrap: wrap; gap: 0.35rem; justify-content: center; }
-.gl-alpha__btn { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; background: #fff; border: 1px solid #f0d9bf; color: #1e1e1e; text-decoration: none; font-size: 0.82rem; font-weight: 600; transition: all 0.15s; }
-.gl-alpha__btn:hover { background: var(--sw-primary, #ff8838); color: #fff; border-color: var(--sw-primary, #ff8838); }
+.gl-alpha__btn { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: var(--r-sm); background: var(--mm-s2); border: 0.5px solid var(--b1); color: var(--mm-silver); text-decoration: none; font-size: 0.82rem; font-weight: 600; transition: all 0.15s; }
+.gl-alpha__btn:hover { background: var(--mm-gold); color: #0A0700; border-color: var(--mm-gold); }
 
 .gl-group { margin-bottom: 2.5rem; scroll-margin-top: 100px; }
-.gl-group__letter { font-family: var(--font-heading, 'Poppins', system-ui, sans-serif); font-size: 2rem; font-weight: 700; color: var(--sw-primary, #ff8838); margin: 0 0 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #f0d9bf; }
+.gl-group__letter { font-family: var(--f-display); font-size: 2rem; font-weight: 700; color: var(--mm-gold); margin: 0 0 1rem; padding-bottom: 0.5rem; border-bottom: 0.5px solid var(--b1); }
 .gl-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
-.gl-term { background: #fff; border: 1px solid #f0efec; border-radius: 12px; padding: 1.1rem 1.25rem; }
-.gl-term__name { font-family: var(--font-heading, 'Poppins', system-ui, sans-serif); font-size: 1.05rem; font-weight: 700; color: #1e1e1e; margin: 0 0 0.4rem; }
-.gl-term__abbr { font-weight: 500; color: #71717a; font-size: 0.88rem; margin-left: 0.4rem; }
-.gl-term__def { color: #3f3f46; font-size: 0.9rem; line-height: 1.55; margin: 0; }
-.gl-term__see { margin: 0.6rem 0 0; font-size: 0.82rem; color: #71717a; }
-.gl-term__see a { color: var(--sw-primary, #ff8838); text-decoration: none; font-weight: 600; }
+.gl-term { background: var(--mm-s2); border: 0.5px solid var(--b1); border-radius: var(--r-md); padding: 1.1rem 1.25rem; }
+.gl-term__name { font-family: var(--f-display); font-size: 1.05rem; font-weight: 700; color: var(--mm-pearl); margin: 0 0 0.4rem; }
+.gl-term__abbr { font-weight: 500; color: var(--mm-slate); font-size: 0.88rem; margin-left: 0.4rem; }
+.gl-term__def { color: var(--mm-silver); font-size: 0.9rem; line-height: 1.55; margin: 0; }
+.gl-term__see { margin: 0.6rem 0 0; font-size: 0.82rem; color: var(--mm-slate); }
+.gl-term__see a { color: var(--mm-gold); text-decoration: none; font-weight: 600; }
 
-.gl-empty { text-align: center; color: #71717a; padding: 3rem 0; }
+.gl-empty { text-align: center; color: var(--mm-slate); padding: 3rem 0; }
 </style>

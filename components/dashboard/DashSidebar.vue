@@ -1,9 +1,9 @@
 <template>
   <aside class="dash-sidebar" :class="{ 'is-collapsed': collapsed }">
     <div class="dash-sidebar__head">
-      <NuxtLink to="/" class="dash-sidebar__logo" aria-label="SaaSWorld home">
-        <span class="dash-sidebar__logo-mark">S</span>
-        <span v-if="!collapsed" class="dash-sidebar__logo-text">SaaSWorld</span>
+      <NuxtLink to="/" class="dash-sidebar__logo" aria-label="Moonmart home">
+        <span class="dash-sidebar__logo-mark">M</span>
+        <span v-if="!collapsed" class="dash-sidebar__logo-text">Moonmart</span>
       </NuxtLink>
       <button
         type="button"
@@ -194,8 +194,8 @@ const groups = computed<NavGroup[]>(() => {
   left: 0;
   bottom: 0;
   width: 248px;
-  background: #fff;
-  border-right: 1px solid #f0efec;
+  background: var(--mm-surface, #0F1220);
+  border-right: 0.5px solid rgba(168,180,204,.1);
   display: flex;
   flex-direction: column;
   z-index: 40;
@@ -208,7 +208,7 @@ const groups = computed<NavGroup[]>(() => {
   align-items: center;
   justify-content: space-between;
   padding: 10px 16px;
-  border-bottom: 1px solid #f0efec;
+  border-bottom: 0.5px solid rgba(168,180,204,.1);
   min-height: 52px;
 }
 .dash-sidebar__logo {
@@ -216,8 +216,8 @@ const groups = computed<NavGroup[]>(() => {
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  color: #1e1e1e;
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  color: var(--mm-pearl, #F0F3F8);
+  font-family: var(--font-heading, 'Syne', system-ui, sans-serif);
   font-weight: 800;
   font-size: 1.05rem;
   letter-spacing: -0.01em;
@@ -227,8 +227,8 @@ const groups = computed<NavGroup[]>(() => {
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: var(--sw-primary, #ff8838);
-  color: #fff;
+  background: var(--mm-gold, #D4A843);
+  color: #07090F;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -239,9 +239,9 @@ const groups = computed<NavGroup[]>(() => {
 .dash-sidebar__logo-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .dash-sidebar__collapse {
   background: transparent;
-  border: 1px solid #f0efec;
+  border: 0.5px solid rgba(168,180,204,.15);
   border-radius: 6px;
-  color: #71717a;
+  color: var(--mm-slate, #6B7A96);
   width: 26px;
   height: 26px;
   display: inline-flex;
@@ -251,23 +251,23 @@ const groups = computed<NavGroup[]>(() => {
   transition: all 0.15s ease;
   flex-shrink: 0;
 }
-.dash-sidebar__collapse:hover { color: var(--sw-primary, #ff8838); border-color: var(--sw-primary, #ff8838); }
+.dash-sidebar__collapse:hover { color: var(--mm-gold, #D4A843); border-color: var(--mm-gold, #D4A843); }
 
 .dash-sidebar__role {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  background: #fbfaf8;
-  border-bottom: 1px solid #f0efec;
+  background: var(--mm-surface-2, #161B2E);
+  border-bottom: 0.5px solid rgba(168,180,204,.1);
   font-size: 0.78rem;
-  color: #52525b;
+  color: var(--mm-silver, #A8B4CC);
   font-weight: 500;
 }
 .dash-sidebar__role-dot { width: 8px; height: 8px; border-radius: 50%; }
 .dash-sidebar__role-dot.is-buyer { background: #22c55e; }
-.dash-sidebar__role-dot.is-vendor { background: var(--sw-primary, #ff8838); }
-.dash-sidebar__role-dot.is-admin { background: #8b5cf6; }
+.dash-sidebar__role-dot.is-vendor { background: var(--mm-gold, #D4A843); }
+.dash-sidebar__role-dot.is-admin { background: var(--mm-blue, #4A7FD4); }
 
 .dash-sidebar__nav {
   flex: 1;
@@ -282,7 +282,7 @@ const groups = computed<NavGroup[]>(() => {
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: #a1a1aa;
+  color: var(--mm-slate, #6B7A96);
   text-transform: uppercase;
 }
 .dash-sidebar__link {
@@ -291,7 +291,7 @@ const groups = computed<NavGroup[]>(() => {
   gap: 10px;
   padding: 9px 10px;
   border-radius: 8px;
-  color: #52525b;
+  color: var(--mm-silver, #A8B4CC);
   font-size: 0.92rem;
   font-weight: 500;
   text-decoration: none;
@@ -302,16 +302,16 @@ const groups = computed<NavGroup[]>(() => {
   cursor: pointer;
   font-family: inherit;
 }
-.dash-sidebar__link:hover { background: #fbfaf8; color: #1e1e1e; }
+.dash-sidebar__link:hover { background: var(--mm-surface-2, #161B2E); color: var(--mm-pearl, #F0F3F8); }
 .dash-sidebar__link.is-active {
-  background: var(--sw-primary-soft, #fff1e6);
-  color: var(--sw-primary, #ff8838);
+  background: rgba(212,168,67,.1);
+  color: var(--mm-gold, #D4A843);
 }
-.dash-sidebar__link.is-active .dash-sidebar__icon { color: var(--sw-primary, #ff8838); }
+.dash-sidebar__link.is-active .dash-sidebar__icon { color: var(--mm-gold, #D4A843); }
 .dash-sidebar__icon {
   width: 20px;
   height: 20px;
-  color: #71717a;
+  color: var(--mm-slate, #6B7A96);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -324,8 +324,8 @@ const groups = computed<NavGroup[]>(() => {
   text-overflow: ellipsis;
 }
 .dash-sidebar__badge {
-  background: var(--sw-primary-soft, #fff1e6);
-  color: var(--sw-primary, #ff8838);
+  background: rgba(212,168,67,.1);
+  color: var(--mm-gold, #D4A843);
   font-size: 0.72rem;
   font-weight: 700;
   padding: 2px 7px;

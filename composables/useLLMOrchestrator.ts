@@ -288,7 +288,7 @@ export const useLLMOrchestrator = () => {
       qaPairs: r.content.qaPairs,
       factStatements: r.content.factStatements,
       sourceOptimization: {
-        authorityDomain: 'saasworld.com',
+        authorityDomain: 'moonmart.ai',
         contentType: 'software-directory',
         lastUpdated: new Date().toISOString()
       },

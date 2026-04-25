@@ -46,15 +46,15 @@ const select = (t: Tab) => {
 <style scoped>
 .tabs { display: flex; gap: 4px; }
 
-.tabs-line { border-bottom: 0.5px solid #e5e7eb; gap: 0; }
-.tabs-pill { background: #f3f4f6; padding: 3px; border-radius: 6px; gap: 2px; }
+.tabs-line { border-bottom: 0.5px solid var(--b1); gap: 0; }
+.tabs-pill { background: var(--mm-s3); padding: 3px; border-radius: var(--r-md); gap: 2px; }
 
 .tab {
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #6b7280;
-  font-family: inherit;
+  color: var(--mm-slate);
+  font-family: var(--f-ui);
   font-weight: 500;
   display: inline-flex;
   align-items: center;
@@ -62,30 +62,31 @@ const select = (t: Tab) => {
   transition: background-color 150ms ease, color 150ms ease;
 }
 
-.tabs-sm .tab { padding: 6px 12px; font-size: 13px; }
-.tabs-md .tab { padding: 8px 16px; font-size: 14px; }
+.tabs-sm .tab { padding: 6px 12px; font-size: var(--t-sm); }
+.tabs-md .tab { padding: 8px 16px; font-size: var(--t-base); }
 
 .tabs-line .tab {
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
   border-radius: 0;
 }
-.tabs-line .tab:hover { color: #1f2937; }
-.tabs-line .tab.active { color: #ff8838; border-bottom-color: #ff8838; }
+.tabs-line .tab:hover { color: var(--mm-pearl); }
+.tabs-line .tab.active { color: var(--mm-gold); border-bottom-color: var(--mm-gold); }
 
-.tabs-pill .tab { border-radius: 4px; }
-.tabs-pill .tab:hover { color: #1f2937; }
-.tabs-pill .tab.active { background: #ffffff; color: #1f2937; }
+.tabs-pill .tab { border-radius: var(--r-sm); }
+.tabs-pill .tab:hover { color: var(--mm-pearl); }
+.tabs-pill .tab.active { background: var(--mm-s2); color: var(--mm-pearl); }
 
 .tab:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .tab-count {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--mm-s2);
+  color: var(--mm-slate);
   padding: 1px 6px;
-  border-radius: 10px;
-  font-size: 11px;
+  border-radius: var(--r-full);
+  font-size: var(--t-xs);
   font-weight: 600;
+  border: .5px solid var(--b1);
 }
-.tab.active .tab-count { background: #fff3e6; color: #b45309; }
+.tab.active .tab-count { background: var(--mm-gold-soft); color: var(--mm-goldl); border-color: var(--mm-gold); }
 </style>

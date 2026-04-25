@@ -60,7 +60,7 @@
 import { ref } from 'vue'
 const tab = ref<'team' | 'api'>('team')
 const members = [
-  { id: '1', name: 'You', email: 'demo@saasworld.com', role: 'Owner' },
+  { id: '1', name: 'You', email: 'demo@moonmart.ai', role: 'Owner' },
   { id: '2', name: 'Rahul Menon', email: 'rahul@acme.example', role: 'Admin' },
   { id: '3', name: 'Sofia Nunez', email: 'sofia@acme.example', role: 'Editor' }
 ]

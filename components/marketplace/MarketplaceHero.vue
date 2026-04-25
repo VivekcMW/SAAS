@@ -243,7 +243,7 @@ const viewAllTrending = () => {
 
 <style scoped>
 .marketplace-hero {
-  background: linear-gradient(135deg, var(--bg-gray) 0%, #fff 100%);
+  background: var(--mm-bg);
   padding: calc(var(--spacing-xxl) * 1.5) 0 var(--spacing-xl);
   position: relative;
 }
@@ -258,10 +258,11 @@ const viewAllTrending = () => {
   font-size: var(--fs-hero);
   line-height: var(--lh-display);
   margin-bottom: var(--spacing-lg);
+  color: var(--mm-pearl);
 }
 
 .highlight {
-  color: var(--primary-color);
+  color: var(--mm-gold);
   position: relative;
   display: inline-block;
 }
@@ -273,7 +274,7 @@ const viewAllTrending = () => {
   left: 0;
   width: 100%;
   height: 8px;
-  background-color: var(--secondary-color);
+  background-color: var(--mm-gold-soft);
   z-index: -1;
   opacity: 0.5;
 }
@@ -281,7 +282,7 @@ const viewAllTrending = () => {
 .hero-subtitle {
   font-size: var(--fs-body-lg);
   font-weight: 300;
-  color: var(--text-secondary);
+  color: var(--mm-silver);
   max-width: 650px;
   margin-left: auto;
   margin-right: auto;
@@ -295,9 +296,9 @@ const viewAllTrending = () => {
 
 .quick-categories-label {
   margin: 0 0 10px;
-  font-size: 0.8125rem;
+  font-size: var(--t-xs);
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--mm-slate);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -310,21 +311,21 @@ const viewAllTrending = () => {
 }
 
 .quick-category-pill {
-  border: 1px solid #E5E7EB;
-  background: #fff;
-  color: var(--sw-text-muted);
-  border-radius: 6px;
-  font-size: 0.8125rem;
+  border: .5px solid var(--b2);
+  background: var(--mm-s2);
+  color: var(--mm-silver);
+  border-radius: var(--r-full);
+  font-size: var(--t-xs);
   font-weight: 500;
-  padding: 6px 10px;
+  padding: 6px 12px;
   cursor: pointer;
   transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
 }
 
 .quick-category-pill:hover {
-  border-color: var(--sw-primary);
-  color: var(--sw-primary-hover);
-  background: var(--sw-primary-soft);
+  border-color: var(--mm-gold);
+  color: var(--mm-goldl);
+  background: var(--mm-gold-soft);
 }
 
 .apps-section {
@@ -344,14 +345,14 @@ const viewAllTrending = () => {
   gap: var(--spacing-sm);
   font-size: var(--fs-title);
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--mm-pearl);
   margin: 0;
 }
 
 .section-icon {
   width: 24px;
   height: 24px;
-  color: var(--primary-color);
+  color: var(--mm-gold);
 }
 
 .view-all-btn {
@@ -359,18 +360,18 @@ const viewAllTrending = () => {
   align-items: center;
   gap: var(--spacing-xs);
   background: none;
-  border: 1px solid var(--primary-color);
-  color: var(--primary-color);
+  border: .5px solid var(--mm-gold);
+  color: var(--mm-gold);
   padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--border-radius-md);
+  border-radius: var(--r-sm);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .view-all-btn:hover {
-  background: var(--primary-color);
-  color: white;
+  background: var(--mm-gold);
+  color: #0A0700;
   transform: translateY(-1px);
 }
 
@@ -386,39 +387,40 @@ const viewAllTrending = () => {
 }
 
 .app-card {
-  background-color: white;
-  border-radius: var(--border-radius-md);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background: var(--mm-s2);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
   padding: var(--spacing-lg);
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
-  border: 2px solid transparent;
+  border: .5px solid var(--b1);
 }
 
 .app-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--b2);
 }
 
 .app-card.sponsored {
-  background: linear-gradient(white, white) padding-box,
-              linear-gradient(45deg, #ffd700, #4f46e5, #ffd700) border-box;
+  border-color: var(--mm-gold);
+  background: var(--mm-s2);
 }
 
 .app-card.sponsored:hover {
-  transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 12px 30px rgba(255, 215, 0, 0.3);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(212,168,67,.18);
 }
 
 .app-card.trending {
-  background: linear-gradient(white, white) padding-box,
-              linear-gradient(45deg, #ff6b6b, #ff8e8e, #ff6b6b) border-box;
+  border-color: var(--mm-sea);
+  background: var(--mm-s2);
 }
 
 .app-card.trending:hover {
-  transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 12px 30px rgba(255, 107, 107, 0.3);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(42,157,143,.18);
 }
 
 .app-badge {
@@ -427,16 +429,16 @@ const viewAllTrending = () => {
   right: 12px;
   font-size: var(--fs-caption);
   font-weight: 600;
-  padding: 4px 8px;
-  border-radius: 20px;
+  padding: 4px 10px;
+  border-radius: var(--r-full);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .app-badge.sponsored {
-  background: linear-gradient(135deg, #ffd700, #ffed4e);
-  color: #92400e;
-  border: 1px solid #fbbf24;
+  background: var(--mm-gold-soft);
+  color: var(--mm-goldl);
+  border: .5px solid var(--mm-gold);
 }
 
 .app-logo {
@@ -450,12 +452,12 @@ const viewAllTrending = () => {
 .app-name {
   font-size: var(--fs-title-sm);
   margin-bottom: var(--spacing-xs);
-  color: var(--text-primary);
+  color: var(--mm-pearl);
   font-weight: 600;
 }
 
 .app-category {
-  color: var(--text-secondary);
+  color: var(--mm-silver);
   font-size: var(--fs-sm);
   margin-bottom: var(--spacing-sm);
 }
@@ -475,21 +477,21 @@ const viewAllTrending = () => {
 .star-icon {
   width: 16px;
   height: 16px;
-  color: #d1d5db;
+  color: var(--b3);
 }
 
 .star-icon.filled {
-  color: #fbbf24;
+  color: var(--mm-gold);
 }
 
 .star-icon.half-filled {
-  color: #fbbf24;
+  color: var(--mm-gold);
 }
 
 .rating-value {
   font-weight: 600;
   font-size: var(--fs-sm);
-  color: var(--text-primary);
+  color: var(--mm-pearl);
 }
 
 /* Responsive Styles */
@@ -546,18 +548,6 @@ const viewAllTrending = () => {
   }
 }
 
-/* High contrast mode */
-@media (prefers-contrast: high) {
-  .app-card.sponsored,
-  .app-card.trending {
-    border-color: #000000;
-  }
-  
-  .star-icon.filled {
-    color: #000000;
-  }
-}
-
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .app-card,
@@ -569,36 +559,6 @@ const viewAllTrending = () => {
   .app-card.sponsored:hover,
   .app-card.trending:hover {
     transform: none;
-  }
-}
-
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .app-card {
-    background: #1f2937;
-    border-color: #374151;
-  }
-  
-  .app-card.sponsored {
-    background: linear-gradient(#1f2937, #1f2937) padding-box,
-                linear-gradient(45deg, #ffd700, #4f46e5, #ffd700) border-box;
-  }
-  
-  .app-card.trending {
-    background: linear-gradient(#1f2937, #1f2937) padding-box,
-                linear-gradient(45deg, #ff6b6b, #ff8e8e, #ff6b6b) border-box;
-  }
-  
-  .app-name {
-    color: #f9fafb;
-  }
-  
-  .rating-value {
-    color: #e5e7eb;
-  }
-  
-  .app-category {
-    color: #9ca3af;
   }
 }
 </style>

@@ -38,9 +38,9 @@ const toggle = () => { if (!props.disabled) open.value = !open.value }
 
 <style scoped>
 .accordion {
-  border: 0.5px solid #e5e7eb;
-  border-radius: 6px;
-  background: #ffffff;
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-md);
+  background: var(--mm-s2);
 }
 
 .accordion-header {
@@ -51,21 +51,21 @@ const toggle = () => { if (!props.disabled) open.value = !open.value }
   background: transparent;
   border: none;
   padding: 12px 14px;
-  font-family: inherit;
-  font-size: 14px;
+  font-family: var(--f-ui);
+  font-size: var(--t-base);
   font-weight: 500;
-  color: #1f2937;
+  color: var(--mm-pearl);
   cursor: pointer;
   text-align: left;
   transition: background-color 150ms ease;
 }
-.accordion-header:hover:not(:disabled) { background: #f9fafb; }
+.accordion-header:hover:not(:disabled) { background: var(--mm-s3); }
 .accordion-header:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .accordion-title { flex: 1; }
 
 .accordion-icon {
-  color: #6b7280;
+  color: var(--mm-slate);
   flex-shrink: 0;
   transition: transform 150ms ease;
 }
@@ -73,9 +73,9 @@ const toggle = () => { if (!props.disabled) open.value = !open.value }
 
 .accordion-body {
   padding: 12px 14px;
-  border-top: 0.5px solid #e5e7eb;
-  font-size: 14px;
-  color: #4b5563;
+  border-top: 0.5px solid var(--b1);
+  font-size: var(--t-base);
+  color: var(--mm-silver);
   line-height: 1.5;
 }
 </style>

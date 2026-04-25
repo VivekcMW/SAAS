@@ -879,9 +879,9 @@ interface DemoAccount {
 }
 
 const demoAccounts: DemoAccount[] = [
-  { role: 'buyer', label: 'Buyer', desc: 'Discover & compare', email: 'buyer@saasworld.com', password: 'buyer123' },
-  { role: 'vendor', label: 'Vendor', desc: 'Manage listings', email: 'demo@saasworld.com', password: 'demo123' },
-  { role: 'admin', label: 'Admin', desc: 'Full access', email: 'admin@saasworld.com', password: 'admin123' }
+  { role: 'buyer', label: 'Buyer', desc: 'Discover & compare', email: 'buyer@moonmart.ai', password: 'buyer123' },
+  { role: 'vendor', label: 'Vendor', desc: 'Manage listings', email: 'demo@moonmart.ai', password: 'demo123' },
+  { role: 'admin', label: 'Admin', desc: 'Full access', email: 'admin@moonmart.ai', password: 'admin123' }
 ];
 
 const useDemoAccount = async (d: DemoAccount) => {
@@ -915,7 +915,7 @@ const useDemoAccount = async (d: DemoAccount) => {
 
 .user-type-selection h3 {
   margin-bottom: var(--spacing-md);
-  color: var(--text-primary);
+  color: var(--mm-pearl);
   font-size: var(--fs-title-sm);
   font-weight: 600;
 }
@@ -932,27 +932,27 @@ const useDemoAccount = async (d: DemoAccount) => {
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-md);
-  border: 2px solid var(--color-gray-200);
-  border-radius: var(--border-radius-lg);
-  background: white;
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
+  background: var(--mm-s2);
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
 }
 
 .user-type-card:hover {
-  border-color: var(--primary-color);
-  background-color: rgba(var(--primary-color-rgb), 0.05);
+  border-color: var(--mm-gold);
+  background-color: var(--mm-s3);
 }
 
 .user-type-card.active {
-  border-color: var(--primary-color);
-  background-color: rgba(var(--primary-color-rgb), 0.1);
+  border-color: var(--mm-gold);
+  background-color: var(--mm-gold-soft);
 }
 
 .user-type-icon {
   font-size: var(--fs-title);
-  color: var(--primary-color);
+  color: var(--mm-gold);
   flex-shrink: 0;
 }
 
@@ -960,13 +960,13 @@ const useDemoAccount = async (d: DemoAccount) => {
   margin: 0 0 2px 0;
   font-size: var(--fs-base);
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--mm-pearl);
 }
 
 .user-type-info p {
   margin: 0;
   font-size: var(--fs-caption);
-  color: var(--text-secondary);
+  color: var(--mm-slate);
   line-height: 1.3;
 }
 
@@ -977,14 +977,14 @@ const useDemoAccount = async (d: DemoAccount) => {
 
 .forgot-password-header h3 {
   margin: 0 0 var(--spacing-sm) 0;
-  color: var(--text-primary);
+  color: var(--mm-pearl);
   font-size: var(--fs-title);
   font-weight: 600;
 }
 
 .forgot-password-header p {
   margin: 0;
-  color: var(--text-secondary);
+  color: var(--mm-slate);
   font-size: var(--fs-base);
   line-height: var(--lh-body);
 }
@@ -993,11 +993,11 @@ const useDemoAccount = async (d: DemoAccount) => {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  background-color: rgba(82, 196, 26, 0.1);
-  border: 1px solid rgba(82, 196, 26, 0.3);
-  color: #52c41a;
+  background-color: var(--mm-sea-soft);
+  border: 0.5px solid var(--mm-sea);
+  color: var(--mm-seal);
   padding: var(--spacing-md);
-  border-radius: var(--border-radius-md);
+  border-radius: var(--r-sm);
   text-align: center;
 }
 
@@ -1017,23 +1017,23 @@ const useDemoAccount = async (d: DemoAccount) => {
   gap: var(--spacing-xs);
   background: none;
   border: none;
-  color: var(--primary-color);
+  color: var(--mm-gold);
   font-size: var(--fs-sm);
   cursor: pointer;
   padding: var(--spacing-xs);
-  border-radius: var(--border-radius-sm);
+  border-radius: var(--r-sm);
   transition: all 0.2s ease;
 }
 
 .auth-form-container .link-button:hover {
-  background-color: rgba(255, 136, 56, 0.1) !important;
-  color: #FF8838 !important;
+  background-color: var(--mm-gold-soft) !important;
+  color: var(--mm-goldl) !important;
 }
 
 .form-tabs {
   display: flex;
   margin-bottom: var(--spacing-md);
-  border-bottom: 1px solid var(--color-gray-200);
+  border-bottom: 0.5px solid var(--b1);
 }
 
 .form-tabs button {
@@ -1044,19 +1044,19 @@ const useDemoAccount = async (d: DemoAccount) => {
   border-bottom: 2px solid transparent;
   font-size: var(--fs-base);
   font-weight: 500;
-  color: var(--text-secondary);
+  color: var(--mm-slate);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .auth-form-container .form-tabs button:hover {
-  color: #FF8838 !important;
-  background-color: rgba(255, 136, 56, 0.05) !important;
+  color: var(--mm-gold) !important;
+  background-color: var(--mm-s3) !important;
 }
 
 .form-tabs button.active {
-  color: var(--primary-color);
-  border-bottom-color: var(--primary-color);
+  color: var(--mm-gold);
+  border-bottom-color: var(--mm-gold);
 }
 
 .auth-form {
@@ -1083,40 +1083,43 @@ label {
   display: block;
   font-weight: 500;
   margin-bottom: var(--spacing-xs);
-  color: var(--text-primary);
+  color: var(--mm-silver);
 }
 
 input[type="text"],
 input[type="email"],
 input[type="password"] {
   padding: var(--spacing-md);
-  border: 1px solid var(--color-gray-300);
-  border-radius: var(--border-radius-md);
+  background: var(--mm-s2);
+  color: var(--mm-pearl);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
   font-size: var(--fs-base);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 input:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.2);
+  border-color: var(--mm-gold);
+  box-shadow: 0 0 0 3px var(--mm-gold-soft);
 }
 
 input.error {
-  border-color: #ff4d4f;
+  border-color: #dc2626;
 }
 
 /* User Type Dropdown Styling */
 .user-type-dropdown {
   width: 100%;
   padding: var(--spacing-md);
-  border: 1px solid var(--color-gray-300);
-  border-radius: var(--border-radius-md);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
   font-size: var(--fs-base);
-  background-color: white;
+  background-color: var(--mm-s2);
+  color: var(--mm-pearl);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23A8B5CC' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
   background-position: right 0.75rem center;
   background-repeat: no-repeat;
   background-size: 1.5em 1.5em;
@@ -1125,12 +1128,12 @@ input.error {
 
 .user-type-dropdown:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.2);
+  border-color: var(--mm-gold);
+  box-shadow: 0 0 0 3px var(--mm-gold-soft);
 }
 
 .user-type-dropdown.error {
-  border-color: #ff4d4f;
+  border-color: #dc2626;
 }
 
 .user-type-dropdown option {
@@ -1154,9 +1157,10 @@ input.error {
 .dropdown-toggle {
   width: 100%;
   padding: var(--spacing-md);
-  border: 1px solid var(--color-gray-300);
-  border-radius: var(--border-radius-md);
-  background-color: white;
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
+  background-color: var(--mm-s2);
+  color: var(--mm-pearl);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -1167,32 +1171,32 @@ input.error {
 }
 
 .dropdown-toggle:hover {
-  border-color: var(--primary-color);
+  border-color: var(--mm-gold);
 }
 
 .dropdown-toggle:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.2);
+  border-color: var(--mm-gold);
+  box-shadow: 0 0 0 3px var(--mm-gold-soft);
 }
 
 .custom-dropdown.error .dropdown-toggle {
-  border-color: #ff4d4f;
+  border-color: #dc2626;
 }
 
 .selected-text {
   flex: 1;
-  color: var(--text-primary);
+  color: var(--mm-pearl);
 }
 
 .dropdown-toggle .selected-text:empty::before {
   content: "Select account types...";
-  color: var(--text-secondary);
+  color: var(--mm-slate);
 }
 
 .dropdown-arrow {
   transition: transform 0.2s ease;
-  color: var(--text-secondary);
+  color: var(--mm-slate);
 }
 
 .custom-dropdown.open .dropdown-arrow {
@@ -1204,11 +1208,11 @@ input.error {
   top: 100%;
   left: 0;
   right: 0;
-  background: white;
-  border: 1px solid var(--color-gray-300);
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
   border-top: none;
-  border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 0 0 var(--r-sm) var(--r-sm);
+  box-shadow: var(--shadow-lg);
   z-index: 1000;
   max-height: 200px;
   overflow-y: auto;
@@ -1221,7 +1225,7 @@ input.error {
   padding: var(--spacing-sm) var(--spacing-md);
   cursor: pointer;
   transition: background-color 0.2s ease;
-  border-bottom: 1px solid var(--color-gray-100);
+  border-bottom: 0.5px solid var(--b1);
 }
 
 .dropdown-item:last-child {
@@ -1229,7 +1233,7 @@ input.error {
 }
 
 .dropdown-item:hover {
-  background-color: rgba(var(--primary-color-rgb), 0.05);
+  background-color: var(--mm-s3);
 }
 
 .checkbox-input {
@@ -1237,7 +1241,7 @@ input.error {
   height: 16px;
   margin: 0;
   cursor: pointer;
-  accent-color: var(--primary-color);
+  accent-color: var(--mm-gold);
 }
 
 .item-content {
@@ -1249,7 +1253,7 @@ input.error {
 
 .item-icon {
   font-size: var(--fs-body-lg);
-  color: var(--primary-color);
+  color: var(--mm-gold);
   flex-shrink: 0;
 }
 
@@ -1261,19 +1265,19 @@ input.error {
 
 .item-label {
   font-weight: 500;
-  color: var(--text-primary);
+  color: var(--mm-pearl);
   font-size: var(--fs-sm);
 }
 
 .item-description {
   font-size: var(--fs-caption);
-  color: var(--text-secondary);
+  color: var(--mm-slate);
   line-height: 1.2;
 }
 
 .form-helper-text {
   font-size: var(--fs-sm);
-  color: var(--text-secondary);
+  color: var(--mm-slate);
   margin: var(--spacing-xs) 0 0 0;
   line-height: 1.4;
 }
@@ -1294,7 +1298,7 @@ input.error {
   right: 12px;
   background: none;
   border: none;
-  color: var(--text-secondary);
+  color: var(--mm-slate);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -1302,11 +1306,11 @@ input.error {
 }
 
 .toggle-password:hover {
-  color: var(--text-primary);
+  color: var(--mm-pearl);
 }
 
 .error-message {
-  color: #ff4d4f;
+  color: #dc2626;
   font-size: var(--fs-sm);
   margin-top: var(--spacing-xs);
   margin-bottom: 0;
@@ -1329,13 +1333,13 @@ input.error {
   font-weight: normal;
   margin: 0;
   font-size: var(--fs-sm);
-  color: var(--text-secondary);
+  color: var(--mm-slate);
 }
 
 .forgot-password-link {
   background: none;
   border: none;
-  color: var(--primary-color);
+  color: var(--mm-gold);
   font-size: var(--fs-sm);
   cursor: pointer;
   padding: 0;
@@ -1349,16 +1353,16 @@ input.error {
   text-align: center;
   margin-top: var(--spacing-md);
   padding-top: var(--spacing-md);
-  border-top: 1px solid var(--color-gray-200);
+  border-top: 0.5px solid var(--b1);
 }
 
 .submit-button {
   width: 100%;
   padding: var(--spacing-md);
-  background-color: var(--primary-color);
-  color: white;
+  background-color: var(--mm-gold);
+  color: #0A0700;
   border: none;
-  border-radius: var(--border-radius-md);
+  border-radius: var(--r-sm);
   font-size: var(--fs-base);
   font-weight: 500;
   cursor: pointer;
@@ -1370,12 +1374,13 @@ input.error {
 }
 
 .auth-form-container .submit-button:hover {
-  background-color: #e57730 !important;
-  color: white !important;
+  background-color: var(--mm-goldl) !important;
+  color: #0A0700 !important;
 }
 
 .submit-button:disabled {
-  background-color: var(--color-gray-400);
+  background-color: var(--mm-s3);
+  color: var(--mm-slate);
   cursor: not-allowed;
 }
 
@@ -1389,11 +1394,11 @@ input.error {
 }
 
 .general-error {
-  background-color: rgba(255, 77, 79, 0.1);
-  border: 1px solid rgba(255, 77, 79, 0.3);
-  color: #ff4d4f;
+  background-color: rgba(220, 38, 38, 0.1);
+  border: 0.5px solid rgba(220, 38, 38, 0.4);
+  color: #fca5a5;
   padding: var(--spacing-sm);
-  border-radius: var(--border-radius-md);
+  border-radius: var(--r-sm);
   text-align: center;
 }
 
@@ -1403,7 +1408,7 @@ input.error {
 }
 
 .social-login p {
-  color: var(--text-secondary);
+  color: var(--mm-slate);
   font-size: var(--fs-sm);
   margin-bottom: var(--spacing-md);
   position: relative;
@@ -1415,8 +1420,8 @@ input.error {
   position: absolute;
   top: 50%;
   width: 30%;
-  height: 1px;
-  background-color: var(--color-gray-300);
+  height: 0.5px;
+  background-color: var(--b1);
 }
 
 .social-login p::before {
@@ -1445,9 +1450,10 @@ input.error {
   justify-content: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--border-radius-md);
-  border: 1px solid var(--color-gray-300);
-  background-color: white;
+  border-radius: var(--r-sm);
+  border: 0.5px solid var(--b2);
+  background-color: var(--mm-s2);
+  color: var(--mm-silver);
   font-size: var(--fs-sm);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -1457,28 +1463,28 @@ input.error {
 }
 
 .social-button.google:hover {
-  background-color: rgba(234, 67, 53, 0.1);
-  border-color: rgba(234, 67, 53, 0.3);
+  background-color: rgba(234, 67, 53, 0.12);
+  border-color: rgba(234, 67, 53, 0.35);
 }
 
 .social-button.facebook:hover {
-  background-color: rgba(66, 103, 178, 0.1);
-  border-color: rgba(66, 103, 178, 0.3);
+  background-color: rgba(66, 103, 178, 0.12);
+  border-color: rgba(66, 103, 178, 0.35);
 }
 
 .social-button.linkedin:hover {
-  background-color: rgba(0, 119, 181, 0.1);
-  border-color: rgba(0, 119, 181, 0.3);
+  background-color: rgba(0, 119, 181, 0.12);
+  border-color: rgba(0, 119, 181, 0.35);
 }
 
 .social-button.github:hover {
-  background-color: rgba(36, 41, 46, 0.1);
-  border-color: rgba(36, 41, 46, 0.3);
+  background-color: var(--mm-s3);
+  border-color: var(--b2);
 }
 
 .social-button.x-twitter:hover {
-  background-color: rgba(0, 0, 0, 0.1);
-  border-color: rgba(0, 0, 0, 0.3);
+  background-color: var(--mm-s3);
+  border-color: var(--b2);
 }
 
 .password-strength {
@@ -1487,7 +1493,7 @@ input.error {
 
 .strength-meter {
   height: 4px;
-  background-color: var(--color-gray-200);
+  background-color: var(--mm-s3);
   border-radius: 2px;
   overflow: hidden;
 }
@@ -1554,8 +1560,8 @@ input.error {
 .demo-box {
   margin-top: 14px;
   padding: 12px 12px 10px;
-  background: #fff8f1;
-  border: 0.5px solid #ffd9b5;
+  background: var(--mm-gold-soft);
+  border: 0.5px solid var(--mm-gold);
   border-radius: 10px;
 }
 .demo-head {
@@ -1567,11 +1573,11 @@ input.error {
 .demo-label {
   font-size: 11px;
   font-weight: 700;
-  color: #ff8838;
+  color: var(--mm-gold);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
-.demo-hint { font-size: 11px; color: #94a3b8; }
+.demo-hint { font-size: 11px; color: var(--mm-slate); }
 .demo-row-list {
   display: flex;
   flex-direction: column;
@@ -1583,16 +1589,16 @@ input.error {
   align-items: stretch;
   gap: 4px;
   padding: 8px 10px;
-  background: #fff;
-  border: 0.5px solid #ffd9b5;
+  background: var(--mm-s3);
+  border: 0.5px solid var(--b2);
   border-radius: 8px;
   cursor: pointer;
   transition: all 150ms ease;
   text-align: left;
 }
 .demo-btn:hover:not(:disabled) {
-  border-color: #ff8838;
-  box-shadow: 0 6px 14px -10px rgba(255, 136, 56, 0.5);
+  border-color: var(--mm-gold);
+  box-shadow: 0 6px 14px -10px rgba(212, 168, 67, 0.4);
 }
 .demo-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 .demo-btn__top {
@@ -1604,13 +1610,13 @@ input.error {
 .demo-btn__role {
   font-size: 13px;
   font-weight: 600;
-  color: #1e1e1e;
+  color: var(--mm-pearl);
 }
 .demo-btn__badge {
   font-size: 10px;
   font-weight: 600;
-  color: #ff8838;
-  background: #fff3e6;
+  color: var(--mm-goldl);
+  background: var(--mm-gold-soft);
   padding: 2px 6px;
   border-radius: 999px;
   text-transform: uppercase;
@@ -1626,12 +1632,12 @@ input.error {
   align-items: center;
   gap: 4px;
   font-size: 11.5px;
-  color: #475569;
+  color: var(--mm-slate);
 }
 .demo-btn__cred code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--f-mon);
   font-size: 11.5px;
-  color: #0f172a;
+  color: var(--mm-pearl);
   background: transparent;
   padding: 0;
 }

@@ -49,7 +49,7 @@ const inputId = props.id || `sw-${Math.random().toString(36).slice(2, 9)}`
 
 .switch {
   position: relative;
-  background: #d1d5db;
+  background: var(--b2);
   border-radius: 999px;
   transition: background-color 150ms ease;
   flex-shrink: 0;
@@ -61,17 +61,17 @@ const inputId = props.id || `sw-${Math.random().toString(36).slice(2, 9)}`
   position: absolute;
   top: 2px;
   left: 2px;
-  background: #ffffff;
+  background: var(--mm-silver);
   border-radius: 50%;
   transition: left 150ms ease;
 }
 .sw-sm .switch-thumb { width: 12px; height: 12px; }
 .sw-md .switch-thumb { width: 16px; height: 16px; }
 
-.switch-input:checked + .switch { background: #ff8838; }
+.switch-input:checked + .switch { background: var(--mm-gold); }
 .switch-input:checked + .sw-sm .switch-thumb { left: 16px; }
 .switch-input:checked + .sw-md .switch-thumb { left: 18px; }
-.switch-input:focus-visible + .switch { outline: 2px solid #ff8838; outline-offset: 2px; }
+.switch-input:focus-visible + .switch { outline: 2px solid var(--mm-gold); outline-offset: 2px; }
 
-.switch-label, .switch-side { font-size: 14px; color: #374151; }
+.switch-label, .switch-side { font-size: var(--t-base); color: var(--mm-silver); }
 </style>

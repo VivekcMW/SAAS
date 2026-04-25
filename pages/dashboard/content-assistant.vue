@@ -10,7 +10,7 @@ const { currentUser } = useAuth()
 const role = computed(() => currentUser.value?.role || 'buyer')
 const router = useRouter()
 onMounted(() => { if (role.value === 'buyer') router.replace('/dashboard/overview') })
-useHead({ title: 'Content assistant · SaasWorld' })
+useHead({ title: 'Content assistant · Moonmart' })
 </script>
 
 <style scoped>

@@ -53,13 +53,13 @@ useHead({
 .changelog-entry {
   margin-bottom: 2rem;
   padding: 1.5rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-sm);
 }
 
 .changelog-entry h2 {
   margin-bottom: 1rem;
-  color: #3b82f6;
+  color: var(--mm-gold);
 }
 
 .changelog-entry ul {

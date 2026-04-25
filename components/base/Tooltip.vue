@@ -23,12 +23,13 @@ withDefaults(defineProps<Props>(), {
 
 .tooltip {
   position: absolute;
-  background: #1f2937;
-  color: #ffffff;
-  font-size: 12px;
+  background: var(--mm-s3);
+  color: var(--mm-pearl);
+  font-size: var(--t-xs);
   line-height: 1.3;
   padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: var(--r-sm);
+  border: 0.5px solid var(--b2);
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;

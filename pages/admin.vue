@@ -7,7 +7,7 @@ import { onMounted } from 'vue'
 definePageMeta({ layout: 'default' })
 const { currentUser } = useAuth()
 const router = useRouter()
-useHead({ title: 'Admin · SaasWorld' })
+useHead({ title: 'Admin · Moonmart' })
 onMounted(() => {
   if (!currentUser.value) router.replace('/login')
   else if (currentUser.value.role === 'admin') router.replace('/dashboard/overview')

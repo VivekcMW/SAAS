@@ -86,14 +86,14 @@ const scroll = (dir: 1 | -1) => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 6px;
-  color: #6b7280;
+  background: var(--mm-s3);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-sm);
+  color: var(--mm-slate);
   cursor: pointer;
-  transition: background-color 150ms ease, color 150ms ease;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
 }
-.alt-arrow:hover { background: #f9fafb; color: #1f2937; }
+.alt-arrow:hover { background: var(--mm-s2); color: var(--mm-pearl); }
 .alt-arrow :deep(svg) { width: 14px; height: 14px; }
 
 .alt-track {
@@ -111,23 +111,23 @@ const scroll = (dir: 1 | -1) => {
   flex: 0 0 300px;
   scroll-snap-align: start;
   padding: 14px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 10px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-lg);
   text-decoration: none;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  transition: border-color 150ms ease, background-color 150ms ease;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
 }
-.alt-card:hover { border-color: #ff8838; background: #f9fafb; }
+.alt-card:hover { border-color: var(--mm-gold); background: var(--mm-s3); }
 
 .alt-head { display: flex; gap: 10px; align-items: flex-start; }
 .alt-logo {
   width: 40px;
   height: 40px;
-  background: #f3f4f6;
-  border-radius: 6px;
+  background: var(--mm-s3);
+  border-radius: var(--r-sm);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -135,14 +135,14 @@ const scroll = (dir: 1 | -1) => {
   overflow: hidden;
 }
 .alt-logo img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
-.alt-initial { font-size: 16px; font-weight: 600; color: #6b7280; }
+.alt-initial { font-size: 16px; font-weight: 600; color: var(--mm-slate); }
 
 .alt-main { flex: 1; min-width: 0; }
 .alt-name {
   margin: 0 0 2px;
   font-size: 14px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--mm-pearl);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -150,7 +150,7 @@ const scroll = (dir: 1 | -1) => {
 .alt-tagline {
   margin: 0;
   font-size: 12px;
-  color: #6b7280;
+  color: var(--mm-slate);
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -163,15 +163,15 @@ const scroll = (dir: 1 | -1) => {
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  color: #374151;
+  color: var(--mm-silver);
   font-weight: 500;
 }
-.alt-rating :deep(svg) { width: 12px; height: 12px; color: #ff8838; }
-.alt-price { color: #6b7280; }
+.alt-rating :deep(svg) { width: 12px; height: 12px; color: var(--mm-gold); }
+.alt-price { color: var(--mm-slate); }
 
 .alt-cta {
   font-size: 12px;
-  color: #ff8838;
+  color: var(--mm-gold);
   font-weight: 500;
 }
 </style>

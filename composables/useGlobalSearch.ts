@@ -105,7 +105,7 @@ export const useGlobalSearch = () => {
 
   // Pages data
   const pages = [
-    { id: 'home', title: 'Home', path: '/', icon: 'i-heroicons-home', description: 'Welcome to SaaSWorld' },
+    { id: 'home', title: 'Home', path: '/', icon: 'i-heroicons-home', description: 'Welcome to Moonmart' },
     { id: 'marketplace', title: 'Marketplace', path: '/marketplace', icon: 'i-heroicons-shopping-bag', description: 'Discover tools and integrations' },
     { id: 'dashboard', title: 'Dashboard', path: '/dashboard', icon: 'i-heroicons-chart-bar', description: 'Analytics and insights' },
     { id: 'features', title: 'Features', path: '/features', icon: 'i-heroicons-sparkles', description: 'Explore our features' },

@@ -117,17 +117,17 @@ const exportCompare = () => {
 .picker__chip input { display: none; }
 .picker__chip.is-on { background: var(--bw-primary-50); border-color: var(--bw-primary); color: var(--bw-primary-600); }
 .picker__chip.is-disabled { opacity: 0.4; pointer-events: none; }
-.picker__logo { width: 24px; height: 24px; border-radius: 6px; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 0.75rem; }
+.picker__logo { width: 24px; height: 24px; border-radius: 6px; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.75rem; }
 
 .compare th, .compare td { min-width: 160px; }
 .compare__head { display: flex; align-items: center; gap: 10px; }
-.compare__logo { width: 32px; height: 32px; border-radius: 8px; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 0.88rem; }
+.compare__logo { width: 32px; height: 32px; border-radius: 8px; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; }
 .compare__name { font-weight: 700; color: var(--bw-text); }
 .compare__cat { font-size: 0.76rem; color: var(--bw-text-subtle); font-weight: 400; text-transform: none; letter-spacing: 0; }
 .compare__row-label { background: var(--bw-surface-2); font-weight: 600; color: var(--bw-text); text-transform: none; font-size: 0.85rem; letter-spacing: 0; }
 
 .tco { margin-top: 24px; padding: 20px; background: var(--bw-surface-2); border-radius: 12px; }
-.tco__title { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1rem; margin: 0 0 12px; }
+.tco__title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; margin: 0 0 12px; }
 .tco__controls { display: flex; align-items: end; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
 .tco__controls .bw-label { margin: 0; display: flex; flex-direction: column; gap: 4px; }
 .tco__controls .bw-input { width: 100px; }
@@ -135,7 +135,7 @@ const exportCompare = () => {
 .tco__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
 .tco__card { background: var(--bw-surface); border: 1px solid var(--bw-border); padding: 14px; border-radius: 10px; }
 .tco__app { font-size: 0.8rem; color: var(--bw-text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 4px; }
-.tco__amount { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.4rem; color: var(--bw-text); }
+.tco__amount { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.4rem; color: var(--bw-text); }
 .tco__amount span { font-size: 0.8rem; color: var(--bw-text-muted); font-weight: 500; margin-left: 2px; }
 .tco__detail { font-size: 0.78rem; color: var(--bw-text-subtle); margin-top: 2px; }
 </style>

@@ -3,7 +3,7 @@
     <div class="err-card">
       <NuxtLink to="/" class="err-logo">
         <span class="err-logo__mark">S</span>
-        <span class="err-logo__name">SaaSWorld</span>
+        <span class="err-logo__name">Moonmart</span>
       </NuxtLink>
 
       <div class="err-code">{{ error.statusCode }}</div>

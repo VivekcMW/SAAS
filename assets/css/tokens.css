@@ -1,110 +1,208 @@
 /* ============================================================
- * SaaSWorld Design Tokens — single source of truth
+ * Moonmart Design Tokens — single source of truth
  * ============================================================
  *
- * This file replaces the overlapping :root blocks that previously
- * lived in global.css and main.css. All variables below are the
- * canonical values. Do not redefine --sw-* or legacy tokens
- * elsewhere; add new tokens here.
+ * Dark-first design system. Single theme — no light mode.
+ * Brand palette: Gold (#D4A843) · Sea Green (#2A9D8F) · Blue (#4A80D4)
+ * Background: Near-black (#07090F) · Surfaces: #0F1220 / #161B2E
  *
- * Conflict resolutions (documented for future migration):
- *   --color-info       → #3B82F6 (blue). Previous main.css used
- *                         orange (#FF8838) which was semantically
- *                         wrong; aligned with global.css.
- *   --border-radius-sm → 4px (was 0.25rem / 4px duplicate).
- *   Gray scale          → Tailwind palette (main.css winner).
+ * Token namespace: --mm-* (Moonmart)
+ * Legacy --sw-* and --bw-* aliases preserved so existing
+ * component styles cascade correctly without mass surgery.
  *
- * Palette direction (per Phase 1 decision):
- *   Keep warm orange identity. No gradients. Solid fills only.
- *   Dedicated --sw-ai indigo reserved for AI surfaces.
+ * Fonts:
+ *   Plus Jakarta Sans = UI / body (300–800)
+ *   Instrument Serif  = display / editorial (400, italic)
+ *   JetBrains Mono    = prices, code, mono (300–600)
  * ============================================================ */
 
 :root {
-  /* Force light theme for form controls regardless of OS/browser dark mode.
-     Without this, browsers auto-invert <input>/<textarea>/<select> backgrounds
-     when the user has a dark system theme. */
-  color-scheme: light;
+  /* Dark theme for all form controls */
+  color-scheme: dark;
 
-  /* ── Brand ─────────────────────────────────────────────── */
-  --primary-color: #FF8838;
-  --primary-color-dark: #E67326;
-  --secondary-color: #F9C845;
-  --secondary-color-dark: #E0B534;
-  --dark-color: #1E1E1E;
-  --light-color: #FFFFFF;
-  --bg-gray: #F8F9FA;
+  /* ── Moonmart Palette ────────────────────────────────── */
+  --mm-bg:        #07090F;
+  --mm-surface:   #0F1220;
+  --mm-surface-2: #161B2E;
+  --mm-surface-3: #1F2742;
+  --mm-border:    rgba(168, 181, 204, 0.08);   /* = --b1 */
+  --mm-border-md: rgba(168, 181, 204, 0.16);  /* = --b2 */
 
-  /* ── SW-namespaced brand tokens (Phase 1 design system) ─ */
-  --sw-primary: #FF8838;
-  --sw-primary-hover: #E67326;
-  --sw-primary-soft: #FFF1E6;
-  --sw-accent: #0EA5A4;
-  --sw-ai: #6366F1;
-  --sw-ai-soft: #EEF0FF;
+  /* Gold — primary brand */
+  --mm-gold:      #D4A843;
+  --mm-goldl:     #EEC563;   /* design-system light variant */
+  --mm-gold-l:    #EEC563;   /* alias */
+  --mm-gold-soft: rgba(212, 168, 67, 0.12);
 
-  /* ── Text ──────────────────────────────────────────────── */
-  --text-primary: #1F2937;
-  --text-secondary: #4B5563;
-  --sw-text: #1C1917;
-  --sw-text-muted: #57534E;
-  --sw-text-subtle: #78716C;
+  /* Sea green — accent / secondary */
+  --mm-sea:       #2A9D8F;
+  --mm-seal:      #36B8A8;   /* design-system light variant */
+  --mm-sea-l:     #36B8A8;   /* alias */
+  --mm-sea-soft:  rgba(42, 157, 143, 0.12);
 
-  /* ── Status ────────────────────────────────────────────── */
-  --color-success: #10B981;
-  --color-success-dark: #059669;
-  --color-success-light: #D1FAE5;
-  --color-success-rgb: 16, 185, 129;
-  --color-warning: #F59E0B;
-  --color-warning-dark: #D97706;
-  --color-warning-light: #FEF3C7;
-  --color-error: #EF4444;
-  --color-error-dark: #DC2626;
-  --color-danger: #EF4444;
-  --color-danger-light: #FEE2E2;
-  --color-info: #3B82F6;
-  --color-info-dark: #2563EB;
+  /* Blue — platform / AI layer */
+  --mm-blue:      #4A80D4;
+  --mm-bluel:     #6A9FE8;   /* design-system light variant */
+  --mm-blue-l:    #6A9FE8;   /* alias */
+  --mm-blue-soft: rgba(74, 128, 212, 0.12);
 
-  /* ── Semantic aliases kept for legacy components ───────── */
-  --color-primary: #FF8838;
-  --color-primary-light: #FFF1E6;
-  --color-secondary: #F9C845;
-  --color-white: #FFFFFF;
+  /* Error */
+  --mm-err:       #D45050;   /* design-system short name */
+  --mm-error:     #D45050;
+  --mm-error-soft:rgba(212, 80, 80, 0.12);
 
-  /* ── Gray scale (Tailwind palette) ─────────────────────── */
-  --color-gray-50:  #F8F9FA;
-  --color-gray-100: #F3F4F6;
-  --color-gray-200: #E5E7EB;
-  --color-gray-300: #D1D5DB;
-  --color-gray-400: #9CA3AF;
-  --color-gray-500: #6B7280;
-  --color-gray-600: #4B5563;
-  --color-gray-700: #374151;
-  --color-gray-800: #1F2937;
-  --color-gray-900: #111827;
+  /* Border tokens — ALWAYS .5px, never 1px */
+  --b1: rgba(168, 181, 204, 0.08);  /* default */
+  --b2: rgba(168, 181, 204, 0.16);  /* hover   */
+  --b3: rgba(168, 181, 204, 0.28);  /* active  */
 
-  /* ── Typography ────────────────────────────────────────── */
-  /* Inter = body/UI (neutral grotesque, sized for screens)
-     Poppins = display/headings (geometric, brand voice)
-     JetBrains Mono = tabular numbers (prices, kbd, code) */
-  --font-primary: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-heading: 'Poppins', 'Inter', system-ui, sans-serif;
-  --font-display: 'Poppins', 'Inter', system-ui, sans-serif;
-  --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  /* Text */
+  --mm-pearl:     #F2F4F8;
+  --mm-silver:    #A8B5CC;
+  --mm-slate:     #68788F;
 
-  /* Consolidated 8-step scale */
-  --fs-xs:       0.75rem;    /* 12px — captions, badges, kbd */
-  --fs-sm:       0.8125rem;  /* 13px — meta, trust strip */
-  --fs-base:     0.9375rem;  /* 15px — default body (Inter reads well at 15) */
-  --fs-md:       1rem;       /* 16px — emphasis body, primary CTA */
-  --fs-lg:       1.125rem;   /* 18px — lead paragraphs */
-  --fs-title-sm: 1.25rem;    /* 20px — card titles */
-  --fs-title:    1.5rem;     /* 24px — subsection */
-  --fs-heading:  1.75rem;    /* 28px — H3 */
-  --fs-section:  2.25rem;    /* 36px — section H2 */
-  --fs-display:  3rem;       /* 48px — big display */
+  /* Surface aliases (shorthand) */
+  --mm-s1:        #0F1220;
+  --mm-s2:        #161B2E;
+  --mm-s3:        #1F2742;
+
+  /* ── Brand tokens (canonical) ────────────────────────── */
+  --primary-color:       #D4A843;
+  --primary-color-dark:  #B8902E;
+  --secondary-color:     #2A9D8F;
+  --secondary-color-dark:#1F7A70;
+  --dark-color:          #F2F4F8;  /* pearl — used as “dark” text on dark bg */
+  --light-color:         #07090F;  /* bg — the "light" surface is now dark */
+  --bg-gray:             #07090F;
+
+  /* ── mm-namespaced brand tokens ─────────────────────── */
+  --sw-primary:      #D4A843;
+  --sw-primary-hover:#B8902E;
+  --sw-primary-soft: rgba(212, 168, 67, 0.12);
+  --sw-accent:       #2A9D8F;
+  --sw-ai:           #4A7FD4;
+  --sw-ai-soft:      rgba(74, 127, 212, 0.12);
+
+  /* ── Text ────────────────────────────────────────────── */
+  --text-primary:    #F2F4F8;
+  --text-secondary:  #A8B5CC;
+  --sw-text:         #F2F4F8;
+  --sw-text-muted:   #A8B5CC;
+  --sw-text-subtle:  #68788F;
+
+  /* ── Status ──────────────────────────────────────────── */
+  --color-success:       #10B981;
+  --color-success-dark:  #059669;
+  --color-success-light: rgba(16, 185, 129, 0.15);
+  --color-success-rgb:   16, 185, 129;
+  --color-warning:       #F59E0B;
+  --color-warning-dark:  #D97706;
+  --color-warning-light: rgba(245, 158, 11, 0.15);
+  --color-error:         #EF4444;
+  --color-error-dark:    #DC2626;
+  --color-danger:        #EF4444;
+  --color-danger-light:  rgba(239, 68, 68, 0.15);
+  --color-info:          #4A7FD4;
+  --color-info-dark:     #2563EB;
+
+  /* ── Semantic aliases ────────────────────────────────── */
+  --color-primary:       #D4A843;
+  --color-primary-light: rgba(212, 168, 67, 0.12);
+  --color-secondary:     #2A9D8F;
+  --color-white:         #F0F3F8;
+
+  /* ── Dark gray scale (inverted for dark theme) ───────── */
+  --color-gray-50:  #07090F;
+  --color-gray-100: #0F1220;
+  --color-gray-200: #161B2E;
+  --color-gray-300: #1F2742;
+  --color-gray-400: #2A3560;
+  --color-gray-500: #6B7A96;
+  --color-gray-600: #A8B4CC;
+  --color-gray-700: #C8D0E0;
+  --color-gray-800: #DDE3EE;
+  --color-gray-900: #F0F3F8;
+
+  /* ── Buyer workspace tokens (--bw-*) ─────────────────── */
+  --bw-bg:           #07090F;
+  --bw-surface:      #0F1220;
+  --bw-surface-2:    #161B2E;
+  --bw-border:       rgba(168, 180, 204, 0.10);
+  --bw-border-strong:rgba(168, 180, 204, 0.22);
+  --bw-text:         #F2F4F8;
+  --bw-text-muted:   #A8B5CC;
+  --bw-text-subtle:  #68788F;
+  --bw-primary:      #D4A843;
+  --bw-primary-600:  #B8902E;
+  --bw-primary-50:   rgba(212, 168, 67, 0.12);
+  --bw-info:         #4A7FD4;
+  --bw-info-50:      rgba(74, 127, 212, 0.12);
+  --bw-success:      #10B981;
+  --bw-success-50:   rgba(16, 185, 129, 0.12);
+  --bw-warning:      #F59E0B;
+  --bw-warning-50:   rgba(245, 158, 11, 0.12);
+  --bw-danger:       #EF4444;
+  --bw-danger-50:    rgba(239, 68, 68, 0.12);
+  --bw-radius-sm:    8px;
+  --bw-radius:       12px;
+  --bw-radius-lg:    16px;
+  --bw-shadow-sm:    0 1px 2px rgba(0, 0, 0, 0.3);
+  --bw-shadow:       0 6px 18px -12px rgba(0, 0, 0, 0.5);
+
+  /* ── Admin workspace tokens (--aw-*) ─────────────────── */
+  --aw-accent:      #4A7FD4;
+  --aw-accent-600:  #3060B0;
+  --aw-accent-50:   rgba(74, 127, 212, 0.12);
+  --aw-accent-text: #6A9FE8;
+  --aw-surface:     #0F1220;
+  --aw-surface-2:   #161B2E;
+  --aw-border:      rgba(168, 180, 204, 0.10);
+  --aw-text:        #F2F4F8;
+  --aw-text-muted:  #A8B5CC;
+  --aw-text-subtle: #68788F;
+
+  /* ── Typography ──────────────────────────────────────── */
+  /* Plus Jakarta Sans = UI / body (clean, geometric, variable weight) */
+  /* Instrument Serif  = display / editorial (elegant, italic-capable) */
+  /* JetBrains Mono    = prices, code, tabular data                    */
+  --f-ui:      'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --f-ser:     'Instrument Serif', Georgia, serif;  /* design-system name */
+  --f-display: 'Instrument Serif', Georgia, serif;  /* alias */
+  --f-mono:    'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+  --f-mon:     'JetBrains Mono', 'SF Mono', ui-monospace, monospace;  /* design-system short name */
+
+  /* Legacy font aliases — point to new stack */
+  --font-primary: var(--f-ui);
+  --font-heading: var(--f-ser);
+  --font-display: var(--f-ser);
+  --font-mono:    var(--f-mono);
+
+  /* ── Type scale (px-based for precision) ────────────────
+     Use as: font-size: var(--t-base)                       */
+  --t-xs:   11px;   /* mono labels, badges */
+  --t-sm:   13px;   /* captions, meta */
+  --t-base: 15px;   /* body default */
+  --t-md:   17px;   /* ui emphasis */
+  --t-lg:   20px;   /* subtitle */
+  --t-xl:   26px;   /* H3 */
+  --t-2xl:  34px;   /* H2 */
+  --t-3xl:  48px;   /* H1 */
+  --t-4xl:  64px;   /* hero / display */
+
+  /* rem-based aliases (for components that use rem) */
+  --fs-xs:       0.6875rem;  /* ~11px */
+  --fs-sm:       0.8125rem;  /* 13px */
+  --fs-base:     0.9375rem;  /* 15px */
+  --fs-md:       1rem;       /* 16px */
+  --fs-lg:       1.125rem;   /* 18px */
+  --fs-title-sm: 1.25rem;    /* 20px */
+  --fs-title:    1.5rem;     /* 24px */
+  --fs-heading:  1.75rem;    /* 28px */
+  --fs-section:  2.25rem;    /* 36px */
+  --fs-display:  3rem;       /* 48px */
   --fs-hero:     clamp(2.5rem, 5vw, 3.5rem);
 
-  /* Legacy aliases kept so existing rules don't break */
+  /* Legacy aliases */
   --fs-micro:    var(--fs-xs);
   --fs-caption:  var(--fs-xs);
   --fs-body-lg:  var(--fs-lg);
@@ -114,44 +212,80 @@
   --lh-heading: 1.2;
   --lh-display: 1.1;
 
-  /* Number rendering: use these on prices, ratings, stats */
   --num-features: 'tnum' 1, 'cv11' 1;
 
-  /* ── Spacing ───────────────────────────────────────────── */
+  /* ── Spacing (base-4 system) ─────────────────────────── */
+  --sp-1:  4px;   --sp-2:  8px;   --sp-3: 12px;  --sp-4: 16px;
+  --sp-5: 24px;   --sp-6: 32px;   --sp-7: 48px;  --sp-8: 64px;
+
+  /* rem aliases for compatibility */
   --spacing-xs:  0.25rem;
   --spacing-sm:  0.5rem;
   --spacing-md:  1rem;
   --spacing-lg:  1.5rem;
   --spacing-xl:  2rem;
   --spacing-2xl: 3rem;
-  --spacing-xxl: 3rem; /* legacy alias */
+  --spacing-xxl: 3rem;
 
-  /* ── Radii ─────────────────────────────────────────────── */
-  --border-radius-sm:     4px;
-  --border-radius-md:     6px;
-  --border-radius-lg:     6px;
-  --border-radius-xl:     6px;
+  /* ── Radii (from design system spec) ───────────────────── */
+  --r-xs:   4px;     /* tight chips, badges */
+  --r-sm:   6px;     /* small elements */
+  --r-md:   8px;     /* inputs, small cards */
+  --r-lg:   12px;    /* cards, modals */
+  --r-xl:   16px;    /* large panels */
+  --r-full: 9999px;  /* pills, avatars */
+
+  /* Legacy aliases */
+  --border-radius-sm:     8px;
+  --border-radius-md:     12px;
+  --border-radius-lg:     16px;
+  --border-radius-xl:     20px;
   --border-radius-pill:   9999px;
-  --border-radius-input:  6px;
-  --border-radius-button: 6px;
+  --border-radius-input:  8px;
+  --border-radius-button: 9999px;
 
-  /* ── Transitions ───────────────────────────────────────── */
-  --transition-fast:   0.2s ease;
-  --transition-normal: 0.3s ease;
-  --transition-slow:   0.5s ease;
+  /* ── Transitions ─────────────────────────────────────── */
+  --ease:          cubic-bezier(.25, .1, .25, 1);
+  --transition-fast:   0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-slow:   0.4s ease;
 
-  /* ── Elevation ─────────────────────────────────────────── */
-  --shadow-xs: 0 1px 2px rgba(28,25,23,.04);
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-  --shadow-ai: 0 8px 24px rgba(99, 102, 241, 0.18);
+  /* ── Elevation (dark surfaces cast deeper shadows) ───── */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.6);
+  --shadow-ai: 0 8px 24px rgba(74, 127, 212, 0.22);
+
+  /* ── Pulse Rings animation durations ─────────────────── */
+  --mm-breathe-duration: 3s;
+  --mm-dot-duration:     2.5s;
 
   /* ── Layout heights (⚠️ CRITICAL FOR DASHBOARD LAYOUT) ── */
-  --navbar-height:                 72px;
-  --navbar-height-mobile:          64px;
-  --subnav-height:                 144px;
-  --subnav-height-mobile:          136px;
-  --dashboard-header-offset:       144px;
+  --navbar-height:                  72px;
+  --navbar-height-mobile:           64px;
+  --subnav-height:                  144px;
+  --subnav-height-mobile:           136px;
+  --dashboard-header-offset:        144px;
   --dashboard-header-offset-mobile: 136px;
 }
+
+/* ── Moonmart Pulse Rings Animations ─────────────────────── */
+@keyframes mm-ring-breathe {
+  0%, 100% { opacity: 0.55; }
+  50%       { opacity: 0.9;  }
+}
+@keyframes mm-dot-glow {
+  0%, 100% { opacity: 0.8; }
+  50%       { opacity: 1;   }
+}
+.mm-pulse-ring { animation: mm-ring-breathe var(--mm-breathe-duration) ease-in-out infinite; }
+.mm-pulse-ring-1 { animation-delay: 0s;   }
+.mm-pulse-ring-2 { animation-delay: 0.5s; }
+.mm-pulse-ring-3 { animation-delay: 1s;   }
+.mm-pulse-ring-4 { animation-delay: 1.5s; }
+.mm-pulse-dot    { animation: mm-dot-glow var(--mm-dot-duration) ease-in-out infinite; }
+.mm-pulse-dot-1  { animation-delay: 0s;   }
+.mm-pulse-dot-2  { animation-delay: 0.3s; }
+.mm-pulse-dot-3  { animation-delay: 0.6s; }
+.mm-pulse-dot-4  { animation-delay: 0.9s; }

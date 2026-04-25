@@ -1,6 +1,6 @@
 /**
  * Status Page Data
- * Mock data for the SaasWorld status page
+ * Mock data for the Moonmart status page
  */
 
 export interface ServiceStatus {
@@ -59,7 +59,7 @@ export const services: ServiceStatus[] = [
   // Core Services
   {
     id: 'api-core',
-    name: 'SaasWorld API',
+    name: 'Moonmart API',
     category: 'core',
     status: 'operational',
     description: 'Core marketplace API for application data and search',

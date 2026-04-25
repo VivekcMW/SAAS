@@ -44,12 +44,12 @@ const percent = computed(() => {
 <style scoped>
 .progress-wrap { width: 100%; display: flex; flex-direction: column; gap: 4px; }
 
-.progress-label-row { display: flex; justify-content: space-between; font-size: 12px; color: #6b7280; }
-.progress-label { font-weight: 500; color: #374151; }
+.progress-label-row { display: flex; justify-content: space-between; font-size: var(--t-xs); color: var(--mm-slate); }
+.progress-label { font-weight: 500; color: var(--mm-silver); }
 
 .progress-track {
   width: 100%;
-  background: #f3f4f6;
+  background: var(--mm-s3);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -64,9 +64,9 @@ const percent = computed(() => {
   border-radius: 999px;
 }
 
-.bar-primary { background: #ff8838; }
-.bar-success { background: #16a34a; }
-.bar-warning { background: #d97706; }
+.bar-primary { background: var(--mm-gold); }
+.bar-success { background: var(--mm-sea); }
+.bar-warning { background: var(--mm-goldl); }
 .bar-danger  { background: #dc2626; }
 
 .progress-bar.indeterminate {

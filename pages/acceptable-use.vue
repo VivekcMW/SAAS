@@ -2,9 +2,9 @@
   <LegalShell
     title="Acceptable Use Policy"
     eyebrow="Legal · Acceptable use"
-    lede="The rules that keep SaaSWorld safe, useful and trustworthy for every buyer, vendor and visitor."
+    lede="The rules that keep Moonmart safe, useful and trustworthy for every buyer, vendor and visitor."
     :updated="updatedAt"
-    contact-email="trust@saasworld.com"
+    contact-email="trust@moonmart.ai"
     :sections="tocSections"
   >
     <div class="prose prose-lg max-w-none">
@@ -12,7 +12,7 @@
         <h2>1. Scope</h2>
         <p>
           This Acceptable Use Policy (the "AUP") applies to everyone who interacts with
-          SaaSWorld: buyers browsing the marketplace, vendors listing products, authors
+          Moonmart: buyers browsing the marketplace, vendors listing products, authors
           posting reviews, and developers using our APIs. It supplements our
           <NuxtLink to="/terms">Terms of Service</NuxtLink>.
         </p>
@@ -20,7 +20,7 @@
 
       <section id="prohibited">
         <h2>2. Prohibited conduct</h2>
-        <p>You agree not to use SaaSWorld to:</p>
+        <p>You agree not to use Moonmart to:</p>
         <ul>
           <li>Violate any applicable law, regulation or third-party right.</li>
           <li>Post false, misleading, defamatory, harassing, hateful, or sexually explicit content.</li>
@@ -49,7 +49,7 @@
         <ul>
           <li>Submit fake reviews or incentivize reviews without clear disclosure.</li>
           <li>Mislead buyers about pricing, availability, compliance, or integrations.</li>
-          <li>Contact leads obtained through SaaSWorld for purposes unrelated to the listing.</li>
+          <li>Contact leads obtained through Moonmart for purposes unrelated to the listing.</li>
           <li>List products that infringe trademarks, patents, or copyrights.</li>
         </ul>
       </section>
@@ -67,7 +67,7 @@
         <h2>6. Reporting violations</h2>
         <p>
           If you see content or behavior that violates this policy, report it to
-          <a href="mailto:trust@saasworld.com">trust@saasworld.com</a>. For security
+          <a href="mailto:trust@moonmart.ai">trust@moonmart.ai</a>. For security
           vulnerabilities, follow the
           <NuxtLink to="/security">responsible disclosure process</NuxtLink> instead.
         </p>
@@ -113,9 +113,9 @@ const tocSections = [
 ]
 
 applySEO({
-  title: 'Acceptable Use Policy | SaaSWorld',
-  description: 'The conduct, content and API rules that apply to every SaaSWorld user.',
-  canonical: 'https://saasworld.com/acceptable-use',
+  title: 'Acceptable Use Policy | Moonmart',
+  description: 'The conduct, content and API rules that apply to every Moonmart user.',
+  canonical: 'https://moonmart.ai/acceptable-use',
   ogType: 'website'
 })
 </script>

@@ -2,7 +2,7 @@
   <div class="auth-page">
     <div class="auth-card">
       <header class="auth-head">
-        <NuxtLink to="/" class="auth-logo" aria-label="SaaSWorld home">
+        <NuxtLink to="/" class="auth-logo" aria-label="Moonmart home">
           <SaasworldLogo class="logo" />
         </NuxtLink>
         <h1>Create your account</h1>
@@ -152,9 +152,9 @@ import { ref, reactive, computed, watchEffect } from 'vue'
 definePageMeta({ layout: false })
 
 useHead({
-  title: 'Sign up — SaaSWorld',
+  title: 'Sign up — Moonmart',
   meta: [
-    { name: 'description', content: 'Create your SaaSWorld account and start your free trial.' }
+    { name: 'description', content: 'Create your Moonmart account and start your free trial.' }
   ]
 })
 
@@ -263,17 +263,17 @@ const handleSocial = (provider: 'google' | 'github') => {
   align-items: center;
   justify-content: center;
   padding: 24px 16px;
-  background: #f8fafc;
+  background: var(--mm-bg);
 }
 
 .auth-card {
   width: 100%;
   max-width: 460px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 16px;
+  background: var(--mm-s1);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-lg);
   padding: 36px 32px;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
+  box-shadow: var(--shadow-lg);
 }
 
 .auth-head { text-align: center; margin-bottom: 24px; }
@@ -283,10 +283,10 @@ const handleSocial = (provider: 'google' | 'github') => {
   margin: 0 0 6px;
   font-size: 24px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--mm-pearl);
   letter-spacing: -0.01em;
 }
-.subtitle { margin: 0; font-size: 14px; color: #64748b; }
+.subtitle { margin: 0; font-size: 14px; color: var(--mm-slate); }
 
 .social-row {
   display: grid;
@@ -300,17 +300,17 @@ const handleSocial = (provider: 'google' | 'github') => {
   justify-content: center;
   gap: 8px;
   padding: 10px 12px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 8px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
   font-family: inherit;
   font-size: 14px;
   font-weight: 500;
-  color: #1f2937;
+  color: var(--mm-silver);
   cursor: pointer;
   transition: background-color 150ms ease, border-color 150ms ease;
 }
-.social-btn:hover:not(:disabled) { background: #f9fafb; border-color: #d1d5db; }
+.social-btn:hover:not(:disabled) { background: var(--mm-s3); border-color: var(--b3); }
 .social-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 .social-btn .social-icon { width: 18px; height: 18px; }
 
@@ -323,39 +323,39 @@ const handleSocial = (provider: 'google' | 'github') => {
   content: '';
   position: absolute;
   left: 0; right: 0; top: 50%;
-  height: 0.5px; background: #e5e7eb;
+  height: 0.5px; background: var(--b2);
 }
 .divider span {
   position: relative;
-  background: #ffffff;
+  background: var(--mm-s1);
   padding: 0 10px;
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--mm-slate);
 }
 
 .auth-form { display: flex; flex-direction: column; gap: 14px; }
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .field { display: flex; flex-direction: column; gap: 6px; }
-.field label { font-size: 13px; font-weight: 500; color: #334155; }
+.field label { font-size: 13px; font-weight: 500; color: var(--mm-silver); }
 .field input {
   width: 100%;
   padding: 10px 12px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 8px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
   font-family: inherit;
   font-size: 14px;
-  color: #0f172a;
+  color: var(--mm-pearl);
   transition: border-color 150ms ease, box-shadow 150ms ease;
 }
-.field input::placeholder { color: #94a3b8; }
+.field input::placeholder { color: var(--mm-slate); }
 .field input:focus {
   outline: none;
-  border-color: #ff8838;
-  box-shadow: 0 0 0 3px rgba(255, 136, 56, 0.15);
+  border-color: var(--mm-gold);
+  box-shadow: 0 0 0 3px var(--mm-gold-soft);
 }
 .field input[aria-invalid="true"] { border-color: #dc2626; }
-.field input:disabled { background: #f9fafb; color: #94a3b8; cursor: not-allowed; }
+.field input:disabled { background: var(--mm-s3); color: var(--mm-slate); cursor: not-allowed; }
 .field-error { margin: 0; font-size: 12px; color: #dc2626; }
 
 .password-wrap { position: relative; }
@@ -368,19 +368,19 @@ const handleSocial = (provider: 'google' | 'github') => {
   background: transparent;
   border: 0;
   padding: 6px;
-  color: #64748b;
+  color: var(--mm-slate);
   cursor: pointer;
   border-radius: 4px;
   display: inline-flex;
 }
-.eye-btn:hover:not(:disabled) { color: #0f172a; }
+.eye-btn:hover:not(:disabled) { color: var(--mm-pearl); }
 .eye-btn :deep(svg) { width: 18px; height: 18px; }
 
 .strength { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
 .strength-bar {
   flex: 1;
   height: 4px;
-  background: #f1f5f9;
+  background: var(--mm-s3);
   border-radius: 2px;
   overflow: hidden;
 }
@@ -404,12 +404,12 @@ const handleSocial = (provider: 'google' | 'github') => {
   align-items: flex-start;
   gap: 8px;
   font-size: 13px;
-  color: #475569;
+  color: var(--mm-silver);
   cursor: pointer;
   line-height: 1.5;
 }
-.terms input { width: 16px; height: 16px; margin-top: 2px; accent-color: #ff8838; flex-shrink: 0; }
-.terms a { color: #ff8838; text-decoration: none; font-weight: 500; }
+.terms input { width: 16px; height: 16px; margin-top: 2px; accent-color: var(--mm-gold); flex-shrink: 0; }
+.terms a { color: var(--mm-gold); text-decoration: none; font-weight: 500; }
 .terms a:hover { text-decoration: underline; }
 
 .auth-error {
@@ -418,10 +418,10 @@ const handleSocial = (provider: 'google' | 'github') => {
   gap: 8px;
   margin: 0;
   padding: 10px 12px;
-  border: 0.5px solid #fecaca;
-  background: #fef2f2;
-  color: #b91c1c;
-  border-radius: 8px;
+  border: 0.5px solid rgba(220, 38, 38, 0.4);
+  background: rgba(220, 38, 38, 0.08);
+  color: #fca5a5;
+  border-radius: var(--r-sm);
   font-size: 13px;
 }
 .auth-error :deep(svg) { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
@@ -434,18 +434,18 @@ const handleSocial = (provider: 'google' | 'github') => {
   width: 100%;
   padding: 12px 16px;
   margin-top: 4px;
-  background: #ff8838;
-  color: #ffffff;
+  background: var(--mm-gold);
+  color: #0A0700;
   border: 0;
-  border-radius: 8px;
+  border-radius: var(--r-sm);
   font-family: inherit;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 150ms ease;
 }
-.submit-btn:hover:not(:disabled) { background: #f97316; }
-.submit-btn:disabled { background: #fbbf77; cursor: not-allowed; }
+.submit-btn:hover:not(:disabled) { background: var(--mm-goldl); }
+.submit-btn:disabled { background: var(--mm-s3); color: var(--mm-slate); cursor: not-allowed; }
 .submit-btn :deep(svg) { width: 16px; height: 16px; }
 .spin { animation: spin 1s linear infinite; }
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -454,10 +454,10 @@ const handleSocial = (provider: 'google' | 'github') => {
   margin: 22px 0 0;
   text-align: center;
   font-size: 14px;
-  color: #64748b;
+  color: var(--mm-slate);
 }
 .alt-link a {
-  color: #ff8838;
+  color: var(--mm-gold);
   font-weight: 600;
   text-decoration: none;
 }

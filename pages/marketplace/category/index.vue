@@ -40,11 +40,11 @@ const categories = [
 ];
 
 useHead({
-  title: 'All Categories - SaaSWorld Marketplace',
+  title: 'All Categories - Moonmart Marketplace',
   meta: [
     { 
       name: 'description', 
-      content: 'Explore all application categories in the SaaSWorld Marketplace.' 
+      content: 'Explore all application categories in the Moonmart Marketplace.' 
     }
   ]
 });

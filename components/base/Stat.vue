@@ -40,9 +40,9 @@ withDefaults(defineProps<Props>(), {
 .align-center { align-items: center; text-align: center; }
 
 .stat-label {
-  font-size: 12px;
+  font-size: var(--t-xs);
   font-weight: 500;
-  color: #6b7280;
+  color: var(--mm-slate);
   text-transform: uppercase;
   letter-spacing: 0.3px;
 }
@@ -52,7 +52,7 @@ withDefaults(defineProps<Props>(), {
 .stat-value {
   font-size: 22px;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--mm-pearl);
   line-height: 1.1;
 }
 
@@ -60,12 +60,12 @@ withDefaults(defineProps<Props>(), {
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  font-size: 12px;
+  font-size: var(--t-xs);
   font-weight: 600;
 }
-.trend-up { color: #166534; }
-.trend-down { color: #991b1b; }
-.trend-neutral { color: #6b7280; }
+.trend-up { color: var(--mm-seal); }
+.trend-down { color: #fca5a5; }
+.trend-neutral { color: var(--mm-slate); }
 
-.stat-hint { font-size: 12px; color: #9ca3af; }
+.stat-hint { font-size: var(--t-xs); color: var(--mm-slate); }
 </style>

@@ -14,9 +14,9 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     ['@nuxtjs/google-fonts', {
       families: {
-        Poppins: [400, 500, 600, 700, 800],
-        Inter: [400, 500, 600, 700],
-        'JetBrains Mono': [500, 600]
+        'Plus Jakarta Sans': [300, 400, 500, 600, 700, 800],
+        'Instrument Serif': [400],
+        'JetBrains Mono': [300, 400, 500, 600]
       },
       display: 'swap',
       preload: true
@@ -141,44 +141,44 @@ export default defineNuxtConfig({
   // App Config with SEO optimizations
   app: {
     head: {
-      title: 'SaaSWorld - Global Software Marketplace for Business Solutions',
-      titleTemplate: '%s | SaaSWorld',
+      title: 'Moonmart - Your world of software, connected.',
+      titleTemplate: '%s | Moonmart',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Discover and compare the best business software solutions worldwide. Find SaaS tools, enterprise software, and digital solutions for your business needs with expert reviews and comparisons.' },
-        { name: 'keywords', content: 'saas marketplace, business software, enterprise solutions, software directory, digital tools, cloud applications, software comparison, saas platform, global software marketplace' },
-        { name: 'author', content: 'SaaSWorld' },
+        { name: 'description', content: 'Moonmart is the global SaaS marketplace — discover, compare, and launch the right software for every team. Real reviews, transparent pricing, trusted vendors.' },
+        { name: 'keywords', content: 'moonmart, saas marketplace, global software marketplace, business software, enterprise solutions, software directory, cloud applications, software comparison' },
+        { name: 'author', content: 'Moonmart' },
         { name: 'robots', content: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' },
         { name: 'googlebot', content: 'index, follow' },
         { name: 'format-detection', content: 'telephone=no' },
-        { name: 'theme-color', content: '#1a73e8' },
-        { name: 'msapplication-TileColor', content: '#1a73e8' },
+        { name: 'theme-color', content: '#D4A843' },
+        { name: 'msapplication-TileColor', content: '#07090F' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
-        { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
-        { name: 'apple-mobile-web-app-title', content: 'SaaSWorld' },
+        { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
+        { name: 'apple-mobile-web-app-title', content: 'Moonmart' },
         
         // Open Graph / Social Media Meta Tags
         { property: 'og:type', content: 'website' },
-        { property: 'og:site_name', content: 'SaaSWorld' },
-        { property: 'og:title', content: 'SaaSWorld - Global Software Marketplace for Business Solutions' },
-        { property: 'og:description', content: 'Discover and compare the best business software solutions worldwide. Find SaaS tools, enterprise software, and digital solutions for your business needs.' },
-        { property: 'og:image', content: 'https://saasworld.com/assets/images/og-image.jpg' },
+        { property: 'og:site_name', content: 'Moonmart' },
+        { property: 'og:title', content: 'Moonmart - Your world of software, connected.' },
+        { property: 'og:description', content: 'Moonmart is the global SaaS marketplace — discover, compare, and launch the right software for every team.' },
+        { property: 'og:image', content: 'https://moonmart.ai/assets/images/og-image.jpg' },
         { property: 'og:image:width', content: '1200' },
         { property: 'og:image:height', content: '630' },
-        { property: 'og:url', content: 'https://saasworld.com' },
+        { property: 'og:url', content: 'https://moonmart.ai' },
         { property: 'og:locale', content: 'en_US' },
         
         // Twitter Card
         { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:site', content: '@SaaSWorld' },
-        { name: 'twitter:creator', content: '@SaaSWorld' },
-        { name: 'twitter:title', content: 'SaaSWorld - Global Software Marketplace for Business Solutions' },
-        { name: 'twitter:description', content: 'Discover and compare the best business software solutions worldwide. Find SaaS tools, enterprise software, and digital solutions for your business needs.' },
-        { name: 'twitter:image', content: 'https://saasworld.com/assets/images/og-image.jpg' },
+        { name: 'twitter:site', content: '@moonmart' },
+        { name: 'twitter:creator', content: '@moonmart' },
+        { name: 'twitter:title', content: 'Moonmart - Your world of software, connected.' },
+        { name: 'twitter:description', content: 'Moonmart is the global SaaS marketplace — discover, compare, and launch the right software for every team.' },
+        { name: 'twitter:image', content: 'https://moonmart.ai/assets/images/og-image.jpg' },
         
         // Additional SEO tags
-        { name: 'application-name', content: 'SaaSWorld' },
+        { name: 'application-name', content: 'Moonmart' },
         { name: 'referrer', content: 'origin-when-cross-origin' },
         { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' }
       ],
@@ -188,7 +188,7 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
         { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
         { rel: 'manifest', href: '/site.webmanifest' },
-        { rel: 'canonical', href: 'https://saasworld.com' },
+        { rel: 'canonical', href: 'https://moonmart.ai' },
         
         // Preconnect for performance
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },

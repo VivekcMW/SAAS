@@ -215,19 +215,19 @@ onMounted(() => {
   justify-content: space-between;
   padding: var(--spacing-lg) 0;
   margin-top: var(--spacing-lg);
-  border-top: 1px solid var(--color-gray-200);
+  border-top: 0.5px solid var(--b1);
   flex-wrap: wrap;
   gap: var(--spacing-md);
 }
 
 .pagination-info {
-  color: var(--text-secondary);
+  color: var(--mm-slate);
   font-size: 0.95rem;
   font-weight: 500;
 }
 
 .info-highlight {
-  color: var(--primary-color);
+  color: var(--mm-gold);
   font-weight: 600;
 }
 
@@ -243,24 +243,24 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: white;
-  border: 1px solid var(--color-gray-300);
-  border-radius: var(--border-radius-sm);
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
   cursor: pointer;
-  color: var(--text-secondary);
+  color: var(--mm-slate);
   transition: all 0.2s ease;
 }
 
 .pagination-btn:hover:not(.disabled) {
-  background: var(--primary-color);
-  color: white;
-  border-color: var(--primary-color);
+  background: var(--mm-gold);
+  color: #0A0700;
+  border-color: var(--mm-gold);
 }
 
 .pagination-btn.disabled {
   opacity: 0.4;
   cursor: not-allowed;
-  background: var(--color-gray-50);
+  background: var(--mm-s1);
 }
 
 .pagination-pages {
@@ -277,25 +277,25 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: white;
-  border: 1px solid var(--color-gray-300);
-  border-radius: var(--border-radius-sm);
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
   cursor: pointer;
-  color: var(--text-primary);
+  color: var(--mm-silver);
   font-weight: 500;
   transition: all 0.2s ease;
 }
 
 .pagination-page:hover:not(.active) {
-  background: var(--color-gray-50);
-  color: var(--primary-color);
-  border-color: var(--primary-color);
+  background: var(--mm-s3);
+  color: var(--mm-gold);
+  border-color: var(--mm-gold);
 }
 
 .pagination-page.active {
-  background: var(--primary-color);
-  color: white;
-  border-color: var(--primary-color);
+  background: var(--mm-gold);
+  color: #0A0700;
+  border-color: var(--mm-gold);
   font-weight: 600;
 }
 
@@ -305,7 +305,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-secondary);
+  color: var(--mm-slate);
 }
 
 .pagination-size-selector {
@@ -316,7 +316,7 @@ onMounted(() => {
 
 .pagination-size-selector label {
   font-size: 0.9rem;
-  color: var(--text-secondary);
+  color: var(--mm-slate);
   font-weight: 500;
 }
 
@@ -327,12 +327,12 @@ onMounted(() => {
 
 .select-wrapper select {
   appearance: none;
-  background: white;
-  border: 1px solid var(--color-gray-300);
-  border-radius: var(--border-radius-sm);
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
   padding: var(--spacing-xs) calc(var(--spacing-lg) + var(--spacing-xs)) var(--spacing-xs) var(--spacing-sm);
   font-size: 0.875rem;
-  color: var(--text-primary);
+  color: var(--mm-pearl);
   cursor: pointer;
   font-weight: 500;
   min-width: 60px;
@@ -340,12 +340,12 @@ onMounted(() => {
 
 .select-wrapper select:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.1);
+  border-color: var(--mm-gold);
+  box-shadow: 0 0 0 2px var(--mm-gold-soft);
 }
 
 .select-wrapper select:hover {
-  border-color: var(--primary-color);
+  border-color: var(--mm-gold);
 }
 
 .select-icon {
@@ -354,7 +354,7 @@ onMounted(() => {
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
-  color: var(--text-secondary);
+  color: var(--mm-slate);
   width: 16px;
   height: 16px;
 }

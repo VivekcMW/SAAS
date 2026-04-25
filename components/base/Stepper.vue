@@ -70,30 +70,30 @@ const goTo = (i: number, clickable: boolean) => {
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: #ffffff;
-  border: 0.5px solid #d1d5db;
-  color: #6b7280;
+  background: var(--mm-s3);
+  border: 0.5px solid var(--b2);
+  color: var(--mm-slate);
   font-size: 12px;
   font-weight: 600;
   flex-shrink: 0;
   transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 }
-.step.active .step-marker { background: #ff8838; border-color: #ff8838; color: #ffffff; }
-.step.done .step-marker { background: #16a34a; border-color: #16a34a; color: #ffffff; }
+.step.active .step-marker { background: var(--mm-gold); border-color: var(--mm-gold); color: #0A0700; }
+.step.done .step-marker { background: var(--mm-sea); border-color: var(--mm-sea); color: #fff; }
 
 .step-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.3; }
-.step-label { font-size: 13px; font-weight: 500; color: #1f2937; }
-.step.active .step-label { color: #ff8838; }
-.step-desc { font-size: 12px; color: #6b7280; }
+.step-label { font-size: var(--t-sm); font-weight: 500; color: var(--mm-silver); }
+.step.active .step-label { color: var(--mm-gold); }
+.step-desc { font-size: var(--t-xs); color: var(--mm-slate); }
 
 .step-connector {
   height: 0.5px;
-  background: #e5e7eb;
+  background: var(--b1);
   flex: 1;
   margin: 0 8px;
   align-self: center;
 }
-.step.done .step-connector { background: #16a34a; }
+.step.done .step-connector { background: var(--mm-sea); }
 
 .st-vertical .step-connector {
   position: absolute;

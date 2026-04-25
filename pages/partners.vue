@@ -145,7 +145,7 @@
       <div class="container">
         <div class="benefits-content">
           <div class="benefits-text">
-            <h2>Why Partner with SaaSWorld?</h2>
+            <h2>Why Partner with Moonmart?</h2>
             <p>Join a rapidly growing marketplace that connects software vendors with businesses worldwide.</p>
             
             <div class="stats-grid">
@@ -218,7 +218,7 @@
           </div>
           
           <div class="contact-info">
-            <p>Questions? Contact our partner team at <a href="mailto:partners@saasworld.club">partners@saasworld.club</a></p>
+            <p>Questions? Contact our partner team at <a href="mailto:partners@moonmart.ai">partners@moonmart.ai</a></p>
           </div>
         </div>
       </div>
@@ -229,9 +229,9 @@
 <script setup lang="ts">
 // SEO Configuration
 useSeoMeta({
-  title: 'Partners - SaaSWorld',
-  description: 'Join our growing network of technology partners, integration specialists, and software vendors. Partner with SaaSWorld to reach thousands of potential customers worldwide.',
-  keywords: 'SaaSWorld partners, technology partners, software vendors, partnership program, API integration, solution partners',
+  title: 'Partners - Moonmart',
+  description: 'Join our growing network of technology partners, integration specialists, and software vendors. Partner with Moonmart to reach thousands of potential customers worldwide.',
+  keywords: 'Moonmart partners, technology partners, software vendors, partnership program, API integration, solution partners',
 })
 
 // Schema markup for organization partnerships
@@ -242,22 +242,22 @@ useHead({
       innerHTML: JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'Organization',
-        name: 'SaaSWorld Partners',
-        url: 'https://saasworld.club/partners',
+        name: 'Moonmart Partners',
+        url: 'https://moonmart.ai/partners',
         parentOrganization: {
           '@type': 'Organization',
-          name: 'SaaSWorld',
-          url: 'https://saasworld.club'
+          name: 'Moonmart',
+          url: 'https://moonmart.ai'
         },
         contactPoint: {
           '@type': 'ContactPoint',
           contactType: 'Partner Inquiries',
-          email: 'partners@saasworld.club',
+          email: 'partners@moonmart.ai',
           telephone: '+1-555-123-4568'
         },
         program: {
           '@type': 'Course',
-          name: 'SaaSWorld Partnership Program',
+          name: 'Moonmart Partnership Program',
           description: 'Technology and solution partner program for software vendors and consultants'
         }
       })
@@ -270,7 +270,7 @@ useHead({
 /* Hero Section */
 .hero-section {
   padding: calc(var(--spacing-xxl) * 2) 0;
-  background: linear-gradient(135deg, var(--bg-gray) 0%, #fff 100%);
+  background: var(--mm-bg);
   position: relative;
   overflow: visible;
   text-align: center;
@@ -336,25 +336,25 @@ useHead({
 }
 
 .btn-primary {
-  background: var(--primary-color);
-  color: white;
-  border: 2px solid var(--primary-color);
+  background: var(--mm-gold);
+  color: #0A0700;
+  border: 0.5px solid var(--mm-gold);
 }
 
 .btn-primary:hover {
-  background: var(--dark-color);
-  border-color: var(--dark-color);
+  background: var(--mm-goldl);
+  border-color: var(--mm-goldl);
 }
 
 .btn-secondary {
   background: transparent;
-  color: var(--primary-color);
-  border: 2px solid var(--primary-color);
+  color: var(--mm-silver);
+  border: 0.5px solid var(--b2);
 }
 
 .btn-secondary:hover {
-  background: var(--primary-color);
-  color: white;
+  background: var(--mm-s2);
+  color: var(--mm-pearl);
 }
 
 .btn-large {
@@ -365,7 +365,7 @@ useHead({
 /* Partner Types Section */
 .partner-types {
   padding: var(--spacing-xxl) 0;
-  background: #f8fafc;
+  background: var(--mm-s1);
 }
 
 .section-header {
@@ -394,29 +394,28 @@ useHead({
 }
 
 .type-card {
-  background: white;
+  background: var(--mm-s2);
   padding: 2.5rem;
-  border-radius: 1rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e5e7eb;
+  border-radius: var(--r-lg);
+  border: 0.5px solid var(--b1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .type-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-md);
 }
 
 .type-icon {
   width: 4rem;
   height: 4rem;
-  background: var(--primary-color);
-  border-radius: 1rem;
+  background: var(--mm-gold-soft);
+  border-radius: var(--r-md);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: var(--spacing-lg);
-  color: white;
+  color: var(--mm-gold);
   font-size: 2rem;
 }
 
@@ -469,7 +468,7 @@ useHead({
 /* Featured Partners Section */
 .featured-partners {
   padding: var(--spacing-xxl) 0;
-  background: white;
+  background: var(--mm-bg);
 }
 
 .partners-grid {
@@ -481,10 +480,10 @@ useHead({
 }
 
 .partner-card {
-  background: white;
+  background: var(--mm-s2);
   padding: 2rem;
-  border-radius: 1rem;
-  border: 1px solid #e5e7eb;
+  border-radius: var(--r-lg);
+  border: 0.5px solid var(--b1);
   text-align: center;
   transition: box-shadow 0.2s ease;
 }
@@ -504,11 +503,11 @@ useHead({
 .logo-placeholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  background: var(--mm-gold-soft);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--mm-gold);
   font-weight: 600;
   font-size: 0.75rem;
 }
@@ -527,10 +526,10 @@ useHead({
 }
 
 .partner-badge {
-  background: var(--primary-color);
-  color: white;
+  background: var(--mm-gold);
+  color: #0A0700;
   padding: 0.25rem 0.75rem;
-  border-radius: 1rem;
+  border-radius: var(--r-full);
   font-size: 0.75rem;
   font-weight: 500;
   display: inline-block;
@@ -539,7 +538,7 @@ useHead({
 /* Benefits Section */
 .partner-benefits {
   padding: var(--spacing-xxl) 0;
-  background: #f8fafc;
+  background: var(--mm-s1);
 }
 
 .benefits-content {
@@ -574,15 +573,15 @@ useHead({
 .stat-item {
   text-align: center;
   padding: 1.5rem;
-  background: white;
-  border-radius: 0.75rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  background: var(--mm-s2);
+  border-radius: var(--r-md);
+  border: 0.5px solid var(--b1);
 }
 
 .stat-number {
   font-size: 2rem;
   font-weight: 700;
-  color: var(--primary-color);
+  color: var(--mm-gold);
   margin-bottom: 0.5rem;
 }
 
@@ -607,9 +606,9 @@ useHead({
 .feature-icon {
   width: 3rem;
   height: 3rem;
-  background: var(--primary-color);
-  color: white;
-  border-radius: 0.75rem;
+  background: var(--mm-gold-soft);
+  color: var(--mm-gold);
+  border-radius: var(--r-md);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -632,7 +631,7 @@ useHead({
 /* CTA Section */
 .partner-cta {
   padding: var(--spacing-xxl) 0;
-  background: white;
+  background: var(--mm-bg);
 }
 
 .cta-content {

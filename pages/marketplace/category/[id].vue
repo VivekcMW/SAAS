@@ -62,10 +62,10 @@ onMounted(() => {
   // Apply SEO for this category
   const categoryName = getCategoryName(categoryId.value);
   applySEO({
-    title: `${categoryName} Software Tools | SaaSWorld Marketplace`,
+    title: `${categoryName} Software Tools | Moonmart Marketplace`,
     description: `Discover the best ${categoryName.toLowerCase()} software and tools for your business. Compare features, pricing, and reviews to find the perfect ${categoryName.toLowerCase()} solution.`,
     keywords: `${categoryName.toLowerCase()} software, ${categoryName.toLowerCase()} tools, business ${categoryName.toLowerCase()}, ${categoryName.toLowerCase()} solutions, ${categoryName.toLowerCase()} applications`,
-    canonical: `https://saasworld.com/marketplace/category/${categoryId.value}`,
+    canonical: `https://moonmart.ai/marketplace/category/${categoryId.value}`,
     ogImage: `/assets/images/categories/${categoryId.value}-og.jpg`,
     hreflang: generateHreflangTags(`/marketplace/category/${categoryId.value}`),
     jsonLd: {
@@ -73,7 +73,7 @@ onMounted(() => {
       '@type': 'CollectionPage',
       name: `${categoryName} Software Directory`,
       description: `Comprehensive directory of ${categoryName.toLowerCase()} software and tools`,
-      url: `https://saasworld.com/marketplace/category/${categoryId.value}`
+      url: `https://moonmart.ai/marketplace/category/${categoryId.value}`
     }
   });
 });
@@ -113,19 +113,19 @@ const getCategoryIcon = (categoryId: string): string => {
 
 // SEO Optimization
 useHead(() => ({
-  title: `${getCategoryName(categoryId.value)} Applications - SaaSWorld Marketplace`,
+  title: `${getCategoryName(categoryId.value)} Applications - Moonmart Marketplace`,
   meta: [
     { 
       name: 'description', 
-      content: `Explore the best ${getCategoryName(categoryId.value)} applications for your business on SaaSWorld Marketplace.` 
+      content: `Explore the best ${getCategoryName(categoryId.value)} applications for your business on Moonmart Marketplace.` 
     },
-    { property: 'og:title', content: `${getCategoryName(categoryId.value)} Applications - SaaSWorld Marketplace` },
+    { property: 'og:title', content: `${getCategoryName(categoryId.value)} Applications - Moonmart Marketplace` },
     { 
       property: 'og:description', 
-      content: `Explore the best ${getCategoryName(categoryId.value)} applications for your business on SaaSWorld Marketplace.` 
+      content: `Explore the best ${getCategoryName(categoryId.value)} applications for your business on Moonmart Marketplace.` 
     },
     { property: 'og:type', content: 'website' },
-    { property: 'og:url', content: `https://saasworld.club/marketplace/category/${categoryId.value}` }
+    { property: 'og:url', content: `https://moonmart.ai/marketplace/category/${categoryId.value}` }
   ]
 }));
 </script>

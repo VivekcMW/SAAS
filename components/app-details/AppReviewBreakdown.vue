@@ -123,9 +123,9 @@ const topReviews = computed(() => props.reviews.slice(0, 3))
   grid-template-columns: 200px 1fr 260px;
   gap: 24px;
   padding: 20px;
-  background: #f9fafb;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 10px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-lg);
   margin-bottom: 16px;
 }
 
@@ -135,31 +135,31 @@ const topReviews = computed(() => props.reviews.slice(0, 3))
   align-items: center;
   justify-content: center;
   gap: 6px;
-  border-right: 0.5px solid #e5e7eb;
+  border-right: 0.5px solid var(--b1);
   padding-right: 20px;
 }
-.score-value { font-size: 42px; font-weight: 700; color: #1f2937; line-height: 1; }
-.score-count { margin: 0; font-size: 13px; color: #6b7280; }
+.score-value { font-size: 42px; font-weight: 700; color: var(--mm-pearl); line-height: 1; }
+.score-count { margin: 0; font-size: 13px; color: var(--mm-slate); }
 
 .bars-col { display: flex; flex-direction: column; gap: 6px; }
 .bar-row { display: flex; align-items: center; gap: 10px; }
-.bar-star { font-size: 12px; color: #6b7280; width: 48px; flex-shrink: 0; }
+.bar-star { font-size: 12px; color: var(--mm-slate); width: 48px; flex-shrink: 0; }
 .bar-track {
   flex: 1;
   height: 6px;
-  background: #e5e7eb;
-  border-radius: 3px;
+  background: var(--b2);
+  border-radius: var(--r-sm);
   overflow: hidden;
 }
-.bar-fill { height: 100%; background: #ff8838; transition: width 300ms ease; }
-.bar-pct { font-size: 12px; color: #6b7280; width: 40px; text-align: right; flex-shrink: 0; }
+.bar-fill { height: 100%; background: var(--mm-gold); transition: width 300ms ease; }
+.bar-pct { font-size: 12px; color: var(--mm-slate); width: 40px; text-align: right; flex-shrink: 0; }
 
-.sentiment-col { border-left: 0.5px solid #e5e7eb; padding-left: 20px; }
+.sentiment-col { border-left: 0.5px solid var(--b1); padding-left: 20px; }
 .sentiment-title {
   margin: 0 0 8px;
   font-size: 11px;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--mm-slate);
   text-transform: uppercase;
   letter-spacing: 0.4px;
 }
@@ -169,14 +169,14 @@ const topReviews = computed(() => props.reviews.slice(0, 3))
   align-items: center;
   gap: 4px;
   padding: 4px 8px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 4px;
+  background: var(--mm-s3);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-xs);
   font-size: 12px;
-  color: #374151;
+  color: var(--mm-silver);
 }
-.sentiment-tag.positive { color: #065f46; border-color: #d1fae5; background: #ecfdf5; }
-.sentiment-tag.negative { color: #991b1b; border-color: #fee2e2; background: #fef2f2; }
+.sentiment-tag.positive { color: var(--mm-seal); border-color: var(--mm-sea); background: var(--mm-sea-soft); }
+.sentiment-tag.negative { color: #f87171; border-color: rgba(248,113,113,0.3); background: rgba(248,113,113,0.08); }
 .sentiment-tag :deep(svg) { width: 12px; height: 12px; }
 .sentiment-pct { font-weight: 600; margin-left: 2px; }
 
@@ -184,9 +184,9 @@ const topReviews = computed(() => props.reviews.slice(0, 3))
 .reviews-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
 .review-card {
   padding: 16px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 8px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-md);
 }
 .review-head {
   display: flex;
@@ -201,20 +201,20 @@ const topReviews = computed(() => props.reviews.slice(0, 3))
   gap: 6px;
   font-size: 14px;
   font-weight: 500;
-  color: #1f2937;
+  color: var(--mm-pearl);
 }
-.reviewer-title { font-size: 12px; color: #6b7280; margin-top: 2px; }
+.reviewer-title { font-size: 12px; color: var(--mm-slate); margin-top: 2px; }
 
 .review-title {
   margin: 0 0 4px;
   font-size: 14px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--mm-pearl);
 }
 .review-content {
   margin: 0;
   font-size: 13px;
-  color: #4b5563;
+  color: var(--mm-silver);
   line-height: 1.55;
 }
 .review-footer {
@@ -223,7 +223,7 @@ const topReviews = computed(() => props.reviews.slice(0, 3))
   gap: 12px;
   margin-top: 10px;
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--mm-slate);
 }
 .review-helpful {
   display: inline-flex;
@@ -236,7 +236,7 @@ const topReviews = computed(() => props.reviews.slice(0, 3))
   display: inline-block;
   font-size: 13px;
   font-weight: 500;
-  color: #ff8838;
+  color: var(--mm-gold);
   text-decoration: none;
 }
 .view-all:hover { text-decoration: underline; }

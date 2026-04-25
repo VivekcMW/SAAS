@@ -69,7 +69,7 @@ const onClick = (e: MouseEvent) => {
   justify-content: center;
   gap: 6px;
   border: 0.5px solid transparent;
-  border-radius: 6px;
+  border-radius: var(--r-sm);
   font-weight: 500;
   text-decoration: none;
   cursor: pointer;
@@ -85,30 +85,30 @@ const onClick = (e: MouseEvent) => {
 .btn-block { display: flex; width: 100%; }
 
 .btn-primary {
-  background: #ff8838;
-  color: #ffffff;
-  border-color: #ff8838;
+  background: var(--mm-gold);
+  color: #0A0700;
+  border-color: var(--mm-gold);
 }
-.btn-primary:hover { background: #e57320; border-color: #e57320; }
+.btn-primary:hover { background: var(--mm-goldl); border-color: var(--mm-goldl); }
 
 .btn-secondary {
-  background: #ffffff;
-  color: #1f2937;
-  border-color: #e5e7eb;
+  background: var(--mm-s2);
+  color: var(--mm-silver);
+  border-color: var(--b2);
 }
-.btn-secondary:hover { background: #f9fafb; }
+.btn-secondary:hover { background: var(--mm-s3); color: var(--mm-pearl); }
 
 .btn-ghost {
   background: transparent;
-  color: #1f2937;
+  color: var(--mm-silver);
   border-color: transparent;
 }
-.btn-ghost:hover { background: #f3f4f6; }
+.btn-ghost:hover { background: var(--mm-s3); color: var(--mm-pearl); }
 
 .btn-danger {
-  background: #dc2626;
+  background: var(--mm-err, #dc2626);
   color: #ffffff;
-  border-color: #dc2626;
+  border-color: var(--mm-err, #dc2626);
 }
 .btn-danger:hover { background: #b91c1c; border-color: #b91c1c; }
 

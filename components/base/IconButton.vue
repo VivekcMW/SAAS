@@ -37,9 +37,9 @@ defineEmits<{ click: [MouseEvent] }>()
   justify-content: center;
   background: transparent;
   border: 0.5px solid transparent;
-  color: #6b7280;
+  color: var(--mm-slate);
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: var(--r-md);
   padding: 0;
   transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
 }
@@ -48,15 +48,15 @@ defineEmits<{ click: [MouseEvent] }>()
 .ib-md { width: 34px; height: 34px; }
 .ib-lg { width: 40px; height: 40px; }
 
-.ib-ghost:hover { background: #f3f4f6; color: #1f2937; }
+.ib-ghost:hover { background: var(--mm-s3); color: var(--mm-pearl); }
 
-.ib-outline { border-color: #e5e7eb; }
-.ib-outline:hover { background: #f9fafb; color: #1f2937; }
+.ib-outline { border-color: var(--b2); }
+.ib-outline:hover { background: var(--mm-s3); color: var(--mm-pearl); }
 
-.ib-solid { background: #ff8838; color: #ffffff; border-color: #ff8838; }
-.ib-solid:hover { background: #e57320; border-color: #e57320; }
+.ib-solid { background: var(--mm-gold); color: #0A0700; border-color: var(--mm-gold); }
+.ib-solid:hover { background: var(--mm-goldl); border-color: var(--mm-goldl); }
 
-.icon-btn.active { color: #ff8838; }
+.icon-btn.active { color: var(--mm-gold); }
 
 .icon-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 

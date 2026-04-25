@@ -206,7 +206,7 @@ async function fetchHtml(url: string, timeout: number): Promise<string> {
     timeout,
     retry: 0,
     headers: {
-      'user-agent': 'SaaSWorldBot/1.0 (+https://saasworld.io/bot)',
+      'user-agent': 'MoonmartBot/1.0 (+https://saasworld.io/bot)',
       accept: 'text/html,application/xhtml+xml'
     }
   })

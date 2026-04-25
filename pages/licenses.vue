@@ -2,9 +2,9 @@
   <LegalShell
     title="Software Licenses"
     eyebrow="Legal · Licenses"
-    lede="SaaSWorld is built on the shoulders of open source. Here are the libraries, fonts and tools that power our platform — and the terms we follow."
+    lede="Moonmart is built on the shoulders of open source. Here are the libraries, fonts and tools that power our platform — and the terms we follow."
     :updated="updatedAt"
-    contact-email="legal@saasworld.com"
+    contact-email="legal@moonmart.ai"
     :sections="tocSections"
   >
     <!-- Quick stats -->
@@ -32,13 +32,13 @@
       <section id="our-license">
         <h2>1. Our software license</h2>
         <div class="lic-callout">
-          <p class="lic-callout__title">SaaSWorld Platform License</p>
+          <p class="lic-callout__title">Moonmart Platform License</p>
           <p>
-            The SaaSWorld platform — including its source code, design system, content and
-            brand assets — is proprietary software owned by SaaSWorld Inc. All rights reserved.
+            The Moonmart platform — including its source code, design system, content and
+            brand assets — is proprietary software owned by Moonmart Inc. All rights reserved.
           </p>
           <p class="lic-callout__fine">
-            <strong>Copyright © {{ currentYear }} SaaSWorld Inc.</strong> Protected by copyright
+            <strong>Copyright © {{ currentYear }} Moonmart Inc.</strong> Protected by copyright
             law and international treaties. Unauthorized reproduction or redistribution is prohibited.
           </p>
         </div>
@@ -49,7 +49,7 @@
         </p>
         <p>
           For licensing, partnership, or OEM enquiries, write to
-          <a href="mailto:legal@saasworld.com">legal@saasworld.com</a>.
+          <a href="mailto:legal@moonmart.ai">legal@moonmart.ai</a>.
         </p>
       </section>
 
@@ -316,8 +316,8 @@
 
         <h3>Original content</h3>
         <p>
-          Editorial photography, illustrations, the <em>SaaSWorld</em> wordmark, product
-          screenshots and written copy are © SaaSWorld Inc. and are not covered by any of
+          Editorial photography, illustrations, the <em>Moonmart</em> wordmark, product
+          screenshots and written copy are © Moonmart Inc. and are not covered by any of
           the open source licenses above.
         </p>
       </section>
@@ -342,7 +342,7 @@
       <section id="attributions">
         <h2>9. Attributions</h2>
         <p>
-          SaaSWorld would not exist without the work of thousands of open source
+          Moonmart would not exist without the work of thousands of open source
           contributors. Special thanks to:
         </p>
         <ul>
@@ -358,8 +358,8 @@
         <h2>10. Contact</h2>
         <p>For licensing questions, attribution corrections, or compliance audits:</p>
         <div class="contact-info">
-          <p><strong>Email:</strong> <a href="mailto:legal@saasworld.com">legal@saasworld.com</a></p>
-          <p><strong>Address:</strong> SaaSWorld Inc., 123 Tech Street, San Francisco, CA 94105</p>
+          <p><strong>Email:</strong> <a href="mailto:legal@moonmart.ai">legal@moonmart.ai</a></p>
+          <p><strong>Address:</strong> Moonmart Inc., 123 Tech Street, San Francisco, CA 94105</p>
           <p><strong>Response time:</strong> within 5 business days</p>
         </div>
       </section>
@@ -391,21 +391,21 @@ const tocSections = [
 ]
 
 applySEO({
-  title: 'Licenses | SaaSWorld - Open Source Licenses and Attributions',
-  description: 'View SaaSWorld\'s open source licenses, third-party attributions, and software licensing information for our platform.',
+  title: 'Licenses | Moonmart - Open Source Licenses and Attributions',
+  description: 'View Moonmart\'s open source licenses, third-party attributions, and software licensing information for our platform.',
   keywords: 'licenses, open source, attributions, software licenses, third-party licenses, MIT license, Apache license, GPL',
-  canonical: 'https://saasworld.com/licenses',
+  canonical: 'https://moonmart.ai/licenses',
   ogType: 'website',
   jsonLd: {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     name: 'Licenses',
-    description: 'SaaSWorld software licenses and open source attributions',
-    url: 'https://saasworld.com/licenses',
+    description: 'Moonmart software licenses and open source attributions',
+    url: 'https://moonmart.ai/licenses',
     publisher: {
       '@type': 'Organization',
-      name: 'SaaSWorld',
-      url: 'https://saasworld.com'
+      name: 'Moonmart',
+      url: 'https://moonmart.ai'
     }
   }
 })
@@ -429,23 +429,23 @@ onMounted(() => {
   margin: 0 0 2.5rem;
 }
 .lic-stat {
-  background: #fbfaf8;
-  border: 1px solid #f0efec;
-  border-radius: 14px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-lg);
   padding: 1.1rem 1rem;
   text-align: center;
 }
 .lic-stat__value {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--sw-primary, #ff8838);
+  color: var(--mm-gold);
   line-height: 1;
   margin-bottom: 0.35rem;
 }
 .lic-stat__label {
   font-size: 0.8125rem;
-  color: #52525b;
+  color: var(--mm-slate);
   font-weight: 500;
 }
 @media (max-width: 720px) {
@@ -454,25 +454,25 @@ onMounted(() => {
 
 /* Callout card */
 .lic-callout {
-  background: var(--sw-primary-soft, #fff1e6);
-  border: 1px solid #f0d9bf;
-  border-left: 3px solid var(--sw-primary, #ff8838);
-  border-radius: 14px;
+  background: var(--mm-gold-soft);
+  border: 0.5px solid var(--b1);
+  border-left: 2px solid var(--mm-gold);
+  border-radius: var(--r-lg);
   padding: 1.25rem 1.4rem;
   margin: 0 0 1.5rem;
 }
 .lic-callout__title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: 1rem;
   font-weight: 700;
-  color: #1e1e1e;
+  color: var(--mm-pearl);
   margin: 0 0 0.5rem;
 }
-.lic-callout p { color: #52370f; }
+.lic-callout p { color: var(--mm-silver); }
 .lic-callout__fine {
   margin-top: 0.75rem;
   padding-top: 0.75rem;
-  border-top: 1px solid #f0d9bf;
+  border-top: 0.5px solid var(--b1);
   font-size: 0.875rem;
 }
 
@@ -484,22 +484,22 @@ onMounted(() => {
   margin: 0 0 1.5rem;
 }
 .lic-lic {
-  background: #fbfaf8;
-  border: 1px solid #f0efec;
-  border-radius: 12px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-md);
   padding: 1rem 1.1rem;
 }
 .lic-lic__name {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: 0.9375rem;
   font-weight: 700;
-  color: var(--sw-primary, #ff8838);
+  color: var(--mm-gold);
   margin: 0 0 0.35rem;
 }
 .lic-lic__desc {
   font-size: 0.875rem;
   line-height: 1.55;
-  color: #52525b;
+  color: var(--mm-silver);
   margin: 0;
 }
 @media (max-width: 720px) {
@@ -509,8 +509,8 @@ onMounted(() => {
 /* Dependency tables */
 .lic-table-wrap {
   overflow-x: auto;
-  border: 1px solid #f0efec;
-  border-radius: 12px;
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-md);
   margin: 0 0 1.5rem;
 }
 .lic-table {
@@ -523,41 +523,41 @@ onMounted(() => {
 .lic-table td {
   padding: 0.7rem 0.9rem;
   text-align: left;
-  border-bottom: 1px solid #f0efec;
+  border-bottom: 0.5px solid var(--b1);
 }
 .lic-table tbody tr:last-child td { border-bottom: none; }
 .lic-table th {
-  background: #fbfaf8;
+  background: var(--mm-s2);
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #71717a;
+  color: var(--mm-slate);
 }
 .lic-table td:last-child {
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-family: var(--f-mon);
   font-size: 0.8125rem;
-  color: var(--sw-primary, #ff8838);
+  color: var(--mm-gold);
   white-space: nowrap;
 }
 .lic-table a {
-  color: #1e1e1e;
+  color: var(--mm-silver);
   text-decoration: none;
   font-weight: 500;
-  border-bottom: 1px dotted #d4d4d8;
+  border-bottom: 1px dotted var(--b2);
 }
 .lic-table a:hover {
-  color: var(--sw-primary, #ff8838);
-  border-bottom-color: var(--sw-primary, #ff8838);
+  color: var(--mm-gold);
+  border-bottom-color: var(--mm-gold);
 }
 
 code {
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-family: var(--f-mon);
   font-size: 0.875em;
-  background: #fbfaf8;
-  border: 1px solid #f0efec;
-  border-radius: 6px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-xs);
   padding: 0.1rem 0.4rem;
-  color: #52370f;
+  color: var(--mm-goldl);
 }
 </style>

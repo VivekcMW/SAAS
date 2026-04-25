@@ -2,16 +2,16 @@
   <LegalShell
     title="Subprocessors"
     eyebrow="Legal · Subprocessors"
-    lede="The third-party providers SaaSWorld engages to deliver the service, in line with GDPR Article 28 and our Data Processing Agreement."
+    lede="The third-party providers Moonmart engages to deliver the service, in line with GDPR Article 28 and our Data Processing Agreement."
     :updated="updatedAt"
-    contact-email="privacy@saasworld.com"
+    contact-email="privacy@moonmart.ai"
     :sections="tocSections"
   >
     <div class="prose prose-lg max-w-none">
       <section id="overview">
         <h2>1. Overview</h2>
         <p>
-          A subprocessor is any third party that SaaSWorld uses to process customer personal
+          A subprocessor is any third party that Moonmart uses to process customer personal
           data on our behalf. Before engaging a subprocessor, we evaluate their security,
           privacy and continuity practices, and bind them to contractual obligations at
           least as protective as our own.
@@ -80,7 +80,7 @@
         </div>
         <p class="lic-note">
           For the exact named entities in each row, request the current subprocessor
-          schedule from <a href="mailto:privacy@saasworld.com">privacy@saasworld.com</a>.
+          schedule from <a href="mailto:privacy@moonmart.ai">privacy@moonmart.ai</a>.
           We treat vendor names as commercially sensitive and publish them under NDA.
         </p>
       </section>
@@ -103,7 +103,7 @@
         <h2>4. Subscribe to updates</h2>
         <p>
           To receive advance notice of subprocessor changes, email
-          <a href="mailto:privacy@saasworld.com">privacy@saasworld.com</a> with the subject
+          <a href="mailto:privacy@moonmart.ai">privacy@moonmart.ai</a> with the subject
           line "Subscribe: subprocessor updates" and the domain of your account.
         </p>
       </section>
@@ -121,7 +121,7 @@
       <section id="contact">
         <h2>6. Contact</h2>
         <div class="contact-info">
-          <p><strong>Email:</strong> <a href="mailto:privacy@saasworld.com">privacy@saasworld.com</a></p>
+          <p><strong>Email:</strong> <a href="mailto:privacy@moonmart.ai">privacy@moonmart.ai</a></p>
           <p><strong>Related:</strong> <NuxtLink to="/dpa">Data Processing Agreement</NuxtLink> · <NuxtLink to="/privacy">Privacy Policy</NuxtLink></p>
         </div>
       </section>
@@ -146,9 +146,9 @@ const tocSections = [
 ]
 
 applySEO({
-  title: 'Subprocessors | SaaSWorld',
-  description: 'The list of third-party subprocessors that SaaSWorld engages under GDPR Article 28.',
-  canonical: 'https://saasworld.com/subprocessors',
+  title: 'Subprocessors | Moonmart',
+  description: 'The list of third-party subprocessors that Moonmart engages under GDPR Article 28.',
+  canonical: 'https://moonmart.ai/subprocessors',
   ogType: 'website'
 })
 </script>
@@ -156,8 +156,8 @@ applySEO({
 <style scoped>
 .lic-table-wrap {
   overflow-x: auto;
-  border: 1px solid #f0efec;
-  border-radius: 12px;
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-md);
   margin: 0 0 1.5rem;
 }
 .lic-table {
@@ -170,20 +170,20 @@ applySEO({
 .lic-table td {
   padding: 0.7rem 0.9rem;
   text-align: left;
-  border-bottom: 1px solid #f0efec;
+  border-bottom: 0.5px solid var(--b1);
 }
 .lic-table tbody tr:last-child td { border-bottom: none; }
 .lic-table th {
-  background: #fbfaf8;
+  background: var(--mm-s2);
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #71717a;
+  color: var(--mm-slate);
 }
 .lic-note {
   font-size: 0.875rem;
-  color: #71717a;
+  color: var(--mm-slate);
   font-style: italic;
 }
 </style>

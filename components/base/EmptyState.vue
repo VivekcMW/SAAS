@@ -16,8 +16,8 @@ withDefaults(defineProps<Props>(), {
   <div class="empty">
     <div v-if="icon && !$slots.icon" class="empty-icon">
       <svg viewBox="0 0 48 48" fill="none" width="48" height="48">
-        <circle cx="24" cy="24" r="20" stroke="#e5e7eb" stroke-width="1.5" />
-        <path d="M16 24h16M24 16v16" stroke="#e5e7eb" stroke-width="1.5" stroke-linecap="round" />
+        <circle cx="24" cy="24" r="20" stroke="var(--b2)" stroke-width="1.5" />
+        <path d="M16 24h16M24 16v16" stroke="var(--b2)" stroke-width="1.5" stroke-linecap="round" />
       </svg>
     </div>
     <slot name="icon" />
@@ -37,10 +37,10 @@ withDefaults(defineProps<Props>(), {
   justify-content: center;
   text-align: center;
   padding: 40px 20px;
-  color: #6b7280;
+  color: var(--mm-slate);
 }
 .empty-icon { margin-bottom: 12px; }
-.empty-title { margin: 0 0 4px; font-size: 15px; font-weight: 600; color: #1f2937; }
-.empty-description { margin: 0; font-size: 14px; color: #6b7280; max-width: 420px; }
+.empty-title { margin: 0 0 4px; font-size: var(--t-base); font-weight: 600; color: var(--mm-pearl); }
+.empty-description { margin: 0; font-size: var(--t-base); color: var(--mm-slate); max-width: 420px; }
 .empty-action { margin-top: 16px; }
 </style>

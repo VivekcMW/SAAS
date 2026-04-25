@@ -67,10 +67,10 @@ const normalizedFeatures = computed(() => {
 const normalizedScreenshots = computed(() => {
   const s = app.value?.screenshots || []
   if (s.length === 0) {
-    const color = '#ff8838'
+    const color = 'D4A843'
     return Array.from({ length: 3 }, (_, i) => ({
       type: 'image' as const,
-      url: `https://placehold.co/1280x800/${color.replace('#', '')}/ffffff?text=${encodeURIComponent(app.value?.name || 'App')}+Screen+${i + 1}`,
+      url: `https://placehold.co/1280x800/${color}/0A0700?text=${encodeURIComponent(app.value?.name || 'App')}+Screen+${i + 1}`,
       caption: `${app.value?.name} — screen ${i + 1}`
     }))
   }
@@ -318,22 +318,22 @@ const aboutHighlights = computed(() => {
   const items = [
     {
       icon: 'heroicons:bolt',
-      color: '#ff8838',
-      bg: '#fff3e6',
+      color: '#D4A843',
+      bg: 'rgba(212,168,67,0.12)',
       title: 'Fast to deploy',
       body: `Go from signup to production in hours with ${featCount}+ ready-to-use capabilities and clear onboarding.`
     },
     {
       icon: 'heroicons:squares-plus',
-      color: '#6d28d9',
-      bg: '#f5f3ff',
+      color: '#4A80D4',
+      bg: 'rgba(74,128,212,0.12)',
       title: 'Fits your stack',
       body: `${integCount} native integrations plus REST APIs and webhooks so it plugs into what you already use.`
     },
     {
       icon: 'heroicons:shield-check',
-      color: '#047857',
-      bg: '#ecfdf5',
+      color: '#2A9D8F',
+      bg: 'rgba(42,157,143,0.12)',
       title: 'Enterprise-grade',
       body: `${uptime}% uptime with SOC 2, encryption at rest, and role-based access — trusted by teams of every size.`
     }
@@ -341,9 +341,8 @@ const aboutHighlights = computed(() => {
   if (rating >= 4.5) {
     items[0] = {
       icon: 'heroicons:sparkles',
-      color: '#ff8838',
-      bg: '#fff3e6',
-      title: 'Loved by users',
+      color: '#D4A843',
+      bg: 'rgba(212,168,67,0.12)',
       body: `Rated ${rating.toFixed(1)}★ across ${app.value?.reviewCount || 0}+ reviews — teams praise onboarding, support, and day-to-day usability.`
     }
   }
@@ -377,15 +376,15 @@ const handlePrint = () => {
 
 // --- SEO ---
 const pageUrl = computed(() => {
-  const base = 'https://saasworld.com'
+  const base = 'https://moonmart.ai'
   return `${base}/marketplace/app/${appId.value}`
 })
 
 useHead(() => ({
-  title: app.value ? `${app.value.name} — Reviews, Pricing, Alternatives | SaaSWorld` : 'App Details | SaaSWorld',
+  title: app.value ? `${app.value.name} — Reviews, Pricing, Alternatives | Moonmart` : 'App Details | Moonmart',
   meta: [
-    { name: 'description', content: app.value?.description || 'Discover SaaS tools on SaaSWorld.' },
-    { property: 'og:title', content: app.value?.name || 'SaaSWorld' },
+    { name: 'description', content: app.value?.description || 'Discover SaaS tools on Moonmart.' },
+    { property: 'og:title', content: app.value?.name || 'Moonmart' },
     { property: 'og:description', content: app.value?.description || '' },
     { property: 'og:image', content: `/api/og/app/${appId.value}` },
     { property: 'og:url', content: pageUrl.value },
@@ -507,7 +506,7 @@ function getCategoryLabel(cat?: string): string {
               :url="pageUrl"
               :title="`${app.name} — ${app.description}`"
               :description="app.description"
-              :hashtags="['SaaS', 'SaaSWorld', app.category || 'software']"
+              :hashtags="['SaaS', 'Moonmart', app.category || 'software']"
             />
           </template>
         </AppHero>
@@ -769,7 +768,7 @@ function getCategoryLabel(cat?: string): string {
 <style scoped>
 .app-details {
   min-height: 100vh;
-  background: #f9fafb;
+  background: var(--mm-bg);
   padding-bottom: 40px;
 }
 
@@ -793,12 +792,12 @@ function getCategoryLabel(cat?: string): string {
 .spinner {
   width: 32px;
   height: 32px;
-  border: 2px solid #e5e7eb;
-  border-top-color: #ff8838;
+  border: 0.5px solid var(--b2);
+  border-top-color: var(--mm-gold);
   border-radius: 50%;
   animation: spin 800ms linear infinite;
 }
-.error-icon { width: 40px; height: 40px; color: #6b7280; }
+.error-icon { width: 40px; height: 40px; color: var(--mm-slate); }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* Breadcrumb */
@@ -809,10 +808,10 @@ function getCategoryLabel(cat?: string): string {
   gap: 6px;
   font-size: 12px;
 }
-.bc-link { color: #6b7280; text-decoration: none; }
-.bc-link:hover { color: #ff8838; }
-.bc-sep { width: 12px; height: 12px; color: #d1d5db; }
-.bc-current { color: #1f2937; font-weight: 500; }
+.bc-link { color: var(--mm-slate); text-decoration: none; }
+.bc-link:hover { color: var(--mm-gold); }
+.bc-sep { width: 12px; height: 12px; color: var(--b3); }
+.bc-current { color: var(--mm-pearl); font-weight: 500; }
 
 /* Main */
 .app-main { padding-top: 20px; }
@@ -825,13 +824,13 @@ function getCategoryLabel(cat?: string): string {
   margin: 0 0 4px;
   font-size: 24px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--mm-pearl);
   letter-spacing: -0.01em;
 }
 .section-sub {
   margin: 0;
   font-size: 14px;
-  color: #6b7280;
+  color: var(--mm-slate);
 }
 
 .trust-row { margin-top: 16px; }
@@ -873,17 +872,17 @@ function getCategoryLabel(cat?: string): string {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: #ffffff;
-  color: #374151;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 8px;
+  background: var(--mm-s2);
+  color: var(--mm-silver);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
   padding: 8px 12px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: border-color 150ms ease, color 150ms ease;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
 }
-.print-btn:hover { border-color: #ff8838; color: #ff8838; }
+.print-btn:hover { border-color: var(--mm-gold); color: var(--mm-gold); }
 .print-btn :deep(svg) { width: 14px; height: 14px; }
 
 .sponsored-after-alts { margin-top: 16px; }
@@ -927,21 +926,21 @@ function getCategoryLabel(cat?: string): string {
   align-items: center;
   gap: 12px;
   padding: 14px 16px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 12px;
-  transition: border-color 150ms ease, box-shadow 150ms ease;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-lg);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 .fact-card:hover {
-  border-color: #ff8838;
-  box-shadow: 0 4px 12px rgba(255, 136, 56, 0.08);
+  border-color: var(--mm-gold);
+  box-shadow: 0 4px 12px var(--mm-gold-soft);
 }
 .fact-icon {
   width: 36px;
   height: 36px;
-  border-radius: 10px;
-  background: #fff3e6;
-  color: #b45309;
+  border-radius: var(--r-md);
+  background: var(--mm-gold-soft);
+  color: var(--mm-gold);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -954,19 +953,19 @@ function getCategoryLabel(cat?: string): string {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #6b7280;
+  color: var(--mm-slate);
   margin-bottom: 2px;
 }
 .fact-value {
   font-size: 14px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--mm-pearl);
   line-height: 1.3;
 }
 
 .about-description {
   font-size: 16px;
-  color: #334155;
+  color: var(--mm-silver);
   line-height: 1.7;
   white-space: pre-wrap;
 }
@@ -978,7 +977,7 @@ function getCategoryLabel(cat?: string): string {
   float: left;
   line-height: 1;
   padding: 4px 10px 0 0;
-  color: #ff8838;
+  color: var(--mm-gold);
   font-family: inherit;
 }
 
@@ -987,7 +986,7 @@ function getCategoryLabel(cat?: string): string {
   margin: 0 0 14px;
   font-size: 16px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--mm-pearl);
   letter-spacing: -0.01em;
 }
 .hl-grid {
@@ -1000,11 +999,11 @@ function getCategoryLabel(cat?: string): string {
 .hl-card {
   position: relative;
   padding: 18px 16px 16px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 12px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-lg);
   overflow: hidden;
-  transition: border-color 150ms ease, box-shadow 150ms ease;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 .hl-card::before {
   content: '';
@@ -1015,7 +1014,7 @@ function getCategoryLabel(cat?: string): string {
 }
 .hl-card:hover {
   border-color: var(--hl-color);
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  box-shadow: var(--shadow-md);
 }
 .hl-icon {
   width: 36px;
@@ -1033,19 +1032,19 @@ function getCategoryLabel(cat?: string): string {
   margin: 0 0 6px;
   font-size: 14px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--mm-pearl);
 }
 .hl-card-body {
   margin: 0;
   font-size: 13px;
-  color: #4b5563;
+  color: var(--mm-silver);
   line-height: 1.55;
 }
 
 .about-usecases {
   margin-top: 24px;
   padding-top: 20px;
-  border-top: 0.5px solid #e5e7eb;
+  border-top: 0.5px solid var(--b1);
 }
 .uc-title {
   display: flex;
@@ -1054,11 +1053,11 @@ function getCategoryLabel(cat?: string): string {
   margin: 0 0 12px;
   font-size: 13px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--mm-pearl);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
-.uc-title :deep(svg) { width: 16px; height: 16px; color: #ff8838; }
+.uc-title :deep(svg) { width: 16px; height: 16px; color: var(--mm-gold); }
 .uc-list {
   list-style: none;
   padding: 0;
@@ -1072,20 +1071,20 @@ function getCategoryLabel(cat?: string): string {
   align-items: center;
   gap: 6px;
   padding: 6px 12px 6px 10px;
-  background: #fff3e6;
-  border: 0.5px solid #fed7aa;
-  border-radius: 999px;
+  background: var(--mm-gold-soft);
+  border: 0.5px solid var(--mm-gold);
+  border-radius: var(--r-full);
   font-size: 13px;
   font-weight: 500;
-  color: #b45309;
+  color: var(--mm-gold);
 }
-.uc-chip :deep(svg) { width: 14px; height: 14px; color: #ff8838; }
+.uc-chip :deep(svg) { width: 14px; height: 14px; color: var(--mm-gold); }
 
 /* Sidebar resources card */
 .resources-card {
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 12px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-lg);
   padding: 16px;
 }
 .resources-head {
@@ -1094,14 +1093,14 @@ function getCategoryLabel(cat?: string): string {
   gap: 8px;
   font-size: 13px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--mm-pearl);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   padding-bottom: 12px;
   margin-bottom: 8px;
-  border-bottom: 0.5px solid #f1f5f9;
+  border-bottom: 0.5px solid var(--b1);
 }
-.resources-head :deep(svg) { width: 16px; height: 16px; color: #ff8838; }
+.resources-head :deep(svg) { width: 16px; height: 16px; color: var(--mm-gold); }
 .resources-list {
   list-style: none;
   padding: 0;
@@ -1115,38 +1114,38 @@ function getCategoryLabel(cat?: string): string {
   align-items: center;
   gap: 10px;
   padding: 8px 10px;
-  border-radius: 8px;
+  border-radius: var(--r-sm);
   font-size: 13.5px;
-  color: #374151;
+  color: var(--mm-silver);
   text-decoration: none;
-  transition: background-color 120ms ease, color 120ms ease;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 .resources-link:hover {
-  background: #fff3e6;
-  color: #b45309;
+  background: var(--mm-gold-soft);
+  color: var(--mm-gold);
 }
 .resources-link .r-icon {
   width: 16px;
   height: 16px;
-  color: #9ca3af;
+  color: var(--mm-slate);
   flex-shrink: 0;
 }
-.resources-link:hover .r-icon { color: #ff8838; }
+.resources-link:hover .r-icon { color: var(--mm-gold); }
 .resources-link span { flex: 1; min-width: 0; }
 .resources-link .r-arrow {
   width: 14px;
   height: 14px;
-  color: #cbd5e1;
+  color: var(--b3);
   opacity: 0;
-  transition: opacity 120ms ease, color 120ms ease;
+  transition: opacity var(--transition-fast), color var(--transition-fast);
 }
-.resources-link:hover .r-arrow { opacity: 1; color: #ff8838; }
+.resources-link:hover .r-arrow { opacity: 1; color: var(--mm-gold); }
 
 /* Final CTA */
 .final-cta {
-  background: linear-gradient(135deg, #fff3e6 0%, #ffffff 100%);
-  border: 0.5px solid #fed7aa;
-  border-radius: 16px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--mm-gold);
+  border-radius: var(--r-xl);
   padding: 48px 32px;
   margin-top: 56px;
   position: relative;
@@ -1159,7 +1158,8 @@ function getCategoryLabel(cat?: string): string {
   right: -80px;
   width: 240px;
   height: 240px;
-  background: radial-gradient(circle, rgba(255, 136, 56, 0.12) 0%, transparent 70%);
+  background: var(--mm-gold-soft);
+  border-radius: 50%;
   pointer-events: none;
 }
 .final-cta-inner {
@@ -1170,8 +1170,8 @@ function getCategoryLabel(cat?: string): string {
   text-align: center;
   position: relative;
 }
-.cta-title { margin: 0; font-size: 28px; font-weight: 700; color: #0f172a; letter-spacing: -0.01em; }
-.cta-sub { margin: 0 0 8px; font-size: 15px; color: #475569; max-width: 540px; line-height: 1.6; }
+.cta-title { margin: 0; font-size: 28px; font-weight: 700; color: var(--mm-pearl); letter-spacing: -0.01em; }
+.cta-sub { margin: 0 0 8px; font-size: 15px; color: var(--mm-silver); max-width: 540px; line-height: 1.6; }
 .cta-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
 
 @media (max-width: 900px) {

@@ -210,7 +210,7 @@ function getTargetAudience(path: string): string {
  * Generate comprehensive schema markup for the page
  */
 function generatePageSchema(path: string) {
-  const baseUrl = 'https://saasworld.com'
+  const baseUrl = 'https://moonmart.ai'
   const entityType = getEntityType(path)
   
   const baseSchema = {
@@ -224,14 +224,14 @@ function generatePageSchema(path: string) {
     "publisher": {
       "@type": "Organization",
       "@id": `${baseUrl}/#organization`,
-      "name": "SaasWorld",
+      "name": "Moonmart",
       "url": baseUrl,
       "logo": {
         "@type": "ImageObject",
         "url": `${baseUrl}/images/saasworld-logo.png`
       },
       "sameAs": [
-        "https://twitter.com/SaasWorld",
+        "https://twitter.com/Moonmart",
         "https://linkedin.com/company/saasworld",
         "https://github.com/saasworld"
       ]
@@ -289,7 +289,7 @@ function generateBreadcrumbs(path: string) {
       "@type": "ListItem",
       "position": 1,
       "name": "Home",
-      "item": "https://saasworld.com"
+      "item": "https://moonmart.ai"
     }
   ]
 
@@ -300,7 +300,7 @@ function generateBreadcrumbs(path: string) {
       "@type": "ListItem",
       "position": index + 2,
       "name": segment.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-      "item": `https://saasworld.com${currentPath}`
+      "item": `https://moonmart.ai${currentPath}`
     })
   })
 

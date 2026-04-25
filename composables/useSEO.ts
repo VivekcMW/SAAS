@@ -1,5 +1,5 @@
 /**
- * SEO Composable for SaaSWorld
+ * SEO Composable for Moonmart
  * Provides comprehensive SEO management including meta tags, structured data, and Open Graph
  */
 
@@ -36,7 +36,7 @@ export const useSEO = (routeContext?: { path: string }) => {
   
   // Base SEO configuration
   const baseSEO = {
-    title: 'SaaSWorld - Global Software Marketplace for Business Solutions',
+    title: 'Moonmart - Global Software Marketplace for Business Solutions',
     description: 'Discover and compare the best business software solutions worldwide. Find SaaS tools, enterprise software, and digital solutions for your business needs with expert reviews and comparisons.',
     keywords: 'saas marketplace, business software, enterprise solutions, software directory, digital tools, cloud applications, business applications, software comparison, saas platform, global software marketplace',
     ogImage: '/assets/images/og-image.jpg',
@@ -65,7 +65,7 @@ export const useSEO = (routeContext?: { path: string }) => {
       ogType: 'website',
       twitterCard: 'summary_large_image',
       robots: 'index, follow',
-      canonical: `https://saasworld.com${route.path}`,
+      canonical: `https://moonmart.ai${route.path}`,
       jsonLd: generateCategoryJsonLd(categoryKeywords, subcategoryName)
     }
   }
@@ -77,7 +77,7 @@ export const useSEO = (routeContext?: { path: string }) => {
       '@type': 'WebPage',
       name: subcategoryName ? `${subcategoryName} - ${categoryKeywords.category}` : categoryKeywords.category,
       description: generateMetaDescription(categoryKeywords.category, subcategoryName),
-      url: `https://saasworld.com${route.path}`,
+      url: `https://moonmart.ai${route.path}`,
       mainEntity: {
         '@type': 'ItemList',
         name: `${categoryKeywords.category} Software Solutions`,
@@ -89,7 +89,7 @@ export const useSEO = (routeContext?: { path: string }) => {
           item: {
             '@type': 'SoftwareApplication',
             name: subcategory.name,
-            url: `https://saasworld.com${subcategory.path}`,
+            url: `https://moonmart.ai${subcategory.path}`,
             description: `${subcategory.name} software and tools for businesses`,
             category: categoryKeywords.category,
             operatingSystem: 'Web Browser, iOS, Android, Windows, macOS, Linux',
@@ -104,18 +104,18 @@ export const useSEO = (routeContext?: { path: string }) => {
 
   // Generate listing page SEO (for AI onboarding, submission forms, etc.)
   const generateListingSEO = (category?: string, productName?: string): SEOConfig => {
-    const baseTitle = 'Submit Your Software to SaaSWorld Marketplace'
-    const baseDescription = 'List your software on SaaSWorld to reach thousands of potential customers. Submit your SaaS tool, get featured, and grow your business with our global marketplace.'
+    const baseTitle = 'Submit Your Software to Moonmart Marketplace'
+    const baseDescription = 'List your software on Moonmart to reach thousands of potential customers. Submit your SaaS tool, get featured, and grow your business with our global marketplace.'
     
     if (category && isValidCategory(category)) {
       const seoCategory = getCategoryKeywords(category)
       const categoryKeywords = getKeywordsForCategory(seoCategory)
       
       const title = productName 
-        ? `Submit ${productName} - ${category} Software | SaaSWorld`
-        : `Submit ${category} Software to SaaSWorld Marketplace`
+        ? `Submit ${productName} - ${category} Software | Moonmart`
+        : `Submit ${category} Software to Moonmart Marketplace`
       
-      const description = `Submit your ${category.toLowerCase()} software to SaaSWorld marketplace. Join hundreds of ${category.toLowerCase()} tools and reach customers looking for ${category.toLowerCase()} solutions.`
+      const description = `Submit your ${category.toLowerCase()} software to Moonmart marketplace. Join hundreds of ${category.toLowerCase()} tools and reach customers looking for ${category.toLowerCase()} solutions.`
       
       const keywords = [
         'submit software',
@@ -133,7 +133,7 @@ export const useSEO = (routeContext?: { path: string }) => {
         ogType: 'website',
         twitterCard: 'summary_large_image',
         robots: 'index, follow',
-        canonical: `https://saasworld.com${route.path}`,
+        canonical: `https://moonmart.ai${route.path}`,
         jsonLd: generateListingJsonLd(category, productName)
       }
     }
@@ -146,7 +146,7 @@ export const useSEO = (routeContext?: { path: string }) => {
       ogType: 'website',
       twitterCard: 'summary_large_image',
       robots: 'index, follow',
-      canonical: `https://saasworld.com${route.path}`,
+      canonical: `https://moonmart.ai${route.path}`,
       jsonLd: generateListingJsonLd()
     }
   }
@@ -156,19 +156,19 @@ export const useSEO = (routeContext?: { path: string }) => {
     return {
       '@context': 'https://schema.org',
       '@type': 'WebPage',
-      name: productName ? `Submit ${productName} to SaaSWorld` : 'Submit Your Software to SaaSWorld',
+      name: productName ? `Submit ${productName} to Moonmart` : 'Submit Your Software to Moonmart',
       description: category 
-        ? `Submit your ${category.toLowerCase()} software to SaaSWorld marketplace and reach thousands of potential customers.`
-        : 'Submit your software to SaaSWorld marketplace and reach thousands of potential customers.',
-      url: `https://saasworld.com${route.path}`,
+        ? `Submit your ${category.toLowerCase()} software to Moonmart marketplace and reach thousands of potential customers.`
+        : 'Submit your software to Moonmart marketplace and reach thousands of potential customers.',
+      url: `https://moonmart.ai${route.path}`,
       mainEntity: {
         '@type': 'Service',
         name: 'Software Submission Service',
-        description: 'Submit and list your software on SaaSWorld marketplace',
+        description: 'Submit and list your software on Moonmart marketplace',
         provider: {
           '@type': 'Organization',
-          name: 'SaaSWorld',
-          url: 'https://saasworld.com'
+          name: 'Moonmart',
+          url: 'https://moonmart.ai'
         },
         serviceType: 'Software Directory Listing',
         areaServed: 'Worldwide'
@@ -201,7 +201,7 @@ export const useSEO = (routeContext?: { path: string }) => {
       ogType: 'website',
       twitterCard: 'summary_large_image',
       robots: 'index, follow',
-      canonical: `https://saasworld.com${route.path}`,
+      canonical: `https://moonmart.ai${route.path}`,
       jsonLd: generateCategoryJsonLd(categoryKeywords, subcategoryName)
     }
   }
@@ -212,14 +212,14 @@ export const useSEO = (routeContext?: { path: string }) => {
     const categoryDisplayName = categoryKeywords?.category || 'Software'
 
     return {
-      title: `${appName} - ${categoryDisplayName} Software | SaaSWorld`,
-      description: `${appDescription} Compare features, pricing, and reviews for ${appName} and similar ${categoryDisplayName.toLowerCase()} solutions on SaaSWorld.`,
+      title: `${appName} - ${categoryDisplayName} Software | Moonmart`,
+      description: `${appDescription} Compare features, pricing, and reviews for ${appName} and similar ${categoryDisplayName.toLowerCase()} solutions on Moonmart.`,
       keywords: `${appName}, ${categoryDisplayName.toLowerCase()} software, ${categoryKeywords?.primaryKeywords.slice(0, 5).join(', ') || 'business software'}`,
       ogImage: `/assets/images/apps/${appName.toLowerCase().replace(/\s+/g, '-')}-og.jpg`,
       ogType: 'article',
       twitterCard: 'summary_large_image',
       robots: 'index, follow',
-      canonical: `https://saasworld.com${route.path}`,
+      canonical: `https://moonmart.ai${route.path}`,
       jsonLd: generateAppJsonLd(appName, appDescription, categoryDisplayName)
     }
   }
@@ -231,7 +231,7 @@ export const useSEO = (routeContext?: { path: string }) => {
       '@type': 'SoftwareApplication',
       name: appName,
       description: appDescription,
-      url: `https://saasworld.com${route.path}`,
+      url: `https://moonmart.ai${route.path}`,
       category: categoryName,
       operatingSystem: 'Web Browser, iOS, Android, Windows, macOS, Linux',
       applicationCategory: 'BusinessApplication',
@@ -251,11 +251,11 @@ export const useSEO = (routeContext?: { path: string }) => {
       },
       publisher: {
         '@type': 'Organization',
-        name: 'SaaSWorld',
-        url: 'https://saasworld.com',
+        name: 'Moonmart',
+        url: 'https://moonmart.ai',
         logo: {
           '@type': 'ImageObject',
-          url: 'https://saasworld.com/assets/images/logo.png'
+          url: 'https://moonmart.ai/assets/images/logo.png'
         }
       }
     }
@@ -270,18 +270,18 @@ export const useSEO = (routeContext?: { path: string }) => {
         { name: 'description', content: config.description },
         { name: 'keywords', content: config.keywords },
         { name: 'robots', content: config.robots || 'index, follow' },
-        { name: 'author', content: 'SaaSWorld' },
+        { name: 'author', content: 'Moonmart' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
         
         // Open Graph tags
         { property: 'og:title', content: config.title },
         { property: 'og:description', content: config.description },
         { property: 'og:type', content: config.ogType || 'website' },
-        { property: 'og:url', content: config.canonical || `https://saasworld.com${route.path}` },
+        { property: 'og:url', content: config.canonical || `https://moonmart.ai${route.path}` },
         { property: 'og:image', content: config.ogImage || '/assets/images/og-image.jpg' },
         { property: 'og:image:width', content: '1200' },
         { property: 'og:image:height', content: '630' },
-        { property: 'og:site_name', content: 'SaaSWorld' },
+        { property: 'og:site_name', content: 'Moonmart' },
         { property: 'og:locale', content: $i18n.locale.value },
         
         // Twitter Card tags
@@ -289,18 +289,18 @@ export const useSEO = (routeContext?: { path: string }) => {
         { name: 'twitter:title', content: config.title },
         { name: 'twitter:description', content: config.description },
         { name: 'twitter:image', content: config.ogImage || '/assets/images/og-image.jpg' },
-        { name: 'twitter:site', content: '@SaaSWorld' },
+        { name: 'twitter:site', content: '@Moonmart' },
         
         // Additional SEO tags
         { name: 'theme-color', content: '#1a73e8' },
         { name: 'msapplication-TileColor', content: '#1a73e8' },
-        { name: 'application-name', content: 'SaaSWorld' },
-        { name: 'apple-mobile-web-app-title', content: 'SaaSWorld' },
+        { name: 'application-name', content: 'Moonmart' },
+        { name: 'apple-mobile-web-app-title', content: 'Moonmart' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'default' }
       ],
       link: [
-        { rel: 'canonical', href: config.canonical || `https://saasworld.com${route.path}` },
+        { rel: 'canonical', href: config.canonical || `https://moonmart.ai${route.path}` },
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
         { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
         { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
@@ -335,10 +335,10 @@ export const useSEO = (routeContext?: { path: string }) => {
     const hreflang: Record<string, string> = {}
     
     locales.forEach(locale => {
-      hreflang[locale] = `https://saasworld.com/${locale}${basePath}`
+      hreflang[locale] = `https://moonmart.ai/${locale}${basePath}`
     })
     
-    hreflang['x-default'] = `https://saasworld.com${basePath}`
+    hreflang['x-default'] = `https://moonmart.ai${basePath}`
     
     return hreflang
   }

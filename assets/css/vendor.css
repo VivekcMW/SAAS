@@ -8,19 +8,19 @@
   --vw-primary-50: var(--bw-primary-50);
   --vw-primary-100: var(--bw-primary-100);
 
-  /* AI accent (distinct but cohesive) */
-  --vw-ai: #6b5cff;
-  --vw-ai-50: #eeebff;
-  --vw-ai-100: #dcd6ff;
-  --vw-ai-text: #4a3fd1;
+  /* AI accent — Moonmart blue */
+  --vw-ai: var(--mm-blue, #4A7FD4);
+  --vw-ai-50: rgba(74,127,212,.1);
+  --vw-ai-100: rgba(74,127,212,.2);
+  --vw-ai-text: var(--mm-blue-l, #6A9FE8);
 
   /* Data viz palette (solid only, no gradients) */
-  --vw-viz-1: #ff8838;   /* primary */
-  --vw-viz-2: #2563eb;   /* blue */
-  --vw-viz-3: #10b981;   /* green */
-  --vw-viz-4: #6b5cff;   /* ai-purple */
-  --vw-viz-5: #f59e0b;   /* amber */
-  --vw-viz-6: #ef4444;   /* red */
+  --vw-viz-1: var(--mm-gold, #D4A843);    /* primary */
+  --vw-viz-2: var(--mm-blue, #4A7FD4);    /* blue */
+  --vw-viz-3: var(--mm-sea,  #2A9D8F);    /* sea green */
+  --vw-viz-4: var(--mm-blue-l, #6A9FE8);  /* blue light */
+  --vw-viz-5: var(--mm-gold-l, #F0C96A);  /* gold light */
+  --vw-viz-6: #EF4444;                    /* red */
 
   /* Health score bands */
   --vw-health-poor: #ef4444;

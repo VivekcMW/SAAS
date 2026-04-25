@@ -4,14 +4,14 @@
     <section class="trust-hero">
       <div class="trust-hero__inner">
         <p class="trust-hero__eyebrow">Trust Center</p>
-        <h1 class="trust-hero__title">Security, privacy &amp; compliance at SaaSWorld</h1>
+        <h1 class="trust-hero__title">Security, privacy &amp; compliance at Moonmart</h1>
         <p class="trust-hero__lede">
           A single home for how we protect your data, operate our service, and meet the
           legal obligations that come with it.
         </p>
         <div class="trust-hero__cta">
           <NuxtLink to="/status" class="trust-btn trust-btn--primary">Live status</NuxtLink>
-          <a href="mailto:security@saasworld.com" class="trust-btn trust-btn--ghost">Contact security</a>
+          <a href="mailto:security@moonmart.ai" class="trust-btn trust-btn--ghost">Contact security</a>
         </div>
       </div>
     </section>
@@ -71,9 +71,9 @@
 const { applySEO } = useSEO()
 
 applySEO({
-  title: 'Trust Center | SaaSWorld',
-  description: 'Security, privacy and compliance at SaaSWorld — one place for everything.',
-  canonical: 'https://saasworld.com/trust',
+  title: 'Trust Center | Moonmart',
+  description: 'Security, privacy and compliance at Moonmart — one place for everything.',
+  canonical: 'https://moonmart.ai/trust',
   ogType: 'website'
 })
 
@@ -99,24 +99,24 @@ const cards = [
 ]
 
 const contacts = [
-  { role: 'Security & vulnerability disclosure', email: 'security@saasworld.com', desc: 'Report a vulnerability, ask about our security program.' },
-  { role: 'Privacy & data protection', email: 'privacy@saasworld.com', desc: 'Privacy rights, DPAs, subprocessor questions.' },
-  { role: 'Legal & compliance', email: 'legal@saasworld.com', desc: 'Contracts, certifications, regulatory requests.' }
+  { role: 'Security & vulnerability disclosure', email: 'security@moonmart.ai', desc: 'Report a vulnerability, ask about our security program.' },
+  { role: 'Privacy & data protection', email: 'privacy@moonmart.ai', desc: 'Privacy rights, DPAs, subprocessor questions.' },
+  { role: 'Legal & compliance', email: 'legal@moonmart.ai', desc: 'Contracts, certifications, regulatory requests.' }
 ]
 </script>
 
 <style scoped>
-.trust-page { background: #ffffff; min-height: 100vh; }
+.trust-page { background: var(--mm-bg); min-height: 100vh; }
 
 /* Hero */
 .trust-hero {
-  background: var(--sw-primary-soft, #fff1e6);
+  background: var(--mm-gold-soft);
   padding: 5rem 1.5rem 3.5rem;
-  border-bottom: 1px solid #f0d9bf;
+  border-bottom: 0.5px solid var(--mm-gold);
 }
 .trust-hero__inner { max-width: 960px; margin: 0 auto; text-align: center; }
 .trust-hero__eyebrow {
-  color: var(--sw-primary, #ff8838);
+  color: var(--mm-gold);
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -124,16 +124,16 @@ const contacts = [
   margin: 0 0 1rem;
 }
 .trust-hero__title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: clamp(2rem, 4.5vw, 3.25rem);
   font-weight: 700;
-  color: #1e1e1e;
+  color: var(--mm-pearl);
   line-height: 1.15;
   margin: 0 0 1rem;
 }
 .trust-hero__lede {
   font-size: 1.125rem;
-  color: #52370f;
+  color: var(--mm-silver);
   max-width: 640px;
   margin: 0 auto 2rem;
   line-height: 1.65;
@@ -150,30 +150,30 @@ const contacts = [
   transition: all 0.2s ease;
 }
 .trust-btn--primary {
-  background: var(--sw-primary, #ff8838);
-  color: #fff;
+  background: var(--mm-gold);
+  color: #0A0700;
 }
-.trust-btn--primary:hover { background: var(--sw-primary-hover, #e67326); }
+.trust-btn--primary:hover { background: var(--mm-goldl); }
 .trust-btn--ghost {
-  border: 1px solid #f0d9bf;
-  background: #fff;
-  color: #1e1e1e;
+  border: 0.5px solid var(--b2);
+  background: var(--mm-s2);
+  color: var(--mm-silver);
 }
-.trust-btn--ghost:hover { border-color: var(--sw-primary, #ff8838); }
+.trust-btn--ghost:hover { border-color: var(--mm-gold); color: var(--mm-gold); }
 
 /* Sections */
 .trust-section { padding: 4rem 1.5rem; }
-.trust-section--soft { background: #fbfaf8; border-top: 1px solid #f0efec; border-bottom: 1px solid #f0efec; }
+.trust-section--soft { background: var(--mm-s1); border-top: 0.5px solid var(--b1); border-bottom: 0.5px solid var(--b1); }
 .trust-section__inner { max-width: 1120px; margin: 0 auto; }
 .trust-section__title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: 1.75rem;
   font-weight: 700;
-  color: #1e1e1e;
+  color: var(--mm-pearl);
   margin: 0 0 0.75rem;
 }
 .trust-section__lede {
-  color: #52525b;
+  color: var(--mm-silver);
   font-size: 1rem;
   max-width: 640px;
   margin: 0 0 2rem;
@@ -191,9 +191,9 @@ const contacts = [
   align-items: center;
   gap: 0.9rem;
   padding: 1rem 1.1rem;
-  background: #fff;
-  border: 1px solid #f0efec;
-  border-radius: 14px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-lg);
 }
 .trust-badge__mark {
   flex-shrink: 0;
@@ -201,15 +201,15 @@ const contacts = [
   height: 48px;
   display: grid;
   place-items: center;
-  border-radius: 10px;
-  background: var(--sw-primary-soft, #fff1e6);
-  color: var(--sw-primary, #ff8838);
+  border-radius: var(--r-md);
+  background: var(--mm-gold-soft);
+  color: var(--mm-gold);
   font-weight: 800;
   font-size: 0.75rem;
   letter-spacing: 0.02em;
 }
-.trust-badge__label { margin: 0; font-weight: 700; color: #1e1e1e; font-size: 0.95rem; }
-.trust-badge__note { margin: 0.15rem 0 0; color: #71717a; font-size: 0.82rem; }
+.trust-badge__label { margin: 0; font-weight: 700; color: var(--mm-pearl); font-size: 0.95rem; }
+.trust-badge__note { margin: 0.15rem 0 0; color: var(--mm-slate); font-size: 0.82rem; }
 
 /* Grid */
 .trust-grid {
@@ -221,19 +221,19 @@ const contacts = [
   display: flex;
   flex-direction: column;
   padding: 1.5rem;
-  background: #fff;
-  border: 1px solid #f0efec;
-  border-radius: 14px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-lg);
   text-decoration: none;
   transition: all 0.2s ease;
 }
 .trust-card:hover {
   transform: translateY(-2px);
-  border-color: var(--sw-primary, #ff8838);
-  box-shadow: 0 10px 25px -12px rgba(255, 136, 56, 0.25);
+  border-color: var(--mm-gold);
+  box-shadow: 0 10px 25px -12px var(--mm-gold-soft);
 }
 .trust-card__eyebrow {
-  color: var(--sw-primary, #ff8838);
+  color: var(--mm-gold);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -241,14 +241,14 @@ const contacts = [
   margin: 0 0 0.6rem;
 }
 .trust-card__title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: 1.1rem;
   font-weight: 700;
-  color: #1e1e1e;
+  color: var(--mm-pearl);
   margin: 0 0 0.5rem;
 }
-.trust-card__desc { color: #52525b; font-size: 0.92rem; line-height: 1.55; margin: 0 0 1rem; flex: 1; }
-.trust-card__link { color: var(--sw-primary, #ff8838); font-weight: 600; font-size: 0.9rem; }
+.trust-card__desc { color: var(--mm-silver); font-size: 0.92rem; line-height: 1.55; margin: 0 0 1rem; flex: 1; }
+.trust-card__link { color: var(--mm-gold); font-weight: 600; font-size: 0.9rem; }
 
 /* Contacts */
 .trust-contacts {
@@ -258,12 +258,12 @@ const contacts = [
 }
 .trust-contact {
   padding: 1.25rem 1.3rem;
-  background: #fff;
-  border: 1px solid #f0efec;
-  border-radius: 14px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-lg);
 }
-.trust-contact__role { margin: 0 0 0.25rem; font-weight: 700; color: #1e1e1e; font-size: 0.95rem; }
-.trust-contact__email { display: block; color: var(--sw-primary, #ff8838); font-weight: 600; margin-bottom: 0.5rem; text-decoration: none; }
+.trust-contact__role { margin: 0 0 0.25rem; font-weight: 700; color: var(--mm-pearl); font-size: 0.95rem; }
+.trust-contact__email { display: block; color: var(--mm-gold); font-weight: 600; margin-bottom: 0.5rem; text-decoration: none; }
 .trust-contact__email:hover { text-decoration: underline; }
-.trust-contact__desc { margin: 0; color: #71717a; font-size: 0.85rem; line-height: 1.5; }
+.trust-contact__desc { margin: 0; color: var(--mm-slate); font-size: 0.85rem; line-height: 1.5; }
 </style>

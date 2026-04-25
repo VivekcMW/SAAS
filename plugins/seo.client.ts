@@ -19,10 +19,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       { name: 'googlebot', content: 'index, follow' },
       { name: 'bingbot', content: 'index, follow' },
       { name: 'slurp', content: 'index, follow' },
-      { property: 'og:site_name', content: 'SaaSWorld' },
+      { property: 'og:site_name', content: 'Moonmart' },
       { property: 'og:locale', content: 'en_US' },
-      { name: 'twitter:site', content: '@SaaSWorld' },
-      { name: 'twitter:creator', content: '@SaaSWorld' },
+      { name: 'twitter:site', content: '@Moonmart' },
+      { name: 'twitter:creator', content: '@Moonmart' },
       { name: 'generator', content: 'Nuxt.js' },
       { name: 'referrer', content: 'origin-when-cross-origin' },
       { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' }
@@ -48,11 +48,11 @@ export default defineNuxtPlugin((nuxtApp) => {
         innerHTML: JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'Organization',
-          name: 'SaaSWorld',
-          url: 'https://saasworld.com',
+          name: 'Moonmart',
+          url: 'https://moonmart.ai',
           logo: {
             '@type': 'ImageObject',
-            url: 'https://saasworld.com/assets/images/logo.png',
+            url: 'https://moonmart.ai/assets/images/logo.png',
             width: 400,
             height: 400
           },
@@ -65,19 +65,19 @@ export default defineNuxtPlugin((nuxtApp) => {
           contactPoint: {
             '@type': 'ContactPoint',
             contactType: 'customer service',
-            email: 'support@saasworld.com',
-            url: 'https://saasworld.com/contact'
+            email: 'support@moonmart.ai',
+            url: 'https://moonmart.ai/contact'
           },
           sameAs: [
-            'https://twitter.com/saasworld',
-            'https://linkedin.com/company/saasworld',
-            'https://facebook.com/saasworld'
+            'https://twitter.com/moonmart',
+            'https://linkedin.com/company/moonmart',
+            'https://facebook.com/moonmart'
           ],
           potentialAction: {
             '@type': 'SearchAction',
             target: {
               '@type': 'EntryPoint',
-              urlTemplate: 'https://saasworld.com/marketplace?search={search_term_string}'
+              urlTemplate: 'https://moonmart.ai/marketplace?search={search_term_string}'
             },
             'query-input': 'required name=search_term_string'
           }

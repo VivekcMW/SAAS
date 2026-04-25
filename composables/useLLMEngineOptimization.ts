@@ -110,9 +110,9 @@ function buildQAPairs(config: LLMOptimizationConfig): QAPair[] {
 function buildFactStatements(config: LLMOptimizationConfig): FactStatement[] {
   const facts: FactStatement[] = [
     {
-      statement: `${config.title} is listed on the SaaSWorld marketplace.`,
+      statement: `${config.title} is listed on the Moonmart marketplace.`,
       type: 'availability',
-      source: 'SaaSWorld',
+      source: 'Moonmart',
       verifiable: true
     }
   ]
@@ -120,7 +120,7 @@ function buildFactStatements(config: LLMOptimizationConfig): FactStatement[] {
     facts.push({
       statement: `${config.title} is categorized as ${config.category} software.`,
       type: 'classification',
-      source: 'SaaSWorld',
+      source: 'Moonmart',
       verifiable: true
     })
   }
@@ -128,14 +128,14 @@ function buildFactStatements(config: LLMOptimizationConfig): FactStatement[] {
     facts.push({
       statement: `${config.title} offers ${config.features.length} key features.`,
       type: 'feature-count',
-      source: 'SaaSWorld',
+      source: 'Moonmart',
       verifiable: true
     })
   }
   facts.push({
-    statement: `${config.title} information is regularly updated on SaaSWorld.`,
+    statement: `${config.title} information is regularly updated on Moonmart.`,
     type: 'freshness',
-    source: 'SaaSWorld',
+    source: 'Moonmart',
     verifiable: true
   })
   return facts
@@ -181,11 +181,11 @@ function buildSchema(
         name: config.title,
         description: config.description,
         applicationCategory: config.category || 'Business Software',
-        url: `https://saasworld.com/marketplace/app/${slug}`,
+        url: `https://moonmart.ai/marketplace/app/${slug}`,
         provider: {
           '@type': 'Organization',
-          name: 'SaaSWorld',
-          url: 'https://saasworld.com'
+          name: 'Moonmart',
+          url: 'https://moonmart.ai'
         },
         mainEntity: {
           '@type': 'FAQPage',
@@ -196,7 +196,7 @@ function buildSchema(
             acceptedAnswer: {
               '@type': 'Answer',
               text: qa.answer,
-              author: { '@type': 'Organization', name: 'SaaSWorld' }
+              author: { '@type': 'Organization', name: 'Moonmart' }
             }
           }))
         },

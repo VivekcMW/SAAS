@@ -93,11 +93,11 @@
           <div class="kb-content documentation-content">
             <div class="kb-section">
               <h4>Getting Started</h4>
-              <p>Welcome to the {{ currentKnowledgeContent?.integration }} documentation. This guide will help you set up and configure the integration between SaaSWorld and {{ currentKnowledgeContent?.integration }}.</p>
+              <p>Welcome to the {{ currentKnowledgeContent?.integration }} documentation. This guide will help you set up and configure the integration between Moonmart and {{ currentKnowledgeContent?.integration }}.</p>
               
               <h5>Prerequisites</h5>
               <ul>
-                <li>An active SaaSWorld account</li>
+                <li>An active Moonmart account</li>
                 <li>Admin access to your {{ currentKnowledgeContent?.integration }} account</li>
                 <li>API credentials (if applicable)</li>
               </ul>
@@ -106,15 +106,15 @@
               <ol>
                 <li>
                   <strong>Connect Your Account</strong>
-                  <p>Navigate to the Integrations page in your SaaSWorld dashboard and select {{ currentKnowledgeContent?.integration }}. Click "Connect" and follow the authentication prompts.</p>
+                  <p>Navigate to the Integrations page in your Moonmart dashboard and select {{ currentKnowledgeContent?.integration }}. Click "Connect" and follow the authentication prompts.</p>
                 </li>
                 <li>
                   <strong>Configure Settings</strong>
-                  <p>After connecting your account, you'll need to configure which data should be synchronized between SaaSWorld and {{ currentKnowledgeContent?.integration }}.</p>
+                  <p>After connecting your account, you'll need to configure which data should be synchronized between Moonmart and {{ currentKnowledgeContent?.integration }}.</p>
                 </li>
                 <li>
                   <strong>Set Up Automation Rules</strong>
-                  <p>Create custom automation rules to streamline your workflow between SaaSWorld and {{ currentKnowledgeContent?.integration }}.</p>
+                  <p>Create custom automation rules to streamline your workflow between Moonmart and {{ currentKnowledgeContent?.integration }}.</p>
                 </li>
                 <li>
                   <strong>Test the Integration</strong>
@@ -130,7 +130,7 @@
               <ul>
                 <li>
                   <strong>Custom Field Mapping</strong>
-                  <p>Map specific fields between SaaSWorld and {{ currentKnowledgeContent?.integration }} to ensure your data aligns perfectly.</p>
+                  <p>Map specific fields between Moonmart and {{ currentKnowledgeContent?.integration }} to ensure your data aligns perfectly.</p>
                 </li>
                 <li>
                   <strong>Webhook Setup</strong>
@@ -165,7 +165,7 @@
                   <span>Getting Started with {{ currentKnowledgeContent?.integration }}</span>
                 </div>
                 <h4>Introduction Tutorial</h4>
-                <p>Learn the basics of integrating SaaSWorld with {{ currentKnowledgeContent?.integration }}.</p>
+                <p>Learn the basics of integrating Moonmart with {{ currentKnowledgeContent?.integration }}.</p>
                 <span class="video-duration">5:32</span>
               </div>
               
@@ -222,7 +222,7 @@
                   <NuxtIcon name="heroicons:chevron-down" size="1.25rem" :class="{ 'rotate-icon': openFaqs.includes(1) }" />
                 </div>
                 <div class="faq-answer" :class="{ 'faq-answer-open': openFaqs.includes(1) }">
-                  <p>To connect your {{ currentKnowledgeContent?.integration }} account, navigate to the Integrations page in your SaaSWorld dashboard. Find the {{ currentKnowledgeContent?.integration }} tile and click "Connect". You will be prompted to authorize the connection using your {{ currentKnowledgeContent?.integration }} credentials.</p>
+                  <p>To connect your {{ currentKnowledgeContent?.integration }} account, navigate to the Integrations page in your Moonmart dashboard. Find the {{ currentKnowledgeContent?.integration }} tile and click "Connect". You will be prompted to authorize the connection using your {{ currentKnowledgeContent?.integration }} credentials.</p>
                 </div>
               </div>
               
@@ -232,7 +232,7 @@
                   <NuxtIcon name="heroicons:chevron-down" size="1.25rem" :class="{ 'rotate-icon': openFaqs.includes(2) }" />
                 </div>
                 <div class="faq-answer" :class="{ 'faq-answer-open': openFaqs.includes(2) }">
-                  <p>Yes, all data transferred between SaaSWorld and {{ currentKnowledgeContent?.integration }} is encrypted using industry-standard protocols. We use OAuth for authentication and never store your actual {{ currentKnowledgeContent?.integration }} password. You can review and revoke access at any time from your account settings.</p>
+                  <p>Yes, all data transferred between Moonmart and {{ currentKnowledgeContent?.integration }} is encrypted using industry-standard protocols. We use OAuth for authentication and never store your actual {{ currentKnowledgeContent?.integration }} password. You can review and revoke access at any time from your account settings.</p>
                 </div>
               </div>
               
@@ -262,7 +262,7 @@
                   <NuxtIcon name="heroicons:chevron-down" size="1.25rem" :class="{ 'rotate-icon': openFaqs.includes(5) }" />
                 </div>
                 <div class="faq-answer" :class="{ 'faq-answer-open': openFaqs.includes(5) }">
-                  <p>Yes, you have full control over which data fields are synchronized between SaaSWorld and {{ currentKnowledgeContent?.integration }}. After connecting your account, you can access the field mapping settings to customize exactly which information is shared between systems.</p>
+                  <p>Yes, you have full control over which data fields are synchronized between Moonmart and {{ currentKnowledgeContent?.integration }}. After connecting your account, you can access the field mapping settings to customize exactly which information is shared between systems.</p>
                 </div>
               </div>
             </div>
@@ -427,7 +427,7 @@ watch(() => props.isVisible, (newVal) => {
 const getDefaultBenefits = (integration: any) => {
   // Provide some default benefits based on integration category
   const defaultBenefits = [
-    `Seamless integration between SaaSWorld and ${integration.name}`,
+    `Seamless integration between Moonmart and ${integration.name}`,
     'Automatic data synchronization in real-time',
     'Streamlined workflow between platforms',
     'Reduced manual data entry and potential errors'
@@ -472,7 +472,7 @@ const getDefaultSetupSteps = () => {
   return [
     {
       title: 'Connect your account',
-      description: 'Log in to your account and authorize SaaSWorld to connect with this service.'
+      description: 'Log in to your account and authorize Moonmart to connect with this service.'
     },
     {
       title: 'Configure settings',

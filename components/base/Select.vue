@@ -69,34 +69,34 @@ const inputId = props.id || `sel-${Math.random().toString(36).slice(2, 9)}`
 
 <style scoped>
 .field { display: flex; flex-direction: column; gap: 4px; }
-.field-label { font-size: 13px; font-weight: 500; color: #374151; }
-.field-required { color: #dc2626; margin-left: 2px; }
+.field-label { font-size: var(--t-sm); font-weight: 500; color: var(--mm-silver); }
+.field-required { color: var(--mm-err, #dc2626); margin-left: 2px; }
 
 .field-wrap {
   position: relative;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 6px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-md);
   transition: border-color 150ms ease;
 }
-.field-wrap:focus-within { border-color: #ff8838; }
-.field-error .field-wrap { border-color: #dc2626; }
+.field-wrap:focus-within { border-color: var(--mm-gold); }
+.field-error .field-wrap { border-color: var(--mm-err, #dc2626); }
 
 .field-select {
   width: 100%;
   background: transparent;
   border: none;
   outline: none;
-  color: #1f2937;
-  font-family: inherit;
+  color: var(--mm-pearl);
+  font-family: var(--f-ui);
   appearance: none;
   padding-right: 30px;
   cursor: pointer;
 }
 
-.field-sm { padding: 6px 10px; font-size: 13px; }
-.field-md { padding: 8px 12px; font-size: 14px; }
-.field-lg { padding: 11px 14px; font-size: 15px; }
+.field-sm { padding: 6px 10px; font-size: var(--t-sm); }
+.field-md { padding: 8px 12px; font-size: var(--t-base); }
+.field-lg { padding: 11px 14px; font-size: var(--t-md); }
 
 .field-chevron {
   position: absolute;
@@ -105,12 +105,12 @@ const inputId = props.id || `sel-${Math.random().toString(36).slice(2, 9)}`
   transform: translateY(-50%);
   width: 16px;
   height: 16px;
-  color: #6b7280;
+  color: var(--mm-slate);
   pointer-events: none;
 }
 
-.field-select:disabled { background: #f9fafb; color: #9ca3af; cursor: not-allowed; }
+.field-select:disabled { background: var(--mm-s3); color: var(--mm-slate); cursor: not-allowed; }
 
-.field-message { font-size: 12px; color: #6b7280; margin: 0; }
-.field-message-error { color: #dc2626; }
+.field-message { font-size: var(--t-xs); color: var(--mm-slate); margin: 0; }
+.field-message-error { color: var(--mm-err, #dc2626); }
 </style>

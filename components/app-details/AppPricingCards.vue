@@ -123,9 +123,9 @@ const adjustedPlans = computed(() =>
 .billing-toggle {
   display: inline-flex;
   padding: 3px;
-  background: #f3f4f6;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 8px;
+  background: var(--mm-s3);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-md);
 }
 .billing-btn {
   display: inline-flex;
@@ -134,25 +134,25 @@ const adjustedPlans = computed(() =>
   padding: 6px 14px;
   background: transparent;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--r-sm);
   font-family: inherit;
   font-size: 13px;
   font-weight: 500;
-  color: #6b7280;
+  color: var(--mm-slate);
   cursor: pointer;
-  transition: background-color 150ms ease, color 150ms ease;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
 }
-.billing-btn:hover { color: #1f2937; }
+.billing-btn:hover { color: var(--mm-pearl); }
 .billing-btn.active {
-  background: #ffffff;
-  color: #1f2937;
-  border: 0.5px solid #e5e7eb;
+  background: var(--mm-s2);
+  color: var(--mm-pearl);
+  border: 0.5px solid var(--b2);
 }
 .save-badge {
   padding: 1px 6px;
-  background: #fff3e6;
-  color: #b45309;
-  border-radius: 3px;
+  background: var(--mm-gold-soft);
+  color: var(--mm-gold);
+  border-radius: var(--r-xs);
   font-size: 10px;
   font-weight: 600;
 }
@@ -168,17 +168,17 @@ const adjustedPlans = computed(() =>
 
 .plan-card {
   position: relative;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 10px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-lg);
   padding: 20px;
   display: flex;
   flex-direction: column;
-  transition: border-color 150ms ease;
+  transition: border-color var(--transition-fast);
 }
-.plan-card:hover { border-color: #d1d5db; }
+.plan-card:hover { border-color: var(--b2); }
 .plan-card.popular {
-  border-color: #ff8838;
+  border-color: var(--mm-gold);
   border-width: 1px;
 }
 
@@ -187,12 +187,12 @@ const adjustedPlans = computed(() =>
   top: -10px;
   left: 50%;
   transform: translateX(-50%);
-  background: #ff8838;
-  color: #ffffff;
+  background: var(--mm-gold);
+  color: #0A0700;
   font-size: 11px;
   font-weight: 600;
   padding: 3px 10px;
-  border-radius: 10px;
+  border-radius: var(--r-full);
   text-transform: uppercase;
   letter-spacing: 0.3px;
 }
@@ -201,12 +201,12 @@ const adjustedPlans = computed(() =>
   margin: 0 0 4px;
   font-size: 16px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--mm-pearl);
 }
 .plan-desc {
   margin: 0 0 16px;
   font-size: 13px;
-  color: #6b7280;
+  color: var(--mm-slate);
   min-height: 34px;
 }
 
@@ -216,39 +216,39 @@ const adjustedPlans = computed(() =>
   gap: 2px;
   margin-bottom: 4px;
 }
-.price-currency { font-size: 20px; font-weight: 600; color: #1f2937; }
-.price-amount { font-size: 32px; font-weight: 700; color: #1f2937; }
-.price-period { font-size: 14px; color: #6b7280; margin-left: 2px; }
-.price-custom { font-size: 24px; font-weight: 700; color: #1f2937; }
+.price-currency { font-size: 20px; font-weight: 600; color: var(--mm-pearl); }
+.price-amount { font-size: 32px; font-weight: 700; color: var(--mm-pearl); }
+.price-period { font-size: 14px; color: var(--mm-slate); margin-left: 2px; }
+.price-custom { font-size: 24px; font-weight: 700; color: var(--mm-pearl); }
 
 .plan-save {
   margin: 0 0 16px;
   font-size: 12px;
-  color: #b45309;
+  color: var(--mm-gold);
   font-weight: 500;
 }
 
 .plan-cta {
   width: 100%;
   padding: 10px 16px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 6px;
+  background: var(--mm-s3);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
   font-family: inherit;
   font-size: 14px;
   font-weight: 500;
-  color: #374151;
+  color: var(--mm-silver);
   cursor: pointer;
   margin: 12px 0;
-  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
 }
-.plan-cta:hover { background: #f9fafb; border-color: #d1d5db; }
+.plan-cta:hover { background: var(--mm-s2); border-color: var(--mm-gold); }
 .plan-cta.primary {
-  background: #ff8838;
-  color: #ffffff;
-  border-color: #ff8838;
+  background: var(--mm-gold);
+  color: #0A0700;
+  border-color: var(--mm-gold);
 }
-.plan-cta.primary:hover { background: #e57320; border-color: #e57320; }
+.plan-cta.primary:hover { background: var(--mm-goldl); border-color: var(--mm-goldl); }
 
 .plan-features {
   list-style: none;
@@ -263,13 +263,13 @@ const adjustedPlans = computed(() =>
   align-items: flex-start;
   gap: 8px;
   font-size: 13px;
-  color: #374151;
+  color: var(--mm-silver);
   line-height: 1.4;
 }
 .plan-feature-icon {
   width: 14px;
   height: 14px;
-  color: #ff8838;
+  color: var(--mm-gold);
   flex-shrink: 0;
   margin-top: 2px;
 }

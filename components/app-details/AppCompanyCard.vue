@@ -64,15 +64,15 @@ defineProps<Props>()
 <style scoped>
 .company-card {
   padding: 20px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 10px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-lg);
 }
 .company-title {
   margin: 0 0 14px;
   font-size: 15px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--mm-pearl);
 }
 .company-list {
   margin: 0 0 14px;
@@ -80,14 +80,14 @@ defineProps<Props>()
   grid-template-columns: 120px 1fr;
   gap: 8px 12px;
 }
-.company-list dt { font-size: 12px; color: #6b7280; }
-.company-list dd { margin: 0; font-size: 13px; color: #1f2937; font-weight: 500; }
+.company-list dt { font-size: 12px; color: var(--mm-slate); }
+.company-list dd { margin: 0; font-size: 13px; color: var(--mm-pearl); font-weight: 500; }
 
 .company-investors { margin-bottom: 14px; }
 .inv-label {
   display: block;
   font-size: 12px;
-  color: #6b7280;
+  color: var(--mm-slate);
   margin-bottom: 6px;
 }
 .inv-list { display: flex; flex-wrap: wrap; gap: 4px; }
@@ -97,21 +97,21 @@ defineProps<Props>()
   gap: 6px;
   flex-wrap: wrap;
   padding-top: 12px;
-  border-top: 0.5px solid #e5e7eb;
+  border-top: 0.5px solid var(--b1);
 }
 .company-link {
   display: inline-flex;
   align-items: center;
   gap: 5px;
   padding: 5px 10px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 6px;
+  background: var(--mm-s3);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-sm);
   font-size: 12px;
-  color: #374151;
+  color: var(--mm-silver);
   text-decoration: none;
-  transition: background-color 150ms ease, border-color 150ms ease;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
 }
-.company-link:hover { background: #f9fafb; border-color: #d1d5db; }
-.company-link :deep(svg) { width: 12px; height: 12px; color: #6b7280; }
+.company-link:hover { background: var(--mm-s2); border-color: var(--mm-gold); }
+.company-link :deep(svg) { width: 12px; height: 12px; color: var(--mm-slate); }
 </style>

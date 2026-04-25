@@ -1,5 +1,5 @@
 /**
- * Shared categories data for SaaSWorld platform
+ * Shared categories data for Moonmart platform
  * This file provides a centralized source of truth for all categories
  * Used by CategoriesMenu.vue, onboarding forms, and other components
  */

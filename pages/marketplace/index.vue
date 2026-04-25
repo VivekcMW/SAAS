@@ -39,7 +39,7 @@ const { applySEO, generateHreflangTags } = useSEO();
 
 // Generate VC-optimized meta tags for marketplace
 const vcMetaConfig = generateVCMeta({
-  title: 'Investment Opportunities & SaaS Marketplace | SaaSWorld',
+  title: 'Investment Opportunities & SaaS Marketplace | Moonmart',
   description: 'Discover emerging SaaS startups, investment-ready companies, and high-growth software solutions. The premier marketplace for VCs to research market trends and identify promising investment opportunities.',
   keywords: [
     'software marketplace', 'business software', 'saas tools', 'enterprise applications',
@@ -56,16 +56,16 @@ const vcMetaConfig = generateVCMeta({
 useHead({
   ...vcMetaConfig,
   link: [
-    { rel: 'canonical', href: 'https://saasworld.com/marketplace' }
+    { rel: 'canonical', href: 'https://moonmart.ai/marketplace' }
   ]
 });
 
 // Generate investment-focused schema
 const marketplaceSchema = generateInvestmentSchema({
   type: 'marketplace',
-  name: 'SaaSWorld Investment Marketplace',
+  name: 'Moonmart Investment Marketplace',
   description: 'Premier platform for discovering investment-ready SaaS companies and emerging market opportunities',
-  url: 'https://saasworld.com/marketplace',
+  url: 'https://moonmart.ai/marketplace',
   marketCategory: 'Software Marketplace',
   investmentHighlights: [
     'Comprehensive startup database',
@@ -84,9 +84,9 @@ useHead({
       innerHTML: JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'CollectionPage',
-        name: 'SaaSWorld Investment Marketplace',
+        name: 'Moonmart Investment Marketplace',
         description: 'Discover emerging SaaS startups and investment opportunities in the global software marketplace',
-        url: 'https://saasworld.com/marketplace',
+        url: 'https://moonmart.ai/marketplace',
         mainEntity: {
           '@type': 'ItemList',
           name: 'Investment-Ready Software Companies',

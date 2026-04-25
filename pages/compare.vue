@@ -19,7 +19,7 @@
     <section class="mk-section">
       <div class="mk-section__inner">
         <h2 class="mk-section__title">Popular comparisons</h2>
-        <p class="mk-section__lede">The match-ups buyers research most on SaaSWorld.</p>
+        <p class="mk-section__lede">The match-ups buyers research most on Moonmart.</p>
         <div class="mk-grid">
           <NuxtLink v-for="c in popular" :key="c.slug" :to="`/compare/${c.slug}`" class="mk-card mk-card--link">
             <p class="mk-card__eyebrow">{{ c.category }}</p>
@@ -49,7 +49,7 @@
     <!-- How we compare -->
     <section class="mk-section">
       <div class="mk-section__inner">
-        <h2 class="mk-section__title">How SaaSWorld compares tools</h2>
+        <h2 class="mk-section__title">How Moonmart compares tools</h2>
         <div class="mk-grid">
           <div v-for="p in principles" :key="p.title" class="mk-card">
             <h3 class="mk-card__title">{{ p.title }}</h3>
@@ -74,9 +74,9 @@
 <script setup lang="ts">
 const { applySEO } = useSEO()
 applySEO({
-  title: 'Compare SaaS tools | SaaSWorld',
+  title: 'Compare SaaS tools | Moonmart',
   description: 'Side-by-side comparisons of popular SaaS tools across CRM, help desk, analytics, email and more.',
-  canonical: 'https://saasworld.com/compare',
+  canonical: 'https://moonmart.ai/compare',
   ogType: 'website'
 })
 

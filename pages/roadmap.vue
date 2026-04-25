@@ -53,13 +53,13 @@ useHead({
 .roadmap-item {
   margin-bottom: 2rem;
   padding: 1.5rem;
-  border-left: 4px solid #3b82f6;
-  background: #f8fafc;
+  border-left: 2px solid var(--mm-gold);
+  background: var(--mm-s2);
 }
 
 .roadmap-quarter {
   font-weight: bold;
-  color: #3b82f6;
+  color: var(--mm-gold);
   margin-bottom: 0.5rem;
 }
 

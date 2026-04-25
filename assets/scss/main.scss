@@ -1,33 +1,33 @@
-/* Global SCSS for SaaSWorld */
+/* Global SCSS for Moonmart */
 /* Using @use instead of @import to avoid deprecation warnings */
 
 // Use mixins with modern syntax
 @use 'mixins' as *;
 
 :root {
-  /* Color Variables - Removed !important to prevent conflicts */
-  --primary-color: #FF8838;
-  --secondary-color: #F9C845;
-  --dark-color: #1E1E1E;
-  --light-color: #FFFFFF;
-  --bg-gray: #F8F9FA;
-  --text-primary: #4A5568;
-  --text-secondary: #718096;
-  
+  /* Color Variables — dark Moonmart theme. Primary source: assets/css/tokens.css */
+  --primary-color: var(--mm-gold, #D4A843);
+  --secondary-color: var(--mm-sea, #2A9D8F);
+  --dark-color: var(--mm-bg, #07090F);
+  --light-color: var(--mm-pearl, #F0F3F8);
+  --bg-gray: var(--mm-surface, #0F1220);
+  --text-primary: var(--mm-pearl, #F0F3F8);
+  --text-secondary: var(--mm-silver, #A8B4CC);
+
   /* Additional color variables for components */
-  --color-primary: #FF8838;
-  --color-primary-light: #F0ECFF;
-  --color-secondary: #F9C845;
-  --color-gray-50: #F8F9FA;
-  --color-gray-100: #F3F4F6;
-  --color-gray-200: #E5E7EB;
-  --color-gray-300: #D1D5DB;
-  --color-gray-400: #9CA3AF;
-  --color-gray-500: #6B7280;
-  --color-gray-600: #4B5563;
-  --color-gray-700: #374151;
-  --color-gray-800: #1F2937;
-  --color-gray-900: #111827;
+  --color-primary: var(--mm-gold, #D4A843);
+  --color-primary-light: rgba(212,168,67,.1);
+  --color-secondary: var(--mm-sea, #2A9D8F);
+  --color-gray-50:  #161B2E;
+  --color-gray-100: #1F2742;
+  --color-gray-200: #2C3452;
+  --color-gray-300: #3A4462;
+  --color-gray-400: #5A6A86;
+  --color-gray-500: var(--mm-slate, #6B7A96);
+  --color-gray-600: var(--mm-silver, #A8B4CC);
+  --color-gray-700: #C8D0DF;
+  --color-gray-800: #DDE3EE;
+  --color-gray-900: var(--mm-pearl, #F0F3F8);
   --color-success: #10B981;
   --color-success-light: #D1FAE5;
   --color-error: #EF4444;

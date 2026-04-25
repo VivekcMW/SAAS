@@ -126,9 +126,9 @@ function paybackLabel(): string {
 
 <style scoped>
 .roi-calc {
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 12px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-lg);
   padding: 20px;
 }
 
@@ -140,10 +140,10 @@ function paybackLabel(): string {
   margin: 0;
   font-size: 16px;
   font-weight: 700;
-  color: #111827;
+  color: var(--mm-pearl);
 }
-.roi-title :deep(svg) { width: 18px; height: 18px; color: #ff8838; }
-.roi-sub { margin: 4px 0 0; font-size: 13px; color: #6b7280; }
+.roi-title :deep(svg) { width: 18px; height: 18px; color: var(--mm-gold); }
+.roi-sub { margin: 4px 0 0; font-size: 13px; color: var(--mm-slate); }
 
 .roi-grid {
   display: grid;
@@ -160,16 +160,16 @@ function paybackLabel(): string {
   align-items: baseline;
   font-size: 12px;
 }
-.input-label { color: #6b7280; }
-.input-val { color: #111827; font-weight: 600; font-size: 13px; }
+.input-label { color: var(--mm-slate); }
+.input-val { color: var(--mm-pearl); font-weight: 600; font-size: 13px; }
 
 .roi-range {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
   height: 4px;
-  background: #e5e7eb;
-  border-radius: 2px;
+  background: var(--b2);
+  border-radius: var(--r-xs);
   outline: none;
   cursor: pointer;
 }
@@ -179,50 +179,50 @@ function paybackLabel(): string {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #ff8838;
+  background: var(--mm-gold);
   cursor: pointer;
-  border: 2px solid #ffffff;
-  box-shadow: 0 0 0 1px #ff8838;
+  border: 2px solid var(--mm-s2);
+  box-shadow: 0 0 0 1px var(--mm-gold);
 }
 .roi-range::-moz-range-thumb {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #ff8838;
+  background: var(--mm-gold);
   cursor: pointer;
-  border: 2px solid #ffffff;
-  box-shadow: 0 0 0 1px #ff8838;
+  border: 2px solid var(--mm-s2);
+  box-shadow: 0 0 0 1px var(--mm-gold);
 }
 
 .roi-results { display: flex; flex-direction: column; gap: 8px; }
 
 .result-card {
-  background: #f9fafb;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 8px;
+  background: var(--mm-s3);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-md);
   padding: 10px 12px;
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 .result-card.highlight {
-  background: #fffaf5;
-  border-color: #ffedd5;
+  background: var(--mm-gold-soft);
+  border-color: var(--mm-gold);
 }
-.result-label { font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.04em; }
-.result-value { font-size: 20px; font-weight: 700; color: #111827; }
-.result-value.cost { color: #6b7280; font-size: 16px; }
-.result-value.savings { color: #047857; font-size: 16px; }
-.result-value.gain { color: #047857; }
-.result-value.loss { color: #dc2626; }
-.result-meta { font-size: 11px; color: #b45309; font-weight: 600; }
+.result-label { font-size: 11px; color: var(--mm-slate); text-transform: uppercase; letter-spacing: 0.04em; }
+.result-value { font-size: 20px; font-weight: 700; color: var(--mm-pearl); }
+.result-value.cost { color: var(--mm-slate); font-size: 16px; }
+.result-value.savings { color: var(--mm-seal); font-size: 16px; }
+.result-value.gain { color: var(--mm-seal); }
+.result-value.loss { color: #f87171; }
+.result-meta { font-size: 11px; color: var(--mm-gold); font-weight: 600; }
 
 .roi-disclaimer {
   display: flex;
   align-items: center;
   gap: 4px;
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--mm-slate);
   margin: 12px 0 0;
 }
 .roi-disclaimer :deep(svg) { width: 12px; height: 12px; }

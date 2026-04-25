@@ -101,7 +101,7 @@ const tab = ref<typeof tabs[number]['id']>('personal')
 const form = reactive({
   firstName: 'Demo',
   lastName: 'Buyer',
-  email: 'buyer@saasworld.com',
+  email: 'buyer@moonmart.ai',
   jobTitle: 'Head of Operations',
   company: 'Acme Corp',
   companySize: '51–200',

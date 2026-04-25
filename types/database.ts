@@ -1,5 +1,5 @@
 /**
- * Database Schema Types for SaaSWorld Application
+ * Database Schema Types for Moonmart Application
  * These types define the structure of data stored in the database
  */
 

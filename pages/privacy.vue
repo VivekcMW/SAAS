@@ -4,7 +4,7 @@
     eyebrow="Legal · Privacy"
     lede="Your privacy is important to us. This policy explains what data we collect, how we use it, and the rights you have over it."
     :updated="updatedAt"
-    contact-email="privacy@saasworld.com"
+    contact-email="privacy@moonmart.ai"
     :sections="tocSections"
   >
     <div class="prose prose-lg max-w-none">
@@ -13,13 +13,13 @@
           <section id="introduction" class="mb-8">
             <h2 class="text-2xl font-bold text-gray-900 mb-4">1. Introduction</h2>
             <p class="text-gray-700 mb-4">
-              Welcome to SaaSWorld ("we," "our," or "us"). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our software marketplace platform.
+              Welcome to Moonmart ("we," "our," or "us"). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our software marketplace platform.
             </p>
             <p class="text-gray-700 mb-4">
               We are committed to protecting your privacy and ensuring transparency about our data practices. This policy applies to all users of our platform, including visitors, registered users, vendors, and customers.
             </p>
             <p class="text-gray-700">
-              By using SaaSWorld, you consent to the data practices described in this policy. If you do not agree with the terms of this Privacy Policy, please do not access or use our platform.
+              By using Moonmart, you consent to the data practices described in this policy. If you do not agree with the terms of this Privacy Policy, please do not access or use our platform.
             </p>
           </section>
 
@@ -226,7 +226,7 @@
           <section id="international" class="mb-8">
             <h2 class="text-2xl font-bold text-gray-900 mb-4">10. International Transfers</h2>
             <p class="text-gray-700 mb-4">
-              SaaSWorld operates globally, and your information may be transferred to and processed in countries other than your own. We ensure appropriate safeguards are in place, including:
+              Moonmart operates globally, and your information may be transferred to and processed in countries other than your own. We ensure appropriate safeguards are in place, including:
             </p>
             <ul class="list-disc list-inside text-gray-700 mb-4 space-y-1">
               <li>Compliance with applicable data protection laws</li>
@@ -243,7 +243,7 @@
           <section id="children" class="mb-8">
             <h2 class="text-2xl font-bold text-gray-900 mb-4">11. Children's Privacy</h2>
             <p class="text-gray-700 mb-4">
-              SaaSWorld is not intended for use by children under the age of 13 (or the minimum age in your jurisdiction). We do not knowingly collect personal information from children.
+              Moonmart is not intended for use by children under the age of 13 (or the minimum age in your jurisdiction). We do not knowingly collect personal information from children.
             </p>
             <p class="text-gray-700 mb-4">
               If we become aware that we have collected information from a child without parental consent, we will take steps to delete such information promptly.
@@ -269,7 +269,7 @@
               <li>Provide a summary of key changes</li>
             </ul>
             <p class="text-gray-700">
-              Your continued use of SaaSWorld after policy changes constitutes acceptance of the updated terms.
+              Your continued use of Moonmart after policy changes constitutes acceptance of the updated terms.
             </p>
           </section>
 
@@ -281,16 +281,16 @@
             </p>
             
             <div class="bg-gray-50 rounded-lg p-6">
-              <h3 class="text-lg font-semibold text-gray-900 mb-4">SaaSWorld Privacy Office</h3>
+              <h3 class="text-lg font-semibold text-gray-900 mb-4">Moonmart Privacy Office</h3>
               <div class="space-y-2 text-gray-700">
-                <p><strong>Email:</strong> privacy@saasworld.com</p>
+                <p><strong>Email:</strong> privacy@moonmart.ai</p>
                 <p><strong>Phone:</strong> +1 (555) 123-4567</p>
                 <p><strong>Address:</strong> 123 Tech Street, Suite 456<br>San Francisco, CA 94107<br>United States</p>
               </div>
               
               <div class="mt-6 pt-4 border-t border-gray-200">
                 <h4 class="text-md font-semibold text-gray-900 mb-2">Data Protection Officer</h4>
-                <p class="text-gray-700">Email: dpo@saasworld.com</p>
+                <p class="text-gray-700">Email: dpo@moonmart.ai</p>
               </div>
               
               <div class="mt-4 pt-4 border-t border-gray-200">
@@ -329,21 +329,21 @@ const tocSections = [
 ]
 
 applySEO({
-  title: 'Privacy Policy | SaaSWorld - Data Protection and Privacy Rights',
-  description: 'Learn how SaaSWorld protects your privacy and handles your personal data. Our comprehensive privacy policy explains data collection, usage, and your rights.',
-  keywords: 'privacy policy, data protection, personal data, GDPR, privacy rights, data security, SaaSWorld privacy',
-  canonical: 'https://saasworld.com/privacy',
+  title: 'Privacy Policy | Moonmart - Data Protection and Privacy Rights',
+  description: 'Learn how Moonmart protects your privacy and handles your personal data. Our comprehensive privacy policy explains data collection, usage, and your rights.',
+  keywords: 'privacy policy, data protection, personal data, GDPR, privacy rights, data security, Moonmart privacy',
+  canonical: 'https://moonmart.ai/privacy',
   ogType: 'website',
   jsonLd: {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     name: 'Privacy Policy',
-    description: 'SaaSWorld Privacy Policy and data protection practices',
-    url: 'https://saasworld.com/privacy',
+    description: 'Moonmart Privacy Policy and data protection practices',
+    url: 'https://moonmart.ai/privacy',
     publisher: {
       '@type': 'Organization',
-      name: 'SaaSWorld',
-      url: 'https://saasworld.com'
+      name: 'Moonmart',
+      url: 'https://moonmart.ai'
     }
   }
 })

@@ -74,11 +74,11 @@ function exportPdf() {
 <style scoped>
 .in-summary { margin-bottom: 20px; }
 .in-summary__week { font-size: 0.78rem; color: var(--vw-text-subtle); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
-.in-summary__title { font-family: 'Poppins'; font-size: 1.4rem; margin: 6px 0 6px; }
+.in-summary__title { font-family: 'Syne'; font-size: 1.4rem; margin: 6px 0 6px; }
 .in-summary__body { color: var(--vw-text-muted); line-height: 1.55; margin: 0 0 16px; font-size: 0.95rem; }
 .in-summary__kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 .in-kpi { padding: 12px; background: var(--vw-surface-2); border-radius: 10px; display: flex; flex-direction: column; }
-.in-kpi__n { font-weight: 700; font-family: 'Poppins'; font-size: 1.2rem; }
+.in-kpi__n { font-weight: 700; font-family: 'Syne'; font-size: 1.2rem; }
 .in-kpi__l { font-size: 0.78rem; color: var(--vw-text-subtle); margin-top: 2px; }
 
 .in-list { list-style: none; padding: 0; margin: 0 0 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
@@ -95,7 +95,7 @@ function exportPdf() {
 .in-tone-win { background: #d1fae5; color: #065f46; }
 .in-tone-risk { background: #fee2e2; color: #991b1b; }
 .in-tone-neutral { background: var(--vw-surface-2); color: var(--vw-text-muted); }
-.in-card__title { font-family: 'Poppins'; font-size: 0.95rem; margin: 0; flex: 1; }
+.in-card__title { font-family: 'Syne'; font-size: 0.95rem; margin: 0; flex: 1; }
 .in-card__body { font-size: 0.88rem; color: var(--vw-text-muted); line-height: 1.5; margin: 0; }
 
 .in-next { padding-left: 20px; margin: 0; font-size: 0.9rem; }

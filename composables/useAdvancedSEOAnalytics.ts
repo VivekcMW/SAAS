@@ -169,9 +169,9 @@ export const useAdvancedSEOAnalytics = () => {
     const tests = {
       title_format: {
         variants: [
-          'Best {category} Software | SaaSWorld',
-          '{category} Software Solutions | SaaSWorld',
-          'Top {category} Tools & Software | SaaSWorld'
+          'Best {category} Software | Moonmart',
+          '{category} Software Solutions | Moonmart',
+          'Top {category} Tools & Software | Moonmart'
         ],
         traffic_split: 0.33
       },

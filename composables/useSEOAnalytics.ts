@@ -179,8 +179,8 @@ export function useSEOAnalytics() {
       '@context': 'https://schema.org',
       '@type': 'WebPage',
       name: subcategory ? `${subcategory} - ${categoryName}` : categoryName,
-      description: `Discover the best ${categoryName.toLowerCase()} software and tools on SaaSWorld marketplace.`,
-      url: `https://saasworld.com/${seoCategory}${subcategory ? `/${subcategory.toLowerCase().replace(/\s+/g, '-')}` : ''}`,
+      description: `Discover the best ${categoryName.toLowerCase()} software and tools on Moonmart marketplace.`,
+      url: `https://moonmart.ai/${seoCategory}${subcategory ? `/${subcategory.toLowerCase().replace(/\s+/g, '-')}` : ''}`,
       mainEntity: {
         '@type': 'ItemList',
         name: `${categoryName} Software Directory`,
@@ -192,7 +192,7 @@ export function useSEOAnalytics() {
           item: {
             '@type': 'SoftwareApplication',
             name: sub.name,
-            url: `https://saasworld.com${sub.path}`,
+            url: `https://moonmart.ai${sub.path}`,
             applicationCategory: categoryName,
             operatingSystem: 'Web, iOS, Android, Windows, macOS',
             keywords: sub.keywords.join(', ')
@@ -206,19 +206,19 @@ export function useSEOAnalytics() {
             '@type': 'ListItem',
             position: 1,
             name: 'Home',
-            item: 'https://saasworld.com'
+            item: 'https://moonmart.ai'
           },
           {
             '@type': 'ListItem',
             position: 2,
             name: 'Categories',
-            item: 'https://saasworld.com/categories'
+            item: 'https://moonmart.ai/categories'
           },
           {
             '@type': 'ListItem',
             position: 3,
             name: categoryName,
-            item: `https://saasworld.com/${seoCategory}`
+            item: `https://moonmart.ai/${seoCategory}`
           }
         ]
       }
@@ -229,7 +229,7 @@ export function useSEOAnalytics() {
         '@type': 'ListItem',
         position: 4,
         name: subcategory,
-        item: `https://saasworld.com/${seoCategory}/${subcategory.toLowerCase().replace(/\s+/g, '-')}`
+        item: `https://moonmart.ai/${seoCategory}/${subcategory.toLowerCase().replace(/\s+/g, '-')}`
       })
     }
 

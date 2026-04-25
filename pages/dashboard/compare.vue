@@ -3,5 +3,5 @@
 </template>
 
 <script setup lang="ts">
-useHead({ title: 'Compare apps — SaaSWorld' })
+useHead({ title: 'Compare apps — Moonmart' })
 </script>

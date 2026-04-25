@@ -181,7 +181,7 @@ const featuredPost = {
   excerpt: "Comprehensive comparison of the top 3 team communication platforms. Find out which tool is perfect for your team's needs, budget, and workflow.",
   category: "Software Comparison",
   date: "2025-08-21",
-  author: "SaaSWorld Team",
+  author: "Moonmart Team",
   image: getThumbnail("slack-vs-teams-vs-discord-2025-guide")
 };
 
@@ -194,7 +194,7 @@ const allPosts = ref([
     excerpt: "Comprehensive comparison of the top 3 team communication platforms. Find out which tool is perfect for your team's needs, budget, and workflow.",
     category: "Software Comparison",
     date: "2025-08-21",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -203,7 +203,7 @@ const allPosts = ref([
     excerpt: "Complete CRM comparison covering features, capabilities, and use cases. Discover which customer relationship management platform delivers the best ROI for your business.",
     category: "Software Comparison", 
     date: "2025-08-20",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -212,7 +212,7 @@ const allPosts = ref([
     excerpt: "In-depth analysis of leading project management tools. Compare features, integrations, collaboration, and team collaboration capabilities to make the right choice.",
     category: "Software Comparison",
     date: "2025-08-19", 
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -221,7 +221,7 @@ const allPosts = ref([
     excerpt: "Detailed comparison of top video conferencing platforms. Evaluate features, security, reliability, and performance to choose the best solution for remote meetings.",
     category: "Software Comparison",
     date: "2025-08-18",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -230,7 +230,7 @@ const allPosts = ref([
     excerpt: "Complete e-commerce platform comparison covering features, capabilities, customization, and scalability. Find the perfect solution for your online store.",
     category: "Software Comparison",
     date: "2025-08-17",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -239,7 +239,7 @@ const allPosts = ref([
     excerpt: "Discover game-changing AI tools that can automate tasks, boost productivity, and boost productivity for small businesses. Complete implementation guide and best practices.",
     category: "AI & Automation",
     date: "2025-08-16",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -248,7 +248,7 @@ const allPosts = ref([
     excerpt: "Essential software stack for remote team success. Covers communication, project management, file sharing, time tracking, and productivity tools with detailed recommendations.",
     category: "Business Growth",
     date: "2025-08-15",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -257,7 +257,7 @@ const allPosts = ref([
     excerpt: "Strategic guide to choosing between free and paid software. Includes ROI calculator, feature comparison analysis, and upgrade timing recommendations for maximum value.",
     category: "Software Selection",
     date: "2025-08-14",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -266,7 +266,7 @@ const allPosts = ref([
     excerpt: "Complete cybersecurity software guide covering antivirus, firewalls, VPNs, password managers, and backup solutions. Protect your business from cyber threats.",
     category: "Security & Compliance",
     date: "2025-08-13",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -275,7 +275,7 @@ const allPosts = ref([
     excerpt: "Comprehensive software evaluation checklist. Avoid implementation mistakes with our proven framework for assessing features, security, scalability, and vendor reliability.",
     category: "Buying Guides",
     date: "2025-08-12",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
 
@@ -286,7 +286,7 @@ const allPosts = ref([
     excerpt: "Essential software tools for real estate professionals. CRM, lead generation, virtual tours, document management, and transaction tools reviewed and compared.",
     category: "Industry Guides",
     date: "2025-08-11",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -295,7 +295,7 @@ const allPosts = ref([
     excerpt: "Complete software stack for marketing agencies. SEO tools, social media management, analytics, project management, and client reporting solutions compared.",
     category: "Industry Guides", 
     date: "2025-08-10",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -304,7 +304,7 @@ const allPosts = ref([
     excerpt: "Build a profitable online store with the right software. Platforms, payment processing, inventory management, marketing automation, and analytics tools reviewed.",
     category: "Industry Guides",
     date: "2025-08-09",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -313,7 +313,7 @@ const allPosts = ref([
     excerpt: "EMR, patient scheduling, billing, telehealth, and compliance software for healthcare practices. HIPAA-compliant solutions compared with features and capabilities.",
     category: "Industry Guides",
     date: "2025-08-08",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -322,7 +322,7 @@ const allPosts = ref([
     excerpt: "POS systems, inventory management, staff scheduling, delivery integration, and customer management tools for restaurants. Features, capabilities, and implementation analysis.",
     category: "Industry Guides",
     date: "2025-08-07",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -331,7 +331,7 @@ const allPosts = ref([
     excerpt: "Case management, document automation, time tracking, billing, and client communication software for law firms. Bar-compliant solutions with security focus.",
     category: "Industry Guides",
     date: "2025-08-06",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -340,7 +340,7 @@ const allPosts = ref([
     excerpt: "Tax preparation, bookkeeping, audit management, client portals, and workflow automation software for accounting firms. Cloud-based solutions compared.",
     category: "Industry Guides",
     date: "2025-08-05",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -349,7 +349,7 @@ const allPosts = ref([
     excerpt: "Project management, scheduling, project tracking, equipment management, and field reporting software for construction companies. Mobile-first solutions reviewed.",
     category: "Industry Guides",
     date: "2025-08-04",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -358,7 +358,7 @@ const allPosts = ref([
     excerpt: "Donor management, fundraising, volunteer coordination, grant tracking, and financial management software for nonprofits. Budget-friendly solutions prioritized.",
     category: "Industry Guides",
     date: "2025-08-03",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -367,7 +367,7 @@ const allPosts = ref([
     excerpt: "Learning management systems, student information systems, communication tools, and assessment software for educational institutions. K-12 and higher ed solutions.",
     category: "Industry Guides",
     date: "2025-08-02",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
 
@@ -378,7 +378,7 @@ const allPosts = ref([
     excerpt: "Essential software stack for startup growth. From MVP to scale-up, discover tools for product development, marketing, sales, operations, and team management.",
     category: "Business Growth",
     date: "2025-08-01",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -387,7 +387,7 @@ const allPosts = ref([
     excerpt: "Strategic guide to digital transformation. Process automation, data analytics, customer experience, and productivity tools that deliver measurable business results.",
     category: "Business Growth",
     date: "2025-07-31",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -396,7 +396,7 @@ const allPosts = ref([
     excerpt: "Master SaaS analytics with our comprehensive metrics guide. Track MRR, churn, CAC, LTV, and other critical KPIs with recommended software tools and dashboards.",
     category: "Business Growth", 
     date: "2025-07-30",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -405,7 +405,7 @@ const allPosts = ref([
     excerpt: "Practical automation workflows that save hours weekly. Marketing, sales, operations, and administrative process automation with step-by-step implementation guides.",
     category: "Integration & Workflow",
     date: "2025-07-29",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -414,7 +414,7 @@ const allPosts = ref([
     excerpt: "Comprehensive guide to no-code development. Compare platforms, learn best practices, and discover how to build custom business applications without coding skills.",
     category: "Integration & Workflow",
     date: "2025-07-28",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -423,7 +423,7 @@ const allPosts = ref([
     excerpt: "Master API integrations for business efficiency. Connect apps, automate data sync, and create unified workflows with practical examples and best practices.",
     category: "Integration & Workflow",
     date: "2025-07-27",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -432,7 +432,7 @@ const allPosts = ref([
     excerpt: "Comprehensive backup strategy guide. Cloud backup, local backup, hybrid solutions, and disaster recovery planning to protect your business data and operations.",
     category: "Security & Compliance",
     date: "2025-07-26",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -441,7 +441,7 @@ const allPosts = ref([
     excerpt: "Enterprise password management guide. Compare business password managers, implement security policies, and protect your organization from credential-based attacks.",
     category: "Security & Compliance",
     date: "2025-07-25",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -450,7 +450,7 @@ const allPosts = ref([
     excerpt: "Navigate GDPR requirements with the right software. Data mapping, consent management, privacy impact assessments, and compliance monitoring tools reviewed.",
     category: "Security & Compliance",
     date: "2025-07-24",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -459,7 +459,7 @@ const allPosts = ref([
     excerpt: "Strategic approach to software spending. Budget allocation, project tracking, license optimization, and vendor negotiation tactics to maximize software ROI.",
     category: "Software Selection",
     date: "2025-07-23",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
 
@@ -470,7 +470,7 @@ const allPosts = ref([
     excerpt: "Complete guide to software license management. Avoid audits, reduce costs, and ensure compliance with enterprise license tracking and optimization strategies.",
     category: "Software Selection",
     date: "2025-07-22",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -479,7 +479,7 @@ const allPosts = ref([
     excerpt: "Comprehensive TCO analysis comparing SaaS and on-premise solutions. Hidden costs, scalability, security, and maintenance considerations for informed decisions.",
     category: "Software Selection",
     date: "2025-07-21",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -488,7 +488,7 @@ const allPosts = ref([
     excerpt: "Compare AI customer service platforms. Chatbots, sentiment analysis, automated ticketing, and omnichannel support solutions for superior customer experience.",
     category: "AI & Automation",
     date: "2025-07-20",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -497,7 +497,7 @@ const allPosts = ref([
     excerpt: "Detailed comparison of enterprise marketing automation platforms. Lead scoring, email marketing, campaign management, and integration capabilities analyzed.",
     category: "Software Comparison",
     date: "2025-07-19",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -506,7 +506,7 @@ const allPosts = ref([
     excerpt: "Enterprise document management comparison. Collaboration features, security, compliance, storage limits, and integration capabilities for business file management.",
     category: "Software Comparison",
     date: "2025-07-18",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -515,7 +515,7 @@ const allPosts = ref([
     excerpt: "Comprehensive BI platform comparison. Data visualization, reporting, analytics capabilities, pricing, and ease of use for data-driven business decisions.",
     category: "Software Comparison",
     date: "2025-07-17",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -524,7 +524,7 @@ const allPosts = ref([
     excerpt: "Compare top time tracking tools for productivity and billing. Features, integrations, reporting, team management, and pricing for optimal time management.",
     category: "Software Comparison",
     date: "2025-07-16",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -533,7 +533,7 @@ const allPosts = ref([
     excerpt: "In-depth email marketing software comparison. Automation, segmentation, deliverability, pricing, and integration features for effective email campaigns.",
     category: "Software Comparison",
     date: "2025-07-15",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -542,7 +542,7 @@ const allPosts = ref([
     excerpt: "Comprehensive inventory management software comparison. Multi-channel selling, warehouse management, reporting, and integration capabilities for growing businesses.",
     category: "Software Comparison",
     date: "2025-07-14",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
 
@@ -553,7 +553,7 @@ const allPosts = ref([
     excerpt: "Compare leading AI assistants for business use. Features, pricing, API access, security, and enterprise capabilities for workplace productivity enhancement.",
     category: "AI & Automation",
     date: "2025-07-13",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -562,7 +562,7 @@ const allPosts = ref([
     excerpt: "Robotic Process Automation platform comparison. Bot development, scalability, maintenance, and ROI analysis for business process automation.",
     category: "AI & Automation",
     date: "2025-07-12",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -571,7 +571,7 @@ const allPosts = ref([
     excerpt: "AI writing software comparison for business content. Marketing copy, blog posts, social media, and email content generation tools evaluated.",
     category: "AI & Automation",
     date: "2025-07-11",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -580,7 +580,7 @@ const allPosts = ref([
     excerpt: "Enterprise ML platform comparison. Model development, deployment, scalability, pricing, and integration capabilities for business AI implementation.",
     category: "AI & Automation",
     date: "2025-07-10",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -589,7 +589,7 @@ const allPosts = ref([
     excerpt: "Compare predictive analytics tools for business forecasting. Statistical analysis, data mining, model building, and visualization capabilities reviewed.",
     category: "AI & Automation",
     date: "2025-07-09",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -598,7 +598,7 @@ const allPosts = ref([
     excerpt: "Enterprise voice AI comparison. Voice commands, smart office integration, productivity features, and security considerations for business environments.",
     category: "AI & Automation",
     date: "2025-07-08",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -607,7 +607,7 @@ const allPosts = ref([
     excerpt: "Computer vision API comparison for business applications. Image recognition, OCR, facial recognition, and object detection capabilities analyzed.",
     category: "AI & Automation",
     date: "2025-07-07",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -616,7 +616,7 @@ const allPosts = ref([
     excerpt: "NLP platform comparison for business text analysis. Sentiment analysis, language translation, chatbots, and document processing capabilities reviewed.",
     category: "AI & Automation",
     date: "2025-07-06",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -625,7 +625,7 @@ const allPosts = ref([
     excerpt: "Web automation testing framework comparison. Browser compatibility, ease of use, performance, and CI/CD integration for quality assurance teams.",
     category: "AI & Automation",
     date: "2025-07-05",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -634,7 +634,7 @@ const allPosts = ref([
     excerpt: "IoT platform comparison for smart office environments. Device management, security, automation, and energy efficiency solutions for modern workplaces.",
     category: "AI & Automation", 
     date: "2025-07-04",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
 
@@ -645,7 +645,7 @@ const allPosts = ref([
     excerpt: "Enterprise API management comparison. Gateway features, security, analytics, developer portal, and scalability for API-first business architecture.",
     category: "Integration & Workflow",
     date: "2025-07-03",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -654,7 +654,7 @@ const allPosts = ref([
     excerpt: "Containerization and orchestration platform comparison. Deployment strategies, scalability, cost optimization, and management tools for microservices.",
     category: "Integration & Workflow",
     date: "2025-07-02",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -663,7 +663,7 @@ const allPosts = ref([
     excerpt: "Database platform comparison for business applications. Performance, scalability, security, query capabilities, and use case recommendations.",
     category: "Integration & Workflow",
     date: "2025-07-01",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -672,7 +672,7 @@ const allPosts = ref([
     excerpt: "Enterprise cloud storage comparison. Cost analysis, performance, security, compliance, and integration features for business data storage needs.",
     category: "Integration & Workflow",
     date: "2025-06-30",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -681,7 +681,7 @@ const allPosts = ref([
     excerpt: "Business VPN service comparison. Security protocols, server networks, performance, team management, and compliance features for remote work security.",
     category: "Security & Compliance",
     date: "2025-06-29",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -690,7 +690,7 @@ const allPosts = ref([
     excerpt: "Enterprise endpoint protection comparison. Threat detection, response capabilities, management console, and pricing for comprehensive endpoint security.",
     category: "Security & Compliance",
     date: "2025-06-28",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -699,7 +699,7 @@ const allPosts = ref([
     excerpt: "IAM platform comparison for enterprise security. Single sign-on, multi-factor authentication, user provisioning, and compliance features analyzed.",
     category: "Security & Compliance",
     date: "2025-06-27",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -708,7 +708,7 @@ const allPosts = ref([
     excerpt: "Security Information and Event Management comparison. Log analysis, threat detection, incident response, and compliance reporting for enterprise security.",
     category: "Security & Compliance",
     date: "2025-06-26",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -717,7 +717,7 @@ const allPosts = ref([
     excerpt: "CI/CD platform comparison for development teams. Pipeline automation, integration capabilities, ease of use, and scaling considerations.",
     category: "Integration & Workflow",
     date: "2025-06-25",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   },
   {
@@ -726,7 +726,7 @@ const allPosts = ref([
     excerpt: "Explore upcoming software innovations shaping the workplace. AI integration, virtual collaboration, automation trends, and technology predictions for businesses.",
     category: "Business Growth",
     date: "2025-06-24",
-    author: "SaaSWorld Team",
+    author: "Moonmart Team",
     image: "/assets/images/hero-dashboard.png"
   }
 ]);
@@ -836,7 +836,7 @@ onMounted(() => {
   margin-bottom: 1rem;
 }
 .blog__headline {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--font-heading, 'Syne', system-ui, sans-serif);
   font-size: clamp(2.25rem, 5vw, 3.25rem);
   font-weight: 700;
   line-height: 1.05;
@@ -873,7 +873,7 @@ onMounted(() => {
   margin-bottom: 1rem;
 }
 .feature__title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--font-heading, 'Syne', system-ui, sans-serif);
   font-size: clamp(1.625rem, 3vw, 2.25rem);
   font-weight: 700;
   line-height: 1.2;
@@ -1076,7 +1076,7 @@ onMounted(() => {
 }
 .post__date { color: #a1a1aa; }
 .post__title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--font-heading, 'Syne', system-ui, sans-serif);
   font-size: 1.125rem;
   font-weight: 700;
   line-height: 1.3;
@@ -1123,7 +1123,7 @@ onMounted(() => {
   background: #fbfaf8;
 }
 .empty h3 {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--font-heading, 'Syne', system-ui, sans-serif);
   font-size: 1.25rem;
   font-weight: 700;
   color: #1e1e1e;

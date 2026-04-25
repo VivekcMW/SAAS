@@ -2,7 +2,7 @@
   <div class="page-container">
     <div class="page-header">
       <h1>Documentation</h1>
-      <p>Complete guides and API references for SaaSWorld</p>
+      <p>Complete guides and API references for Moonmart</p>
     </div>
     
     <div class="content">
@@ -62,13 +62,13 @@ useHead({
 .doc-section {
   margin-bottom: 2rem;
   padding: 1.5rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-sm);
 }
 
 .doc-section h2 {
   margin-bottom: 1rem;
-  color: #3b82f6;
+  color: var(--mm-gold);
 }
 
 .doc-section ul {
@@ -81,11 +81,11 @@ useHead({
 }
 
 .doc-section a {
-  color: #3b82f6;
+  color: var(--mm-gold);
   text-decoration: none;
   padding: 0.5rem 0;
   display: block;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 0.5px solid var(--b1);
 }
 
 .doc-section a:hover {

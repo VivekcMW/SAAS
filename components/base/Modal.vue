@@ -73,7 +73,7 @@ onBeforeUnmount(() => {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(17, 24, 39, 0.5);
+  background: rgba(7, 9, 15, 0.75);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -82,9 +82,9 @@ onBeforeUnmount(() => {
 }
 
 .modal {
-  background: #ffffff;
-  border-radius: 8px;
-  border: 0.5px solid #e5e7eb;
+  background: var(--mm-s1);
+  border-radius: var(--r-lg);
+  border: 0.5px solid var(--b2);
   width: 100%;
   max-height: calc(100vh - 32px);
   display: flex;
@@ -102,21 +102,21 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: space-between;
   padding: 14px 18px;
-  border-bottom: 0.5px solid #e5e7eb;
+  border-bottom: 0.5px solid var(--b1);
 }
-.modal-title { margin: 0; font-size: 16px; font-weight: 600; color: #1f2937; }
+.modal-title { margin: 0; font-size: var(--t-md); font-weight: 600; color: var(--mm-pearl); }
 
 .modal-close {
   background: transparent;
   border: none;
-  color: #6b7280;
+  color: var(--mm-slate);
   cursor: pointer;
   padding: 4px;
-  border-radius: 4px;
+  border-radius: var(--r-sm);
   display: flex;
   transition: background-color 150ms ease;
 }
-.modal-close:hover { background: #f3f4f6; color: #1f2937; }
+.modal-close:hover { background: var(--mm-s3); color: var(--mm-pearl); }
 
 .modal-body {
   padding: 18px;
@@ -128,6 +128,6 @@ onBeforeUnmount(() => {
   justify-content: flex-end;
   gap: 8px;
   padding: 12px 18px;
-  border-top: 0.5px solid #e5e7eb;
+  border-top: 0.5px solid var(--b1);
 }
 </style>

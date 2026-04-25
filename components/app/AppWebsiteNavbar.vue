@@ -145,16 +145,16 @@ onUnmounted(() => {
   top: 0;
   left: 0;
   right: 0;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(7, 9, 15, 0.92);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 0.5px solid var(--b1);
   z-index: 1000;
   transition: all 0.3s ease;
 }
 
 .app-website-navbar.scrolled {
-  background: rgba(255, 255, 255, 0.98);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  background: rgba(15, 18, 32, 0.98);
+  box-shadow: var(--shadow-md);
 }
 
 .navbar-container {
@@ -173,20 +173,20 @@ onUnmounted(() => {
   align-items: center;
   gap: 0.75rem;
   text-decoration: none;
-  color: #111827;
+  color: var(--mm-pearl);
 }
 
 .app-logo {
   width: 40px;
   height: 40px;
-  border-radius: 8px;
+  border-radius: var(--r-md);
   object-fit: cover;
 }
 
 .app-name {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--mm-pearl);
 }
 
 /* Desktop Menu */
@@ -201,22 +201,22 @@ onUnmounted(() => {
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  border-radius: 8px;
+  border-radius: var(--r-md);
   text-decoration: none;
-  color: #6b7280;
+  color: var(--mm-slate);
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
   position: relative;
 }
 
 .nav-link:hover {
-  color: #2563eb;
-  background: rgba(37, 99, 235, 0.1);
+  color: var(--mm-gold);
+  background: var(--mm-gold-soft);
 }
 
 .nav-link.active {
-  color: #2563eb;
-  background: rgba(37, 99, 235, 0.1);
+  color: var(--mm-gold);
+  background: var(--mm-gold-soft);
 }
 
 .nav-icon {
@@ -231,14 +231,14 @@ onUnmounted(() => {
   border: none;
   cursor: pointer;
   padding: 0.5rem;
-  border-radius: 6px;
-  color: #6b7280;
-  transition: all 0.2s ease;
+  border-radius: var(--r-sm);
+  color: var(--mm-slate);
+  transition: all var(--transition-fast);
 }
 
 .mobile-menu-toggle:hover {
-  background: rgba(0, 0, 0, 0.05);
-  color: #111827;
+  background: var(--mm-s3);
+  color: var(--mm-pearl);
 }
 
 /* Mobile Menu */
@@ -248,9 +248,9 @@ onUnmounted(() => {
   top: 100%;
   left: 0;
   right: 0;
-  background: white;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background: var(--mm-s1);
+  border-bottom: 0.5px solid var(--b1);
+  box-shadow: var(--shadow-lg);
   transform: translateY(-10px);
   opacity: 0;
   visibility: hidden;
@@ -269,16 +269,16 @@ onUnmounted(() => {
   gap: 0.75rem;
   padding: 1rem 2rem;
   text-decoration: none;
-  color: #6b7280;
+  color: var(--mm-slate);
   font-weight: 500;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease;
+  border-bottom: 0.5px solid var(--b1);
+  transition: all var(--transition-fast);
 }
 
 .mobile-nav-link:hover,
 .mobile-nav-link.active {
-  color: #2563eb;
-  background: rgba(37, 99, 235, 0.05);
+  color: var(--mm-gold);
+  background: var(--mm-gold-soft);
 }
 
 .mobile-nav-link:last-child {

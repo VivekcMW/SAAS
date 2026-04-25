@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<Props>(), {
   lede: '',
   updated: '',
   sections: () => [] as TocItem[],
-  contactEmail: 'legal@saasworld.com'
+  contactEmail: 'legal@moonmart.ai'
 })
 
 const activeId = ref<string>(props.sections[0]?.id || '')
@@ -112,7 +112,7 @@ onBeforeUnmount(() => {
 .legal {
   background: #ffffff;
   color: #1e1e1e;
-  font-family: var(--font-body, 'Inter', system-ui, -apple-system, sans-serif);
+  font-family: var(--font-body, 'Outfit', system-ui, -apple-system, sans-serif);
 }
 .legal__wrap {
   max-width: 1120px;
@@ -136,7 +136,7 @@ onBeforeUnmount(() => {
   margin-bottom: 1rem;
 }
 .legal__title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--font-heading, 'Syne', system-ui, sans-serif);
   font-size: clamp(2.25rem, 5vw, 3.25rem);
   font-weight: 700;
   line-height: 1.05;
@@ -217,7 +217,7 @@ onBeforeUnmount(() => {
   padding: 1.1rem 1.2rem;
 }
 .legal__toc-card-title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--font-heading, 'Syne', system-ui, sans-serif);
   font-size: 0.9375rem;
   font-weight: 700;
   color: #1e1e1e;
@@ -252,7 +252,7 @@ onBeforeUnmount(() => {
   display: none; /* hide any content-duplicated h1; hero already shows title */
 }
 .legal__article :deep(h2) {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--font-heading, 'Syne', system-ui, sans-serif);
   font-size: clamp(1.375rem, 2.2vw, 1.75rem);
   font-weight: 700;
   line-height: 1.25;
@@ -266,7 +266,7 @@ onBeforeUnmount(() => {
 .legal__article :deep(section:first-child h2),
 .legal__article :deep(h2:first-child) { margin-top: 0; }
 .legal__article :deep(h3) {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--font-heading, 'Syne', system-ui, sans-serif);
   font-size: 1.0625rem;
   font-weight: 700;
   color: #1e1e1e;

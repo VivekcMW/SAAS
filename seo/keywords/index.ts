@@ -1,6 +1,6 @@
 /**
  * SEO Keywords Master Index
- * Centralized management of all SEO keywords for SaaSWorld marketplace
+ * Centralized management of all SEO keywords for Moonmart marketplace
  * 
  * This file exports all category-specific keyword sets for easy maintenance
  * and provides utility functions for keyword management across the platform.
@@ -268,7 +268,7 @@ export function generateMetaKeywords(categoryId?: string, subcategoryPath?: stri
 }
 
 export function generatePageTitle(categoryName: string, subcategoryName?: string): string {
-  const baseTitle = 'SaaSWorld'
+  const baseTitle = 'Moonmart'
   const platformKeywords = ['Software', 'Tools', 'Solutions', 'Platform']
   
   if (subcategoryName) {
@@ -280,7 +280,7 @@ export function generatePageTitle(categoryName: string, subcategoryName?: string
 
 export function generateMetaDescription(categoryName: string, subcategoryName?: string): string {
   const baseDesc = 'Discover and compare the best'
-  const endDesc = 'software solutions on SaaSWorld. Find the perfect tools for your business needs with reviews, comparisons, and expert recommendations.'
+  const endDesc = 'software solutions on Moonmart. Find the perfect tools for your business needs with reviews, comparisons, and expert recommendations.'
   
   if (subcategoryName) {
     return `${baseDesc} ${subcategoryName.toLowerCase()} tools and ${categoryName.toLowerCase()} ${endDesc}`

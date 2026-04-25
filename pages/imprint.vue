@@ -4,25 +4,25 @@
     eyebrow="Legal · Imprint"
     lede="Legal notice and provider identification in accordance with § 5 TMG and § 55 RStV."
     :updated="updatedAt"
-    contact-email="legal@saasworld.com"
+    contact-email="legal@moonmart.ai"
     :sections="tocSections"
   >
     <div class="prose prose-lg max-w-none">
       <section id="provider">
         <h2>1. Provider</h2>
         <div class="contact-info">
-          <p><strong>SaaSWorld Inc.</strong></p>
+          <p><strong>Moonmart Inc.</strong></p>
           <p>123 Tech Street<br>San Francisco, CA 94105<br>United States</p>
-          <p><strong>Email:</strong> <a href="mailto:legal@saasworld.com">legal@saasworld.com</a></p>
+          <p><strong>Email:</strong> <a href="mailto:legal@moonmart.ai">legal@moonmart.ai</a></p>
           <p><strong>Phone:</strong> +1 (555) 123-4567</p>
         </div>
         <p>
           EU establishment for the purposes of Art. 27 GDPR and the Digital Services Act:
         </p>
         <div class="contact-info">
-          <p><strong>SaaSWorld Europe B.V.</strong></p>
+          <p><strong>Moonmart Europe B.V.</strong></p>
           <p>Herengracht 1, 1015 BA Amsterdam, Netherlands</p>
-          <p><strong>Email:</strong> <a href="mailto:eu@saasworld.com">eu@saasworld.com</a></p>
+          <p><strong>Email:</strong> <a href="mailto:eu@moonmart.ai">eu@moonmart.ai</a></p>
         </div>
       </section>
 
@@ -91,8 +91,8 @@
       <section id="contact">
         <h2>7. Contact</h2>
         <div class="contact-info">
-          <p><strong>Legal:</strong> <a href="mailto:legal@saasworld.com">legal@saasworld.com</a></p>
-          <p><strong>Privacy:</strong> <a href="mailto:privacy@saasworld.com">privacy@saasworld.com</a></p>
+          <p><strong>Legal:</strong> <a href="mailto:legal@moonmart.ai">legal@moonmart.ai</a></p>
+          <p><strong>Privacy:</strong> <a href="mailto:privacy@moonmart.ai">privacy@moonmart.ai</a></p>
         </div>
       </section>
     </div>
@@ -117,9 +117,9 @@ const tocSections = [
 ]
 
 applySEO({
-  title: 'Imprint | SaaSWorld',
-  description: 'Legal notice and provider identification for SaaSWorld.',
-  canonical: 'https://saasworld.com/imprint',
+  title: 'Imprint | Moonmart',
+  description: 'Legal notice and provider identification for Moonmart.',
+  canonical: 'https://moonmart.ai/imprint',
   ogType: 'website'
 })
 </script>

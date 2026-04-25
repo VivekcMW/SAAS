@@ -8,5 +8,5 @@ import { computed } from 'vue'
 definePageMeta({ layout: false })
 const { currentUser } = useAuth()
 const role = computed(() => currentUser.value?.role || 'buyer')
-useHead({ title: role.value === 'vendor' ? 'Leads · SaasWorld' : 'Enquiries · SaasWorld' })
+useHead({ title: role.value === 'vendor' ? 'Leads · Moonmart' : 'Enquiries · Moonmart' })
 </script>

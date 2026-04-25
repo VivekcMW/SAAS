@@ -5,7 +5,7 @@
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
-  const title = query.title as string || 'SaaSWorld'
+  const title = query.title as string || 'Moonmart'
   const category = query.category as string
   const theme = query.theme as string || 'default'
   
@@ -145,7 +145,7 @@ export default defineEventHandler(async (event) => {
           <div class="circle circle-3"></div>
         </div>
         <div class="container">
-          <div class="logo">SaaSWorld</div>
+          <div class="logo">Moonmart</div>
           ${category ? `<div class="category">${category}</div>` : ''}
           <h1 class="title">${title}</h1>
           <p class="subtitle">Discover and compare the best business software solutions worldwide</p>

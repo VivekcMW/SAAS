@@ -2,16 +2,16 @@
   <LegalShell
     title="Copyright &amp; DMCA policy"
     eyebrow="Legal · Copyright"
-    lede="How to report copyright infringement on SaaSWorld and how we respond under the Digital Millennium Copyright Act."
+    lede="How to report copyright infringement on Moonmart and how we respond under the Digital Millennium Copyright Act."
     :updated="updatedAt"
-    contact-email="dmca@saasworld.com"
+    contact-email="dmca@moonmart.ai"
     :sections="tocSections"
   >
     <div class="prose prose-lg max-w-none">
       <section id="overview">
         <h2>1. Overview</h2>
         <p>
-          SaaSWorld respects the intellectual property of others and expects its users to
+          Moonmart respects the intellectual property of others and expects its users to
           do the same. We respond to clear notices of alleged copyright infringement that
           comply with the Digital Millennium Copyright Act ("DMCA").
         </p>
@@ -20,7 +20,7 @@
       <section id="notice">
         <h2>2. Filing a DMCA notice</h2>
         <p>
-          If you believe content on SaaSWorld infringes your copyright, send a written
+          If you believe content on Moonmart infringes your copyright, send a written
           notice to our Designated Agent (below) that includes <strong>all</strong> of the
           following:
         </p>
@@ -50,9 +50,9 @@
       <section id="agent">
         <h2>3. Designated agent</h2>
         <div class="contact-info">
-          <p><strong>Name:</strong> SaaSWorld DMCA Agent</p>
-          <p><strong>Email:</strong> <a href="mailto:dmca@saasworld.com">dmca@saasworld.com</a></p>
-          <p><strong>Address:</strong> SaaSWorld Inc., Attn: DMCA Agent, 123 Tech Street, San Francisco, CA 94105</p>
+          <p><strong>Name:</strong> Moonmart DMCA Agent</p>
+          <p><strong>Email:</strong> <a href="mailto:dmca@moonmart.ai">dmca@moonmart.ai</a></p>
+          <p><strong>Address:</strong> Moonmart Inc., Attn: DMCA Agent, 123 Tech Street, San Francisco, CA 94105</p>
           <p><strong>Phone:</strong> +1 (555) 123-4567</p>
         </div>
       </section>
@@ -97,7 +97,7 @@
         <h2>6. Trademark complaints</h2>
         <p>
           For trademark concerns — logos, brand names, confusingly similar listings — email
-          <a href="mailto:legal@saasworld.com">legal@saasworld.com</a> with the registered
+          <a href="mailto:legal@moonmart.ai">legal@moonmart.ai</a> with the registered
           mark, jurisdiction, the URL of the listing, and a description of the alleged
           infringement.
         </p>
@@ -106,8 +106,8 @@
       <section id="contact">
         <h2>7. Contact</h2>
         <div class="contact-info">
-          <p><strong>DMCA:</strong> <a href="mailto:dmca@saasworld.com">dmca@saasworld.com</a></p>
-          <p><strong>Trademarks:</strong> <a href="mailto:legal@saasworld.com">legal@saasworld.com</a></p>
+          <p><strong>DMCA:</strong> <a href="mailto:dmca@moonmart.ai">dmca@moonmart.ai</a></p>
+          <p><strong>Trademarks:</strong> <a href="mailto:legal@moonmart.ai">legal@moonmart.ai</a></p>
         </div>
       </section>
     </div>
@@ -132,9 +132,9 @@ const tocSections = [
 ]
 
 applySEO({
-  title: 'Copyright & DMCA policy | SaaSWorld',
-  description: 'How to report copyright infringement on SaaSWorld under the DMCA.',
-  canonical: 'https://saasworld.com/copyright',
+  title: 'Copyright & DMCA policy | Moonmart',
+  description: 'How to report copyright infringement on Moonmart under the DMCA.',
+  canonical: 'https://moonmart.ai/copyright',
   ogType: 'website'
 })
 </script>

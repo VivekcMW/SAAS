@@ -9,8 +9,8 @@
  *
  * Env vars (all optional):
  *  SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_SECURE ("true"/"false")
- *  MAIL_FROM (default: "SaaSWorld <no-reply@saasworld.local>")
- *  MAIL_ADMIN (recipient for admin notifications, default: "admin@saasworld.local")
+ *  MAIL_FROM (default: "Moonmart <no-reply@moonmart.local>")
+ *  MAIL_ADMIN (recipient for admin notifications, default: "admin@moonmart.local")
  *  MAIL_DRIVER ("console" to force console-only, "smtp" to force SMTP)
  */
 
@@ -28,9 +28,9 @@ interface SendResult {
   error?: string
 }
 
-const DEFAULT_FROM = process.env.MAIL_FROM || 'SaaSWorld <no-reply@saasworld.local>'
+const DEFAULT_FROM = process.env.MAIL_FROM || 'Moonmart <no-reply@moonmart.local>'
 
-export const ADMIN_EMAIL = process.env.MAIL_ADMIN || 'admin@saasworld.local'
+export const ADMIN_EMAIL = process.env.MAIL_ADMIN || 'admin@moonmart.local'
 
 function shouldUseSmtp() {
   if (process.env.MAIL_DRIVER === 'console') return false
@@ -176,17 +176,17 @@ export function buildOnboardingUserEmail(data: {
 }): EmailMessage {
   const text = `Hi,
 
-Thanks for submitting ${data.productName} to SaaSWorld.
+Thanks for submitting ${data.productName} to Moonmart.
 
 Your submission reference is: ${data.submissionId}
 
 Our team will review your listing within 24–48 hours and email you once it's approved. You can also track the status from your vendor dashboard.
 
-— The SaaSWorld Team
+— The Moonmart Team
 `
   return {
     to: data.to,
-    subject: `We received your SaaSWorld listing: ${data.productName}`,
+    subject: `We received your Moonmart listing: ${data.productName}`,
     text
   }
 }
@@ -221,7 +221,7 @@ export function buildWelcomeEmail(data: {
   const roleDesc = data.role === 'vendor' ? 'vendor' : 'buyer'
   const text = `Hi ${data.firstName},
 
-Welcome to SaaSWorld! We're excited to have you on board.
+Welcome to Moonmart! We're excited to have you on board.
 
 Before you get started, please verify your email address by clicking the link below:
 
@@ -233,19 +233,19 @@ ${data.role === 'vendor'
   ? `As a ${roleDesc} you can list and manage your products, track leads, and grow your pipeline from your dashboard.`
   : `As a ${roleDesc} you can discover, compare, and save SaaS tools tailored to your team's needs.`}
 
-Get started: https://saasworld.com${dashboardPath}
+Get started: https://moonmart.ai${dashboardPath}
 
-— The SaaSWorld Team
+— The Moonmart Team
 `
   return {
     to: data.to,
-    subject: 'Welcome to SaaSWorld — please verify your email',
+    subject: 'Welcome to Moonmart — please verify your email',
     text,
     html: `<p>Hi ${data.firstName},</p>
-<p>Welcome to SaaSWorld! Please verify your email address:</p>
+<p>Welcome to Moonmart! Please verify your email address:</p>
 <p><a href="${data.verifyUrl}" style="background:#FF8838;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;display:inline-block">Verify my email</a></p>
 <p>This link expires in 24 hours.</p>
-<p>— The SaaSWorld Team</p>`
+<p>— The Moonmart Team</p>`
   }
 }
 
@@ -256,7 +256,7 @@ export function buildPasswordResetEmail(data: {
 }): EmailMessage {
   const text = `Hi ${data.firstName},
 
-We received a request to reset the password for your SaaSWorld account.
+We received a request to reset the password for your Moonmart account.
 
 Click the link below to choose a new password:
 
@@ -264,17 +264,17 @@ ${data.resetUrl}
 
 This link expires in 1 hour. If you didn't request a password reset, you can safely ignore this email — your password won't change.
 
-— The SaaSWorld Team
+— The Moonmart Team
 `
   return {
     to: data.to,
-    subject: 'Reset your SaaSWorld password',
+    subject: 'Reset your Moonmart password',
     text,
     html: `<p>Hi ${data.firstName},</p>
-<p>We received a request to reset your SaaSWorld password.</p>
+<p>We received a request to reset your Moonmart password.</p>
 <p><a href="${data.resetUrl}" style="background:#FF8838;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;display:inline-block">Reset my password</a></p>
 <p>This link expires in 1 hour. If you didn't request this, ignore this email.</p>
-<p>— The SaaSWorld Team</p>`
+<p>— The Moonmart Team</p>`
   }
 }
 
@@ -289,24 +289,24 @@ export function buildListingStatusEmail(data: {
   const text = approved
     ? `Hi ${data.vendorName},
 
-Great news! Your listing for "${data.productName}" has been approved and is now live on SaaSWorld.
+Great news! Your listing for "${data.productName}" has been approved and is now live on Moonmart.
 
-View your listing: https://saasworld.com/marketplace
+View your listing: https://moonmart.ai/marketplace
 
-— The SaaSWorld Team`
+— The Moonmart Team`
     : `Hi ${data.vendorName},
 
 We've reviewed your listing for "${data.productName}" and unfortunately it doesn't meet our listing guidelines at this time.
 
 ${data.adminNotes ? `Reason: ${data.adminNotes}\n\n` : ''}Please update your listing and resubmit from your vendor dashboard.
 
-— The SaaSWorld Team`
+— The Moonmart Team`
 
   return {
     to: data.to,
     subject: approved
-      ? `Your SaaSWorld listing "${data.productName}" is live!`
-      : `Your SaaSWorld listing "${data.productName}" needs updates`,
+      ? `Your Moonmart listing "${data.productName}" is live!`
+      : `Your Moonmart listing "${data.productName}" needs updates`,
     text
   }
 }
@@ -326,9 +326,9 @@ You have a new enquiry for ${data.appName} from ${data.buyerName} (${data.buyerE
 Message:
 ${data.message}
 
-Respond from your vendor dashboard: https://saasworld.com/dashboard/leads
+Respond from your vendor dashboard: https://moonmart.ai/dashboard/leads
 
-— The SaaSWorld Team`
+— The Moonmart Team`
   return {
     to: data.to,
     subject: `New enquiry for ${data.appName} from ${data.buyerName}`,

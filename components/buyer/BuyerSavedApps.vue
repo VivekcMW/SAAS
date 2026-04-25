@@ -126,9 +126,9 @@ const formatK = (n: number) => n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(
 .app__select { position: absolute; top: 14px; right: 14px; }
 .app__select input { width: 16px; height: 16px; accent-color: var(--bw-primary); cursor: pointer; }
 .app__head { display: flex; align-items: center; gap: 12px; padding-right: 30px; }
-.app__logo { width: 44px; height: 44px; border-radius: 12px; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.1rem; }
+.app__logo { width: 44px; height: 44px; border-radius: 12px; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; }
 .app__title { flex: 1; min-width: 0; }
-.app__name { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--bw-text); text-decoration: none; }
+.app__name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--bw-text); text-decoration: none; }
 .app__name:hover { color: var(--bw-primary); }
 .app__cat { font-size: 0.82rem; color: var(--bw-text-muted); }
 

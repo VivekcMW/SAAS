@@ -139,7 +139,7 @@ function useIt() {
 
 .ca-field { margin-bottom: 14px; }
 .ca-field__label { display: block; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--vw-text-subtle); font-weight: 600; margin-bottom: 4px; }
-.ca-field__value { font-size: 1rem; font-weight: 600; font-family: 'Poppins'; }
+.ca-field__value { font-size: 1rem; font-weight: 600; font-family: 'Syne'; }
 .ca-field__value--body { font-weight: 400; font-family: inherit; line-height: 1.55; color: var(--vw-text); }
 
 .ca-bullets { margin: 0; padding-left: 20px; font-size: 0.9rem; }

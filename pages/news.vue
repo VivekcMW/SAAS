@@ -1,11 +1,11 @@
 <script setup lang="ts">
 useHead({
-  title: 'Events & News — SaaSWorld',
+  title: 'Events & News — Moonmart',
   meta: [
     {
       name: 'description',
       content:
-        'Upcoming webinars, product launches, meetups and workshops from SaaSWorld and our vendor community. Join a live session or submit your own event.'
+        'Upcoming webinars, product launches, meetups and workshops from Moonmart and our vendor community. Join a live session or submit your own event.'
     }
   ]
 })
@@ -179,7 +179,7 @@ function openSubmit() {
     <header class="news__intro">
       <div class="news__wrap">
         <span class="news__label">Events &amp; news</span>
-        <h1 class="news__headline">What’s happening on SaaSWorld.</h1>
+        <h1 class="news__headline">What’s happening on Moonmart.</h1>
         <p class="news__lede">
           Live webinars, product launches, workshops and meetups from our team and the
           vendor community. Join a session, or host your own.
@@ -290,7 +290,7 @@ function openSubmit() {
           <h3 v-if="activeView === 'upcoming'">No upcoming events yet.</h3>
           <h3 v-else>No past events to show.</h3>
           <p v-if="activeView === 'upcoming'">
-            Be the first to host — share your launch, webinar or workshop with the SaaSWorld community.
+            Be the first to host — share your launch, webinar or workshop with the Moonmart community.
           </p>
           <p v-else>Check back after our first live sessions have wrapped.</p>
           <button
@@ -339,7 +339,7 @@ function openSubmit() {
       <div class="news__wrap">
         <div class="submit-head">
           <span class="news__label">For hosts</span>
-          <h2 class="submit-title">Host an event on SaaSWorld.</h2>
+          <h2 class="submit-title">Host an event on Moonmart.</h2>
           <p class="submit-sub">
             Tell us about your event and we’ll review and publish it. Approved events appear
             in the listing above and get featured in our community digest.
@@ -446,7 +446,7 @@ function openSubmit() {
 
 <style scoped>
 /* Shell ---------------------------------------------------------- */
-.news { background: #ffffff; color: #1e1e1e; }
+.news { background: var(--mm-bg); color: var(--mm-pearl); }
 .news__wrap { max-width: 1080px; margin: 0 auto; padding: 0 1.5rem; }
 .news__label {
   display: inline-block;
@@ -454,29 +454,29 @@ function openSubmit() {
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--sw-primary, #ff8838);
+  color: var(--mm-gold);
   margin-bottom: 1rem;
 }
 
 /* Intro ---------------------------------------------------------- */
 .news__intro {
   padding: 5rem 0 3rem;
-  border-bottom: 1px solid #f0efec;
+  border-bottom: 0.5px solid var(--b1);
 }
 .news__headline {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: clamp(2.25rem, 5vw, 3.25rem);
   font-weight: 700;
   line-height: 1.05;
   letter-spacing: -0.01em;
-  color: #1e1e1e;
+  color: var(--mm-pearl);
   margin: 0 0 1rem;
   max-width: 720px;
 }
 .news__lede {
   font-size: 1.0625rem;
   line-height: 1.6;
-  color: #52525b;
+  color: var(--mm-silver);
   margin: 0 0 1.75rem;
   max-width: 620px;
 }
@@ -488,8 +488,8 @@ function openSubmit() {
   align-items: center;
   gap: 0.4rem;
   padding: 0.7rem 1.25rem;
-  border-radius: 999px;
-  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  border: 0.5px solid transparent;
   font-size: 0.9375rem;
   font-weight: 600;
   cursor: pointer;
@@ -499,22 +499,22 @@ function openSubmit() {
 }
 .btn svg { width: 14px; height: 14px; }
 .btn--primary {
-  background: var(--sw-primary, #ff8838);
-  color: #ffffff;
-  border-color: var(--sw-primary, #ff8838);
+  background: var(--mm-gold);
+  color: #0A0700;
+  border-color: var(--mm-gold);
 }
 .btn--primary:hover:not(:disabled) {
-  background: var(--sw-primary-hover, #e67326);
-  border-color: var(--sw-primary-hover, #e67326);
+  background: var(--mm-goldl);
+  border-color: var(--mm-goldl);
   transform: translateY(-1px);
 }
 .btn--primary:disabled { opacity: 0.6; cursor: not-allowed; }
 .btn--ghost {
   background: transparent;
-  color: #1e1e1e;
-  border-color: #e4e4e7;
+  color: var(--mm-silver);
+  border-color: var(--b2);
 }
-.btn--ghost:hover { border-color: #1e1e1e; }
+.btn--ghost:hover { border-color: var(--mm-pearl); color: var(--mm-pearl); }
 .btn--sm { padding: 0.4rem 0.9rem; font-size: 0.8125rem; }
 
 /* Featured ------------------------------------------------------- */
@@ -524,8 +524,9 @@ function openSubmit() {
   grid-template-columns: 120px 1fr;
   gap: 2rem;
   align-items: center;
-  background: var(--sw-primary-soft, #fff1e6);
-  border-radius: 20px;
+  background: var(--mm-gold-soft);
+  border: 0.5px solid var(--mm-gold);
+  border-radius: var(--r-xl);
   padding: 2rem;
 }
 .feature__date {
@@ -533,24 +534,24 @@ function openSubmit() {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
-  border-radius: 16px;
+  background: var(--mm-s2);
+  border-radius: var(--r-lg);
   padding: 1.25rem 0.5rem;
-  box-shadow: 0 4px 14px rgba(255, 136, 56, 0.1);
+  box-shadow: 0 4px 14px rgba(212, 168, 67, 0.12);
 }
 .feature__date-month {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-ui);
   font-size: 0.8125rem;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: var(--sw-primary, #ff8838);
+  color: var(--mm-gold);
 }
 .feature__date-day {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: 2.5rem;
   font-weight: 700;
   line-height: 1;
-  color: #1e1e1e;
+  color: var(--mm-pearl);
   margin-top: 0.25rem;
 }
 .feature__meta {
@@ -559,12 +560,12 @@ function openSubmit() {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.8125rem;
-  color: #71717a;
+  color: var(--mm-slate);
   margin-bottom: 0.75rem;
 }
 .feature__tag {
-  background: #ffffff;
-  color: var(--sw-primary, #ff8838);
+  background: var(--mm-s2);
+  color: var(--mm-gold);
   font-weight: 700;
   padding: 0.2rem 0.65rem;
   border-radius: 999px;
@@ -573,17 +574,17 @@ function openSubmit() {
   font-size: 0.6875rem;
 }
 .feature__title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: clamp(1.375rem, 2.4vw, 1.875rem);
   font-weight: 700;
   line-height: 1.2;
-  color: #1e1e1e;
+  color: var(--mm-pearl);
   margin: 0 0 0.75rem;
 }
 .feature__summary {
   font-size: 1rem;
   line-height: 1.6;
-  color: #3f3f46;
+  color: var(--mm-silver);
   margin: 0 0 1.25rem;
 }
 .feature__actions {
@@ -592,17 +593,17 @@ function openSubmit() {
   align-items: center;
   gap: 1rem;
 }
-.feature__host { color: #52525b; font-size: 0.875rem; }
+.feature__host { color: var(--mm-slate); font-size: 0.875rem; }
 
 /* Filter bar ----------------------------------------------------- */
 .news__bar {
   position: sticky;
   top: 0;
   z-index: 10;
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(15, 18, 32, 0.94);
   backdrop-filter: saturate(180%) blur(8px);
-  border-top: 1px solid #f0efec;
-  border-bottom: 1px solid #f0efec;
+  border-top: 0.5px solid var(--b1);
+  border-bottom: 0.5px solid var(--b1);
 }
 .news__bar .news__wrap {
   display: flex;
@@ -620,7 +621,7 @@ function openSubmit() {
   gap: 0.5rem;
   background: transparent;
   border: none;
-  color: #71717a;
+  color: var(--mm-slate);
   padding: 0.5rem 0.75rem;
   font-size: 0.9375rem;
   font-weight: 500;
@@ -629,8 +630,8 @@ function openSubmit() {
   position: relative;
   transition: color 0.15s ease;
 }
-.tab:hover { color: #1e1e1e; }
-.tab--on { color: #1e1e1e; font-weight: 600; }
+.tab:hover { color: var(--mm-pearl); }
+.tab--on { color: var(--mm-pearl); font-weight: 600; }
 .tab--on::after {
   content: '';
   position: absolute;
@@ -638,19 +639,19 @@ function openSubmit() {
   right: 0.75rem;
   bottom: -0.85rem;
   height: 2px;
-  background: var(--sw-primary, #ff8838);
+  background: var(--mm-gold);
 }
 .tab__count {
   font-size: 0.75rem;
-  background: #f5f5f4;
-  color: #71717a;
+  background: var(--mm-s3);
+  color: var(--mm-slate);
   padding: 0.1rem 0.5rem;
   border-radius: 999px;
   font-weight: 600;
 }
 .tab--on .tab__count {
-  background: var(--sw-primary-soft, #fff1e6);
-  color: var(--sw-primary, #ff8838);
+  background: var(--mm-gold-soft);
+  color: var(--mm-gold);
 }
 
 .types {
@@ -659,9 +660,9 @@ function openSubmit() {
   gap: 0.4rem;
 }
 .type {
-  background: #ffffff;
-  border: 1px solid #e4e4e7;
-  color: #52525b;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  color: var(--mm-silver);
   padding: 0.35rem 0.75rem;
   border-radius: 999px;
   font-size: 0.8125rem;
@@ -670,11 +671,11 @@ function openSubmit() {
   font-family: inherit;
   transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
 }
-.type:hover { border-color: var(--sw-primary, #ff8838); color: #1e1e1e; }
+.type:hover { border-color: var(--mm-gold); color: var(--mm-pearl); }
 .type--on {
-  background: #1e1e1e;
-  border-color: #1e1e1e;
-  color: #ffffff;
+  background: var(--mm-gold);
+  border-color: var(--mm-gold);
+  color: #0A0700;
 }
 
 /* List ----------------------------------------------------------- */
@@ -692,7 +693,7 @@ function openSubmit() {
   gap: 1.5rem;
   align-items: center;
   padding: 1.5rem 0;
-  border-bottom: 1px solid #f0efec;
+  border-bottom: 0.5px solid var(--b1);
 }
 .event:last-child { border-bottom: none; }
 .event__date {
@@ -700,24 +701,24 @@ function openSubmit() {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #fbfaf8;
-  border: 1px solid #f0efec;
-  border-radius: 12px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-lg);
   padding: 0.75rem 0.25rem;
 }
 .event__date-month {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-ui);
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: var(--sw-primary, #ff8838);
+  color: var(--mm-gold);
 }
 .event__date-day {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: 1.625rem;
   font-weight: 700;
   line-height: 1;
-  color: #1e1e1e;
+  color: var(--mm-pearl);
   margin-top: 0.2rem;
 }
 .event__meta {
@@ -726,34 +727,34 @@ function openSubmit() {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.75rem;
-  color: #71717a;
+  color: var(--mm-slate);
   margin-bottom: 0.4rem;
 }
 .event__tag {
-  color: var(--sw-primary, #ff8838);
+  color: var(--mm-gold);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 .event__title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: 1.0625rem;
   font-weight: 700;
   line-height: 1.3;
-  color: #1e1e1e;
+  color: var(--mm-pearl);
   margin: 0 0 0.35rem;
 }
 .event__summary {
   font-size: 0.9375rem;
   line-height: 1.55;
-  color: #52525b;
+  color: var(--mm-silver);
   margin: 0 0 0.35rem;
 }
-.event__host { font-size: 0.8125rem; color: #71717a; }
+.event__host { font-size: 0.8125rem; color: var(--mm-slate); }
 .event__action { white-space: nowrap; }
 .event__ended {
   font-size: 0.75rem;
-  color: #a1a1aa;
+  color: var(--mm-slate);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   font-weight: 600;
@@ -763,52 +764,52 @@ function openSubmit() {
 .state {
   text-align: center;
   padding: 4rem 1.5rem;
-  border: 1px dashed #e4e4e7;
-  border-radius: 16px;
-  background: #fbfaf8;
+  border: 0.5px dashed var(--b2);
+  border-radius: var(--r-lg);
+  background: var(--mm-s2);
 }
 .state h3 {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: 1.25rem;
   font-weight: 700;
-  color: #1e1e1e;
+  color: var(--mm-pearl);
   margin: 0 0 0.5rem;
 }
-.state p { color: #52525b; margin: 0 0 1.5rem; font-size: 0.9375rem; }
-.state--loading p { color: #71717a; }
+.state p { color: var(--mm-silver); margin: 0 0 1.5rem; font-size: 0.9375rem; }
+.state--loading p { color: var(--mm-slate); }
 
 /* Submit form ---------------------------------------------------- */
 .news__submit {
   padding: 4.5rem 0 6rem;
-  border-top: 1px solid #f0efec;
-  background: #fbfaf8;
+  border-top: 0.5px solid var(--b1);
+  background: var(--mm-s1);
 }
 .submit-head { max-width: 640px; margin: 0 auto 2rem; text-align: center; }
 .submit-title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: clamp(1.75rem, 3.5vw, 2.25rem);
   font-weight: 700;
   line-height: 1.2;
   margin: 0 0 0.75rem;
-  color: #1e1e1e;
+  color: var(--mm-pearl);
 }
-.submit-sub { color: #52525b; font-size: 1rem; line-height: 1.6; margin: 0; }
+.submit-sub { color: var(--mm-silver); font-size: 1rem; line-height: 1.6; margin: 0; }
 
 .submit-form {
   max-width: 640px;
   margin: 0 auto;
   display: grid;
   gap: 1.25rem;
-  background: #ffffff;
+  background: var(--mm-s2);
   padding: 2rem;
-  border-radius: 16px;
-  border: 1px solid #efefef;
+  border-radius: var(--r-lg);
+  border: 0.5px solid var(--b1);
 }
 .field { display: flex; flex-direction: column; gap: 0.4rem; }
 .field label {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #1e1e1e;
+  color: var(--mm-silver);
 }
 .field input[type='text'],
 .field input[type='email'],
@@ -816,21 +817,21 @@ function openSubmit() {
 .field input[type='datetime-local'],
 .field select,
 .field textarea {
-  border: 1px solid #e4e4e7;
-  border-radius: 10px;
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-md);
   padding: 0.65rem 0.85rem;
   font-size: 0.9375rem;
   font-family: inherit;
-  color: #1e1e1e;
-  background: #ffffff;
+  color: var(--mm-pearl);
+  background: var(--mm-s3);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
   outline: none;
-  border-color: var(--sw-primary, #ff8838);
-  box-shadow: 0 0 0 3px rgba(255, 136, 56, 0.12);
+  border-color: var(--mm-gold);
+  box-shadow: 0 0 0 3px var(--mm-gold-soft);
 }
 .field textarea { resize: vertical; min-height: 4rem; }
 .field__check {
@@ -839,7 +840,7 @@ function openSubmit() {
   gap: 0.5rem;
   font-size: 0.9375rem;
   font-weight: 500;
-  color: #1e1e1e;
+  color: var(--mm-silver);
   cursor: pointer;
   padding-top: 1.4rem;
 }
@@ -857,25 +858,25 @@ function openSubmit() {
   gap: 1rem;
   margin-top: 0.5rem;
 }
-.submit-note { font-size: 0.8125rem; color: #71717a; margin: 0; }
+.submit-note { font-size: 0.8125rem; color: var(--mm-slate); margin: 0; }
 
 .notice {
   padding: 0.85rem 1rem;
-  border-radius: 10px;
+  border-radius: var(--r-md);
   font-size: 0.9375rem;
   max-width: 640px;
   margin: 0 auto;
 }
 .notice--success {
-  background: var(--sw-primary-soft, #fff1e6);
-  color: #52370f;
-  border: 1px solid #f0d9bf;
+  background: var(--mm-gold-soft);
+  color: var(--mm-goldl);
+  border: 0.5px solid var(--mm-gold);
   margin-bottom: 1.5rem;
 }
 .notice--error {
-  background: #fef2f2;
-  color: #991b1b;
-  border: 1px solid #fecaca;
+  background: rgba(220, 38, 38, 0.08);
+  color: #fca5a5;
+  border: 0.5px solid rgba(220, 38, 38, 0.4);
 }
 
 /* Responsive ----------------------------------------------------- */

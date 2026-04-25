@@ -2,9 +2,9 @@
   <LegalShell
     title="Accessibility statement"
     eyebrow="Trust · Accessibility"
-    lede="SaaSWorld is committed to making our marketplace usable by everyone, regardless of ability or assistive technology."
+    lede="Moonmart is committed to making our marketplace usable by everyone, regardless of ability or assistive technology."
     :updated="updatedAt"
-    contact-email="accessibility@saasworld.com"
+    contact-email="accessibility@moonmart.ai"
     :sections="tocSections"
   >
     <div class="prose prose-lg max-w-none">
@@ -44,7 +44,7 @@
 
       <section id="technologies">
         <h2>4. Compatible technologies</h2>
-        <p>SaaSWorld is tested against current versions of:</p>
+        <p>Moonmart is tested against current versions of:</p>
         <ul>
           <li>Safari + VoiceOver (macOS, iOS)</li>
           <li>Chrome + NVDA (Windows)</li>
@@ -96,7 +96,7 @@
           same priority as security reports.
         </p>
         <div class="contact-info">
-          <p><strong>Email:</strong> <a href="mailto:accessibility@saasworld.com">accessibility@saasworld.com</a></p>
+          <p><strong>Email:</strong> <a href="mailto:accessibility@moonmart.ai">accessibility@moonmart.ai</a></p>
           <p><strong>Response time:</strong> within 5 business days</p>
           <p><strong>Alternative formats:</strong> available on request</p>
         </div>
@@ -133,9 +133,9 @@ const tocSections = [
 ]
 
 applySEO({
-  title: 'Accessibility statement | SaaSWorld',
-  description: 'SaaSWorld\'s accessibility statement, WCAG 2.1 AA conformance, and how to report barriers.',
-  canonical: 'https://saasworld.com/accessibility',
+  title: 'Accessibility statement | Moonmart',
+  description: 'Moonmart\'s accessibility statement, WCAG 2.1 AA conformance, and how to report barriers.',
+  canonical: 'https://moonmart.ai/accessibility',
   ogType: 'website'
 })
 </script>

@@ -9,7 +9,7 @@ definePageMeta({ layout: false })
 const { currentUser } = useAuth()
 const router = useRouter()
 const role = computed(() => currentUser.value?.role)
-useHead({ title: 'Settings · SaasWorld' })
+useHead({ title: 'Settings · Moonmart' })
 onMounted(() => {
   if (currentUser.value && currentUser.value.role !== 'admin') router.replace('/dashboard/overview')
 })

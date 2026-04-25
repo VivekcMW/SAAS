@@ -2,9 +2,9 @@
   <LegalShell
     title="Data Processing Agreement"
     eyebrow="Legal · DPA"
-    lede="The data-processing terms that apply when SaaSWorld processes personal data on a customer's behalf."
+    lede="The data-processing terms that apply when Moonmart processes personal data on a customer's behalf."
     :updated="updatedAt"
-    contact-email="privacy@saasworld.com"
+    contact-email="privacy@moonmart.ai"
     :sections="tocSections"
   >
     <div class="prose prose-lg max-w-none">
@@ -18,7 +18,7 @@
         <div class="lic-callout">
           <p class="lic-callout__title">Request the signed DPA</p>
           <p>
-            Email <a href="mailto:privacy@saasworld.com">privacy@saasworld.com</a> with
+            Email <a href="mailto:privacy@moonmart.ai">privacy@moonmart.ai</a> with
             your company name, the legal entity that will sign, and any special
             requirements. We return a pre-signed copy within <strong>2 business days</strong>.
             Most customers don't need to negotiate changes.
@@ -30,7 +30,7 @@
         <h2>2. Roles</h2>
         <p>
           For personal data you submit to the service, <strong>you are the controller</strong>
-          and <strong>SaaSWorld is the processor</strong>, acting only on your documented
+          and <strong>Moonmart is the processor</strong>, acting only on your documented
           instructions. For data we collect for our own purposes (e.g. billing), we are the
           independent controller — see our <NuxtLink to="/privacy">Privacy Policy</NuxtLink>.
         </p>
@@ -39,7 +39,7 @@
       <section id="scope">
         <h2>3. Scope of processing</h2>
         <ul>
-          <li><strong>Subject matter:</strong> provision of the SaaSWorld platform.</li>
+          <li><strong>Subject matter:</strong> provision of the Moonmart platform.</li>
           <li><strong>Duration:</strong> for the term of the underlying agreement plus any statutory retention.</li>
           <li><strong>Nature &amp; purpose:</strong> hosting, storage, backup, analytics, support and security monitoring.</li>
           <li><strong>Categories of data subjects:</strong> your employees, customers and other individuals whose data you submit.</li>
@@ -97,7 +97,7 @@
       <section id="breach">
         <h2>8. Breach notification</h2>
         <p>
-          If SaaSWorld becomes aware of a personal data breach affecting your data, we will
+          If Moonmart becomes aware of a personal data breach affecting your data, we will
           notify you without undue delay — in practice, within <strong>72 hours</strong> of
           confirmation. Notifications include the nature of the breach, categories and
           approximate number of affected records, likely consequences, and the measures
@@ -127,8 +127,8 @@
       <section id="contact">
         <h2>11. Contact</h2>
         <div class="contact-info">
-          <p><strong>Privacy team:</strong> <a href="mailto:privacy@saasworld.com">privacy@saasworld.com</a></p>
-          <p><strong>DPO (EU):</strong> <a href="mailto:dpo@saasworld.com">dpo@saasworld.com</a></p>
+          <p><strong>Privacy team:</strong> <a href="mailto:privacy@moonmart.ai">privacy@moonmart.ai</a></p>
+          <p><strong>DPO (EU):</strong> <a href="mailto:dpo@moonmart.ai">dpo@moonmart.ai</a></p>
         </div>
       </section>
     </div>
@@ -157,28 +157,28 @@ const tocSections = [
 ]
 
 applySEO({
-  title: 'Data Processing Agreement | SaaSWorld',
-  description: 'SaaSWorld\'s Data Processing Agreement summary, GDPR roles, transfers and subprocessors.',
-  canonical: 'https://saasworld.com/dpa',
+  title: 'Data Processing Agreement | Moonmart',
+  description: 'Moonmart\'s Data Processing Agreement summary, GDPR roles, transfers and subprocessors.',
+  canonical: 'https://moonmart.ai/dpa',
   ogType: 'website'
 })
 </script>
 
 <style scoped>
 .lic-callout {
-  background: var(--sw-primary-soft, #fff1e6);
-  border: 1px solid #f0d9bf;
-  border-left: 3px solid var(--sw-primary, #ff8838);
-  border-radius: 14px;
+  background: var(--mm-gold-soft);
+  border: 0.5px solid var(--b1);
+  border-left: 2px solid var(--mm-gold);
+  border-radius: var(--r-lg);
   padding: 1.25rem 1.4rem;
   margin: 0 0 1.5rem;
 }
 .lic-callout__title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: 1rem;
   font-weight: 700;
-  color: #1e1e1e;
+  color: var(--mm-pearl);
   margin: 0 0 0.5rem;
 }
-.lic-callout p { color: #52370f; }
+.lic-callout p { color: var(--mm-silver); }
 </style>

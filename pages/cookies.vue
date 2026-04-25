@@ -2,9 +2,9 @@
   <LegalShell
     title="Cookie Policy"
     eyebrow="Legal · Cookies"
-    lede="How SaaSWorld uses cookies and similar technologies — and how you can control them at any time."
+    lede="How Moonmart uses cookies and similar technologies — and how you can control them at any time."
     :updated="updatedAt"
-    contact-email="privacy@saasworld.com"
+    contact-email="privacy@moonmart.ai"
     :sections="tocSections"
   >
     <div class="cookies-quick">
@@ -27,7 +27,7 @@
               Cookies contain information that is transferred to your device's hard drive and stored there. They help us recognize your device and remember certain information about your visit, such as your preferred language and other settings.
             </p>
             <p class="text-gray-700">
-              SaaSWorld uses cookies to enhance your browsing experience, analyze website traffic, and provide personalized content and advertisements.
+              Moonmart uses cookies to enhance your browsing experience, analyze website traffic, and provide personalized content and advertisements.
             </p>
           </section>
 
@@ -211,7 +211,7 @@
               <p class="text-blue-800 mb-3">
                 Use our cookie consent manager to customize your preferences for different types of cookies.
               </p>
-              <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors">
+              <button style="background:var(--mm-gold);color:#0A0700;padding:0.5rem 1rem;border-radius:var(--r-sm);border:none;cursor:pointer;font-weight:600;">
                 Open Cookie Settings
               </button>
             </div>
@@ -301,7 +301,7 @@
           <section id="impact-of-disabling" class="mb-8">
             <h2 class="text-2xl font-bold text-gray-900 mb-4">7. Impact of Disabling Cookies</h2>
             <p class="text-gray-700 mb-4">
-              While you can disable cookies, doing so may impact your experience on SaaSWorld:
+              While you can disable cookies, doing so may impact your experience on Moonmart:
             </p>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -363,10 +363,10 @@
             </p>
             
             <div class="bg-gray-50 rounded-lg p-6">
-              <h3 class="text-lg font-semibold text-gray-900 mb-4">SaaSWorld Cookie Support</h3>
+              <h3 class="text-lg font-semibold text-gray-900 mb-4">Moonmart Cookie Support</h3>
               <div class="space-y-2 text-gray-700">
-                <p><strong>Email:</strong> cookies@saasworld.com</p>
-                <p><strong>Privacy Office:</strong> privacy@saasworld.com</p>
+                <p><strong>Email:</strong> cookies@moonmart.ai</p>
+                <p><strong>Privacy Office:</strong> privacy@moonmart.ai</p>
                 <p><strong>Phone:</strong> +1 (555) 123-4567</p>
                 <p><strong>Address:</strong> 123 Tech Street, Suite 456<br>San Francisco, CA 94107<br>United States</p>
               </div>
@@ -407,21 +407,21 @@ const tocSections = [
 ]
 
 applySEO({
-  title: 'Cookie Policy | SaaSWorld - Cookie Usage and Management',
-  description: 'Learn about SaaSWorld\'s cookie policy, including how we use cookies, tracking technologies, and how to manage your preferences.',
-  keywords: 'cookie policy, cookies, tracking, web analytics, privacy preferences, data collection, SaaSWorld cookies',
-  canonical: 'https://saasworld.com/cookies',
+  title: 'Cookie Policy | Moonmart - Cookie Usage and Management',
+  description: 'Learn about Moonmart\'s cookie policy, including how we use cookies, tracking technologies, and how to manage your preferences.',
+  keywords: 'cookie policy, cookies, tracking, web analytics, privacy preferences, data collection, Moonmart cookies',
+  canonical: 'https://moonmart.ai/cookies',
   ogType: 'website',
   jsonLd: {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     name: 'Cookie Policy',
-    description: 'SaaSWorld Cookie Policy and tracking technologies',
-    url: 'https://saasworld.com/cookies',
+    description: 'Moonmart Cookie Policy and tracking technologies',
+    url: 'https://moonmart.ai/cookies',
     publisher: {
       '@type': 'Organization',
-      name: 'SaaSWorld',
-      url: 'https://saasworld.com'
+      name: 'Moonmart',
+      url: 'https://moonmart.ai'
     }
   }
 })
@@ -443,29 +443,29 @@ onMounted(() => {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  background: var(--sw-primary-soft, #fff1e6);
-  border: 1px solid #f0d9bf;
-  border-radius: 14px;
+  background: var(--mm-gold-soft);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-lg);
   padding: 1.1rem 1.3rem;
   margin: 0 0 2rem;
 }
 .cookies-quick__title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: 1rem;
   font-weight: 700;
-  color: #1e1e1e;
+  color: var(--mm-pearl);
   margin: 0 0 0.15rem;
 }
 .cookies-quick__body {
   font-size: 0.875rem;
-  color: #52370f;
+  color: var(--mm-silver);
   margin: 0;
 }
 .cookies-quick__btn {
-  background: var(--sw-primary, #ff8838);
-  color: #ffffff;
+  background: var(--mm-gold);
+  color: #0A0700;
   border: none;
-  border-radius: 999px;
+  border-radius: var(--r-full);
   padding: 0.55rem 1.1rem;
   font-size: 0.875rem;
   font-weight: 600;
@@ -474,7 +474,7 @@ onMounted(() => {
   white-space: nowrap;
   transition: background 0.15s ease;
 }
-.cookies-quick__btn:hover { background: var(--sw-primary-hover, #e67326); }
+.cookies-quick__btn:hover { background: var(--mm-goldl); }
 @media (max-width: 600px) {
   .cookies-quick { flex-direction: column; align-items: stretch; }
   .cookies-quick__btn { width: 100%; }

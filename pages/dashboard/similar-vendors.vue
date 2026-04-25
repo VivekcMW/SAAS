@@ -10,7 +10,7 @@ const { currentUser } = useAuth()
 const role = computed(() => currentUser.value?.role || 'buyer')
 const router = useRouter()
 onMounted(() => { if (role.value === 'buyer') router.replace('/dashboard/compare') })
-useHead({ title: 'Similar vendors · SaasWorld' })
+useHead({ title: 'Similar vendors · Moonmart' })
 </script>
 
 <style scoped>

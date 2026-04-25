@@ -66,10 +66,10 @@ defineEmits<{ dismiss: [] }>()
   line-height: 1.4;
 }
 
-.alert-info    { background: #e0f2fe; border-color: #bae6fd; color: #075985; }
-.alert-success { background: #dcfce7; border-color: #bbf7d0; color: #166534; }
-.alert-warning { background: #fef3c7; border-color: #fde68a; color: #92400e; }
-.alert-danger  { background: #fee2e2; border-color: #fecaca; color: #991b1b; }
+.alert-info    { background: var(--mm-blue-soft); border-color: var(--mm-blue); color: var(--mm-bluel); }
+.alert-success { background: var(--mm-sea-soft); border-color: var(--mm-sea); color: var(--mm-seal); }
+.alert-warning { background: var(--mm-gold-soft); border-color: var(--mm-gold); color: var(--mm-goldl); }
+.alert-danger  { background: rgba(220,38,38,.12); border-color: #dc2626; color: #fca5a5; }
 
 .alert-icon { flex-shrink: 0; display: flex; margin-top: 1px; }
 .alert-body { flex: 1; min-width: 0; }

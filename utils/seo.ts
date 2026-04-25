@@ -73,7 +73,7 @@ export const generateHreflangTags = (path: string, locales: string[] = ['en', 'e
     tags.push({
       rel: 'alternate',
       hreflang: locale,
-      href: `https://saasworld.com${locale === 'en' ? '' : `/${locale}`}${path}`
+      href: `https://moonmart.ai${locale === 'en' ? '' : `/${locale}`}${path}`
     })
   })
   
@@ -81,7 +81,7 @@ export const generateHreflangTags = (path: string, locales: string[] = ['en', 'e
   tags.push({
     rel: 'alternate',
     hreflang: 'x-default',
-    href: `https://saasworld.com${path}`
+    href: `https://moonmart.ai${path}`
   })
   
   return tags
@@ -89,7 +89,7 @@ export const generateHreflangTags = (path: string, locales: string[] = ['en', 'e
 
 // Generate Open Graph image URL
 export const generateOGImage = (title: string, category?: string): string => {
-  const baseUrl = 'https://saasworld.com/api/og'
+  const baseUrl = 'https://moonmart.ai/api/og'
   const params = new URLSearchParams({
     title: title.substring(0, 100),
     ...(category && { category })
@@ -115,14 +115,14 @@ export const isUrlSEOFriendly = (url: string): boolean => {
 
 // Generate canonical URL
 export const generateCanonicalUrl = (path: string): string => {
-  const baseUrl = 'https://saasworld.com'
+  const baseUrl = 'https://moonmart.ai'
   const cleanPath = path.replace(/\/+/g, '/').replace(/\/$/, '') || '/'
   return `${baseUrl}${cleanPath === '/' ? '' : cleanPath}`
 }
 
 // Generate page title with brand
 export const generatePageTitle = (title: string, category?: string, includeYear: boolean = false): string => {
-  const brand = 'SaaSWorld'
+  const brand = 'Moonmart'
   const year = includeYear ? ` ${new Date().getFullYear()}` : ''
   
   if (category) {

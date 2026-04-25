@@ -1,4 +1,4 @@
-<!-- Default layout for SaaSWorld -->
+<!-- Default layout for Moonmart -->
 <template>
   <div class="site-layout">
     <GlobalMarketBanner />

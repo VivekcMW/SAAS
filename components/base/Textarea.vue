@@ -59,29 +59,29 @@ const inputId = props.id || `ta-${Math.random().toString(36).slice(2, 9)}`
 <style scoped>
 .field { display: flex; flex-direction: column; gap: 4px; }
 
-.field-label { font-size: 13px; font-weight: 500; color: #374151; }
-.field-required { color: #dc2626; margin-left: 2px; }
+.field-label { font-size: var(--t-sm); font-weight: 500; color: var(--mm-silver); }
+.field-required { color: var(--mm-err, #dc2626); margin-left: 2px; }
 
 .field-textarea {
   width: 100%;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 6px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-md);
   padding: 8px 12px;
-  font-family: inherit;
-  font-size: 14px;
-  color: #1f2937;
+  font-family: var(--f-ui);
+  font-size: var(--t-base);
+  color: var(--mm-pearl);
   resize: vertical;
   outline: none;
   transition: border-color 150ms ease;
 }
-.field-textarea::placeholder { color: #9ca3af; }
-.field-textarea:focus { border-color: #ff8838; }
-.field-error .field-textarea { border-color: #dc2626; }
-.field-textarea:disabled { background: #f9fafb; color: #9ca3af; cursor: not-allowed; }
+.field-textarea::placeholder { color: var(--mm-slate); }
+.field-textarea:focus { border-color: var(--mm-gold); }
+.field-error .field-textarea { border-color: var(--mm-err, #dc2626); }
+.field-textarea:disabled { background: var(--mm-s3); color: var(--mm-slate); cursor: not-allowed; }
 
 .field-footer { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.field-message { font-size: 12px; color: #6b7280; margin: 0; }
-.field-message-error { color: #dc2626; }
-.field-count { font-size: 12px; color: #9ca3af; margin-left: auto; }
+.field-message { font-size: var(--t-xs); color: var(--mm-slate); margin: 0; }
+.field-message-error { color: var(--mm-err, #dc2626); }
+.field-count { font-size: var(--t-xs); color: var(--mm-slate); margin-left: auto; }
 </style>

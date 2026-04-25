@@ -1,11 +1,11 @@
 <script setup lang="ts">
 useHead({
-  title: 'About SaaSWorld — The Software Marketplace Built for Every Founder',
+  title: 'About Moonmart — The Software Marketplace Built for Every Founder',
   meta: [
     {
       name: 'description',
       content:
-        'SaaSWorld helps every entrepreneur — from solo founders to global enterprises — discover, compare, and launch the right software, faster.'
+        'Moonmart helps every entrepreneur — from solo founders to global enterprises — discover, compare, and launch the right software, faster.'
     }
   ]
 })
@@ -29,19 +29,19 @@ const chapters: Chapter[] = [
     kicker: 'Our story',
     title: 'Software shouldn’t be a maze.',
     body:
-      'Every founder we met was losing weeks to the same problem: too many tools, too many tabs, too little clarity. We built SaaSWorld so anyone — from a first-time founder in a home office to a CTO at a Fortune 500 — can find the right software in minutes, not months.'
+      'Every founder we met was losing weeks to the same problem: too many tools, too many tabs, too little clarity. We built Moonmart so anyone — from a first-time founder in a home office to a CTO at a Fortune 500 — can find the right software in minutes, not months.'
   },
   {
     kicker: 'Why we exist',
     title: 'Great ideas deserve great tools.',
     body:
-      'The playing field gets leveled when a solo creator can access the same quality of software decisions as a global team. SaaSWorld turns fragmented research into a single, honest, side-by-side experience — with real reviews, transparent pricing, and trusted vendors.'
+      'The playing field gets leveled when a solo creator can access the same quality of software decisions as a global team. Moonmart turns fragmented research into a single, honest, side-by-side experience — with real reviews, transparent pricing, and trusted vendors.'
   },
   {
     kicker: 'How we help',
     title: 'One marketplace. Every stage of your journey.',
     body:
-      'Whether you’re validating your first idea or scaling to a hundred markets, SaaSWorld grows with you. Discover trending apps, compare features that actually matter, talk to vendors directly, and launch with confidence.'
+      'Whether you’re validating your first idea or scaling to a hundred markets, Moonmart grows with you. Discover trending apps, compare features that actually matter, talk to vendors directly, and launch with confidence.'
   }
 ]
 
@@ -51,7 +51,7 @@ const audiences: Audience[] = [
     title: 'Solo founders',
     tagline: 'Ship faster with fewer tools.',
     description:
-      'You’re building with focus. SaaSWorld surfaces starter-friendly tools, free tiers, and battle-tested toolkits so you can go from idea to live in a weekend — without drowning in sales calls.',
+      'You’re building with focus. Moonmart surfaces starter-friendly tools, free tiers, and battle-tested toolkits so you can go from idea to live in a weekend — without drowning in sales calls.',
     highlight: { value: 'Free tiers', label: 'highlighted first' },
     points: [
       'Starter plans and free tiers shown upfront',
@@ -90,7 +90,7 @@ const audiences: Audience[] = [
     title: 'Enterprises',
     tagline: 'A trusted catalog at global scale.',
     description:
-      'From global rollouts to region-specific procurement, SaaSWorld is the catalog your teams can actually trust. Governance, SSO-ready workflows, and category leadership partnerships — built in.',
+      'From global rollouts to region-specific procurement, Moonmart is the catalog your teams can actually trust. Governance, SSO-ready workflows, and category leadership partnerships — built in.',
     highlight: { value: 'SSO-ready', label: 'for every team' },
     points: [
       'Enterprise search with advanced filters and governance',
@@ -184,11 +184,11 @@ interface Faq { q: string; a: string }
 
 const faqs: Faq[] = [
   {
-    q: 'What is SaaSWorld?',
-    a: 'SaaSWorld is a global software marketplace where anyone — from solo founders to enterprise teams — can discover, compare, and launch the right tools in minutes, backed by real reviews and transparent pricing.'
+    q: 'What is Moonmart?',
+    a: 'Moonmart is a global software marketplace where anyone — from solo founders to enterprise teams — can discover, compare, and launch the right tools in minutes, backed by real reviews and transparent pricing.'
   },
   {
-    q: 'Is SaaSWorld free to use?',
+    q: 'Is Moonmart free to use?',
     a: 'Yes. Browsing the marketplace, comparing products, reading reviews, and contacting vendors is free for buyers. You only pay the vendor you choose — directly, with no markup from us.'
   },
   {
@@ -204,7 +204,7 @@ const faqs: Faq[] = [
     a: 'Yes. Enterprise profiles include pricing, security, and compliance info, plus team shortlists and direct lines to vendors for demos and custom pricing. SSO-ready workflows are available for large teams.'
   },
   {
-    q: 'How do I list my product on SaaSWorld?',
+    q: 'How do I list my product on Moonmart?',
     a: 'Head to “List your product”, complete the short onboarding form, and our team reviews new listings within 24–48 hours. Once approved, your product is live across the marketplace.'
   }
 ]
@@ -224,7 +224,7 @@ function toggleFaq(i: number) {
           Every great company starts with the <span class="accent">right tools</span>.
         </h1>
         <p class="about-hero-sub">
-          SaaSWorld is the marketplace built for every founder — from a one-person studio to
+          Moonmart is the marketplace built for every founder — from a one-person studio to
           a global enterprise. Find the software that fits your stage, without the noise.
         </p>
         <div class="about-hero-cta">
@@ -260,7 +260,7 @@ function toggleFaq(i: number) {
           <span class="section-eyebrow">Built for every founder</span>
           <h2 class="section-title">From your first idea to your next hundred markets.</h2>
           <p class="section-sub">
-            SaaSWorld adapts to where you are — and grows with where you’re going.
+            Moonmart adapts to where you are — and grows with where you’re going.
             Pick your stage and see how we help.
           </p>
         </div>
@@ -346,7 +346,7 @@ function toggleFaq(i: number) {
       <div class="container">
         <div class="stats-heading">
           <span class="stats-eyebrow">Live on the platform</span>
-          <h2 class="stats-title">What is available on SaaSWorld right now.</h2>
+          <h2 class="stats-title">What is available on Moonmart right now.</h2>
           <p class="stats-sub">
             A live snapshot of our catalog — updated as new products, categories, reviews and founders join.
           </p>
@@ -377,7 +377,7 @@ function toggleFaq(i: number) {
         <div class="section-heading">
           <span class="section-eyebrow">FAQ</span>
           <h2 class="section-title">Answers before you ask.</h2>
-          <p class="section-sub">Everything founders and teams want to know about SaaSWorld.</p>
+          <p class="section-sub">Everything founders and teams want to know about Moonmart.</p>
         </div>
         <ul class="faq-list">
           <li
@@ -415,7 +415,7 @@ function toggleFaq(i: number) {
       <div class="container">
         <h2 class="cta-title">Your software story starts here.</h2>
         <p class="cta-sub">
-          Join the founders, teams, and enterprises choosing their next tool with SaaSWorld.
+          Join the founders, teams, and enterprises choosing their next tool with Moonmart.
         </p>
         <div class="cta-actions">
           <NuxtLink to="/signup" class="btn btn-primary">Get started free</NuxtLink>
@@ -428,90 +428,90 @@ function toggleFaq(i: number) {
 
 <style scoped>
 .about-page {
-  background: #ffffff;
-  color: #1e1e1e;
-  font-family: var(--font-primary, 'Inter', system-ui, sans-serif);
+  background: var(--mm-bg);
+  color: var(--mm-pearl);
+  font-family: var(--f-ui);
 }
 .container { max-width: 1120px; margin: 0 auto; padding: 0 1.5rem; }
 
-.about-hero { padding: 7rem 0 5rem; background: var(--sw-primary-soft, #fff1e6); text-align: center; }
+.about-hero { padding: 7rem 0 5rem; background: var(--mm-gold-soft); text-align: center; }
 .about-eyebrow {
-  display: inline-block; padding: 0.35rem 0.9rem; border-radius: 999px;
-  background: #ffffff; color: var(--sw-primary, #ff8838);
+  display: inline-block; padding: 0.35rem 0.9rem; border-radius: var(--r-full);
+  background: var(--mm-s2); color: var(--mm-gold);
   font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.02em;
   margin-bottom: 1.5rem;
 }
 .about-hero-title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: clamp(2.25rem, 5vw, 3.75rem);
   line-height: 1.1; font-weight: 700;
-  margin: 0 auto 1.25rem; max-width: 18ch; color: #1e1e1e;
+  margin: 0 auto 1.25rem; max-width: 18ch; color: var(--mm-pearl);
 }
-.about-hero-title .accent { color: var(--sw-primary, #ff8838); }
+.about-hero-title .accent { color: var(--mm-gold); }
 .about-hero-sub {
   max-width: 46rem; margin: 0 auto 2.25rem;
-  font-size: 1.125rem; line-height: 1.65; color: #3f3f46;
+  font-size: 1.125rem; line-height: 1.65; color: var(--mm-silver);
 }
 .about-hero-cta { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center;
-  padding: 0.85rem 1.5rem; border-radius: 10px;
+  padding: 0.85rem 1.5rem; border-radius: var(--r-sm);
   font-weight: 600; font-size: 0.9375rem; text-decoration: none;
   transition: transform 0.15s ease, background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-  border: 1px solid transparent;
+  border: 0.5px solid transparent;
 }
-.btn-primary { background: var(--sw-primary, #ff8838); color: #ffffff; }
-.btn-primary:hover { background: var(--sw-primary-hover, #e67326); transform: translateY(-1px); }
-.btn-ghost { background: #ffffff; color: #1e1e1e; border-color: #e5e7eb; }
-.btn-ghost:hover { border-color: var(--sw-primary, #ff8838); color: var(--sw-primary, #ff8838); }
+.btn-primary { background: var(--mm-gold); color: #0A0700; }
+.btn-primary:hover { background: var(--mm-goldl); transform: translateY(-1px); }
+.btn-ghost { background: var(--mm-s2); color: var(--mm-silver); border-color: var(--b2); }
+.btn-ghost:hover { border-color: var(--mm-gold); color: var(--mm-gold); }
 
 .about-story { padding: 6rem 0; }
 .story-chapter {
   display: grid; grid-template-columns: 1.25fr 1fr; gap: 3rem;
-  align-items: center; padding: 2.5rem 0; border-bottom: 1px solid #f1f1f3;
+  align-items: center; padding: 2.5rem 0; border-bottom: 0.5px solid var(--b1);
 }
 .story-chapter:last-child { border-bottom: none; }
 .story-chapter--flip .story-copy { order: 2; }
 .story-chapter--flip .story-visual { order: 1; }
 .story-kicker {
-  display: inline-block; color: var(--sw-primary, #ff8838);
+  display: inline-block; color: var(--mm-gold);
   font-weight: 600; font-size: 0.8125rem;
   text-transform: uppercase; letter-spacing: 0.08em;
   margin-bottom: 0.75rem;
 }
 .story-title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: clamp(1.75rem, 3.2vw, 2.5rem);
-  font-weight: 700; line-height: 1.2; margin: 0 0 1rem; color: #1e1e1e;
+  font-weight: 700; line-height: 1.2; margin: 0 0 1rem; color: var(--mm-pearl);
 }
-.story-body { font-size: 1.0625rem; line-height: 1.7; color: #3f3f46; margin: 0; max-width: 42ch; }
+.story-body { font-size: 1.0625rem; line-height: 1.7; color: var(--mm-silver); margin: 0; max-width: 42ch; }
 .story-visual {
   display: flex; align-items: center; justify-content: center;
-  min-height: 220px; background: #faf7f3;
-  border: 1px solid #f3eade; border-radius: 20px;
+  min-height: 220px; background: var(--mm-s2);
+  border: 0.5px solid var(--b1); border-radius: var(--r-xl);
 }
 .story-index {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: clamp(4rem, 10vw, 7rem);
-  font-weight: 700; color: var(--sw-primary, #ff8838); line-height: 1;
+  font-weight: 700; color: var(--mm-gold); line-height: 1;
 }
 
 .section-heading { text-align: center; max-width: 42rem; margin: 0 auto 3rem; }
 .section-eyebrow {
-  display: inline-block; color: var(--sw-primary, #ff8838);
+  display: inline-block; color: var(--mm-gold);
   font-weight: 600; font-size: 0.8125rem;
   text-transform: uppercase; letter-spacing: 0.08em;
   margin-bottom: 0.75rem;
 }
 .section-title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: clamp(1.75rem, 3.2vw, 2.5rem);
-  font-weight: 700; line-height: 1.2; margin: 0 0 0.75rem; color: #1e1e1e;
+  font-weight: 700; line-height: 1.2; margin: 0 0 0.75rem; color: var(--mm-pearl);
 }
-.section-sub { color: #3f3f46; font-size: 1.0625rem; line-height: 1.65; margin: 0; }
+.section-sub { color: var(--mm-silver); font-size: 1.0625rem; line-height: 1.65; margin: 0; }
 
-.about-audiences { padding: 6rem 0; background: #fbfaf8; }
+.about-audiences { padding: 6rem 0; background: var(--mm-s1); }
 
 .stage-picker {
   display: grid;
@@ -527,7 +527,7 @@ function toggleFaq(i: number) {
   right: 10%;
   top: 22px;
   height: 2px;
-  background: #eee;
+  background: var(--b1);
   z-index: 0;
 }
 .stage-chip {
@@ -537,70 +537,70 @@ function toggleFaq(i: number) {
   flex-direction: column;
   gap: 0.5rem;
   padding: 1rem 1rem 1.1rem;
-  background: #ffffff;
-  border: 1px solid #efefef;
-  border-radius: 14px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-lg);
   cursor: pointer;
   text-align: left;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
   font-family: inherit;
 }
 .stage-chip:hover {
-  border-color: var(--sw-primary, #ff8838);
+  border-color: var(--mm-gold);
   transform: translateY(-2px);
 }
 .stage-chip:focus-visible {
-  outline: 2px solid var(--sw-primary, #ff8838);
+  outline: 2px solid var(--mm-gold);
   outline-offset: 2px;
 }
 .stage-chip--active {
-  border-color: var(--sw-primary, #ff8838);
-  box-shadow: 0 10px 28px rgba(255, 136, 56, 0.14);
+  border-color: var(--mm-gold);
+  box-shadow: 0 10px 28px var(--mm-gold-soft);
 }
 .stage-chip__step {
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--sw-primary, #ff8838);
+  color: var(--mm-gold);
 }
 .stage-chip__title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-ui);
   font-size: 0.9375rem;
   font-weight: 600;
-  color: #1e1e1e;
+  color: var(--mm-pearl);
 }
 
 .stage-panel {
   display: grid;
   grid-template-columns: 1.6fr 1fr;
   gap: 2rem;
-  background: #ffffff;
-  border: 1px solid #efefef;
-  border-radius: 20px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-xl);
   padding: 2rem;
 }
 .stage-panel__tagline {
   display: inline-block;
-  background: var(--sw-primary-soft, #fff1e6);
-  color: var(--sw-primary, #ff8838);
+  background: var(--mm-gold-soft);
+  color: var(--mm-gold);
   padding: 0.3rem 0.75rem;
-  border-radius: 999px;
+  border-radius: var(--r-full);
   font-size: 0.8125rem;
   font-weight: 600;
   letter-spacing: 0.01em;
   margin-bottom: 1rem;
 }
 .stage-panel__title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: clamp(1.5rem, 2.4vw, 2rem);
   font-weight: 700;
-  color: #1e1e1e;
+  color: var(--mm-pearl);
   margin: 0 0 0.75rem;
   line-height: 1.2;
 }
 .stage-panel__description {
-  color: #3f3f46;
+  color: var(--mm-silver);
   font-size: 1rem;
   line-height: 1.7;
   margin: 0 0 1.25rem;
@@ -618,7 +618,7 @@ function toggleFaq(i: number) {
   gap: 0.625rem;
   align-items: flex-start;
   font-size: 0.9375rem;
-  color: #27272a;
+  color: var(--mm-silver);
   line-height: 1.55;
 }
 .stage-panel__points svg {
@@ -626,7 +626,7 @@ function toggleFaq(i: number) {
   width: 18px;
   height: 18px;
   margin-top: 2px;
-  color: var(--sw-primary, #ff8838);
+  color: var(--mm-gold);
 }
 
 .stage-panel__aside {
@@ -634,20 +634,20 @@ function toggleFaq(i: number) {
   flex-direction: column;
   justify-content: space-between;
   gap: 1.5rem;
-  background: var(--sw-primary-soft, #fff1e6);
-  border-radius: 16px;
+  background: var(--mm-gold-soft);
+  border-radius: var(--r-lg);
   padding: 1.75rem;
 }
 .stage-highlight__value {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: clamp(1.75rem, 3.4vw, 2.5rem);
   font-weight: 700;
-  color: var(--sw-primary, #ff8838);
+  color: var(--mm-gold);
   line-height: 1;
   margin-bottom: 0.35rem;
 }
 .stage-highlight__label {
-  color: #52370f;
+  color: var(--mm-silver);
   font-size: 0.9375rem;
   font-weight: 500;
   letter-spacing: 0.01em;
@@ -661,11 +661,11 @@ function toggleFaq(i: number) {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #f3e0cc;
+  background: var(--b2);
   transition: background-color 0.2s ease, transform 0.2s ease;
 }
 .stage-progress__dot--active {
-  background: var(--sw-primary, #ff8838);
+  background: var(--mm-gold);
   transform: scale(1.15);
 }
 
@@ -683,38 +683,38 @@ function toggleFaq(i: number) {
   grid-template-columns: 72px 1fr;
   gap: 1.5rem;
   padding: 1.75rem 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 0.5px solid var(--b1);
 }
 .pillar-item__num {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-ui);
   font-size: 0.875rem;
   font-weight: 700;
   letter-spacing: 0.12em;
-  color: var(--sw-primary, #ff8838);
+  color: var(--mm-gold);
   padding-top: 0.25rem;
 }
 .pillar-item__title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: 1.125rem;
   font-weight: 700;
-  color: #1e1e1e;
+  color: var(--mm-pearl);
   margin: 0 0 0.375rem;
 }
 .pillar-item__body {
   margin: 0 0 0.5rem;
-  color: #3f3f46;
+  color: var(--mm-silver);
   line-height: 1.6;
   font-size: 0.9375rem;
 }
 .pillar-item__outcome {
   margin: 0;
-  color: #1e1e1e;
+  color: var(--mm-silver);
   font-size: 0.9375rem;
   font-weight: 500;
   line-height: 1.55;
 }
 
-.about-stats { padding: 5rem 0; background: #1e1e1e; color: #ffffff; }
+.about-stats { padding: 5rem 0; background: var(--mm-s1); color: var(--mm-pearl); }
 .stats-heading { text-align: center; max-width: 640px; margin: 0 auto 2.5rem; }
 .stats-eyebrow {
   display: inline-block;
@@ -722,19 +722,19 @@ function toggleFaq(i: number) {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--sw-primary, #ff8838);
+  color: var(--mm-gold);
   margin-bottom: 0.75rem;
 }
 .stats-title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: clamp(1.5rem, 3vw, 2rem);
   font-weight: 700;
-  color: #ffffff;
+  color: var(--mm-pearl);
   margin: 0 0 0.75rem;
   line-height: 1.25;
 }
 .stats-sub {
-  color: #a1a1aa;
+  color: var(--mm-silver);
   font-size: 0.9375rem;
   margin: 0;
   line-height: 1.6;
@@ -742,11 +742,11 @@ function toggleFaq(i: number) {
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; text-align: center; }
 .stat-card { padding: 1rem; }
 .stat-value {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: clamp(2rem, 4vw, 3rem); font-weight: 700;
-  color: var(--sw-primary, #ff8838); line-height: 1;
+  color: var(--mm-gold); line-height: 1;
 }
-.stat-label { margin-top: 0.5rem; color: #e4e4e7; font-size: 0.9375rem; }
+.stat-label { margin-top: 0.5rem; color: var(--mm-silver); font-size: 0.9375rem; }
 .stats-cta {
   margin-top: 2.5rem;
   display: flex;
@@ -755,11 +755,11 @@ function toggleFaq(i: number) {
   justify-content: center;
   gap: 1rem;
   padding-top: 2rem;
-  border-top: 1px solid #2a2a2a;
+  border-top: 0.5px solid var(--b1);
 }
 .stats-cta__text {
   margin: 0;
-  color: #e4e4e7;
+  color: var(--mm-silver);
   font-size: 0.9375rem;
 }
 .stats-cta__btn {
@@ -767,45 +767,45 @@ function toggleFaq(i: number) {
   align-items: center;
   gap: 0.5rem;
   padding: 0.65rem 1.25rem;
-  background: var(--sw-primary, #ff8838);
-  color: #ffffff;
-  border-radius: 999px;
+  background: var(--mm-gold);
+  color: #0A0700;
+  border-radius: var(--r-sm);
   font-weight: 600;
   font-size: 0.9375rem;
   text-decoration: none;
   transition: background-color 0.15s ease, transform 0.15s ease;
 }
 .stats-cta__btn:hover {
-  background: var(--sw-primary-hover, #e67326);
+  background: var(--mm-goldl);
   transform: translateY(-1px);
 }
 .stats-cta__btn svg { width: 16px; height: 16px; }
 
-.about-faq { padding: 6rem 0; background: #fbfaf8; }
+.about-faq { padding: 6rem 0; background: var(--mm-s1); }
 .faq-list { list-style: none; padding: 0; margin: 0 auto; max-width: 48rem; display: grid; gap: 0.75rem; }
-.faq-item { background: #ffffff; border: 1px solid #efefef; border-radius: 14px; overflow: hidden; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
-.faq-item:hover { border-color: var(--sw-primary, #ff8838); }
-.faq-item--open { border-color: var(--sw-primary, #ff8838); box-shadow: 0 8px 20px rgba(255, 136, 56, 0.08); }
+.faq-item { background: var(--mm-s2); border: 0.5px solid var(--b1); border-radius: var(--r-lg); overflow: hidden; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+.faq-item:hover { border-color: var(--mm-gold); }
+.faq-item--open { border-color: var(--mm-gold); box-shadow: 0 8px 20px var(--mm-gold-soft); }
 .faq-question {
   width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
   padding: 1.1rem 1.35rem; background: transparent; border: none;
   text-align: left; cursor: pointer;
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
-  font-size: 1rem; font-weight: 600; color: #1e1e1e;
+  font-family: var(--f-display);
+  font-size: 1rem; font-weight: 600; color: var(--mm-pearl);
 }
-.faq-question:focus-visible { outline: 2px solid var(--sw-primary, #ff8838); outline-offset: -2px; }
-.faq-chevron { width: 18px; height: 18px; color: var(--sw-primary, #ff8838); transition: transform 0.2s ease; flex: 0 0 auto; }
+.faq-question:focus-visible { outline: 2px solid var(--mm-gold); outline-offset: -2px; }
+.faq-chevron { width: 18px; height: 18px; color: var(--mm-gold); transition: transform 0.2s ease; flex: 0 0 auto; }
 .faq-item--open .faq-chevron { transform: rotate(180deg); }
 .faq-answer { padding: 0 1.35rem 1.1rem; }
-.faq-answer p { margin: 0; color: #3f3f46; line-height: 1.65; font-size: 0.9375rem; }
+.faq-answer p { margin: 0; color: var(--mm-silver); line-height: 1.65; font-size: 0.9375rem; }
 
 .about-cta { padding: 6rem 0; text-align: center; }
 .cta-title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: clamp(1.75rem, 3.4vw, 2.5rem);
-  font-weight: 700; margin: 0 0 0.75rem; color: #1e1e1e;
+  font-weight: 700; margin: 0 0 0.75rem; color: var(--mm-pearl);
 }
-.cta-sub { max-width: 36rem; margin: 0 auto 2rem; color: #3f3f46; font-size: 1.0625rem; line-height: 1.65; }
+.cta-sub { max-width: 36rem; margin: 0 auto 2rem; color: var(--mm-silver); font-size: 1.0625rem; line-height: 1.65; }
 .cta-actions { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
 
 @media (max-width: 768px) {

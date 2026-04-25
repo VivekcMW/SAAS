@@ -93,9 +93,9 @@ const onChange = (e: Event) => {
   justify-content: center;
   width: 16px;
   height: 16px;
-  background: #ffffff;
-  border: 0.5px solid #d1d5db;
-  border-radius: 4px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
   flex-shrink: 0;
   margin-top: 1px;
   color: transparent;
@@ -105,13 +105,13 @@ const onChange = (e: Event) => {
 
 .checkbox-input:checked + .checkbox-box,
 .checkbox-input:indeterminate + .checkbox-box {
-  background: #ff8838;
-  border-color: #ff8838;
-  color: #ffffff;
+  background: var(--mm-gold);
+  border-color: var(--mm-gold);
+  color: #0A0700;
 }
-.checkbox-input:focus-visible + .checkbox-box { outline: 2px solid #ff8838; outline-offset: 2px; }
+.checkbox-input:focus-visible + .checkbox-box { outline: 2px solid var(--mm-gold); outline-offset: 2px; }
 
 .checkbox-text { display: flex; flex-direction: column; gap: 2px; line-height: 1.3; }
-.checkbox-label { font-size: 14px; color: #374151; }
-.checkbox-hint { font-size: 12px; color: #6b7280; }
+.checkbox-label { font-size: var(--t-base); color: var(--mm-silver); }
+.checkbox-hint { font-size: var(--t-xs); color: var(--mm-slate); }
 </style>

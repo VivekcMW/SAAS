@@ -3,7 +3,7 @@
     <section class="mk-hero">
       <div class="mk-hero__inner">
         <p class="mk-eyebrow">Sitemap</p>
-        <h1 class="mk-hero__title">Everything on SaaSWorld</h1>
+        <h1 class="mk-hero__title">Everything on Moonmart</h1>
         <p class="mk-hero__lede">
           A human-readable map of every public section on the site. Looking for the XML
           version for crawlers? It's at
@@ -30,9 +30,9 @@
 <script setup lang="ts">
 const { applySEO } = useSEO()
 applySEO({
-  title: 'Sitemap | SaaSWorld',
-  description: 'A human-readable sitemap of every page on SaaSWorld.',
-  canonical: 'https://saasworld.com/sitemap',
+  title: 'Sitemap | Moonmart',
+  description: 'A human-readable sitemap of every page on Moonmart.',
+  canonical: 'https://moonmart.ai/sitemap',
   ogType: 'website'
 })
 
@@ -133,16 +133,16 @@ const groups = [
   gap: 2rem;
 }
 .sitemap-col__title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: 0.82rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--sw-primary, #ff8838);
+  color: var(--mm-gold);
   margin: 0 0 1rem;
 }
 .sitemap-col ul { list-style: none; padding: 0; margin: 0; }
 .sitemap-col li { margin-bottom: 0.55rem; }
-.sitemap-col a { color: #3f3f46; font-size: 0.92rem; text-decoration: none; transition: color 0.15s; }
-.sitemap-col a:hover { color: var(--sw-primary, #ff8838); }
+.sitemap-col a { color: var(--mm-silver); font-size: 0.92rem; text-decoration: none; transition: color 0.15s; }
+.sitemap-col a:hover { color: var(--mm-gold); }
 </style>

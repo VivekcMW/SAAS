@@ -64,7 +64,7 @@ function ensureExpressVendor(): string {
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       userId,
-      'express@saasworld.local',
+      'express@moonmart.local',
       '!disabled',
       'Express',
       'Listing',

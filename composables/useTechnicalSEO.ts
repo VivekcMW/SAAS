@@ -6,7 +6,7 @@
 export const useTechnicalSEO = () => {
   // Advanced robots.txt optimization
   const generateAdvancedRobotsTxt = (sitemap: string[]) => {
-    return `# Advanced robots.txt for SaaSWorld
+    return `# Advanced robots.txt for Moonmart
 # Generated: ${new Date().toISOString()}
 
 # Main search engines - full access
@@ -185,12 +185,12 @@ Disallow: /`
     // Organization markup
     const organization = {
       '@type': 'Organization',
-      '@id': 'https://saasworld.com/#organization',
-      name: 'SaaSWorld',
-      url: 'https://saasworld.com',
+      '@id': 'https://moonmart.ai/#organization',
+      name: 'Moonmart',
+      url: 'https://moonmart.ai',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://saasworld.com/assets/images/logo.png',
+        url: 'https://moonmart.ai/assets/images/logo.png',
         width: 200,
         height: 60
       },
@@ -198,7 +198,7 @@ Disallow: /`
       foundingDate: '2023',
       founder: {
         '@type': 'Person',
-        name: 'SaaSWorld Team'
+        name: 'Moonmart Team'
       },
       contactPoint: {
         '@type': 'ContactPoint',
@@ -216,13 +216,13 @@ Disallow: /`
     // Website markup
     const website = {
       '@type': 'WebSite',
-      '@id': 'https://saasworld.com/#website',
-      url: 'https://saasworld.com',
-      name: 'SaaSWorld',
-      publisher: { '@id': 'https://saasworld.com/#organization' },
+      '@id': 'https://moonmart.ai/#website',
+      url: 'https://moonmart.ai',
+      name: 'Moonmart',
+      publisher: { '@id': 'https://moonmart.ai/#organization' },
       potentialAction: {
         '@type': 'SearchAction',
-        target: 'https://saasworld.com/marketplace?search={search_term_string}',
+        target: 'https://moonmart.ai/marketplace?search={search_term_string}',
         'query-input': 'required name=search_term_string'
       }
     }
@@ -239,8 +239,8 @@ Disallow: /`
           url: page.url,
           name: page.title,
           description: page.description,
-          isPartOf: { '@id': 'https://saasworld.com/#website' },
-          about: { '@id': 'https://saasworld.com/#organization' },
+          isPartOf: { '@id': 'https://moonmart.ai/#website' },
+          about: { '@id': 'https://moonmart.ai/#organization' },
           mainEntity: {
             '@type': 'ItemList',
             name: 'Software Categories',

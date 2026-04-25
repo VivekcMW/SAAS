@@ -301,9 +301,9 @@ const toggleShowAll = () => {
   gap: var(--spacing-sm);
   margin-bottom: var(--spacing-lg);
   padding: var(--spacing-md);
-  background: linear-gradient(135deg, rgba(var(--primary-color-rgb), 0.05), rgba(var(--primary-color-rgb), 0.02));
-  border-radius: var(--border-radius-lg);
-  border: 1px solid rgba(var(--primary-color-rgb), 0.1);
+  background: var(--mm-s2);
+  border-radius: var(--r-sm);
+  border: 0.5px solid var(--b1);
 }
 
 .group-button {
@@ -311,10 +311,10 @@ const toggleShowAll = () => {
   align-items: center;
   gap: var(--spacing-xs);
   padding: var(--spacing-sm) var(--spacing-md);
-  background: white;
-  border: 2px solid rgba(var(--primary-color-rgb), 0.2);
-  border-radius: var(--border-radius-md);
-  color: var(--text-secondary);
+  background: var(--mm-s1);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
+  color: var(--mm-slate);
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
@@ -323,16 +323,16 @@ const toggleShowAll = () => {
 }
 
 .group-button:hover {
-  background: rgba(var(--primary-color-rgb), 0.05);
-  border-color: rgba(var(--primary-color-rgb), 0.4);
+  background: var(--mm-s3);
+  border-color: var(--mm-gold);
   transform: translateY(-1px);
 }
 
 .group-button.active {
-  background: var(--primary-color);
-  color: white;
-  border-color: var(--primary-color);
-  box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.3);
+  background: var(--mm-gold);
+  color: #0A0700;
+  border-color: var(--mm-gold);
+  box-shadow: 0 4px 12px var(--mm-gold-soft);
 }
 
 .group-button .count {
@@ -354,15 +354,14 @@ const toggleShowAll = () => {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  background-color: white;
-  border-radius: var(--border-radius-md);
+  background-color: var(--mm-s2);
+  border-radius: var(--r-sm);
   text-decoration: none;
   color: inherit;
   padding: var(--spacing-md) var(--spacing-lg);
   cursor: pointer;
   transition: all 0.2s ease;
-  border: 2px solid rgba(var(--primary-color-rgb), 0.1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 0.5px solid var(--b1);
   position: relative;
   overflow: hidden;
 }
@@ -373,17 +372,17 @@ const toggleShowAll = () => {
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--primary-color), rgba(var(--primary-color-rgb), 0.6));
+  height: 2px;
+  background: var(--mm-gold);
   transform: scaleX(0);
   transition: transform 0.2s ease;
 }
 
 .category-item:hover {
-  background-color: var(--color-gray-50);
+  background-color: var(--mm-s3);
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  border-color: rgba(var(--primary-color-rgb), 0.3);
+  box-shadow: var(--shadow-md);
+  border-color: var(--b2);
 }
 
 .category-item:hover::before {
@@ -391,8 +390,8 @@ const toggleShowAll = () => {
 }
 
 .category-item.active {
-  border-color: var(--primary-color);
-  background-color: rgba(var(--primary-color-rgb), 0.05);
+  border-color: var(--mm-gold);
+  background-color: var(--mm-gold-soft);
 }
 
 .category-item.active::before {
@@ -400,11 +399,11 @@ const toggleShowAll = () => {
 }
 
 .category-icon {
-  color: var(--primary-color);
-  background-color: rgba(var(--primary-color-rgb), 0.1);
+  color: var(--mm-gold);
+  background-color: var(--mm-gold-soft);
   width: 44px;
   height: 44px;
-  border-radius: var(--border-radius-md);
+  border-radius: var(--r-sm);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -413,14 +412,14 @@ const toggleShowAll = () => {
 }
 
 .category-item:hover .category-icon {
-  background-color: rgba(var(--primary-color-rgb), 0.15);
+  background-color: var(--mm-gold-soft);
   transform: scale(1.05);
 }
 
 .category-name {
   font-weight: 500;
   font-size: 0.95rem;
-  color: var(--text-primary);
+  color: var(--mm-silver);
   line-height: 1.4;
 }
 
@@ -431,17 +430,17 @@ const toggleShowAll = () => {
   align-items: center;
   gap: var(--spacing-md);
   padding-top: var(--spacing-lg);
-  border-top: 1px solid var(--color-gray-200);
+  border-top: 0.5px solid var(--b1);
 }
 
 .show-all-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--primary-color);
-  color: white;
+  background: var(--mm-gold);
+  color: #0A0700;
   border: none;
-  border-radius: var(--border-radius-md);
+  border-radius: var(--r-sm);
   font-weight: 500;
   cursor: pointer;
   gap: var(--spacing-xs);
@@ -451,14 +450,13 @@ const toggleShowAll = () => {
 }
 
 .show-all-button:hover {
-  background: rgba(var(--primary-color-rgb), 0.9);
+  background: var(--mm-goldl);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.3);
 }
 
 .category-stats {
   font-size: 0.875rem;
-  color: var(--text-secondary);
+  color: var(--mm-slate);
   text-align: center;
 }
 

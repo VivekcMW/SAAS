@@ -1,5 +1,5 @@
 /**
- * Advanced Global SEO Composable for SaasWorld
+ * Advanced Global SEO Composable for Moonmart
  * Implements comprehensive SEO strategy with lead generation focus
  * Based on the Global Indexing & SEO Strategy
  */
@@ -30,7 +30,7 @@ export const useAdvancedSEO = () => {
   
   // Enhanced base SEO with global optimization
   const globalSEO = {
-    title: 'SaaSWorld - Global Software Marketplace for Investment Opportunities',
+    title: 'Moonmart - Global Software Marketplace for Investment Opportunities',
     description: 'Discover high-growth SaaS companies and investment opportunities. Compare 10,000+ software solutions, find emerging startups, and analyze market trends for VCs and business leaders.',
     keywords: 'saas marketplace, software investment, venture capital, startup analysis, business software, enterprise solutions, software comparison, investment opportunities, vc deals, software directory',
     ogImage: '/assets/images/saasworld-global-og.jpg',
@@ -43,7 +43,7 @@ export const useAdvancedSEO = () => {
   const generateLeadGenSEO = (page: string, category?: string): AdvancedSEOConfig => {
     const leadGenTemplates = {
       homepage: {
-        title: 'SaaSWorld - Discover Investment-Ready Software Companies | Global Marketplace',
+        title: 'Moonmart - Discover Investment-Ready Software Companies | Global Marketplace',
         description: 'Find your next software investment opportunity. Analyze 10,000+ SaaS companies, track funding rounds, and discover emerging market leaders. Free market intelligence reports.',
         keywords: 'software investment, saas funding, venture capital deals, startup analysis, software market intelligence, investment opportunities',
         leadGeneration: {
@@ -53,7 +53,7 @@ export const useAdvancedSEO = () => {
         }
       },
       marketplace: {
-        title: 'Software Marketplace - Investment Intelligence & Business Solutions | SaaSWorld',
+        title: 'Software Marketplace - Investment Intelligence & Business Solutions | Moonmart',
         description: 'Explore 10,000+ software solutions with investment data, growth metrics, and funding information. Find high-potential startups and established market leaders.',
         keywords: 'software marketplace, saas investment, business software, startup funding, growth metrics, software analysis',
         leadGeneration: {
@@ -93,10 +93,10 @@ export const useAdvancedSEO = () => {
     const hreflang: Record<string, string> = {}
     
     locales.forEach(loc => {
-      hreflang[loc] = `https://saasworld.com/${loc === 'en' ? '' : `${loc}/`}${basePath.replace(/^\//, '')}`
+      hreflang[loc] = `https://moonmart.ai/${loc === 'en' ? '' : `${loc}/`}${basePath.replace(/^\//, '')}`
     })
     
-    hreflang['x-default'] = `https://saasworld.com/${basePath.replace(/^\//, '')}`
+    hreflang['x-default'] = `https://moonmart.ai/${basePath.replace(/^\//, '')}`
     
     // Localized content based on region
     const localizedContent = {
@@ -131,7 +131,7 @@ export const useAdvancedSEO = () => {
 
     return {
       ...globalSEO,
-      title: `SaaSWorld - ${content.title}`,
+      title: `Moonmart - ${content.title}`,
       description: content.description,
       hreflang,
       canonical: hreflang[locale],
@@ -144,11 +144,11 @@ export const useAdvancedSEO = () => {
     const baseOrganization = {
       '@context': 'https://schema.org',
       '@type': 'Organization',
-      name: 'SaaSWorld',
-      url: 'https://saasworld.com',
+      name: 'Moonmart',
+      url: 'https://moonmart.ai',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://saasworld.com/assets/images/logo.png',
+        url: 'https://moonmart.ai/assets/images/logo.png',
         width: 800,
         height: 200
       },
@@ -169,12 +169,12 @@ export const useAdvancedSEO = () => {
       homepage: {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
-        name: 'SaaSWorld',
-        url: 'https://saasworld.com',
+        name: 'Moonmart',
+        url: 'https://moonmart.ai',
         description: globalSEO.description,
         potentialAction: {
           '@type': 'SearchAction',
-          target: 'https://saasworld.com/search?q={search_term_string}',
+          target: 'https://moonmart.ai/search?q={search_term_string}',
           'query-input': 'required name=search_term_string'
         },
         publisher: baseOrganization,
@@ -189,7 +189,7 @@ export const useAdvancedSEO = () => {
         '@type': 'ItemList',
         name: 'Global Software Marketplace',
         description: 'Comprehensive directory of software solutions with investment intelligence',
-        url: 'https://saasworld.com/marketplace',
+        url: 'https://moonmart.ai/marketplace',
         numberOfItems: 10000,
         itemListOrder: 'https://schema.org/ItemListOrderAscending',
         itemListElement: data.apps?.map((app: any, index: number) => ({
@@ -198,7 +198,7 @@ export const useAdvancedSEO = () => {
           item: {
             '@type': 'SoftwareApplication',
             name: app.name,
-            url: `https://saasworld.com/app/${app.slug}`,
+            url: `https://moonmart.ai/app/${app.slug}`,
             category: app.category,
             operatingSystem: 'Web Browser, iOS, Android, Windows, macOS, Linux',
             applicationCategory: 'BusinessApplication'
@@ -210,7 +210,7 @@ export const useAdvancedSEO = () => {
         '@type': 'WebPage',
         name: `${data.title} - Software Comparison`,
         description: data.description,
-        url: `https://saasworld.com${route.path}`,
+        url: `https://moonmart.ai${route.path}`,
         breadcrumb: {
           '@type': 'BreadcrumbList',
           itemListElement: [
@@ -218,13 +218,13 @@ export const useAdvancedSEO = () => {
               '@type': 'ListItem',
               position: 1,
               name: 'Home',
-              item: 'https://saasworld.com'
+              item: 'https://moonmart.ai'
             },
             {
               '@type': 'ListItem',
               position: 2,
               name: 'Comparisons',
-              item: 'https://saasworld.com/comparisons'
+              item: 'https://moonmart.ai/comparisons'
             },
             {
               '@type': 'ListItem',
@@ -244,7 +244,7 @@ export const useAdvancedSEO = () => {
         '@type': 'SoftwareApplication',
         name: data.name,
         description: data.description,
-        url: `https://saasworld.com/app/${data.slug}`,
+        url: `https://moonmart.ai/app/${data.slug}`,
         category: data.category,
         operatingSystem: 'Web Browser, iOS, Android, Windows, macOS, Linux',
         applicationCategory: 'BusinessApplication',
@@ -301,9 +301,9 @@ export const useAdvancedSEO = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          host: 'saasworld.com',
+          host: 'moonmart.ai',
           key: indexNowKey,
-          keyLocation: `https://saasworld.com/${indexNowKey}.txt`,
+          keyLocation: `https://moonmart.ai/${indexNowKey}.txt`,
           urlList: urls
         })
       })
@@ -324,18 +324,18 @@ export const useAdvancedSEO = () => {
         { name: 'description', content: config.description },
         { name: 'keywords', content: config.keywords },
         { name: 'robots', content: config.robots || 'index, follow, max-image-preview:large' },
-        { name: 'author', content: 'SaaSWorld' },
+        { name: 'author', content: 'Moonmart' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1.0' },
         
         // Enhanced Open Graph for social sharing
         { property: 'og:title', content: config.title },
         { property: 'og:description', content: config.description },
         { property: 'og:type', content: config.ogType || 'website' },
-        { property: 'og:url', content: config.canonical || `https://saasworld.com${route.path}` },
+        { property: 'og:url', content: config.canonical || `https://moonmart.ai${route.path}` },
         { property: 'og:image', content: config.ogImage || '/assets/images/og-default.jpg' },
         { property: 'og:image:width', content: '1200' },
         { property: 'og:image:height', content: '630' },
-        { property: 'og:site_name', content: 'SaaSWorld' },
+        { property: 'og:site_name', content: 'Moonmart' },
         { property: 'og:locale', content: $i18n.locale.value },
         
         // Enhanced Twitter Cards
@@ -343,8 +343,8 @@ export const useAdvancedSEO = () => {
         { name: 'twitter:title', content: config.title },
         { name: 'twitter:description', content: config.description },
         { name: 'twitter:image', content: config.ogImage || '/assets/images/twitter-card.jpg' },
-        { name: 'twitter:site', content: '@SaaSWorld' },
-        { name: 'twitter:creator', content: '@SaaSWorld' },
+        { name: 'twitter:site', content: '@Moonmart' },
+        { name: 'twitter:creator', content: '@Moonmart' },
         
         // Lead generation meta tags
         { name: 'conversion-focus', content: config.leadGeneration?.cta || 'Sign up for insights' },
@@ -352,22 +352,22 @@ export const useAdvancedSEO = () => {
         
         // Performance and indexing hints
         { name: 'theme-color', content: '#1a73e8' },
-        { name: 'color-scheme', content: 'light dark' },
+        { name: 'color-scheme', content: 'dark' },
         { name: 'format-detection', content: 'telephone=no' },
         { name: 'referrer', content: 'origin-when-cross-origin' },
         
         // Mobile optimization
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
-        { name: 'apple-mobile-web-app-title', content: 'SaaSWorld' },
-        { name: 'application-name', content: 'SaaSWorld' },
+        { name: 'apple-mobile-web-app-title', content: 'Moonmart' },
+        { name: 'application-name', content: 'Moonmart' },
         
         // Microsoft specific
         { name: 'msapplication-TileColor', content: '#1a73e8' },
         { name: 'msapplication-config', content: '/browserconfig.xml' }
       ],
       link: [
-        { rel: 'canonical', href: config.canonical || `https://saasworld.com${route.path}` },
+        { rel: 'canonical', href: config.canonical || `https://moonmart.ai${route.path}` },
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
         { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
         { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
@@ -421,8 +421,8 @@ export const useAdvancedSEO = () => {
     return {
       '@context': 'https://schema.org',
       '@type': 'Organization',
-      name: 'SaaSWorld',
-      url: `https://saasworld.com/${locale === 'en' ? '' : `${locale}/`}`,
+      name: 'Moonmart',
+      url: `https://moonmart.ai/${locale === 'en' ? '' : `${locale}/`}`,
       description: `Global software marketplace serving ${market}`,
       areaServed: market,
       availableLanguage: locale.toUpperCase(),

@@ -125,11 +125,11 @@ export const useAIThumbnail = () => {
         ctx.fillText(config.category.toUpperCase(), 70, 75)
       }
 
-      // Add SaaSWorld branding
+      // Add Moonmart branding
       ctx.fillStyle = currentStyle.textColor
       ctx.font = '24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
       ctx.textAlign = 'right'
-      ctx.fillText('SaaSWorld', canvas.width - 50, canvas.height - 30)
+      ctx.fillText('Moonmart', canvas.width - 50, canvas.height - 30)
 
       resolve(canvas.toDataURL('image/png', 0.9))
     })
@@ -260,7 +260,7 @@ export const useAIThumbnail = () => {
     const config: ThumbnailConfig = {
       title: postData.title,
       category: postData.category,
-      author: 'SaaSWorld Team',
+      author: 'Moonmart Team',
       style: postData.style || 'modern',
       dimensions: defaultDimensions
     }

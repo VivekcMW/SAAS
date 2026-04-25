@@ -183,9 +183,9 @@ const currentQuestion = computed(() => questions[step.value])
 
 <style scoped>
 .fit-check {
-  border: 0.5px solid #e5e7eb;
-  border-radius: 12px;
-  background: #ffffff;
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-lg);
+  background: var(--mm-s2);
   padding: 20px;
   margin: 24px 0;
 }
@@ -196,32 +196,32 @@ const currentQuestion = computed(() => questions[step.value])
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: #fff3e6;
-  color: #b45309;
+  background: var(--mm-gold-soft);
+  color: var(--mm-gold);
   font-size: 11px;
   font-weight: 700;
   padding: 4px 8px;
-  border-radius: 6px;
+  border-radius: var(--r-sm);
   letter-spacing: 0.04em;
   text-transform: uppercase;
   margin-bottom: 6px;
 }
 
-.fc-title { font-size: 20px; font-weight: 700; color: #111827; margin: 0 0 4px; }
-.fc-sub { font-size: 13px; color: #6b7280; margin: 0; }
+.fc-title { font-size: 20px; font-weight: 700; color: var(--mm-pearl); margin: 0 0 4px; }
+.fc-sub { font-size: 13px; color: var(--mm-slate); margin: 0; }
 
 /* Quiz */
 .fc-progress {
   position: relative;
   height: 6px;
-  background: #f3f4f6;
-  border-radius: 3px;
+  background: var(--mm-s3);
+  border-radius: var(--r-sm);
   overflow: hidden;
   margin-bottom: 20px;
 }
 .fc-progress-bar {
   height: 100%;
-  background: #ff8838;
+  background: var(--mm-gold);
   transition: width 250ms ease;
 }
 .fc-progress-label {
@@ -230,13 +230,13 @@ const currentQuestion = computed(() => questions[step.value])
   top: -22px;
   font-size: 11px;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--mm-slate);
 }
 
 .fc-prompt {
   font-size: 16px;
   font-weight: 600;
-  color: #111827;
+  color: var(--mm-pearl);
   margin: 0 0 12px;
 }
 
@@ -246,25 +246,25 @@ const currentQuestion = computed(() => questions[step.value])
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 8px;
+  background: var(--mm-s3);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-md);
   padding: 12px 14px;
   font-size: 14px;
   font-weight: 500;
-  color: #111827;
+  color: var(--mm-silver);
   cursor: pointer;
   text-align: left;
-  transition: border-color 150ms ease, background 150ms ease;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
 }
 
 .fc-option:hover {
-  border-color: #ff8838;
-  background: #fffaf5;
+  border-color: var(--mm-gold);
+  background: var(--mm-gold-soft);
 }
 
-.opt-arrow { color: #9ca3af; font-size: 16px; }
-.fc-option:hover .opt-arrow { color: #ff8838; }
+.opt-arrow { color: var(--mm-slate); font-size: 16px; }
+.fc-option:hover .opt-arrow { color: var(--mm-gold); }
 
 /* Result */
 .fc-result {
@@ -272,13 +272,13 @@ const currentQuestion = computed(() => questions[step.value])
   gap: 20px;
   align-items: center;
   padding: 16px;
-  border-radius: 10px;
-  background: #fafafa;
+  border-radius: var(--r-lg);
+  background: var(--mm-s3);
 }
 
-.tone-good { background: #f0fdf4; }
-.tone-warn { background: #fffaf5; }
-.tone-bad { background: #fef2f2; }
+.tone-good { background: var(--mm-sea-soft); }
+.tone-warn { background: var(--mm-gold-soft); }
+.tone-bad { background: rgba(248,113,113,0.08); }
 
 .fc-score-ring {
   position: relative;
@@ -288,18 +288,18 @@ const currentQuestion = computed(() => questions[step.value])
 }
 
 .ring-svg { width: 100%; height: 100%; transform: rotate(-90deg); }
-.ring-bg { fill: none; stroke: #e5e7eb; stroke-width: 8; }
+.ring-bg { fill: none; stroke: var(--b2); stroke-width: 8; }
 .ring-fg {
   fill: none;
-  stroke: #ff8838;
+  stroke: var(--mm-gold);
   stroke-width: 8;
   stroke-linecap: round;
   stroke-dasharray: 283;
   transition: stroke-dashoffset 600ms ease;
 }
-.tone-good .ring-fg { stroke: #10b981; }
-.tone-warn .ring-fg { stroke: #f59e0b; }
-.tone-bad .ring-fg { stroke: #ef4444; }
+.tone-good .ring-fg { stroke: var(--mm-seal); }
+.tone-warn .ring-fg { stroke: var(--mm-gold); }
+.tone-bad .ring-fg { stroke: #f87171; }
 
 .ring-text {
   position: absolute;
@@ -308,28 +308,28 @@ const currentQuestion = computed(() => questions[step.value])
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  color: #111827;
+  color: var(--mm-pearl);
 }
 .ring-num { font-size: 24px; }
-.ring-pct { font-size: 13px; color: #6b7280; margin-left: 1px; }
+.ring-pct { font-size: 13px; color: var(--mm-slate); margin-left: 1px; }
 
 .fc-result-body { flex: 1; min-width: 0; }
 
 .fc-verdict-pill {
   display: inline-block;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
   padding: 3px 10px;
-  border-radius: 999px;
+  border-radius: var(--r-full);
   font-size: 12px;
   font-weight: 700;
-  color: #111827;
+  color: var(--mm-pearl);
   margin-bottom: 6px;
 }
 
 .fc-message {
   font-size: 14px;
-  color: #374151;
+  color: var(--mm-silver);
   line-height: 1.5;
   margin: 0 0 12px;
 }
@@ -344,12 +344,12 @@ const currentQuestion = computed(() => questions[step.value])
   border: 0;
   font-size: 12px;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--mm-slate);
   cursor: pointer;
   padding: 4px 8px;
-  transition: color 150ms ease;
+  transition: color var(--transition-fast);
 }
-.fc-retry:hover { color: #ff8838; }
+.fc-retry:hover { color: var(--mm-gold); }
 
 @media (max-width: 640px) {
   .fc-options { grid-template-columns: 1fr; }

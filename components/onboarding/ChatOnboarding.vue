@@ -388,7 +388,7 @@ const focusActiveInput = () => {
 }
 
 onMounted(async () => {
-  await botSay("Hi! I'll help you list your product on SaaSWorld in about a minute.", 200)
+  await botSay("Hi! I'll help you list your product on Moonmart in about a minute.", 200)
   await botSay('Do you have a website for your product?', 400)
   focusActiveInput()
 })

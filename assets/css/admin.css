@@ -1,16 +1,16 @@
-/* Admin workspace tokens — simple, purple accent */
+/* Admin workspace tokens — Moonmart dark theme */
 :root {
-  --aw-accent: #7c3aed;
-  --aw-accent-600: #6d28d9;
-  --aw-accent-50: #f5f3ff;
-  --aw-accent-text: #5b21b6;
+  --aw-accent: var(--mm-blue, #4A7FD4);
+  --aw-accent-600: #3A6ABF;
+  --aw-accent-50: rgba(74,127,212,.1);
+  --aw-accent-text: var(--mm-blue-l, #6A9FE8);
 
-  --aw-surface: #ffffff;
-  --aw-surface-2: #f9fafb;
-  --aw-border: #e5e7eb;
-  --aw-text: #0f172a;
-  --aw-text-muted: #475569;
-  --aw-text-subtle: #64748b;
+  --aw-surface: var(--mm-surface, #0F1220);
+  --aw-surface-2: var(--mm-surface-2, #161B2E);
+  --aw-border: rgba(168,180,204,.1);
+  --aw-text: var(--mm-pearl, #F0F3F8);
+  --aw-text-muted: var(--mm-silver, #A8B4CC);
+  --aw-text-subtle: var(--mm-slate, #6B7A96);
 }
 
 .aw { padding: 0; color: var(--aw-text); }
@@ -40,9 +40,9 @@
   font-weight: 600;
   text-transform: capitalize;
 }
-.aw-role--admin { background: #ede9fe; color: #5b21b6; }
-.aw-role--vendor { background: #fef3c7; color: #92400e; }
-.aw-role--buyer { background: #e0e7ff; color: #3730a3; }
+.aw-role--admin { background: var(--mm-blue-soft); color: var(--mm-bluel); }
+.aw-role--vendor { background: var(--mm-gold-soft); color: var(--mm-goldl); }
+.aw-role--buyer { background: var(--mm-sea-soft); color: var(--mm-seal); }
 
 /* Simple spark bars */
 .aw-spark {

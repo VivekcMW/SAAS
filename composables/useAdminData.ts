@@ -54,20 +54,20 @@ const apps = ref<AppListing[]>([
   { id: 'a1', name: 'FlowDesk Pro', logo: 'FD', color: '#3b82f6', vendorName: 'FlowDesk Inc.', vendorEmail: 'team@flowdesk.io', category: 'Productivity', status: 'pending', submittedAt: '2 hours ago', description: 'Project management tool with Kanban, Gantt, and team chat built in.' },
   { id: 'a2', name: 'MagicCRM AI', logo: 'MC', color: '#ec4899', vendorName: 'MagicCRM Labs', vendorEmail: 'hello@magiccrm.ai', category: 'CRM', status: 'pending', submittedAt: '6 hours ago', description: 'AI-powered CRM with automated lead scoring and follow-up suggestions.' },
   { id: 'a3', name: 'Nebula Analytics', logo: 'NA', color: '#10b981', vendorName: 'Nebula Data Co.', vendorEmail: 'admin@nebula.dev', category: 'Analytics', status: 'pending', submittedAt: '1 day ago', description: 'Self-serve analytics dashboards for SaaS teams.' },
-  { id: 'a4', name: 'Acme CRM', logo: 'AC', color: '#f59e0b', vendorName: 'Acme Technologies', vendorEmail: 'demo@saasworld.com', category: 'CRM', status: 'approved', submittedAt: '14 days ago', description: 'All-in-one CRM for mid-market teams.' },
-  { id: 'a5', name: 'Acme Inbox', logo: 'AI', color: '#6366f1', vendorName: 'Acme Technologies', vendorEmail: 'demo@saasworld.com', category: 'Support', status: 'approved', submittedAt: '22 days ago', description: 'Shared inbox for customer support teams.' },
+  { id: 'a4', name: 'Acme CRM', logo: 'AC', color: '#f59e0b', vendorName: 'Acme Technologies', vendorEmail: 'demo@moonmart.ai', category: 'CRM', status: 'approved', submittedAt: '14 days ago', description: 'All-in-one CRM for mid-market teams.' },
+  { id: 'a5', name: 'Acme Inbox', logo: 'AI', color: '#6366f1', vendorName: 'Acme Technologies', vendorEmail: 'demo@moonmart.ai', category: 'Support', status: 'approved', submittedAt: '22 days ago', description: 'Shared inbox for customer support teams.' },
   { id: 'a6', name: 'QuickBill', logo: 'QB', color: '#ef4444', vendorName: 'BillCorp', vendorEmail: 'team@billcorp.io', category: 'Billing', status: 'rejected', submittedAt: '3 days ago', description: 'Invoicing and billing automation.' }
 ])
 
 const users = ref<PlatformUser[]>([
   { id: 'u1', name: 'Priya Shah', email: 'priya@example.com', role: 'buyer', companyName: 'Truenorth', status: 'active', joinedAt: 'Jan 14', lastActive: '2h ago' },
   { id: 'u2', name: 'Yuki Tanaka', email: 'yuki@example.com', role: 'buyer', companyName: 'Kita Co.', status: 'active', joinedAt: 'Feb 02', lastActive: '1d ago' },
-  { id: 'u3', name: 'Acme Technologies', email: 'demo@saasworld.com', role: 'vendor', companyName: 'Acme Technologies', status: 'active', joinedAt: 'Oct 12', lastActive: '12m ago' },
+  { id: 'u3', name: 'Acme Technologies', email: 'demo@moonmart.ai', role: 'vendor', companyName: 'Acme Technologies', status: 'active', joinedAt: 'Oct 12', lastActive: '12m ago' },
   { id: 'u4', name: 'SmartSell LLC', email: 'ops@smartsell.io', role: 'vendor', companyName: 'SmartSell LLC', status: 'pending', joinedAt: 'Apr 20', lastActive: '1h ago' },
   { id: 'u5', name: 'Rahul Menon', email: 'rahul@example.com', role: 'buyer', companyName: 'Oakline Legal', status: 'active', joinedAt: 'Mar 08', lastActive: '4h ago' },
   { id: 'u6', name: 'BillCorp', email: 'team@billcorp.io', role: 'vendor', companyName: 'BillCorp', status: 'suspended', joinedAt: 'Feb 18', lastActive: '8d ago' },
-  { id: 'u7', name: 'Admin User', email: 'admin@saasworld.com', role: 'admin', status: 'active', joinedAt: 'Jan 01', lastActive: 'now' },
-  { id: 'u8', name: 'Oakline Legal', email: 'buyer@saasworld.com', role: 'buyer', companyName: 'Oakline Legal', status: 'active', joinedAt: 'Dec 20', lastActive: '30m ago' }
+  { id: 'u7', name: 'Admin User', email: 'admin@moonmart.ai', role: 'admin', status: 'active', joinedAt: 'Jan 01', lastActive: 'now' },
+  { id: 'u8', name: 'Oakline Legal', email: 'buyer@moonmart.ai', role: 'buyer', companyName: 'Oakline Legal', status: 'active', joinedAt: 'Dec 20', lastActive: '30m ago' }
 ])
 
 const tickets = ref<SupportTicket[]>([

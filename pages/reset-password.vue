@@ -3,7 +3,7 @@
     <div class="rp-card">
       <NuxtLink to="/" class="rp-logo">
         <span class="rp-logo__mark">S</span>
-        <span class="rp-logo__name">SaaSWorld</span>
+        <span class="rp-logo__name">Moonmart</span>
       </NuxtLink>
 
       <!-- Success -->
@@ -93,7 +93,7 @@ import { computed, reactive, ref } from 'vue'
 
 definePageMeta({ layout: false })
 useHead({
-  title: 'Reset Password · SaaSWorld',
+  title: 'Reset Password · Moonmart',
   meta: [{ name: 'robots', content: 'noindex, nofollow' }]
 })
 
@@ -158,7 +158,7 @@ async function handleSubmit() {
 <style scoped>
 .rp-page {
   min-height: 100vh;
-  background: var(--bw-bg, #FAFAF7);
+  background: var(--mm-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -168,9 +168,9 @@ async function handleSubmit() {
 .rp-card {
   width: 100%;
   max-width: 420px;
-  background: #fff;
-  border: 1px solid var(--bw-border, #ECEAE3);
-  border-radius: var(--bw-radius, 12px);
+  background: var(--mm-s1);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-lg);
   padding: 36px 32px;
 }
 
@@ -183,46 +183,45 @@ async function handleSubmit() {
 }
 .rp-logo__mark {
   width: 32px; height: 32px;
-  background: var(--sw-primary, #FF8838);
-  color: #fff;
-  border-radius: 8px;
+  background: var(--mm-gold);
+  color: #0A0700;
+  border-radius: var(--r-sm);
   display: flex; align-items: center; justify-content: center;
   font-weight: 800; font-size: 1rem;
 }
-.rp-logo__name { font-weight: 700; font-size: 1.1rem; color: var(--bw-text, #1E1E1E); }
+.rp-logo__name { font-weight: 700; font-size: 1.1rem; color: var(--mm-pearl); }
 
-.rp-title { font-size: 1.35rem; font-weight: 700; color: var(--bw-text, #1E1E1E); margin: 0 0 6px; }
-.rp-subtitle { font-size: 0.9rem; color: var(--bw-text-muted, #6B6B6B); margin: 0 0 24px; }
+.rp-title { font-size: 1.35rem; font-weight: 700; color: var(--mm-pearl); margin: 0 0 6px; }
+.rp-subtitle { font-size: 0.9rem; color: var(--mm-slate); margin: 0 0 24px; }
 
 .rp-form { display: flex; flex-direction: column; gap: 18px; }
 
 .rp-field { display: flex; flex-direction: column; gap: 5px; }
-.rp-field label { font-size: 0.85rem; font-weight: 600; color: var(--bw-text, #1E1E1E); }
+.rp-field label { font-size: 0.85rem; font-weight: 600; color: var(--mm-silver); }
 .rp-field input {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid var(--bw-border, #ECEAE3);
-  border-radius: var(--bw-radius-sm, 8px);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
   font-size: 0.9rem;
   font-family: inherit;
-  background: #fff;
-  color: var(--bw-text, #1E1E1E);
+  background: var(--mm-s2);
+  color: var(--mm-pearl);
   transition: border-color 0.15s ease;
   box-sizing: border-box;
 }
-.rp-field input:focus { outline: none; border-color: var(--sw-primary, #FF8838); }
+.rp-field input:focus { outline: none; border-color: var(--mm-gold); }
 .rp-field input:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .rp-field__input-wrap { position: relative; }
 .rp-field__input-wrap input { padding-right: 40px; }
 .rp-field__toggle {
   position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
-  background: transparent; border: 0; cursor: pointer; color: var(--bw-text-muted, #6B6B6B); padding: 0;
+  background: transparent; border: 0; cursor: pointer; color: var(--mm-slate); padding: 0;
   display: flex; align-items: center;
 }
 
-.rp-strength { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
-.rp-strength__bar { flex: 1; height: 4px; background: var(--bw-border, #ECEAE3); border-radius: 99px; overflow: hidden; }
+.rp-strength__bar { flex: 1; height: 4px; background: var(--b1); border-radius: 99px; overflow: hidden; }
 .rp-strength__fill { height: 100%; border-radius: 99px; transition: width 0.25s ease, background 0.25s ease; }
 .rp-strength__fill.is-weak { background: #ef4444; }
 .rp-strength__fill.is-fair { background: #f59e0b; }
@@ -238,9 +237,9 @@ async function handleSubmit() {
 .rp-field__hint--error { color: #ef4444; }
 
 .rp-form-error {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: var(--bw-radius-sm, 8px);
+  background: rgba(220,38,38,0.08);
+  border: 0.5px solid rgba(220,38,38,0.3);
+  border-radius: var(--r-sm);
   color: #dc2626;
   font-size: 0.85rem;
   padding: 10px 12px;
@@ -250,23 +249,23 @@ async function handleSubmit() {
 .rp-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   height: 42px; padding: 0 20px;
-  border-radius: var(--bw-radius-sm, 8px);
+  border-radius: var(--r-sm);
   font-weight: 600; font-size: 0.9rem; font-family: inherit;
-  cursor: pointer; text-decoration: none; border: 1px solid transparent;
+  cursor: pointer; text-decoration: none; border: 0.5px solid transparent;
   transition: all 0.15s ease;
 }
 .rp-btn--primary {
-  background: var(--sw-primary, #FF8838);
-  color: #fff;
-  border-color: var(--sw-primary, #FF8838);
+  background: var(--mm-gold);
+  color: #0A0700;
+  border-color: var(--mm-gold);
 }
-.rp-btn--primary:hover:not(:disabled) { background: #e8702a; border-color: #e8702a; }
+.rp-btn--primary:hover:not(:disabled) { background: var(--mm-goldl); border-color: var(--mm-goldl); }
 .rp-btn--primary:disabled { opacity: 0.55; cursor: not-allowed; }
 .rp-btn--full { width: 100%; }
 
 .rp-back { margin: 16px 0 0; text-align: center; font-size: 0.85rem; }
-.rp-back a { color: var(--bw-text-muted, #6B6B6B); text-decoration: none; }
-.rp-back a:hover { color: var(--bw-text, #1E1E1E); }
+.rp-back a { color: var(--mm-slate); text-decoration: none; }
+.rp-back a:hover { color: var(--mm-silver); }
 
 /* Success + error states */
 .rp-success, .rp-error-state {
@@ -279,8 +278,8 @@ async function handleSubmit() {
   display: inline-flex; align-items: center; justify-content: center;
   margin-bottom: 16px;
 }
-.rp-success__icon { background: #f0fdf4; color: #22c55e; }
-.rp-error-state__icon { background: #fef2f2; color: #ef4444; }
-.rp-success h1, .rp-error-state h1 { font-size: 1.25rem; font-weight: 700; margin: 0 0 8px; color: var(--bw-text, #1E1E1E); }
-.rp-success p, .rp-error-state p { font-size: 0.9rem; color: var(--bw-text-muted, #6B6B6B); margin: 0 0 20px; line-height: 1.5; }
+.rp-success__icon { background: var(--mm-sea-soft); color: var(--mm-seal); }
+.rp-error-state__icon { background: rgba(220,38,38,0.08); color: #dc2626; }
+.rp-success h1, .rp-error-state h1 { font-size: 1.25rem; font-weight: 700; margin: 0 0 8px; color: var(--mm-pearl); }
+.rp-success p, .rp-error-state p { font-size: 0.9rem; color: var(--mm-silver); margin: 0 0 20px; line-height: 1.5; }
 </style>

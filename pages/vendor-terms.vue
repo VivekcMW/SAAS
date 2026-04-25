@@ -2,9 +2,9 @@
   <LegalShell
     title="Vendor terms"
     eyebrow="Legal · Vendors"
-    lede="The rules for companies that list their SaaS products on the SaaSWorld marketplace."
+    lede="The rules for companies that list their SaaS products on the Moonmart marketplace."
     :updated="updatedAt"
-    contact-email="vendors@saasworld.com"
+    contact-email="vendors@moonmart.ai"
     :sections="tocSections"
   >
     <div class="prose prose-lg max-w-none">
@@ -13,7 +13,7 @@
         <p>
           These Vendor Terms apply in addition to our <NuxtLink to="/terms">general Terms</NuxtLink>
           and <NuxtLink to="/acceptable-use">Acceptable Use Policy</NuxtLink> if you list a
-          product, category, or service on SaaSWorld ("Vendor").
+          product, category, or service on Moonmart ("Vendor").
         </p>
       </section>
 
@@ -51,7 +51,7 @@
       <section id="leads">
         <h2>5. Leads &amp; data</h2>
         <p>
-          Leads that SaaSWorld delivers to you are personal data under GDPR / CCPA. You
+          Leads that Moonmart delivers to you are personal data under GDPR / CCPA. You
           must process them under a lawful basis, honour opt-outs, respect data-subject
           rights, and refrain from onward transfer except to service providers under
           equivalent obligations. You are an <strong>independent controller</strong> with
@@ -71,7 +71,7 @@
       <section id="ip">
         <h2>7. Intellectual property</h2>
         <p>
-          You grant SaaSWorld a worldwide, non-exclusive, royalty-free licence to host,
+          You grant Moonmart a worldwide, non-exclusive, royalty-free licence to host,
           display, distribute and promote your listing content for the purposes of
           operating the marketplace. You retain ownership of your content.
         </p>
@@ -99,8 +99,8 @@
       <section id="contact">
         <h2>10. Contact</h2>
         <div class="contact-info">
-          <p><strong>Vendor operations:</strong> <a href="mailto:vendors@saasworld.com">vendors@saasworld.com</a></p>
-          <p><strong>Billing:</strong> <a href="mailto:billing@saasworld.com">billing@saasworld.com</a></p>
+          <p><strong>Vendor operations:</strong> <a href="mailto:vendors@moonmart.ai">vendors@moonmart.ai</a></p>
+          <p><strong>Billing:</strong> <a href="mailto:billing@moonmart.ai">billing@moonmart.ai</a></p>
         </div>
       </section>
     </div>
@@ -128,9 +128,9 @@ const tocSections = [
 ]
 
 applySEO({
-  title: 'Vendor terms | SaaSWorld',
-  description: 'Terms that apply to companies listing products on the SaaSWorld marketplace.',
-  canonical: 'https://saasworld.com/vendor-terms',
+  title: 'Vendor terms | Moonmart',
+  description: 'Terms that apply to companies listing products on the Moonmart marketplace.',
+  canonical: 'https://moonmart.ai/vendor-terms',
   ogType: 'website'
 })
 </script>

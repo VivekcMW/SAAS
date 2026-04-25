@@ -74,13 +74,13 @@ onBeforeUnmount(() => {
 .drawer-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(17, 24, 39, 0.5);
+  background: rgba(7, 9, 15, 0.75);
   z-index: 9999;
   display: flex;
 }
 
 .drawer {
-  background: #ffffff;
+  background: var(--mm-s1);
   display: flex;
   flex-direction: column;
   max-width: 100%;
@@ -88,36 +88,36 @@ onBeforeUnmount(() => {
   overflow: hidden;
 }
 
-.place-right  { margin-left: auto; height: 100%; border-left: 0.5px solid #e5e7eb; }
-.place-left   { margin-right: auto; height: 100%; border-right: 0.5px solid #e5e7eb; }
-.place-top    { width: 100%; margin-bottom: auto; border-bottom: 0.5px solid #e5e7eb; }
-.place-bottom { width: 100%; margin-top: auto; border-top: 0.5px solid #e5e7eb; }
+.place-right  { margin-left: auto; height: 100%; border-left: 0.5px solid var(--b2); }
+.place-left   { margin-right: auto; height: 100%; border-right: 0.5px solid var(--b2); }
+.place-top    { width: 100%; margin-bottom: auto; border-bottom: 0.5px solid var(--b2); }
+.place-bottom { width: 100%; margin-top: auto; border-top: 0.5px solid var(--b2); }
 
 .drawer-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 14px 18px;
-  border-bottom: 0.5px solid #e5e7eb;
+  border-bottom: 0.5px solid var(--b1);
 }
-.drawer-title { margin: 0; font-size: 16px; font-weight: 600; color: #1f2937; }
+.drawer-title { margin: 0; font-size: var(--t-md); font-weight: 600; color: var(--mm-pearl); }
 
 .drawer-close {
   background: transparent;
   border: none;
-  color: #6b7280;
+  color: var(--mm-slate);
   cursor: pointer;
   padding: 4px;
-  border-radius: 4px;
+  border-radius: var(--r-sm);
   display: flex;
   transition: background-color 150ms ease;
 }
-.drawer-close:hover { background: #f3f4f6; color: #1f2937; }
+.drawer-close:hover { background: var(--mm-s3); color: var(--mm-pearl); }
 
 .drawer-body { flex: 1; padding: 18px; overflow-y: auto; }
 .drawer-footer {
   padding: 12px 18px;
-  border-top: 0.5px solid #e5e7eb;
+  border-top: 0.5px solid var(--b1);
   display: flex;
   justify-content: flex-end;
   gap: 8px;

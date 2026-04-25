@@ -100,7 +100,7 @@
         </div>
 
         <div class="bw-card" style="margin-top: 14px;">
-          <h3 style="font-family: 'Poppins'; font-size: 0.9rem; margin: 0 0 8px;">Buyer signals</h3>
+          <h3 style="font-family: 'Syne'; font-size: 0.9rem; margin: 0 0 8px;">Buyer signals</h3>
           <ul class="signals">
             <li>Company: {{ active.buyerCompany }} ({{ active.buyerSize }})</li>
             <li>Intent: <strong>{{ active.temperature }}</strong></li>
@@ -174,7 +174,7 @@ function send() {
 .thread-item__foot { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--vw-text-subtle); margin-top: 6px; }
 
 .thread-main__head { padding: 14px 18px; border-bottom: 1px solid var(--vw-border); display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
-.thread-main__title { font-family: 'Poppins'; font-weight: 700; font-size: 1rem; }
+.thread-main__title { font-family: 'Syne'; font-weight: 700; font-size: 1rem; }
 .thread-main__sub { font-size: 0.8rem; color: var(--vw-text-muted); margin-top: 2px; }
 
 .thread-main__body { flex: 1; padding: 18px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; min-height: 200px; }

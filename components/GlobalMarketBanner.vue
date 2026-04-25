@@ -64,7 +64,7 @@ const showBanner = ref(false);
 
 const bannerMessage = computed(() => {
   const region = currentRegionSettings.value;
-  return `Welcome to SaaSWorld - Global SaaS Marketplace with localized pricing in ${region.currency}`;
+  return `Welcome to Moonmart - Global SaaS Marketplace with localized pricing in ${region.currency}`;
 });
 
 const dismissBanner = () => {

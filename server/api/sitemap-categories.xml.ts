@@ -6,7 +6,7 @@
 import { allCategoryKeywords } from '~/seo/keywords/index'
 
 export default defineEventHandler(async (event) => {
-  const baseUrl = 'https://saasworld.com'
+  const baseUrl = 'https://moonmart.ai'
   const currentDate = new Date().toISOString().split('T')[0]
   
   // Generate all category and subcategory pages

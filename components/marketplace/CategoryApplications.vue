@@ -1504,15 +1504,15 @@ onMounted(() => {
 .section-title {
   display: flex;
   align-items: center;
-  font-size: 1.25rem;
+  font-size: var(--fs-title-sm);
   font-weight: 600;
   margin-bottom: 1rem;
-  color: var(--color-text-dark, #111827);
+  color: var(--mm-pearl);
   gap: 0.5rem;
 }
 
 .section-icon {
-  color: var(--color-primary, #4338ca);
+  color: var(--mm-gold);
 }
 
 .apps-grid {
@@ -1523,7 +1523,7 @@ onMounted(() => {
 
 /* App Card Styles */
 .grid-item {
-  border-radius: 0;
+  border-radius: var(--r-lg);
   overflow: hidden;
 }
 
@@ -1535,23 +1535,23 @@ onMounted(() => {
 }
 
 .app-card {
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 0;
+  background: var(--mm-s2);
+  border: .5px solid var(--b1);
+  border-radius: var(--r-lg);
   padding: 1.5rem;
   height: 100%;
   display: flex;
   flex-direction: column;
   transition: all 0.3s ease;
   position: relative;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
 
 .app-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  border-color: #2563eb;
+  box-shadow: var(--shadow-md);
+  border-color: var(--mm-gold);
 }
 
 /* Status Badge Styles */
@@ -1559,10 +1559,10 @@ onMounted(() => {
   position: absolute;
   top: 12px;
   right: 12px;
-  font-size: 0.75rem;
+  font-size: var(--fs-caption);
   font-weight: 600;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--r-full);
   display: flex;
   align-items: center;
   gap: 0.25rem;
@@ -1572,18 +1572,21 @@ onMounted(() => {
 }
 
 .status-badge.sponsored {
-  background-color: #0f766e;
-  color: #ffffff;
+  background: var(--mm-sea-soft);
+  color: var(--mm-seal);
+  border: .5px solid var(--mm-sea);
 }
 
 .status-badge.trending {
-  background-color: #dc2626;
-  color: #ffffff;
+  background: var(--mm-gold-soft);
+  color: var(--mm-goldl);
+  border: .5px solid var(--mm-gold);
 }
 
 .status-badge.recent {
-  background-color: #FFE66D;
-  color: #2C3E50;
+  background: var(--mm-blue-soft);
+  color: var(--mm-bluel);
+  border: .5px solid var(--mm-blue);
 }
 
 /* App Header Styles */
@@ -1601,10 +1604,10 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  border-radius: 8px;
-  background-color: #f9fafb;
+  border-radius: var(--r-md);
+  background: var(--mm-s3);
   padding: 8px;
-  border: 1px solid #e5e7eb;
+  border: .5px solid var(--b1);
 }
 
 .app-logo img {
@@ -1614,9 +1617,10 @@ onMounted(() => {
 }
 
 .app-name {
-  font-size: 1.1rem;
+  font-size: var(--fs-title-sm);
   font-weight: 600;
   margin: 0;
+  color: var(--mm-pearl);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1630,8 +1634,8 @@ onMounted(() => {
 }
 
 .app-provider {
-  font-size: 0.85rem;
-  color: #6b7280;
+  font-size: var(--fs-sm);
+  color: var(--mm-silver);
 }
 
 .app-tags {
@@ -1641,25 +1645,27 @@ onMounted(() => {
 }
 
 .app-tag {
-  background: #f3f4f6;
-  color: #4b5563;
-  font-size: 0.7rem;
-  padding: 0.2rem 0.5rem;
-  border-radius: 0;
+  background: var(--mm-s3);
+  color: var(--mm-silver);
+  font-size: var(--fs-caption);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--r-full);
   white-space: nowrap;
+  border: .5px solid var(--b1);
 }
 
 .app-tag-more {
-  background: #e5e7eb;
-  color: #374151;
+  background: var(--mm-s3);
+  color: var(--mm-slate);
+  border: .5px solid var(--b1);
 }
 
 /* App Description */
 .app-description {
-  font-size: 0.9rem;
+  font-size: var(--fs-sm);
   line-height: 1.4;
   margin: 0;
-  color: #4b5563;
+  color: var(--mm-silver);
   flex-grow: 1;
 }
 
@@ -1677,32 +1683,34 @@ onMounted(() => {
 }
 
 .price-label {
-  font-size: 0.8rem;
-  color: #6b7280;
+  font-size: var(--fs-caption);
+  color: var(--mm-slate);
 }
 
 .free-tag {
-  background-color: #ecfdf5;
-  color: #047857;
-  font-size: 0.8rem;
+  background: var(--mm-sea-soft);
+  color: var(--mm-seal);
+  font-size: var(--fs-caption);
   font-weight: 600;
-  padding: 0.2rem 0.5rem;
-  border-radius: 0;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--r-full);
+  border: .5px solid var(--mm-sea);
 }
 
 .trial-tag {
-  background-color: #eff6ff;
-  color: #1d4ed8;
-  font-size: 0.8rem;
+  background: var(--mm-blue-soft);
+  color: var(--mm-bluel);
+  font-size: var(--fs-caption);
   font-weight: 600;
-  padding: 0.2rem 0.5rem;
-  border-radius: 0;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--r-full);
+  border: .5px solid var(--mm-blue);
 }
 
 .price-tag {
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
   font-weight: 600;
-  color: #111827;
+  color: var(--mm-pearl);
 }
 
 .app-rating {
@@ -1717,29 +1725,29 @@ onMounted(() => {
 }
 
 .star {
-  color: #d1d5db;
+  color: var(--b3);
 }
 
 .star.filled {
-  color: #f59e0b;
+  color: var(--mm-gold);
 }
 
 .rating-value {
   font-weight: 600;
-  font-size: 0.85rem;
-  color: #111827;
+  font-size: var(--fs-sm);
+  color: var(--mm-pearl);
 }
 
 .rating-count {
-  font-size: 0.75rem;
-  color: #6b7280;
+  font-size: var(--fs-caption);
+  color: var(--mm-slate);
 }
 
 /* App Footer */
 .app-footer {
   margin-top: auto;
   padding-top: 0.75rem;
-  border-top: 1px solid #f3f4f6;
+  border-top: .5px solid var(--b1);
 }
 
 .app-actions {
@@ -1752,9 +1760,9 @@ onMounted(() => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--r-sm);
+  font-size: var(--fs-sm);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -1762,14 +1770,14 @@ onMounted(() => {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #4f46e5, #4338ca);
-  color: white;
+  background: var(--mm-gold);
+  color: #0A0700;
   border: none;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #4338ca, #3730a3);
-  box-shadow: 0 4px 8px rgba(79, 70, 229, 0.2);
+  background: var(--mm-goldl);
+  transform: translateY(-1px);
 }
 
 .btn.full-width {
@@ -1787,8 +1795,8 @@ onMounted(() => {
 }
 
 .loading-spinner {
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-left-color: #4f46e5;
+  border: .5px solid var(--b1);
+  border-left-color: var(--mm-gold);
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -1797,7 +1805,7 @@ onMounted(() => {
 }
 
 .no-results-icon {
-  color: #9ca3af;
+  color: var(--mm-slate);
   margin-bottom: 1rem;
 }
 

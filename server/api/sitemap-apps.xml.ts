@@ -4,7 +4,7 @@
  */
 
 export default defineEventHandler(async (event) => {
-  const baseUrl = 'https://saasworld.com'
+  const baseUrl = 'https://moonmart.ai'
   const currentDate = new Date().toISOString().split('T')[0]
   
   // Comprehensive list of popular SaaS applications by category

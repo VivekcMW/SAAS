@@ -203,24 +203,24 @@ onMounted(async () => {
 }
 
 .app-card {
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 0;
+  background: var(--mm-s2);
+  border: .5px solid var(--b1);
+  border-radius: var(--r-lg);
   padding: 1.5rem;
   height: 100%;
   display: flex;
   flex-direction: column;
   transition: all 0.3s ease;
   position: relative;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
   cursor: pointer;
 }
 
 .app-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  border-color: #2563eb;
+  box-shadow: var(--shadow-md);
+  border-color: var(--mm-gold);
 }
 
 /* Sponsored slot cell — fills exactly one grid cell, matches AppCard row height */
@@ -246,8 +246,8 @@ onMounted(async () => {
   position: absolute;
   top: 12px;
   right: 12px;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--r-full);
   font-size: var(--fs-caption);
   font-weight: 600;
   display: flex;
@@ -259,18 +259,21 @@ onMounted(async () => {
 }
 
 .status-badge.featured {
-  background-color: #4ECDC4;
-  color: #0F172A;
+  background: var(--mm-sea-soft);
+  color: var(--mm-seal);
+  border: .5px solid var(--mm-sea);
 }
 
 .status-badge.trending {
-  background-color: #FF6B6B;
-  color: #111827;
+  background: rgba(212,168,67,.12);
+  color: var(--mm-goldl);
+  border: .5px solid var(--mm-gold);
 }
 
 .status-badge.recent {
-  background-color: #FFE66D;
-  color: #2C3E50;
+  background: var(--mm-blue-soft);
+  color: var(--mm-bluel);
+  border: .5px solid var(--mm-blue);
 }
 
 /* App Header */
@@ -291,7 +294,7 @@ onMounted(async () => {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  border-radius: 0;
+  border-radius: var(--r-sm);
 }
 
 .app-logo img.placeholder-logo {
@@ -301,7 +304,7 @@ onMounted(async () => {
 .app-name {
   font-size: var(--fs-title-sm);
   font-weight: 700;
-  color: #1f2937;
+  color: var(--mm-pearl);
   margin: 0;
   line-height: 1.2;
   flex: 1;
@@ -321,7 +324,7 @@ onMounted(async () => {
 
 .app-provider {
   font-size: var(--fs-sm);
-  color: #4b5563;
+  color: var(--mm-silver);
   margin-bottom: 0.5rem;
   font-weight: 500;
 }
@@ -333,23 +336,25 @@ onMounted(async () => {
 }
 
 .app-tag {
-  background: #f3f4f6;
-  color: #374151;
+  background: var(--mm-s3);
+  color: var(--mm-silver);
   padding: 0.25rem 0.75rem;
-  border-radius: 0;
+  border-radius: var(--r-full);
   font-size: var(--fs-caption);
   font-weight: 500;
   white-space: nowrap;
+  border: .5px solid var(--b1);
 }
 
 .app-tag-more {
-  background: #e5e7eb;
-  color: #374151;
+  background: var(--mm-s3);
+  color: var(--mm-slate);
+  border: .5px solid var(--b1);
 }
 
 /* App Description */
 .app-description {
-  color: #4b5563;
+  color: var(--mm-silver);
   font-size: var(--fs-sm);
   line-height: var(--lh-body);
   margin: 0 0 1rem 0;
@@ -378,35 +383,38 @@ onMounted(async () => {
 
 .price-label {
   font-size: var(--fs-caption);
-  color: #6b7280;
+  color: var(--mm-slate);
   font-weight: 500;
 }
 
 .free-tag {
-  background: #dcfce7;
-  color: #166534;
+  background: var(--mm-sea-soft);
+  color: var(--mm-seal);
   padding: 0.25rem 0.75rem;
-  border-radius: 0;
+  border-radius: var(--r-full);
   font-size: var(--fs-caption);
   font-weight: 600;
+  border: .5px solid var(--mm-sea);
 }
 
 .trial-tag {
-  background: #dbeafe;
-  color: #1e40af;
+  background: var(--mm-blue-soft);
+  color: var(--mm-bluel);
   padding: 0.25rem 0.75rem;
-  border-radius: 0;
+  border-radius: var(--r-full);
   font-size: var(--fs-caption);
   font-weight: 600;
+  border: .5px solid var(--mm-blue);
 }
 
 .price-tag {
-  background: #f3f4f6;
-  color: #374151;
+  background: var(--mm-s3);
+  color: var(--mm-silver);
   padding: 0.25rem 0.75rem;
-  border-radius: 0;
+  border-radius: var(--r-full);
   font-size: var(--fs-caption);
   font-weight: 600;
+  border: .5px solid var(--b1);
 }
 
 .app-rating {
@@ -424,22 +432,22 @@ onMounted(async () => {
 .stars svg {
   width: 16px;
   height: 16px;
-  color: #d1d5db;
+  color: var(--b3);
 }
 
 .stars svg.filled {
-  color: #fbbf24;
+  color: var(--mm-gold);
 }
 
 .rating-value {
   font-size: var(--fs-sm);
   font-weight: 600;
-  color: #374151;
+  color: var(--mm-pearl);
 }
 
 .rating-count {
   font-size: var(--fs-caption);
-  color: #6b7280;
+  color: var(--mm-slate);
 }
 
 /* App Footer */
@@ -454,7 +462,7 @@ onMounted(async () => {
 
 .btn {
   padding: 0.75rem 1.5rem;
-  border-radius: 0;
+  border-radius: var(--r-sm);
   font-weight: 600;
   font-size: var(--fs-sm);
   text-align: center;
@@ -469,12 +477,12 @@ onMounted(async () => {
 }
 
 .btn-primary {
-  background: #1D4ED8;
-  color: #fff;
+  background: var(--mm-gold);
+  color: #0A0700;
 }
 
 .btn-primary:hover {
-  background: #1E40AF;
+  background: var(--mm-goldl);
   transform: translateY(-1px);
 }
 
@@ -495,8 +503,8 @@ onMounted(async () => {
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid #f3f4f6;
-  border-top: 3px solid #3b82f6;
+  border: .5px solid var(--b1);
+  border-top: 2px solid var(--mm-gold);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
@@ -508,7 +516,7 @@ onMounted(async () => {
 }
 
 .loading-container p {
-  color: #6b7280;
+  color: var(--mm-slate);
   font-weight: 500;
 }
 
@@ -525,19 +533,19 @@ onMounted(async () => {
 .no-results-icon svg {
   width: 64px;
   height: 64px;
-  color: #d1d5db;
+  color: var(--b3);
   margin-bottom: 1rem;
 }
 
 .no-results h3 {
   font-size: var(--fs-title);
   font-weight: 700;
-  color: #374151;
+  color: var(--mm-pearl);
   margin: 0 0 0.5rem 0;
 }
 
 .no-results p {
-  color: #6b7280;
+  color: var(--mm-slate);
   margin: 0 0 2rem 0;
   max-width: 400px;
 }

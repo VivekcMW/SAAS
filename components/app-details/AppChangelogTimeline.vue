@@ -106,9 +106,9 @@ function formatDate(iso: string): string {
 
 <style scoped>
 .changelog {
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 12px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-lg);
   padding: 20px;
 }
 
@@ -120,10 +120,10 @@ function formatDate(iso: string): string {
   margin: 0;
   font-size: 16px;
   font-weight: 700;
-  color: #111827;
+  color: var(--mm-pearl);
 }
-.cl-title :deep(svg) { width: 18px; height: 18px; color: #ff8838; }
-.cl-sub { margin: 4px 0 0; font-size: 13px; color: #6b7280; }
+.cl-title :deep(svg) { width: 18px; height: 18px; color: var(--mm-gold); }
+.cl-sub { margin: 4px 0 0; font-size: 13px; color: var(--mm-slate); }
 
 .cl-timeline { list-style: none; padding: 0; margin: 0; }
 .cl-item { position: relative; padding-left: 36px; padding-bottom: 16px; }
@@ -140,14 +140,14 @@ function formatDate(iso: string): string {
   align-items: center;
   justify-content: center;
   z-index: 2;
-  border: 2px solid #ffffff;
+  border: 2px solid var(--mm-s2);
 }
 .cl-marker :deep(svg) { width: 12px; height: 12px; }
 
-.cl-marker.tone-good { background: #d1fae5; color: #047857; }
-.cl-marker.tone-neutral { background: #e0e7ff; color: #4338ca; }
-.cl-marker.tone-warn { background: #fef3c7; color: #b45309; }
-.cl-marker.tone-danger { background: #fee2e2; color: #b91c1c; }
+.cl-marker.tone-good { background: var(--mm-sea-soft); color: var(--mm-seal); }
+.cl-marker.tone-neutral { background: var(--mm-blue-soft); color: var(--mm-bluel); }
+.cl-marker.tone-warn { background: var(--mm-gold-soft); color: var(--mm-gold); }
+.cl-marker.tone-danger { background: rgba(248,113,113,0.12); color: #f87171; }
 
 .cl-line {
   position: absolute;
@@ -155,13 +155,13 @@ function formatDate(iso: string): string {
   top: 28px;
   bottom: 0;
   width: 2px;
-  background: #f3f4f6;
+  background: var(--b1);
 }
 
 .cl-card {
-  background: #fafafa;
-  border: 0.5px solid #f3f4f6;
-  border-radius: 8px;
+  background: var(--mm-s3);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-md);
   padding: 10px 12px;
 }
 
@@ -172,28 +172,28 @@ function formatDate(iso: string): string {
   margin-bottom: 4px;
   flex-wrap: wrap;
 }
-.cl-version { font-family: ui-monospace, SFMono-Regular, monospace; font-size: 11px; color: #6b7280; }
+.cl-version { font-family: ui-monospace, SFMono-Regular, monospace; font-size: 11px; color: var(--mm-slate); }
 .cl-pill {
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   padding: 1px 6px;
-  border-radius: 4px;
+  border-radius: var(--r-xs);
 }
-.cl-pill.tone-good { background: #d1fae5; color: #047857; }
-.cl-pill.tone-neutral { background: #e0e7ff; color: #4338ca; }
-.cl-pill.tone-warn { background: #fef3c7; color: #b45309; }
-.cl-pill.tone-danger { background: #fee2e2; color: #b91c1c; }
-.cl-date { font-size: 11px; color: #9ca3af; margin-left: auto; }
+.cl-pill.tone-good { background: var(--mm-sea-soft); color: var(--mm-seal); }
+.cl-pill.tone-neutral { background: var(--mm-blue-soft); color: var(--mm-bluel); }
+.cl-pill.tone-warn { background: var(--mm-gold-soft); color: var(--mm-gold); }
+.cl-pill.tone-danger { background: rgba(248,113,113,0.12); color: #f87171; }
+.cl-date { font-size: 11px; color: var(--mm-slate); margin-left: auto; }
 
-.cl-itemtitle { margin: 0 0 6px; font-size: 14px; font-weight: 600; color: #111827; }
+.cl-itemtitle { margin: 0 0 6px; font-size: 14px; font-weight: 600; color: var(--mm-pearl); }
 
 .cl-highlights {
   margin: 0;
   padding-left: 18px;
   font-size: 12px;
-  color: #4b5563;
+  color: var(--mm-silver);
   line-height: 1.55;
 }
 .cl-highlights li { margin: 2px 0; }

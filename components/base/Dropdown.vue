@@ -49,13 +49,13 @@ defineExpose({ close })
 
 .dropdown-menu {
   position: absolute;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 6px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-md);
   min-width: 160px;
   z-index: 1000;
   padding: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-lg);
 }
 
 .place-bottom-start { top: calc(100% + 4px); left: 0; }
@@ -71,20 +71,20 @@ defineExpose({ close })
   padding: 8px 10px;
   background: transparent;
   border: none;
-  color: #374151;
-  font-size: 14px;
+  color: var(--mm-silver);
+  font-size: var(--t-base);
   text-align: left;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: var(--r-sm);
   text-decoration: none;
-  font-family: inherit;
+  font-family: var(--f-ui);
   transition: background-color 150ms ease;
 }
-.dropdown-menu :deep(.dropdown-item:hover) { background: #f3f4f6; color: #1f2937; }
+.dropdown-menu :deep(.dropdown-item:hover) { background: var(--mm-s3); color: var(--mm-pearl); }
 .dropdown-menu :deep(.dropdown-item[disabled]) { opacity: 0.5; cursor: not-allowed; }
 .dropdown-menu :deep(.dropdown-divider) {
   height: 0.5px;
-  background: #e5e7eb;
+  background: var(--b1);
   margin: 4px 0;
 }
 </style>

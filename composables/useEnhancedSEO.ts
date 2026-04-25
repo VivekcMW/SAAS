@@ -50,7 +50,7 @@ export const useEnhancedSEO = () => {
       articleSection,
       publishedDate,
       modifiedDate,
-      author = 'SaasWorld Team',
+      author = 'Moonmart Team',
       locale = 'en_US',
       alternateLocales = ['en_US', 'es_ES', 'fr_FR', 'de_DE', 'pt_BR'],
       schema,
@@ -58,7 +58,7 @@ export const useEnhancedSEO = () => {
       appData
     } = options
 
-    const baseUrl = 'https://saasworld.com'
+    const baseUrl = 'https://moonmart.ai'
     const fullCanonicalUrl = canonicalUrl ? `${baseUrl}${canonicalUrl}` : `${baseUrl}${route.path}`
     
     // Enhanced meta tags for better LLM understanding
@@ -71,7 +71,7 @@ export const useEnhancedSEO = () => {
       { hid: 'googlebot', name: 'googlebot', content: 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1' },
       
       // Enhanced semantic meta tags for LLMs
-      { hid: 'application-name', name: 'application-name', content: 'SaasWorld' },
+      { hid: 'application-name', name: 'application-name', content: 'Moonmart' },
       { hid: 'category', name: 'category', content: 'Software Marketplace' },
       { hid: 'classification', name: 'classification', content: 'Business Software Directory' },
       { hid: 'coverage', name: 'coverage', content: 'Worldwide' },
@@ -81,7 +81,7 @@ export const useEnhancedSEO = () => {
       
       // Open Graph - Enhanced
       { hid: 'og:type', property: 'og:type', content: ogType },
-      { hid: 'og:site_name', property: 'og:site_name', content: 'SaasWorld' },
+      { hid: 'og:site_name', property: 'og:site_name', content: 'Moonmart' },
       { hid: 'og:title', property: 'og:title', content: title },
       { hid: 'og:description', property: 'og:description', content: description },
       { hid: 'og:image', property: 'og:image', content: `${baseUrl}${ogImage}` },
@@ -93,19 +93,19 @@ export const useEnhancedSEO = () => {
       
       // Twitter Cards - Enhanced
       { hid: 'twitter:card', name: 'twitter:card', content: twitterCard },
-      { hid: 'twitter:site', name: 'twitter:site', content: '@SaasWorld' },
-      { hid: 'twitter:creator', name: 'twitter:creator', content: '@SaasWorld' },
+      { hid: 'twitter:site', name: 'twitter:site', content: '@Moonmart' },
+      { hid: 'twitter:creator', name: 'twitter:creator', content: '@Moonmart' },
       { hid: 'twitter:title', name: 'twitter:title', content: title },
       { hid: 'twitter:description', name: 'twitter:description', content: description },
       { hid: 'twitter:image', name: 'twitter:image', content: `${baseUrl}${ogImage}` },
       { hid: 'twitter:image:alt', name: 'twitter:image:alt', content: title },
       
       // LinkedIn specific
-      { hid: 'linkedin:owner', name: 'linkedin:owner', content: 'SaasWorld' },
+      { hid: 'linkedin:owner', name: 'linkedin:owner', content: 'Moonmart' },
       
       // Additional semantic markup for LLMs
       { hid: 'theme-color', name: 'theme-color', content: '#2563eb' },
-      { hid: 'color-scheme', name: 'color-scheme', content: 'light dark' },
+      { hid: 'color-scheme', name: 'color-scheme', content: 'dark' },
       
       // Mobile optimization
       { hid: 'viewport', name: 'viewport', content: 'width=device-width, initial-scale=1.0, viewport-fit=cover' },
@@ -177,7 +177,7 @@ export const useEnhancedSEO = () => {
       'https://fonts.gstatic.com',
       'https://cdn.jsdelivr.net',
       'https://unpkg.com',
-      'https://api.saasworld.com'
+      'https://api.moonmart.ai'
     ]
 
     preconnectDomains.forEach(domain => {
@@ -245,7 +245,7 @@ export const useEnhancedSEO = () => {
         "position": index + 1,
         "name": step.name,
         "text": step.text,
-        ...(step.image && { "image": `https://saasworld.com${step.image}` })
+        ...(step.image && { "image": `https://moonmart.ai${step.image}` })
       }))
     }
   }

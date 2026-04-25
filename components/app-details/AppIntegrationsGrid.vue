@@ -102,17 +102,17 @@ const visible = computed(() =>
 .int-filters { display: flex; gap: 4px; flex-wrap: wrap; }
 .int-chip {
   padding: 5px 12px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 14px;
-  font-family: inherit;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-full);
+  font-family: var(--f-ui);
   font-size: 12px;
-  color: #6b7280;
+  color: var(--mm-silver);
   cursor: pointer;
   transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
 }
-.int-chip:hover { background: #f9fafb; color: #1f2937; }
-.int-chip.active { background: #fff3e6; color: #b45309; border-color: #ff8838; }
+.int-chip:hover { background: var(--mm-s3); color: var(--mm-pearl); }
+.int-chip.active { background: var(--mm-gold-soft); color: var(--mm-gold); border-color: var(--mm-gold); }
 
 .int-search { position: relative; }
 .int-search-icon {
@@ -122,20 +122,21 @@ const visible = computed(() =>
   transform: translateY(-50%);
   width: 14px;
   height: 14px;
-  color: #9ca3af;
+  color: var(--mm-slate);
 }
 .int-search-input {
   padding: 6px 10px 6px 30px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 6px;
-  font-family: inherit;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
+  font-family: var(--f-ui);
   font-size: 13px;
-  color: #1f2937;
+  color: var(--mm-pearl);
   width: 200px;
   transition: border-color 150ms ease;
 }
-.int-search-input:focus { outline: none; border-color: #ff8838; }
+.int-search-input::placeholder { color: var(--mm-silver); }
+.int-search-input:focus { outline: none; border-color: var(--mm-gold); box-shadow: 0 0 0 3px var(--mm-gold-soft); }
 
 .int-grid {
   display: grid;
@@ -149,12 +150,12 @@ const visible = computed(() =>
   align-items: center;
   gap: 6px;
   padding: 12px 8px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 8px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-sm);
   transition: border-color 150ms ease, background-color 150ms ease;
 }
-.int-item:hover { border-color: #d1d5db; background: #f9fafb; }
+.int-item:hover { border-color: var(--b2); background: var(--mm-s3); }
 
 .int-logo {
   width: 32px;
@@ -162,20 +163,20 @@ const visible = computed(() =>
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #f3f4f6;
-  border-radius: 6px;
+  background: var(--mm-s3);
+  border-radius: var(--r-sm);
   overflow: hidden;
 }
 .int-logo img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
 .int-initial {
   font-size: 14px;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--mm-silver);
 }
 
 .int-name {
   font-size: 12px;
-  color: #374151;
+  color: var(--mm-silver);
   text-align: center;
   max-width: 100%;
   overflow: hidden;
@@ -189,30 +190,30 @@ const visible = computed(() =>
   padding: 1px 5px;
   font-size: 9px;
   font-weight: 600;
-  border-radius: 3px;
+  border-radius: var(--r-xs);
   text-transform: uppercase;
   letter-spacing: 0.3px;
 }
-.int-type.t-native { background: #fff3e6; color: #b45309; }
-.int-type.t-zapier { background: #fef3c7; color: #92400e; }
-.int-type.t-api { background: #dbeafe; color: #1e40af; }
-.int-type.t-webhook { background: #f3e8ff; color: #6b21a8; }
+.int-type.t-native { background: var(--mm-gold-soft); color: var(--mm-gold); }
+.int-type.t-zapier { background: var(--mm-gold-soft); color: var(--mm-goldl); }
+.int-type.t-api { background: var(--mm-blue-soft); color: var(--mm-bluel); }
+.int-type.t-webhook { background: var(--mm-sea-soft); color: var(--mm-seal); }
 
-.int-empty { text-align: center; font-size: 14px; color: #6b7280; padding: 20px; }
+.int-empty { text-align: center; font-size: 14px; color: var(--mm-slate); padding: 20px; }
 
 .int-toggle {
   margin-top: 12px;
   padding: 6px 12px;
   background: transparent;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 6px;
-  font-family: inherit;
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
+  font-family: var(--f-ui);
   font-size: 13px;
-  color: #374151;
+  color: var(--mm-silver);
   cursor: pointer;
   transition: background-color 150ms ease;
 }
-.int-toggle:hover { background: #f9fafb; }
+.int-toggle:hover { background: var(--mm-s3); }
 
 @media (max-width: 900px) {
   .int-grid { grid-template-columns: repeat(4, 1fr); }

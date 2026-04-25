@@ -80,19 +80,19 @@ const go = (p: number) => {
   min-width: 32px;
   height: 32px;
   padding: 0 8px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 6px;
-  font-size: 13px;
-  color: #374151;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
+  font-size: var(--t-sm);
+  color: var(--mm-silver);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
 }
-.page-btn:hover:not(:disabled):not(.active) { background: #f9fafb; }
-.page-btn.active { background: #ff8838; border-color: #ff8838; color: #ffffff; }
+.page-btn:hover:not(:disabled):not(.active) { background: var(--mm-s3); color: var(--mm-pearl); }
+.page-btn.active { background: var(--mm-gold); border-color: var(--mm-gold); color: #0A0700; }
 .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .page-btn.ellipsis { border: none; background: transparent; cursor: default; }
 </style>

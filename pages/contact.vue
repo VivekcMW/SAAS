@@ -120,7 +120,7 @@
             <label class="ct-consent">
               <input v-model="form.consent" type="checkbox" required />
               <span>
-                I agree to SaaSWorld processing my details under the
+                I agree to Moonmart processing my details under the
                 <NuxtLink to="/privacy">Privacy Policy</NuxtLink>.
               </span>
             </label>
@@ -152,19 +152,19 @@
             <ul class="ct-contacts">
               <li>
                 <span class="ct-contacts__label">Sales</span>
-                <a href="mailto:sales@saasworld.com">sales@saasworld.com</a>
+                <a href="mailto:sales@moonmart.ai">sales@moonmart.ai</a>
               </li>
               <li>
                 <span class="ct-contacts__label">Support</span>
-                <a href="mailto:support@saasworld.com">support@saasworld.com</a>
+                <a href="mailto:support@moonmart.ai">support@moonmart.ai</a>
               </li>
               <li>
                 <span class="ct-contacts__label">Press</span>
-                <a href="mailto:press@saasworld.com">press@saasworld.com</a>
+                <a href="mailto:press@moonmart.ai">press@moonmart.ai</a>
               </li>
               <li>
                 <span class="ct-contacts__label">Security</span>
-                <a href="mailto:security@saasworld.com">security@saasworld.com</a>
+                <a href="mailto:security@moonmart.ai">security@moonmart.ai</a>
               </li>
             </ul>
           </div>
@@ -206,9 +206,9 @@ import { h, reactive, ref } from 'vue'
 
 const { applySEO } = useSEO()
 applySEO({
-  title: 'Contact SaaSWorld — Talk to our team',
+  title: 'Contact Moonmart — Talk to our team',
   description:
-    'Get answers from real humans at SaaSWorld. Sales, support, press, and partner contacts. Replies within one business hour on weekdays.',
+    'Get answers from real humans at Moonmart. Sales, support, press, and partner contacts. Replies within one business hour on weekdays.',
   canonical: '/contact',
   ogType: 'website'
 })
@@ -227,7 +227,7 @@ const IconShield = () => h('svg', { viewBox: '0 0 24 24', width: 24, height: 24 
 
 type Route = { title: string; desc: string; cta: string; href: string; icon: () => ReturnType<typeof h> }
 const routes: Route[] = [
-  { title: 'I already have an account', desc: 'Account, billing, or product questions — our support team replies fast.', cta: 'Email support', href: 'mailto:support@saasworld.com', icon: IconDoc },
+  { title: 'I already have an account', desc: 'Account, billing, or product questions — our support team replies fast.', cta: 'Email support', href: 'mailto:support@moonmart.ai', icon: IconDoc },
   { title: 'I want to list my product', desc: 'Reach buyers actively searching in your category. Free plan available.', cta: 'List your product', href: '/list-product', icon: IconStore },
   { title: 'Security or legal enquiry', desc: 'DPAs, security reviews, and responsible disclosure.', cta: 'Visit Trust Center', href: '/trust', icon: IconShield }
 ]
@@ -270,8 +270,8 @@ async function onSubmit() {
 const faqs = [
   { q: 'How fast will I get a reply?', a: 'Under one business hour on weekdays (Mon–Fri, 07:00–19:00 UTC). Weekend and holiday messages are answered first thing Monday morning.' },
   { q: 'Is there a cost to talk to your team?', a: 'No. Buyer advisory — including shortlists and demos — is 100% free. We earn revenue from vendor subscriptions, not from buyers.' },
-  { q: 'Can I request an NDA before a sales call?', a: 'Yes. Email legal@saasworld.com with your NDA template and we\'ll countersign within one business day.' },
-  { q: 'Do you offer phone support?', a: 'Scale-plan customers get a dedicated CSM with a direct line. Everyone else can book a call via /demo or email sales@saasworld.com.' },
+  { q: 'Can I request an NDA before a sales call?', a: 'Yes. Email legal@moonmart.ai with your NDA template and we\'ll countersign within one business day.' },
+  { q: 'Do you offer phone support?', a: 'Scale-plan customers get a dedicated CSM with a direct line. Everyone else can book a call via /demo or email sales@moonmart.ai.' },
   { q: 'What information should I include?', a: 'Your stack, team size, budget range, and the problem you\'re solving. The more specifics, the sharper our recommendation.' },
   { q: 'How do you protect my data?', a: 'All form submissions are encrypted in transit and at rest. We do not sell contact data. Read our full policy at /privacy.' }
 ]
@@ -287,11 +287,11 @@ const faqs = [
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.4rem 1.5rem;
-  color: #52525b;
+  color: var(--mm-silver);
   font-size: 0.9rem;
 }
 .ct-trust li { display: inline-flex; align-items: center; gap: 0.45rem; }
-.ct-trust svg { color: var(--sw-primary, #ff8838); flex-shrink: 0; }
+.ct-trust svg { color: var(--mm-gold); flex-shrink: 0; }
 
 /* Route cards */
 .ct-routes {
@@ -312,22 +312,22 @@ const faqs = [
 .ct-route__icon {
   width: 44px;
   height: 44px;
-  border-radius: 10px;
-  background: var(--sw-primary-soft, #fff1e6);
-  color: var(--sw-primary, #ff8838);
+  border-radius: var(--r-md);
+  background: var(--mm-gold-soft);
+  color: var(--mm-gold);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 0.25rem;
 }
 .ct-route__title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: 1.05rem;
   font-weight: 700;
-  color: #1e1e1e;
+  color: var(--mm-pearl);
   margin: 0;
 }
-.ct-route__desc { color: #52525b; font-size: 0.92rem; line-height: 1.55; margin: 0; flex: 1; }
+.ct-route__desc { color: var(--mm-silver); font-size: 0.92rem; line-height: 1.55; margin: 0; flex: 1; }
 
 /* Form + sidebar layout */
 .ct-layout {
@@ -340,31 +340,31 @@ const faqs = [
   .ct-layout { grid-template-columns: 1fr; gap: 2rem; }
 }
 
-.ct-form-col { background: #fff; border: 1px solid #f0efec; border-radius: 16px; padding: 2rem 2rem 2.25rem; }
+.ct-form-col { background: var(--mm-s1); border: 0.5px solid var(--b2); border-radius: var(--r-lg); padding: 2rem 2rem 2.25rem; }
 .ct-form__title {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: 1.5rem;
   font-weight: 700;
-  color: #1e1e1e;
+  color: var(--mm-pearl);
   margin: 0.35rem 0 0.4rem;
 }
-.ct-form__lede { color: #52525b; font-size: 0.94rem; line-height: 1.55; margin: 0 0 1.5rem; }
-.ct-req { color: var(--sw-primary, #ff8838); font-weight: 600; }
+.ct-form__lede { color: var(--mm-silver); font-size: 0.94rem; line-height: 1.55; margin: 0 0 1.5rem; }
+.ct-req { color: var(--mm-gold); font-weight: 600; }
 
 .ct-form { display: flex; flex-direction: column; gap: 1.1rem; }
 .ct-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 @media (max-width: 600px) { .ct-row { grid-template-columns: 1fr; } }
 
 .ct-field { display: flex; flex-direction: column; gap: 0.4rem; }
-.ct-field > span:first-child { font-size: 0.82rem; font-weight: 600; color: #3f3f46; }
+.ct-field > span:first-child { font-size: 0.82rem; font-weight: 600; color: var(--mm-silver); }
 .ct-field input,
 .ct-field select,
 .ct-field textarea {
   font: inherit;
-  color: #1e1e1e;
-  background: #fff;
-  border: 1px solid #e4e0dc;
-  border-radius: 10px;
+  color: var(--mm-pearl);
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-md);
   padding: 0.7rem 0.85rem;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
   width: 100%;
@@ -374,23 +374,23 @@ const faqs = [
 .ct-field select:focus,
 .ct-field textarea:focus {
   outline: none;
-  border-color: var(--sw-primary, #ff8838);
-  box-shadow: 0 0 0 3px rgba(255, 136, 56, 0.15);
+  border-color: var(--mm-gold);
+  box-shadow: 0 0 0 3px var(--mm-gold-soft);
 }
 .ct-field input::placeholder,
-.ct-field textarea::placeholder { color: #a1a1aa; }
-.ct-hint { color: #a1a1aa; font-size: 0.75rem; text-align: right; }
+.ct-field textarea::placeholder { color: var(--mm-slate); }
+.ct-hint { color: var(--mm-slate); font-size: 0.75rem; text-align: right; }
 
 .ct-consent {
   display: flex;
   align-items: flex-start;
   gap: 0.6rem;
   font-size: 0.88rem;
-  color: #52525b;
+  color: var(--mm-silver);
   line-height: 1.5;
 }
-.ct-consent input { margin-top: 0.2rem; accent-color: var(--sw-primary, #ff8838); }
-.ct-consent a { color: var(--sw-primary, #ff8838); font-weight: 600; }
+.ct-consent input { margin-top: 0.2rem; accent-color: var(--mm-gold); }
+.ct-consent a { color: var(--mm-gold); font-weight: 600; }
 
 .ct-actions {
   display: flex;
@@ -399,62 +399,62 @@ const faqs = [
   flex-wrap: wrap;
   padding-top: 0.5rem;
 }
-.ct-actions__note { color: #71717a; font-size: 0.82rem; }
+.ct-actions__note { color: var(--mm-slate); font-size: 0.82rem; }
 
 .ct-success { text-align: center; padding: 2rem 1rem; }
 .ct-success__icon {
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: var(--sw-primary-soft, #fff1e6);
-  color: var(--sw-primary, #ff8838);
+  background: var(--mm-gold-soft);
+  color: var(--mm-gold);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1rem;
 }
 .ct-success h3 {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: 1.4rem;
   font-weight: 700;
-  color: #1e1e1e;
+  color: var(--mm-pearl);
   margin: 0 0 0.5rem;
 }
-.ct-success p { color: #52525b; font-size: 0.96rem; line-height: 1.55; margin: 0 auto 1.5rem; max-width: 440px; }
+.ct-success p { color: var(--mm-silver); font-size: 0.96rem; line-height: 1.55; margin: 0 auto 1.5rem; max-width: 440px; }
 .ct-success__ctas { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; }
 
 /* Sidebar */
 .ct-side { display: flex; flex-direction: column; gap: 1rem; }
-.ct-side__card { background: #fff; border: 1px solid #f0efec; border-radius: 14px; padding: 1.4rem 1.5rem; }
+.ct-side__card { background: var(--mm-s1); border: 0.5px solid var(--b1); border-radius: var(--r-lg); padding: 1.4rem 1.5rem; }
 .ct-side__card h3 {
-  font-family: var(--font-heading, 'Poppins', system-ui, sans-serif);
+  font-family: var(--f-display);
   font-size: 1rem;
   font-weight: 700;
-  color: #1e1e1e;
+  color: var(--mm-pearl);
   margin: 0 0 1rem;
 }
 
 .ct-contacts { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.7rem; }
 .ct-contacts li { display: flex; flex-direction: column; gap: 0.1rem; }
-.ct-contacts__label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #71717a; }
-.ct-contacts a { color: #1e1e1e; font-weight: 500; font-size: 0.94rem; text-decoration: none; border-bottom: 1px dashed #e4e0dc; padding-bottom: 1px; width: fit-content; }
-.ct-contacts a:hover { color: var(--sw-primary, #ff8838); border-bottom-color: var(--sw-primary, #ff8838); }
+.ct-contacts__label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mm-slate); }
+.ct-contacts a { color: var(--mm-silver); font-weight: 500; font-size: 0.94rem; text-decoration: none; border-bottom: 0.5px dashed var(--b2); padding-bottom: 1px; width: fit-content; }
+.ct-contacts a:hover { color: var(--mm-gold); border-bottom-color: var(--mm-gold); }
 
 .ct-offices { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem; }
-.ct-offices li { display: flex; flex-direction: column; gap: 0.1rem; font-size: 0.9rem; color: #52525b; }
-.ct-offices strong { color: #1e1e1e; font-weight: 600; font-size: 0.95rem; }
+.ct-offices li { display: flex; flex-direction: column; gap: 0.1rem; font-size: 0.9rem; color: var(--mm-silver); }
+.ct-offices strong { color: var(--mm-pearl); font-weight: 600; font-size: 0.95rem; }
 
 .ct-side__card--quote {
-  background: #fff;
-  border: 1px solid rgba(255, 136, 56, 0.35);
-  box-shadow: 0 10px 30px -22px rgba(255, 136, 56, 0.4);
+  background: var(--mm-s2);
+  border: 0.5px solid var(--mm-gold);
+  box-shadow: 0 10px 30px -22px var(--mm-gold-soft);
 }
 .ct-side__card--quote p {
-  color: #1e1e1e;
+  color: var(--mm-silver);
   font-size: 0.96rem;
   line-height: 1.55;
   font-style: italic;
   margin: 0 0 0.75rem;
 }
-.ct-side__card--quote footer { color: #71717a; font-size: 0.82rem; font-style: normal; }
+.ct-side__card--quote footer { color: var(--mm-slate); font-size: 0.82rem; font-style: normal; }
 </style>

@@ -2,11 +2,11 @@
   <div class="auth-page">
     <div class="auth-card">
       <header class="auth-head">
-        <NuxtLink to="/" class="auth-logo" aria-label="SaaSWorld home">
+        <NuxtLink to="/" class="auth-logo" aria-label="Moonmart home">
           <SaasworldLogo class="logo" />
         </NuxtLink>
         <h1>Welcome back</h1>
-        <p class="subtitle">Sign in to your SaaSWorld account</p>
+        <p class="subtitle">Sign in to your Moonmart account</p>
       </header>
 
       <!-- Email verified banner -->
@@ -151,9 +151,9 @@ definePageMeta({ layout: false })
 const route = useRoute()
 
 useHead({
-  title: 'Sign in — SaaSWorld',
+  title: 'Sign in — Moonmart',
   meta: [
-    { name: 'description', content: 'Sign in to your SaaSWorld account.' }
+    { name: 'description', content: 'Sign in to your Moonmart account.' }
   ]
 })
 
@@ -225,9 +225,9 @@ interface DemoAccount {
 }
 
 const demoAccounts: DemoAccount[] = [
-  { role: 'buyer', label: 'Buyer', desc: 'Discover & compare', email: 'buyer@saasworld.com', password: 'buyer123' },
-  { role: 'vendor', label: 'Vendor', desc: 'Manage your listings', email: 'demo@saasworld.com', password: 'demo123' },
-  { role: 'admin', label: 'Admin', desc: 'Full platform access', email: 'admin@saasworld.com', password: 'admin123' }
+  { role: 'buyer', label: 'Buyer', desc: 'Discover & compare', email: 'buyer@moonmart.ai', password: 'buyer123' },
+  { role: 'vendor', label: 'Vendor', desc: 'Manage your listings', email: 'demo@moonmart.ai', password: 'demo123' },
+  { role: 'admin', label: 'Admin', desc: 'Full platform access', email: 'admin@moonmart.ai', password: 'admin123' }
 ]
 
 const tryDemo = async (d: DemoAccount) => {
@@ -253,17 +253,17 @@ const tryDemo = async (d: DemoAccount) => {
   align-items: center;
   justify-content: center;
   padding: 24px 16px;
-  background: #f8fafc;
+  background: var(--mm-bg);
 }
 
 .auth-card {
   width: 100%;
   max-width: 420px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 16px;
+  background: var(--mm-s1);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-lg);
   padding: 36px 32px;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
+  box-shadow: var(--shadow-lg);
 }
 
 .auth-head { text-align: center; margin-bottom: 24px; }
@@ -272,10 +272,10 @@ const tryDemo = async (d: DemoAccount) => {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  border-radius: var(--bw-radius-sm, 8px);
-  color: #166534;
+  background: var(--mm-sea-soft);
+  border: 0.5px solid var(--mm-sea);
+  border-radius: var(--r-sm);
+  color: var(--mm-seal);
   font-size: 0.875rem;
   font-weight: 500;
   padding: 10px 14px;
@@ -287,10 +287,10 @@ const tryDemo = async (d: DemoAccount) => {
   margin: 0 0 6px;
   font-size: 24px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--mm-pearl);
   letter-spacing: -0.01em;
 }
-.subtitle { margin: 0; font-size: 14px; color: #64748b; }
+.subtitle { margin: 0; font-size: 14px; color: var(--mm-slate); }
 
 .social-row {
   display: grid;
@@ -304,17 +304,17 @@ const tryDemo = async (d: DemoAccount) => {
   justify-content: center;
   gap: 8px;
   padding: 10px 12px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 8px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
   font-family: inherit;
   font-size: 14px;
   font-weight: 500;
-  color: #1f2937;
+  color: var(--mm-silver);
   cursor: pointer;
   transition: background-color 150ms ease, border-color 150ms ease;
 }
-.social-btn:hover:not(:disabled) { background: #f9fafb; border-color: #d1d5db; }
+.social-btn:hover:not(:disabled) { background: var(--mm-s3); border-color: var(--b3); }
 .social-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 .social-btn .social-icon { width: 18px; height: 18px; }
 
@@ -327,14 +327,14 @@ const tryDemo = async (d: DemoAccount) => {
   content: '';
   position: absolute;
   left: 0; right: 0; top: 50%;
-  height: 0.5px; background: #e5e7eb;
+  height: 0.5px; background: var(--b2);
 }
 .divider span {
   position: relative;
-  background: #ffffff;
+  background: var(--mm-s1);
   padding: 0 10px;
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--mm-slate);
 }
 
 .auth-form { display: flex; flex-direction: column; gap: 14px; }
@@ -343,32 +343,32 @@ const tryDemo = async (d: DemoAccount) => {
 .field label {
   font-size: 13px;
   font-weight: 500;
-  color: #334155;
+  color: var(--mm-silver);
 }
 .field input {
   width: 100%;
   padding: 10px 12px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 8px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
   font-family: inherit;
   font-size: 14px;
-  color: #0f172a;
+  color: var(--mm-pearl);
   transition: border-color 150ms ease, box-shadow 150ms ease;
 }
-.field input::placeholder { color: #94a3b8; }
+.field input::placeholder { color: var(--mm-slate); }
 .field input:focus {
   outline: none;
-  border-color: #ff8838;
-  box-shadow: 0 0 0 3px rgba(255, 136, 56, 0.15);
+  border-color: var(--mm-gold);
+  box-shadow: 0 0 0 3px var(--mm-gold-soft);
 }
 .field input[aria-invalid="true"] { border-color: #dc2626; }
-.field input:disabled { background: #f9fafb; color: #94a3b8; cursor: not-allowed; }
+.field input:disabled { background: var(--mm-s3); color: var(--mm-slate); cursor: not-allowed; }
 .field-error { margin: 0; font-size: 12px; color: #dc2626; }
 
 .forgot {
   font-size: 12px;
-  color: #ff8838;
+  color: var(--mm-gold);
   text-decoration: none;
   font-weight: 500;
 }
@@ -384,12 +384,12 @@ const tryDemo = async (d: DemoAccount) => {
   background: transparent;
   border: 0;
   padding: 6px;
-  color: #64748b;
+  color: var(--mm-slate);
   cursor: pointer;
   border-radius: 4px;
   display: inline-flex;
 }
-.eye-btn:hover:not(:disabled) { color: #0f172a; }
+.eye-btn:hover:not(:disabled) { color: var(--mm-pearl); }
 .eye-btn :deep(svg) { width: 18px; height: 18px; }
 
 .remember {
@@ -397,11 +397,11 @@ const tryDemo = async (d: DemoAccount) => {
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: #475569;
+  color: var(--mm-silver);
   cursor: pointer;
   user-select: none;
 }
-.remember input { width: 16px; height: 16px; accent-color: #ff8838; }
+.remember input { width: 16px; height: 16px; accent-color: var(--mm-gold); }
 
 .auth-error {
   display: flex;
@@ -409,10 +409,10 @@ const tryDemo = async (d: DemoAccount) => {
   gap: 8px;
   margin: 0;
   padding: 10px 12px;
-  border: 0.5px solid #fecaca;
-  background: #fef2f2;
-  color: #b91c1c;
-  border-radius: 8px;
+  border: 0.5px solid rgba(220, 38, 38, 0.4);
+  background: rgba(220, 38, 38, 0.08);
+  color: #fca5a5;
+  border-radius: var(--r-sm);
   font-size: 13px;
 }
 .auth-error :deep(svg) { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
@@ -425,18 +425,18 @@ const tryDemo = async (d: DemoAccount) => {
   width: 100%;
   padding: 12px 16px;
   margin-top: 4px;
-  background: #ff8838;
-  color: #ffffff;
+  background: var(--mm-gold);
+  color: #0A0700;
   border: 0;
-  border-radius: 8px;
+  border-radius: var(--r-sm);
   font-family: inherit;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 150ms ease;
 }
-.submit-btn:hover:not(:disabled) { background: #f97316; }
-.submit-btn:disabled { background: #fbbf77; cursor: not-allowed; }
+.submit-btn:hover:not(:disabled) { background: var(--mm-goldl); }
+.submit-btn:disabled { background: var(--mm-s3); color: var(--mm-slate); cursor: not-allowed; }
 .submit-btn :deep(svg) { width: 16px; height: 16px; }
 .spin { animation: spin 1s linear infinite; }
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -445,101 +445,78 @@ const tryDemo = async (d: DemoAccount) => {
   margin: 22px 0 0;
   text-align: center;
   font-size: 14px;
-  color: #64748b;
+  color: var(--mm-slate);
 }
 .alt-link a {
-  color: #ff8838;
+  color: var(--mm-gold);
   font-weight: 600;
   text-decoration: none;
 }
 .alt-link a:hover { text-decoration: underline; }
 
-/* Demo box */
 .demo-box {
   margin-top: 20px;
   padding: 14px 14px 12px;
-  background: #fff8f1;
-  border: 0.5px solid #ffd9b5;
-  border-radius: 10px;
-}
-.demo-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
+  background: var(--mm-gold-soft);
+  border: 0.5px solid var(--mm-gold);
+  border-radius: var(--r-md);
 }
 .demo-label {
   font-size: 12px;
   font-weight: 700;
-  color: #ff8838;
+  color: var(--mm-gold);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
-.demo-hint { font-size: 11px; color: #94a3b8; }
-.demo-row {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
-}
+.demo-hint { font-size: 11px; color: var(--mm-slate); }
 .demo-btn {
   display: flex;
   flex-direction: column;
   align-items: stretch;
   gap: 6px;
   padding: 10px 12px;
-  background: #fff;
-  border: 0.5px solid #ffd9b5;
-  border-radius: 8px;
+  background: var(--mm-s3);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
   font-family: inherit;
   cursor: pointer;
   transition: all 150ms ease;
   text-align: left;
 }
 .demo-btn:hover:not(:disabled) {
-  border-color: #ff8838;
-  background: #fff;
+  border-color: var(--mm-gold);
+  background: var(--mm-s3);
   transform: translateY(-1px);
-  box-shadow: 0 6px 14px -10px rgba(255, 136, 56, 0.5);
+  box-shadow: 0 6px 14px -10px var(--mm-gold-soft);
 }
 .demo-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-.demo-btn__top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
 .demo-btn__role {
   font-size: 13px;
   font-weight: 600;
-  color: #1e1e1e;
+  color: var(--mm-pearl);
 }
 .demo-btn__badge {
   font-size: 10px;
   font-weight: 600;
-  color: #ff8838;
-  background: #fff3e6;
+  color: var(--mm-gold);
+  background: var(--mm-gold-soft);
   padding: 2px 6px;
   border-radius: 999px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-}
-.demo-btn__creds {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 12px;
 }
 .demo-btn__cred {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   font-size: 11.5px;
-  color: #475569;
+  color: var(--mm-silver);
 }
-.demo-btn__cred :deep(svg) { width: 12px; height: 12px; color: #94a3b8; }
+.demo-btn__cred :deep(svg) { width: 12px; height: 12px; color: var(--mm-slate); }
 .demo-btn__cred code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--f-mon);
   font-size: 11.5px;
-  color: #0f172a;
+  color: var(--mm-pearl);
   background: transparent;
   padding: 0;
 }

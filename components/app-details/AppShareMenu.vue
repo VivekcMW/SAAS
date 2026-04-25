@@ -254,26 +254,26 @@ defineExpose({ toggle, open: () => { open.value = true; nextTick(updatePanelPosi
   align-items: center;
   gap: 6px;
   padding: 8px 14px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 6px;
+  background: var(--mm-s3);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-sm);
   font-family: inherit;
   font-size: 14px;
   font-weight: 500;
-  color: #374151;
+  color: var(--mm-silver);
   cursor: pointer;
-  transition: background-color 150ms ease, border-color 150ms ease;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
 }
-.share-trigger:hover { background: #f9fafb; border-color: #d1d5db; }
+.share-trigger:hover { background: var(--mm-s2); border-color: var(--mm-gold); }
 .share-trigger :deep(svg) { width: 16px; height: 16px; }
 
 .share-panel {
   position: fixed;
   width: 340px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 10px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  background: var(--mm-s1);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lg);
   z-index: 1000;
   padding: 14px;
 }
@@ -284,18 +284,18 @@ defineExpose({ toggle, open: () => { open.value = true; nextTick(updatePanelPosi
   align-items: center;
   margin-bottom: 10px;
 }
-.share-title { margin: 0; font-size: 14px; font-weight: 600; color: #1f2937; }
+.share-title { margin: 0; font-size: 14px; font-weight: 600; color: var(--mm-pearl); }
 .share-native {
   background: transparent;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 4px;
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-xs);
   padding: 3px 8px;
   font-family: inherit;
   font-size: 11px;
-  color: #6b7280;
+  color: var(--mm-slate);
   cursor: pointer;
 }
-.share-native:hover { background: #f9fafb; color: #1f2937; }
+.share-native:hover { background: var(--mm-s3); color: var(--mm-pearl); }
 
 .share-url-row {
   display: flex;
@@ -306,30 +306,30 @@ defineExpose({ toggle, open: () => { open.value = true; nextTick(updatePanelPosi
   flex: 1;
   min-width: 0;
   padding: 7px 10px;
-  background: #f9fafb;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 6px;
+  background: var(--mm-s3);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-sm);
   font-family: ui-monospace, SFMono-Regular, monospace;
   font-size: 12px;
-  color: #374151;
+  color: var(--mm-silver);
 }
 .share-copy {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   padding: 7px 12px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 6px;
+  background: var(--mm-s3);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-sm);
   font-family: inherit;
   font-size: 12px;
   font-weight: 500;
-  color: #374151;
+  color: var(--mm-silver);
   cursor: pointer;
-  transition: background-color 150ms ease;
+  transition: background-color var(--transition-fast);
 }
-.share-copy:hover { background: #f9fafb; }
-.share-copy.copied { background: #ecfdf5; color: #065f46; border-color: #d1fae5; }
+.share-copy:hover { background: var(--mm-s2); }
+.share-copy.copied { background: var(--mm-sea-soft); color: var(--mm-seal); border-color: var(--mm-sea); }
 .share-copy :deep(svg) { width: 12px; height: 12px; }
 
 .share-socials {
@@ -344,18 +344,18 @@ defineExpose({ toggle, open: () => { open.value = true; nextTick(updatePanelPosi
   align-items: center;
   gap: 4px;
   padding: 8px 4px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 6px;
+  background: var(--mm-s3);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-sm);
   font-family: inherit;
   font-size: 11px;
-  color: #374151;
+  color: var(--mm-silver);
   text-decoration: none;
   cursor: pointer;
-  transition: background-color 150ms ease, border-color 150ms ease;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
 }
-.share-btn:hover { background: #f9fafb; border-color: #d1d5db; }
-.share-btn :deep(svg) { width: 16px; height: 16px; color: #6b7280; }
+.share-btn:hover { background: var(--mm-s2); border-color: var(--b2); }
+.share-btn :deep(svg) { width: 16px; height: 16px; color: var(--mm-slate); }
 
 .share-qr {
   display: flex;
@@ -363,39 +363,39 @@ defineExpose({ toggle, open: () => { open.value = true; nextTick(updatePanelPosi
   align-items: center;
   gap: 6px;
   padding: 12px;
-  background: #f9fafb;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 8px;
+  background: var(--mm-s3);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-md);
   margin-bottom: 10px;
 }
-.share-qr img { width: 140px; height: 140px; border-radius: 4px; }
-.share-qr-hint { margin: 0; font-size: 11px; color: #6b7280; }
+.share-qr img { width: 140px; height: 140px; border-radius: var(--r-xs); }
+.share-qr-hint { margin: 0; font-size: 11px; color: var(--mm-slate); }
 
 .share-embed {
-  border-top: 0.5px solid #e5e7eb;
+  border-top: 0.5px solid var(--b1);
   padding-top: 10px;
 }
 .share-embed summary {
   font-size: 12px;
   font-weight: 500;
-  color: #6b7280;
+  color: var(--mm-slate);
   cursor: pointer;
   padding: 4px 0;
 }
-.share-embed summary:hover { color: #1f2937; }
+.share-embed summary:hover { color: var(--mm-pearl); }
 
 .embed-wrap { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
 .embed-wrap textarea {
   padding: 8px;
-  background: #f9fafb;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 6px;
+  background: var(--mm-s3);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-sm);
   font-family: ui-monospace, SFMono-Regular, monospace;
   font-size: 11px;
-  color: #374151;
+  color: var(--mm-silver);
   resize: vertical;
 }
 
 .sm-enter-from, .sm-leave-to { opacity: 0; transform: translateY(-4px); }
-.sm-enter-active, .sm-leave-active { transition: opacity 150ms ease, transform 150ms ease; }
+.sm-enter-active, .sm-leave-active { transition: opacity var(--transition-fast), transform var(--transition-fast); }
 </style>

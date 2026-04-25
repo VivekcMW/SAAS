@@ -6,7 +6,7 @@
         <div class="hero-content">
           <h1 class="hero-title">Press & <span class="highlight">Media</span></h1>
           <p class="hero-subtitle">
-            Get the latest news, press releases, and media resources about SaaSWorld. 
+            Get the latest news, press releases, and media resources about Moonmart. 
             Download logos, access press kits, and stay updated with our company announcements.
           </p>
         </div>
@@ -18,7 +18,7 @@
       <div class="container">
         <div class="section-header">
           <h2>Press Resources</h2>
-          <p>Everything you need to write about SaaSWorld</p>
+          <p>Everything you need to write about Moonmart</p>
         </div>
         
         <div class="resources-grid">
@@ -63,7 +63,7 @@
         <div class="news-grid">
           <article class="news-item">
             <div class="news-date">December 15, 2024</div>
-            <h3>SaaSWorld Reaches 10,000+ Software Solutions Milestone</h3>
+            <h3>Moonmart Reaches 10,000+ Software Solutions Milestone</h3>
             <p>Our marketplace continues to grow with new enterprise software solutions added daily, helping businesses discover the perfect tools for their needs.</p>
             <a href="#" class="read-more">Read Full Release</a>
           </article>
@@ -77,7 +77,7 @@
           
           <article class="news-item">
             <div class="news-date">November 10, 2024</div>
-            <h3>SaaSWorld Partners with Leading Enterprise Software Vendors</h3>
+            <h3>Moonmart Partners with Leading Enterprise Software Vendors</h3>
             <p>Strategic partnerships announced with major software providers to expand our marketplace offerings and improve vendor verification processes.</p>
             <a href="#" class="read-more">Read Full Release</a>
           </article>
@@ -95,19 +95,19 @@
           <div class="contact-info">
             <div class="contact-item">
               <h4>Press Inquiries</h4>
-              <p>press@saasworld.club</p>
+              <p>press@moonmart.ai</p>
               <p>+1 (555) 123-4567</p>
             </div>
             
             <div class="contact-item">
               <h4>Partnership Inquiries</h4>
-              <p>partnerships@saasworld.club</p>
+              <p>partnerships@moonmart.ai</p>
               <p>+1 (555) 123-4568</p>
             </div>
             
             <div class="contact-item">
               <h4>General Information</h4>
-              <p>info@saasworld.club</p>
+              <p>info@moonmart.ai</p>
               <p>+1 (555) 123-4569</p>
             </div>
           </div>
@@ -120,9 +120,9 @@
 <script setup lang="ts">
 // SEO Configuration
 useSeoMeta({
-  title: 'Press & Media - SaaSWorld',
-  description: 'Get the latest news, press releases, and media resources about SaaSWorld. Download logos, access press kits, and company announcements.',
-  keywords: 'SaaSWorld press, media kit, press releases, company news, brand assets, media contact',
+  title: 'Press & Media - Moonmart',
+  description: 'Get the latest news, press releases, and media resources about Moonmart. Download logos, access press kits, and company announcements.',
+  keywords: 'Moonmart press, media kit, press releases, company news, brand assets, media contact',
 })
 
 // Schema markup for organization
@@ -133,8 +133,8 @@ useHead({
       innerHTML: JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'Organization',
-        name: 'SaaSWorld',
-        url: 'https://saasworld.club',
+        name: 'Moonmart',
+        url: 'https://moonmart.ai',
         sameAs: [
           'https://twitter.com/saasworld',
           'https://linkedin.com/company/saasworld'
@@ -142,7 +142,7 @@ useHead({
         contactPoint: {
           '@type': 'ContactPoint',
           contactType: 'Press Inquiries',
-          email: 'press@saasworld.club',
+          email: 'press@moonmart.ai',
           telephone: '+1-555-123-4567'
         }
       })
@@ -155,7 +155,7 @@ useHead({
 /* Hero Section */
 .hero-section {
   padding: calc(var(--spacing-xxl) * 2) 0;
-  background: linear-gradient(135deg, var(--bg-gray) 0%, #fff 100%);
+  background: var(--mm-bg);
   position: relative;
   overflow: visible;
   text-align: center;
@@ -207,7 +207,7 @@ useHead({
 /* Press Resources Section */
 .press-resources {
   padding: var(--spacing-xxl) 0;
-  background: #f8fafc;
+  background: var(--mm-s1);
 }
 
 .section-header {
@@ -236,30 +236,29 @@ useHead({
 }
 
 .resource-card {
-  background: white;
+  background: var(--mm-s2);
   padding: 2rem;
-  border-radius: 1rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e5e7eb;
+  border-radius: var(--r-lg);
+  border: 0.5px solid var(--b1);
   text-align: center;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .resource-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .resource-icon {
   width: 4rem;
   height: 4rem;
-  background: var(--primary-color);
-  border-radius: 1rem;
+  background: var(--mm-gold-soft);
+  border-radius: var(--r-md);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto var(--spacing-lg) auto;
-  color: white;
+  color: var(--mm-gold);
   font-size: 2rem;
 }
 
@@ -292,7 +291,7 @@ useHead({
 /* Latest News Section */
 .latest-news {
   padding: var(--spacing-xxl) 0;
-  background: white;
+  background: var(--mm-bg);
 }
 
 .news-grid {
@@ -304,8 +303,8 @@ useHead({
 
 .news-item {
   padding: 2rem;
-  border-radius: 1rem;
-  border: 1px solid #e5e7eb;
+  border-radius: var(--r-lg);
+  border: 0.5px solid var(--b1);
   transition: box-shadow 0.2s ease;
 }
 
@@ -348,7 +347,7 @@ useHead({
 /* Media Contact Section */
 .media-contact {
   padding: var(--spacing-xxl) 0;
-  background: #f8fafc;
+  background: var(--mm-s1);
 }
 
 .contact-content {
@@ -377,11 +376,10 @@ useHead({
 }
 
 .contact-item {
-  background: white;
+  background: var(--mm-s2);
   padding: 2rem;
-  border-radius: 1rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e5e7eb;
+  border-radius: var(--r-lg);
+  border: 0.5px solid var(--b1);
 }
 
 .contact-item h4 {

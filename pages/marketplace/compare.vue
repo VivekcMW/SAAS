@@ -118,7 +118,7 @@ const cheapest = computed(() => {
 })
 
 useHead({
-  title: 'Compare SaaS Tools | SaaSWorld',
+  title: 'Compare SaaS Tools | Moonmart',
   meta: [
     { name: 'description', content: 'Side-by-side comparison of SaaS tools — pricing, ratings, features, and more.' }
   ]

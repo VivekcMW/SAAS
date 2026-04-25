@@ -68,7 +68,7 @@ const invoices = [
 <style scoped>
 .bp-plan { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
 .bp-plan__tag { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--vw-text-subtle); font-weight: 600; }
-.bp-plan__name { font-family: 'Poppins'; font-size: 1.5rem; margin: 4px 0; }
+.bp-plan__name { font-family: 'Syne'; font-size: 1.5rem; margin: 4px 0; }
 .bp-plan__price { color: var(--vw-text-muted); margin: 0 0 12px; font-size: 0.9rem; }
 .bp-feats { margin: 0; padding-left: 20px; font-size: 0.88rem; }
 .bp-feats li { margin-bottom: 4px; }

@@ -5,7 +5,7 @@
  * Tests all 13 LLM modules, orchestrator, testing framework, analytics, and workflows
  */
 
-console.log("🚀 SaaSWorld LLM Optimization System Test Suite");
+console.log("🚀 Moonmart LLM Optimization System Test Suite");
 console.log("=".repeat(60));
 
 // Mock test data representing a SaaS application
@@ -255,7 +255,7 @@ async function runTestSuite() {
   generateTestReport();
   
   console.log(`\n✅ Test Completed: ${new Date().toLocaleString()}`);
-  console.log("🎉 SaaSWorld LLM Optimization System is fully operational!");
+  console.log("🎉 Moonmart LLM Optimization System is fully operational!");
 }
 
 // Execute the test suite

@@ -12,5 +12,5 @@
 import { computed } from 'vue'
 const { currentUser } = useAuth()
 const role = computed(() => currentUser.value?.role || 'buyer')
-useHead({ title: 'Recommendations — SaaSWorld' })
+useHead({ title: 'Recommendations — Moonmart' })
 </script>

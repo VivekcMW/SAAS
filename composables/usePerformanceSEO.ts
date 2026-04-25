@@ -16,8 +16,8 @@ export const usePerformanceSEO = () => {
           { rel: 'preload', as: 'style', href: '/assets/css/critical.css' },
           { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
           { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' },
-          { rel: 'dns-prefetch', href: 'https://api.saasworld.com' },
-          { rel: 'dns-prefetch', href: 'https://cdn.saasworld.com' }
+          { rel: 'dns-prefetch', href: 'https://api.moonmart.ai' },
+          { rel: 'dns-prefetch', href: 'https://cdn.moonmart.ai' }
         ]
       })
     }

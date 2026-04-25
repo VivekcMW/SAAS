@@ -253,12 +253,12 @@ export const useMobileAccessibilitySEO = () => {
       // Mobile web app
       { name: 'mobile-web-app-capable', content: 'yes' },
       { name: 'mobile-web-app-status-bar-style', content: 'default' },
-      { name: 'mobile-web-app-title', content: 'SaaSWorld' },
+      { name: 'mobile-web-app-title', content: 'Moonmart' },
       
       // Apple iOS
       { name: 'apple-mobile-web-app-capable', content: 'yes' },
       { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
-      { name: 'apple-mobile-web-app-title', content: 'SaaSWorld' },
+      { name: 'apple-mobile-web-app-title', content: 'Moonmart' },
       { name: 'apple-touch-fullscreen', content: 'yes' },
       
       // Microsoft
@@ -267,7 +267,7 @@ export const useMobileAccessibilitySEO = () => {
       
       // Android
       { name: 'theme-color', content: '#1a73e8' },
-      { name: 'color-scheme', content: 'light dark' },
+      { name: 'color-scheme', content: 'dark' },
       
       // Performance hints
       { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
@@ -304,8 +304,8 @@ export const useMobileAccessibilitySEO = () => {
     "dateModified": "${pageData.modifiedTime || new Date().toISOString()}",
     "publisher": {
       "@type": "Organization",
-      "name": "SaaSWorld",
-      "logo": "https://saasworld.com/assets/images/logo.png"
+      "name": "Moonmart",
+      "logo": "https://moonmart.ai/assets/images/logo.png"
     }
   }
   </script>

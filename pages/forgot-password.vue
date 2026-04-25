@@ -76,7 +76,7 @@
               <UIcon dynamic name="i-heroicons-envelope" class="help-icon" />
               <div>
                 <h3>Email Support</h3>
-                <p>support@saasworld.com</p>
+                <p>support@moonmart.ai</p>
               </div>
             </div>
             <div class="help-item">
@@ -98,9 +98,9 @@ import { ref, reactive } from 'vue'
 
 // SEO
 useHead({
-  title: 'Reset Password - SaaSWorld',
+  title: 'Reset Password - Moonmart',
   meta: [
-    { name: 'description', content: 'Reset your SaaSWorld account password. Enter your email to receive a password reset link.' },
+    { name: 'description', content: 'Reset your Moonmart account password. Enter your email to receive a password reset link.' },
     { name: 'robots', content: 'noindex, nofollow' }
   ]
 })
@@ -144,7 +144,7 @@ const resetForm = () => {
 <style scoped>
 .forgot-password-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--mm-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -156,9 +156,10 @@ const resetForm = () => {
   grid-template-columns: 1fr 1fr;
   max-width: 1000px;
   width: 100%;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+  background: var(--mm-s1);
+  border-radius: var(--r-xl);
+  border: 0.5px solid var(--b2);
+  box-shadow: var(--shadow-lg);
   overflow: hidden;
   min-height: 500px;
 }
@@ -188,12 +189,12 @@ const resetForm = () => {
 .forgot-password-header h1 {
   font-size: 2rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--mm-pearl);
   margin-bottom: 8px;
 }
 
 .forgot-password-header p {
-  color: #6b7280;
+  color: var(--mm-slate);
   font-size: 1rem;
   line-height: 1.5;
 }
@@ -204,19 +205,19 @@ const resetForm = () => {
 
 .success-icon {
   font-size: 4rem;
-  color: #10b981;
+  color: var(--mm-sea);
   margin-bottom: 24px;
 }
 
 .success-state h2 {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--mm-pearl);
   margin-bottom: 16px;
 }
 
 .success-state p {
-  color: #6b7280;
+  color: var(--mm-silver);
   margin-bottom: 12px;
   line-height: 1.5;
 }
@@ -224,7 +225,7 @@ const resetForm = () => {
 .help-text {
   font-size: 0.9rem;
   margin-bottom: 32px !important;
-  color: #9ca3af;
+  color: var(--mm-slate);
   font-style: italic;
 }
 
@@ -252,28 +253,24 @@ const resetForm = () => {
 }
 
 .btn-secondary {
-  background: white;
-  color: #374151;
-  border: 2px solid #e5e7eb;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: var(--mm-s2);
+  color: var(--mm-silver);
+  border: 0.5px solid var(--b2);
 }
 
 .btn-secondary:hover {
-  background: #f9fafb;
-  border-color: #d1d5db;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  background: var(--mm-s3);
+  border-color: var(--mm-gold);
   transform: translateY(-1px);
 }
 
 .btn-primary {
-  background: #6366f1;
-  color: white;
-  box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+  background: var(--mm-gold);
+  color: #0A0700;
 }
 
 .btn-primary:hover {
-  background: #4f46e5;
-  box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
+  background: var(--mm-goldl);
   transform: translateY(-1px);
 }
 
@@ -293,39 +290,39 @@ const resetForm = () => {
   display: block;
   margin-bottom: 8px;
   font-weight: 500;
-  color: #111827;
+  color: var(--mm-silver);
 }
 
 .form-group input {
   width: 100%;
   padding: 12px 16px;
-  border: 2px solid #e5e7eb;
-  border-radius: 8px;
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
   font-size: 1rem;
   transition: all 0.2s ease;
-  background: white;
-  color: #374151;
+  background: var(--mm-s2);
+  color: var(--mm-pearl);
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+  border-color: var(--mm-gold);
+  box-shadow: 0 0 0 3px var(--mm-gold-soft);
 }
 
 .form-group input:disabled {
-  background: #f3f4f6;
+  background: var(--mm-s3);
   cursor: not-allowed;
-  color: #9ca3af;
+  color: var(--mm-slate);
 }
 
 .btn-submit {
   width: 100%;
   padding: 14px 24px;
-  background: #6366f1;
-  color: white;
+  background: var(--mm-gold);
+  color: #0A0700;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--r-sm);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -334,20 +331,18 @@ const resetForm = () => {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
 }
 
 .btn-submit:hover:not(:disabled) {
-  background: #4f46e5;
+  background: var(--mm-goldl);
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
 }
 
 .btn-submit:disabled {
-  background: #9ca3af;
+  background: var(--mm-s3);
+  color: var(--mm-slate);
   cursor: not-allowed;
   transform: none;
-  box-shadow: none;
 }
 
 .spinning {
@@ -367,28 +362,29 @@ const resetForm = () => {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #6b7280;
+  color: var(--mm-slate);
   text-decoration: none;
   font-size: 0.95rem;
   font-weight: 500;
   transition: all 0.2s ease;
   padding: 8px 12px;
-  border-radius: 6px;
+  border-radius: var(--r-sm);
 }
 
 .back-to-login a:hover {
-  color: #374151;
-  background: #f9fafb;
+  color: var(--mm-silver);
+  background: var(--mm-s3);
 }
 
 .forgot-password-info {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  color: white;
+  background: var(--mm-s2);
+  color: var(--mm-pearl);
   padding: 60px 50px;
   display: flex;
   align-items: center;
   position: relative;
   overflow: hidden;
+  border-left: 0.5px solid var(--b1);
 }
 
 .forgot-password-info::before {
@@ -398,7 +394,7 @@ const resetForm = () => {
   right: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
+  background: radial-gradient(circle, var(--mm-gold-soft) 0%, transparent 50%);
   animation: float 6s ease-in-out infinite;
 }
 
@@ -423,6 +419,7 @@ const resetForm = () => {
   margin-bottom: 40px;
   opacity: 0.9;
   line-height: 1.6;
+  color: var(--mm-silver);
 }
 
 .help-options {
@@ -438,7 +435,7 @@ const resetForm = () => {
 }
 
 .help-icon {
-  color: #10b981;
+  color: var(--mm-sea);
   font-size: 1.5rem;
   flex-shrink: 0;
 }

@@ -15,28 +15,28 @@ export default defineNuxtRouteMiddleware((to, from) => {
     // Homepage SEO
     applySEO({
       ...baseSEO,
-      canonical: 'https://saasworld.com',
+      canonical: 'https://moonmart.ai',
       hreflang: generateHreflangTags(''),
       jsonLd: {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
-        name: 'SaaSWorld',
-        url: 'https://saasworld.com',
+        name: 'Moonmart',
+        url: 'https://moonmart.ai',
         description: 'Global software marketplace for business solutions. Discover and compare the best SaaS tools, enterprise software, and digital solutions.',
         potentialAction: {
           '@type': 'SearchAction',
           target: {
             '@type': 'EntryPoint',
-            urlTemplate: 'https://saasworld.com/marketplace?search={search_term_string}'
+            urlTemplate: 'https://moonmart.ai/marketplace?search={search_term_string}'
           },
           'query-input': 'required name=search_term_string'
         },
         publisher: {
           '@type': 'Organization',
-          name: 'SaaSWorld',
+          name: 'Moonmart',
           logo: {
             '@type': 'ImageObject',
-            url: 'https://saasworld.com/assets/images/logo.png'
+            url: 'https://moonmart.ai/assets/images/logo.png'
           }
         }
       }
@@ -44,17 +44,17 @@ export default defineNuxtRouteMiddleware((to, from) => {
   } else if (path === '/marketplace') {
     // Marketplace homepage SEO
     applySEO({
-      title: 'Software Marketplace | SaaSWorld - Discover Business Solutions',
+      title: 'Software Marketplace | Moonmart - Discover Business Solutions',
       description: 'Explore our comprehensive software marketplace with thousands of business applications, SaaS tools, and enterprise solutions. Compare features, pricing, and reviews to find the perfect software for your needs.',
       keywords: 'software marketplace, business software, saas tools, enterprise applications, software directory, business solutions, digital tools, cloud software',
-      canonical: 'https://saasworld.com/marketplace',
+      canonical: 'https://moonmart.ai/marketplace',
       hreflang: generateHreflangTags('/marketplace'),
       jsonLd: {
         '@context': 'https://schema.org',
         '@type': 'CollectionPage',
         name: 'Software Marketplace',
         description: 'Comprehensive directory of business software and SaaS applications',
-        url: 'https://saasworld.com/marketplace',
+        url: 'https://moonmart.ai/marketplace',
         mainEntity: {
           '@type': 'ItemList',
           name: 'Business Software Categories',
@@ -89,41 +89,41 @@ export default defineNuxtRouteMiddleware((to, from) => {
     }
   } else if (path === '/about') {
     applySEO({
-      title: 'About SaaSWorld - Global Software Marketplace Platform',
-      description: 'Learn about SaaSWorld, the leading global marketplace for business software solutions. Our mission is to help businesses discover and compare the best SaaS tools and enterprise applications.',
+      title: 'About Moonmart - Global Software Marketplace Platform',
+      description: 'Learn about Moonmart, the leading global marketplace for business software solutions. Our mission is to help businesses discover and compare the best SaaS tools and enterprise applications.',
       keywords: 'about saasworld, software marketplace platform, business software directory, saas comparison platform',
-      canonical: 'https://saasworld.com/about',
+      canonical: 'https://moonmart.ai/about',
       hreflang: generateHreflangTags('/about')
     })
   } else if (path === '/contact') {
     applySEO({
-      title: 'Contact SaaSWorld - Get in Touch with Our Team',
-      description: 'Contact SaaSWorld for support, partnerships, or general inquiries. We\'re here to help you find the perfect software solutions for your business needs.',
+      title: 'Contact Moonmart - Get in Touch with Our Team',
+      description: 'Contact Moonmart for support, partnerships, or general inquiries. We\'re here to help you find the perfect software solutions for your business needs.',
       keywords: 'contact saasworld, customer support, business inquiries, software marketplace contact',
-      canonical: 'https://saasworld.com/contact',
+      canonical: 'https://moonmart.ai/contact',
       hreflang: generateHreflangTags('/contact'),
       jsonLd: {
         '@context': 'https://schema.org',
         '@type': 'ContactPage',
-        name: 'Contact SaaSWorld',
-        description: 'Get in touch with SaaSWorld team',
-        url: 'https://saasworld.com/contact'
+        name: 'Contact Moonmart',
+        description: 'Get in touch with Moonmart team',
+        url: 'https://moonmart.ai/contact'
       }
     })
   } else if (path === '/features') {
     applySEO({
-      title: 'SaaSWorld Features - Comprehensive Software Discovery Platform',
-      description: 'Explore SaaSWorld\'s powerful features for discovering, comparing, and selecting business software. Advanced search, detailed comparisons, expert reviews, and more.',
+      title: 'Moonmart Features - Comprehensive Software Discovery Platform',
+      description: 'Explore Moonmart\'s powerful features for discovering, comparing, and selecting business software. Advanced search, detailed comparisons, expert reviews, and more.',
       keywords: 'saasworld features, software comparison features, business software discovery, saas platform capabilities',
-      canonical: 'https://saasworld.com/features',
+      canonical: 'https://moonmart.ai/features',
       hreflang: generateHreflangTags('/features')
     })
   } else if (path.startsWith('/blog')) {
     applySEO({
-      title: 'SaaSWorld Blog - Software Insights and Business Tips',
-      description: 'Stay updated with the latest software trends, business insights, and technology news on the SaaSWorld blog. Expert articles on business software and SaaS solutions.',
+      title: 'Moonmart Blog - Software Insights and Business Tips',
+      description: 'Stay updated with the latest software trends, business insights, and technology news on the Moonmart blog. Expert articles on business software and SaaS solutions.',
       keywords: 'saasworld blog, software blog, business software insights, saas trends, technology news',
-      canonical: `https://saasworld.com${path}`,
+      canonical: `https://moonmart.ai${path}`,
       hreflang: generateHreflangTags('/blog'),
       ogType: 'blog'
     })
@@ -131,7 +131,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
     // Default SEO for other pages
     applySEO({
       ...baseSEO,
-      canonical: `https://saasworld.com${path}`,
+      canonical: `https://moonmart.ai${path}`,
       hreflang: generateHreflangTags(path)
     })
   }

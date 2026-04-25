@@ -2,9 +2,9 @@
   <LegalShell
     title="Refund &amp; cancellation policy"
     eyebrow="Legal · Billing"
-    lede="How cancellations, refunds and proration work on SaaSWorld subscriptions."
+    lede="How cancellations, refunds and proration work on Moonmart subscriptions."
     :updated="updatedAt"
-    contact-email="billing@saasworld.com"
+    contact-email="billing@moonmart.ai"
     :sections="tocSections"
   >
     <div class="prose prose-lg max-w-none">
@@ -76,7 +76,7 @@
         </ol>
         <p>
           If you can't access the billing UI (e.g. the account owner left your company),
-          email <a href="mailto:billing@saasworld.com">billing@saasworld.com</a> from a
+          email <a href="mailto:billing@moonmart.ai">billing@moonmart.ai</a> from a
           domain email address and we will help.
         </p>
       </section>
@@ -84,7 +84,7 @@
       <section id="request">
         <h2>7. How to request a refund</h2>
         <p>
-          Email <a href="mailto:billing@saasworld.com">billing@saasworld.com</a> with your
+          Email <a href="mailto:billing@moonmart.ai">billing@moonmart.ai</a> with your
           account identifier, the invoice or payment reference, and a brief reason. Refunds
           are issued to the original payment method within <strong>5–10 business days</strong>
           of approval. Processing times on your bank's side may add a few additional days.
@@ -103,7 +103,7 @@
       <section id="contact">
         <h2>9. Contact</h2>
         <div class="contact-info">
-          <p><strong>Billing:</strong> <a href="mailto:billing@saasworld.com">billing@saasworld.com</a></p>
+          <p><strong>Billing:</strong> <a href="mailto:billing@moonmart.ai">billing@moonmart.ai</a></p>
           <p><strong>Related:</strong> <NuxtLink to="/terms">Terms</NuxtLink> · <NuxtLink to="/sla">SLA</NuxtLink></p>
         </div>
       </section>
@@ -131,9 +131,9 @@ const tocSections = [
 ]
 
 applySEO({
-  title: 'Refund & cancellation policy | SaaSWorld',
-  description: 'SaaSWorld refund, cancellation and proration rules.',
-  canonical: 'https://saasworld.com/refund',
+  title: 'Refund & cancellation policy | Moonmart',
+  description: 'Moonmart refund, cancellation and proration rules.',
+  canonical: 'https://moonmart.ai/refund',
   ogType: 'website'
 })
 </script>

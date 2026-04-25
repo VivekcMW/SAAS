@@ -4,7 +4,7 @@
     <section class="hero-section">
       <div class="container">
         <div class="hero-content">
-          <h1 class="hero-title">Connect <span class="highlight">SaaSWorld</span> with your favorite tools</h1>
+          <h1 class="hero-title">Connect <span class="highlight">Moonmart</span> with your favorite tools</h1>
           <p class="hero-subtitle">We integrate with over 100+ applications and services to supercharge your workflow and boost productivity.</p>
         </div>
       </div>
@@ -146,7 +146,7 @@ const integrations = [
   {
     name: 'Slack',
     logo: '/assets/images/integrations/slack.svg',
-    description: 'Connect SaasWorld with Slack to send notifications, updates, and alerts to your team channels.',
+    description: 'Connect Moonmart with Slack to send notifications, updates, and alerts to your team channels.',
     category: 'Communication',
     popular: true,
     link: '#'
@@ -170,7 +170,7 @@ const integrations = [
   {
     name: 'Zoom',
     logo: '/assets/images/integrations/zoom.svg',
-    description: 'Schedule and manage Zoom meetings directly from SaasWorld.',
+    description: 'Schedule and manage Zoom meetings directly from Moonmart.',
     category: 'Communication',
     popular: true,
     link: '#'
@@ -178,7 +178,7 @@ const integrations = [
   {
     name: 'Dropbox',
     logo: '/assets/images/integrations/dropbox.svg',
-    description: 'Store and share files seamlessly between SaasWorld and Dropbox.',
+    description: 'Store and share files seamlessly between Moonmart and Dropbox.',
     category: 'Storage',
     popular: false,
     link: '#'
@@ -186,7 +186,7 @@ const integrations = [
   {
     name: 'Salesforce',
     logo: '/assets/images/integrations/salesforce.svg',
-    description: 'Sync customer data, leads, and opportunities between SaasWorld and Salesforce CRM.',
+    description: 'Sync customer data, leads, and opportunities between Moonmart and Salesforce CRM.',
     category: 'CRM',
     popular: true,
     link: '#'
@@ -194,7 +194,7 @@ const integrations = [
   {
     name: 'HubSpot',
     logo: '/assets/images/integrations/hubspot.svg',
-    description: 'Connect your marketing, sales, and customer service data between SaasWorld and HubSpot.',
+    description: 'Connect your marketing, sales, and customer service data between Moonmart and HubSpot.',
     category: 'Marketing',
     popular: true,
     link: '#'
@@ -202,7 +202,7 @@ const integrations = [
   {
     name: 'Mailchimp',
     logo: '/assets/images/integrations/mailchimp.svg',
-    description: 'Sync your email marketing campaigns and contact lists between SaasWorld and Mailchimp.',
+    description: 'Sync your email marketing campaigns and contact lists between Moonmart and Mailchimp.',
     category: 'Marketing',
     popular: false,
     link: '#'
@@ -210,7 +210,7 @@ const integrations = [
   {
     name: 'Asana',
     logo: '/assets/images/integrations/asana.svg',
-    description: 'Manage projects and tasks efficiently by connecting SaasWorld with Asana.',
+    description: 'Manage projects and tasks efficiently by connecting Moonmart with Asana.',
     category: 'Project Management',
     popular: true,
     link: '#'
@@ -226,7 +226,7 @@ const integrations = [
   {
     name: 'Stripe',
     logo: '/assets/images/integrations/stripe.svg',
-    description: 'Process payments and manage subscriptions by integrating SaasWorld with Stripe.',
+    description: 'Process payments and manage subscriptions by integrating Moonmart with Stripe.',
     category: 'Finance',
     popular: true,
     link: '#'
@@ -234,7 +234,7 @@ const integrations = [
   {
     name: 'QuickBooks',
     logo: '/assets/images/integrations/quickbooks.svg',
-    description: 'Sync your financial data and accounting records between SaasWorld and QuickBooks.',
+    description: 'Sync your financial data and accounting records between Moonmart and QuickBooks.',
     category: 'Finance',
     popular: false,
     link: '#'
@@ -242,7 +242,7 @@ const integrations = [
   {
     name: 'Zendesk',
     logo: '/assets/images/integrations/zendesk.svg',
-    description: 'Improve customer support by connecting SaasWorld with Zendesk help desk software.',
+    description: 'Improve customer support by connecting Moonmart with Zendesk help desk software.',
     category: 'Customer Support',
     popular: false,
     link: '#'
@@ -266,7 +266,7 @@ const integrations = [
   {
     name: 'Zapier',
     logo: '/assets/images/integrations/zapier.svg',
-    description: 'Connect SaasWorld with 3,000+ apps through automated workflows.',
+    description: 'Connect Moonmart with 3,000+ apps through automated workflows.',
     category: 'Automation',
     popular: true,
     link: '#'
@@ -274,7 +274,7 @@ const integrations = [
   {
     name: 'Trello',
     logo: '/assets/images/integrations/trello.svg',
-    description: 'Manage your projects with visual boards by connecting SaasWorld with Trello.',
+    description: 'Manage your projects with visual boards by connecting Moonmart with Trello.',
     category: 'Project Management',
     popular: false,
     link: '#'
@@ -332,7 +332,7 @@ const categoryDetails = [
     name: 'Communication',
     title: 'Communication & Collaboration',
     icon: 'heroicons:chat-bubble-left-right',
-    description: 'Connect your team communication tools with SaasWorld.'
+    description: 'Connect your team communication tools with Moonmart.'
   },
   {
     name: 'Productivity',
@@ -368,7 +368,7 @@ const categoryDetails = [
     name: 'Storage',
     title: 'Storage & File Management',
     icon: 'heroicons:folder',
-    description: 'Integrate your file storage systems with SaasWorld.'
+    description: 'Integrate your file storage systems with Moonmart.'
   },
   {
     name: 'Development',
@@ -455,7 +455,7 @@ const submitIntegrationRequest = () => {
 /* Hero Section */
 .hero-section {
   padding: calc(var(--spacing-xxl) * 1.5) 0;
-  background: linear-gradient(135deg, var(--bg-gray) 0%, #fff 100%);
+  background: var(--mm-bg);
   position: relative;
   overflow: visible;
   text-align: center;
@@ -508,8 +508,8 @@ const submitIntegrationRequest = () => {
 /* Search and Filter Section */
 .integration-search-section {
   padding: var(--spacing-xl) 0;
-  background-color: var(--light-color);
-  border-bottom: 1px solid var(--color-gray-200);
+  background-color: var(--mm-s1);
+  border-bottom: 0.5px solid var(--b1);
 }
 
 .search-filter-container {
@@ -531,17 +531,18 @@ const submitIntegrationRequest = () => {
   width: 100%;
   padding: var(--spacing-md) var(--spacing-xl);
   padding-right: calc(var(--spacing-xl) + 1.25rem);
-  border: 1px solid var(--color-gray-200);
-  border-radius: var(--border-radius-md);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-full);
   font-size: 1rem;
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
+  background: var(--mm-s2);
+  color: var(--mm-pearl);
+  transition: border-color var(--transition-fast);
 }
 
 .search-input:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.2);
+  border-color: var(--mm-gold);
+  box-shadow: 0 0 0 3px var(--mm-gold-soft);
 }
 
 .search-icon {
@@ -549,7 +550,7 @@ const submitIntegrationRequest = () => {
   right: var(--spacing-md);
   top: 50%;
   transform: translateY(-50%);
-  color: var(--text-secondary);
+  color: var(--mm-slate);
   pointer-events: none;
 }
 
@@ -562,29 +563,30 @@ const submitIntegrationRequest = () => {
 
 .filter-item {
   padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--border-radius-sm);
-  background-color: var(--bg-gray);
-  color: var(--text-secondary);
+  border-radius: var(--r-sm);
+  background-color: var(--mm-s2);
+  color: var(--mm-slate);
   cursor: pointer;
   transition: all var(--transition-fast);
   font-size: 0.875rem;
-  border: 1px solid transparent;
+  border: 0.5px solid transparent;
 }
 
 .filter-item:hover {
-  background-color: var(--color-gray-200);
-  color: var(--text-primary);
+  background-color: var(--mm-s3);
+  color: var(--mm-silver);
 }
 
 .filter-item.active {
-  background-color: var(--primary-color);
-  color: var(--light-color);
+  background-color: var(--mm-gold);
+  color: #0A0700;
+  border-color: var(--mm-gold);
 }
 
 /* Popular Integrations Section */
 .popular-integrations-section {
   padding: var(--spacing-xxl) 0;
-  background-color: var(--light-color);
+  background-color: var(--mm-bg);
 }
 
 .section-header {
@@ -612,7 +614,7 @@ const submitIntegrationRequest = () => {
 .btn {
   display: inline-block;
   padding: var(--spacing-sm) var(--spacing-lg);
-  border-radius: var(--border-radius-md);
+  border-radius: var(--r-sm);
   font-weight: 500;
   text-align: center;
   cursor: pointer;
@@ -622,29 +624,29 @@ const submitIntegrationRequest = () => {
 
 .btn-outline {
   background-color: transparent;
-  border: 1px solid var(--primary-color);
-  color: var(--primary-color);
+  border: 0.5px solid var(--mm-gold);
+  color: var(--mm-gold);
 }
 
 .btn-outline:hover {
-  background-color: var(--primary-color);
-  color: var(--light-color);
+  background-color: var(--mm-gold);
+  color: #0A0700;
 }
 
 .btn-primary {
-  background-color: var(--primary-color);
-  color: var(--light-color);
+  background-color: var(--mm-gold);
+  color: #0A0700;
   border: none;
 }
 
 .btn-primary:hover {
-  background-color: var(--color-primary-dark);
+  background-color: var(--mm-goldl);
 }
 
 /* Integration Categories Section */
 .integration-categories-section {
   padding: var(--spacing-xxl) 0;
-  background-color: var(--bg-gray);
+  background-color: var(--mm-s1);
 }
 
 .categories-grid {
@@ -654,10 +656,10 @@ const submitIntegrationRequest = () => {
 }
 
 .category-card {
-  background-color: var(--light-color);
-  border-radius: var(--border-radius-md);
+  background-color: var(--mm-s2);
+  border-radius: var(--r-md);
   padding: var(--spacing-xl);
-  box-shadow: var(--shadow-sm);
+  border: 0.5px solid var(--b1);
   transition: transform var(--transition-normal), box-shadow var(--transition-normal);
   cursor: pointer;
   text-align: center;
@@ -669,8 +671,8 @@ const submitIntegrationRequest = () => {
 }
 
 .category-icon {
-  color: var(--primary-color);
-  background-color: rgba(var(--primary-color-rgb), 0.1);
+  color: var(--mm-gold);
+  background-color: var(--mm-gold-soft);
   width: 60px;
   height: 60px;
   border-radius: 50%;
@@ -694,17 +696,17 @@ const submitIntegrationRequest = () => {
 .category-count {
   display: inline-block;
   padding: 2px var(--spacing-md);
-  background-color: var(--bg-gray);
-  border-radius: 50px;
+  background-color: var(--mm-s3);
+  border-radius: var(--r-full);
   font-size: 0.75rem;
-  color: var(--text-secondary);
+  color: var(--mm-slate);
   font-weight: 500;
 }
 
 /* Integration Help Section */
 .integration-help-section {
   padding: var(--spacing-xxl) 0;
-  background-color: var(--light-color);
+  background-color: var(--mm-bg);
 }
 
 .help-content {
@@ -733,7 +735,7 @@ const submitIntegrationRequest = () => {
 .help-image img {
   width: 100%;
   max-width: 450px;
-  border-radius: var(--border-radius-lg);
+  border-radius: var(--r-lg);
 }
 
 /* Modal for Integration Requests */
@@ -752,8 +754,9 @@ const submitIntegrationRequest = () => {
 }
 
 .modal-container {
-  background-color: var(--light-color);
-  border-radius: var(--border-radius-md);
+  background-color: var(--mm-s1);
+  border-radius: var(--r-md);
+  border: 0.5px solid var(--b2);
   width: 100%;
   max-width: 600px;
   max-height: 90vh;
@@ -767,7 +770,7 @@ const submitIntegrationRequest = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--color-gray-200);
+  border-bottom: 0.5px solid var(--b1);
 }
 
 .modal-header h3 {
@@ -813,17 +816,19 @@ label {
 input, textarea {
   width: 100%;
   padding: var(--spacing-sm);
-  border: 1px solid var(--color-gray-300);
-  border-radius: var(--border-radius-sm);
-  font-family: var(--font-primary);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
+  font-family: var(--f-ui);
   font-size: 1rem;
+  background: var(--mm-s2);
+  color: var(--mm-pearl);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 input:focus, textarea:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.2);
+  border-color: var(--mm-gold);
+  box-shadow: 0 0 0 3px var(--mm-gold-soft);
 }
 
 .submit-btn {

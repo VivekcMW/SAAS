@@ -352,12 +352,12 @@ function seedDatabase(db: Database.Database) {
   const vendorUsers = [
     {
       id: 'user_vendor_demo',
-      email: 'demo@saasworld.com',
+      email: 'demo@moonmart.ai',
       password_hash: 'scrypt:placeholder',
       first_name: 'Demo',
       last_name: 'Vendor',
       full_name: 'Demo Vendor',
-      company_name: 'SaaSWorld Labs',
+      company_name: 'Moonmart Labs',
       company_size: '11-50',
       job_title: 'Founder',
       phone_number: '+1-555-0100',
@@ -368,12 +368,12 @@ function seedDatabase(db: Database.Database) {
     },
     {
       id: 'user_admin_demo',
-      email: 'admin@saasworld.com',
+      email: 'admin@moonmart.ai',
       password_hash: 'scrypt:placeholder-admin',
       first_name: 'Admin',
       last_name: 'User',
       full_name: 'Admin User',
-      company_name: 'SaaSWorld',
+      company_name: 'Moonmart',
       company_size: '51-200',
       job_title: 'Platform Admin',
       phone_number: '+1-555-0101',
@@ -390,7 +390,7 @@ function seedDatabase(db: Database.Database) {
     {
       id: 'vendor_saasworld_labs',
       user_id: 'user_vendor_demo',
-      company_name: 'SaaSWorld Labs',
+      company_name: 'Moonmart Labs',
       company_slug: 'saasworld-labs',
       status: 'active',
       created_at: now,
@@ -399,7 +399,7 @@ function seedDatabase(db: Database.Database) {
     {
       id: 'vendor_saasworld_admin',
       user_id: 'user_admin_demo',
-      company_name: 'SaaSWorld',
+      company_name: 'Moonmart',
       company_slug: 'saasworld',
       status: 'active',
       created_at: now,

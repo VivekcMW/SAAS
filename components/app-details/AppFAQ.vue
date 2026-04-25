@@ -22,17 +22,17 @@ defineProps<Props>()
   display: flex;
   flex-direction: column;
   gap: 0;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 10px;
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-lg);
   overflow: hidden;
-  background: #ffffff;
+  background: var(--mm-s2);
 }
-.faq-accordion :deep(.accordion) { border-bottom: 0.5px solid #e5e7eb; }
+.faq-accordion :deep(.accordion) { border-bottom: 0.5px solid var(--b1); }
 .faq-accordion :deep(.accordion:last-child) { border-bottom: none; }
 .faq-answer {
   margin: 0;
   font-size: 14px;
-  color: #4b5563;
+  color: var(--mm-silver);
   line-height: 1.6;
 }
 </style>

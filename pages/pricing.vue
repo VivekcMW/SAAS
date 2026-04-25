@@ -6,7 +6,7 @@
         <p class="mk-eyebrow">Pricing</p>
         <h1 class="mk-hero__title">Simple pricing for buyers and vendors</h1>
         <p class="mk-hero__lede">
-          SaaSWorld is free for teams searching for software. Vendors pay only when the
+          Moonmart is free for teams searching for software. Vendors pay only when the
           marketplace drives real pipeline.
         </p>
 
@@ -146,9 +146,9 @@
 const { applySEO } = useSEO()
 
 applySEO({
-  title: 'Pricing | SaaSWorld',
+  title: 'Pricing | Moonmart',
   description: 'Free for software buyers, fair lead-based pricing for vendors. See plans for Starter, Growth and Scale.',
-  canonical: 'https://saasworld.com/pricing',
+  canonical: 'https://moonmart.ai/pricing',
   ogType: 'website'
 })
 
@@ -212,7 +212,7 @@ const compareRows = [
 ]
 
 const faqs = [
-  { q: 'Is it really free for buyers?', a: 'Yes. Individual users and entire buying teams use SaaSWorld for free. Our revenue comes from vendor subscriptions and accepted leads, not from buyers.' },
+  { q: 'Is it really free for buyers?', a: 'Yes. Individual users and entire buying teams use Moonmart for free. Our revenue comes from vendor subscriptions and accepted leads, not from buyers.' },
   { q: 'How are "accepted leads" defined?', a: 'A lead is accepted when the vendor confirms it fits their ICP within 10 business days. Rejected or duplicate leads are never charged.' },
   { q: 'Can I switch plans mid-term?', a: 'Yes. Upgrade at any time and we prorate the difference. Downgrades take effect at the end of the current billing period.' },
   { q: 'Do you offer annual billing?', a: 'Yes — save 20% when you pay annually. Enterprise agreements are also available via our Scale plan.' },
@@ -224,38 +224,37 @@ const faqs = [
 <style scoped>
 /* Pricing-specific tweaks (shared mk-* classes live in assets/css/marketing.css) */
 
-.mk-toggle { display: inline-flex; background: #fff; border: 1px solid #f0d9bf; border-radius: 999px; padding: 0.25rem; }
-.mk-toggle__btn { background: transparent; border: none; padding: 0.5rem 1.1rem; border-radius: 999px; font-weight: 600; color: #52525b; cursor: pointer; font-size: 0.9rem; }
-.mk-toggle__btn.is-active { background: var(--sw-primary, #ff8838); color: #fff; }
+.mk-toggle { display: inline-flex; background: var(--mm-s2); border: 0.5px solid var(--b1); border-radius: var(--r-full); padding: 0.25rem; }
+.mk-toggle__btn { background: transparent; border: none; padding: 0.5rem 1.1rem; border-radius: var(--r-sm); font-weight: 600; color: var(--mm-slate); cursor: pointer; font-size: 0.9rem; }
+.mk-toggle__btn.is-active { background: var(--mm-gold); color: #0A0700; }
 .mk-toggle__note { margin-left: 0.4rem; font-size: 0.72rem; font-weight: 700; }
 
 /* Plans */
 .mk-plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; max-width: 1100px; margin: 0 auto; }
-.mk-plan { position: relative; background: #fff; border: 1px solid #f0efec; border-radius: 16px; padding: 1.75rem 1.5rem; display: flex; flex-direction: column; }
-.mk-plan.is-featured { border-color: var(--sw-primary, #ff8838); box-shadow: 0 12px 30px -18px rgba(255, 136, 56, 0.35); }
-.mk-plan__badge { position: absolute; top: -0.7rem; left: 50%; transform: translateX(-50%); background: var(--sw-primary, #ff8838); color: #fff; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.3rem 0.7rem; border-radius: 999px; margin: 0; }
-.mk-plan__eyebrow { color: var(--sw-primary, #ff8838); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin: 0 0 0.5rem; }
-.mk-plan__name { font-family: var(--font-heading, 'Poppins', system-ui, sans-serif); font-size: 1.25rem; font-weight: 700; color: #1e1e1e; margin: 0 0 0.5rem; }
-.mk-plan__price { font-family: var(--font-heading, 'Poppins', system-ui, sans-serif); font-size: 2rem; font-weight: 700; color: #1e1e1e; margin: 0 0 0.5rem; }
-.mk-plan__price span { font-size: 0.85rem; font-weight: 500; color: #71717a; margin-left: 0.25rem; }
-.mk-plan__desc { color: #52525b; font-size: 0.9rem; line-height: 1.55; margin: 0 0 1.25rem; }
+.mk-plan { position: relative; background: var(--mm-s2); border: 0.5px solid var(--b1); border-radius: var(--r-xl); padding: 1.75rem 1.5rem; display: flex; flex-direction: column; }
+.mk-plan.is-featured { border-color: var(--mm-gold); box-shadow: 0 12px 30px -18px var(--mm-gold-soft); }
+.mk-plan__badge { position: absolute; top: -0.7rem; left: 50%; transform: translateX(-50%); background: var(--mm-gold); color: #0A0700; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.3rem 0.7rem; border-radius: var(--r-full); margin: 0; }
+.mk-plan__eyebrow { color: var(--mm-gold); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin: 0 0 0.5rem; }
+.mk-plan__name { font-family: var(--f-display); font-size: 1.25rem; font-weight: 700; color: var(--mm-pearl); margin: 0 0 0.5rem; }
+.mk-plan__price { font-family: var(--f-display); font-size: 2rem; font-weight: 700; color: var(--mm-pearl); margin: 0 0 0.5rem; }
+.mk-plan__price span { font-size: 0.85rem; font-weight: 500; color: var(--mm-slate); margin-left: 0.25rem; }
+.mk-plan__desc { color: var(--mm-silver); font-size: 0.9rem; line-height: 1.55; margin: 0 0 1.25rem; }
 .mk-plan__list { list-style: none; padding: 0; margin: 0 0 1.5rem; flex: 1; }
-.mk-plan__list li { padding: 0.45rem 0 0.45rem 1.5rem; position: relative; color: #3f3f46; font-size: 0.9rem; line-height: 1.5; }
-.mk-plan__list li::before { content: '✓'; position: absolute; left: 0; top: 0.45rem; color: var(--sw-primary, #ff8838); font-weight: 700; }
+.mk-plan__list li { padding: 0.45rem 0 0.45rem 1.5rem; position: relative; color: var(--mm-silver); font-size: 0.9rem; line-height: 1.5; }
+.mk-plan__list li::before { content: '✓'; position: absolute; left: 0; top: 0.45rem; color: var(--mm-gold); font-weight: 700; }
 
 /* Compare vendor plans table */
 .cmp-wrap {
   width: 100%;
   margin: 2rem 0 0;
-  background: #fff;
-  border: 1px solid #f0efec;
-  border-radius: 16px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-xl);
   overflow-x: auto;
-  box-shadow: 0 10px 30px -22px rgba(15, 23, 42, 0.25);
 }
 .cmp {
   width: 100%;
-  display: table;         /* override global `table { display: block }` */
+  display: table;
   border-collapse: collapse;
   table-layout: fixed;
   font-size: 0.95rem;
@@ -265,24 +264,24 @@ const faqs = [
 .cmp__th--plan { width: 20%; }
 
 .cmp thead th {
-  background: #fbfaf8;
+  background: var(--mm-s3);
   padding: 1rem 1.25rem;
   font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #71717a;
+  color: var(--mm-slate);
   text-align: center;
-  border-bottom: 1px solid #f0efec;
+  border-bottom: 0.5px solid var(--b1);
 }
 .cmp thead th:first-child { text-align: left; }
 
 .cmp__pill {
   display: inline-block;
-  background: var(--sw-primary, #ff8838);
-  color: #fff;
+  background: var(--mm-gold);
+  color: #0A0700;
   padding: 0.3rem 0.75rem;
-  border-radius: 999px;
+  border-radius: var(--r-full);
   font-size: 0.7rem;
   letter-spacing: 0.1em;
 }
@@ -290,27 +289,27 @@ const faqs = [
 .cmp tbody th,
 .cmp tbody td {
   padding: 0.95rem 1.25rem;
-  border-top: 1px solid #f4f3f0;
+  border-top: 0.5px solid var(--b1);
   vertical-align: middle;
 }
 .cmp tbody th {
   text-align: left;
   font-weight: 600;
-  color: #1e1e1e;
-  background: #fff;
+  color: var(--mm-pearl);
+  background: var(--mm-s2);
 }
 .cmp tbody td {
   text-align: center;
-  color: #3f3f46;
+  color: var(--mm-silver);
 }
 .cmp tbody tr:hover th,
-.cmp tbody tr:hover td { background: #fcfbf9; }
+.cmp tbody tr:hover td { background: var(--mm-s3); }
 
-.cmp__featured { background: rgba(255, 136, 56, 0.04); }
-.cmp tbody tr:hover .cmp__featured { background: rgba(255, 136, 56, 0.08); }
+.cmp__featured { background: var(--mm-gold-soft); }
+.cmp tbody tr:hover .cmp__featured { background: rgba(212,168,67,.18); }
 
-.cmp__yes { color: var(--sw-primary, #ff8838); font-weight: 700; font-size: 1.05rem; }
-.cmp__no { color: #cbd0d6; font-weight: 500; }
+.cmp__yes { color: var(--mm-gold); font-weight: 700; font-size: 1.05rem; }
+.cmp__no { color: var(--mm-slate); font-weight: 500; }
 
 @media (max-width: 720px) {
   .cmp-wrap { overflow-x: auto; }

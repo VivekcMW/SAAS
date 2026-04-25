@@ -1,4 +1,4 @@
-/* CSS Reset for SaaSWorld */
+/* CSS Reset for Moonmart */
 
 /* Box sizing */
 *, *::before, *::after {
@@ -19,8 +19,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-family: var(--font-primary);
   font-size: var(--fs-base);
-  color: var(--text-primary, #1F2937);
-  background-color: var(--light-color, #FFFFFF);
+  color: var(--text-primary, #F0F3F8);
+  background-color: var(--mm-bg, #07090F);
 }
 
 /* Headings use the display family */
@@ -47,18 +47,17 @@ input, button, textarea, select {
   font: inherit;
 }
 
-/* Ensure form controls always render on a light surface, even when the user's
-   OS/browser is set to dark mode. Individual components may override. */
+/* Dark-first surface for all form inputs — DS tokens. Individual components may override. */
 input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
 textarea,
 select {
-  background-color: #fff;
-  color: var(--sw-text, #1C1917);
+  background-color: var(--mm-s2, #161B2E);
+  color: var(--mm-pearl, #F2F4F8);
 }
 
 input::placeholder,
 textarea::placeholder {
-  color: var(--sw-text-subtle, #78716C);
+  color: var(--mm-silver, #A8B5CC);
   opacity: 1;
 }
 

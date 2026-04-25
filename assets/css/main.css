@@ -1,4 +1,4 @@
-/* Global CSS for SaaSWorld
+/* Global CSS for Moonmart
  * NOTE: Design tokens live in assets/css/tokens.css (single source of truth).
  * This file now only contains base element / utility styles.
  */
@@ -42,11 +42,13 @@ input[type="url"],
 input[type="date"],
 textarea,
 select {
-  border-radius: var(--border-radius-input);
-  border: 1px solid var(--color-gray-300);
+  background-color: var(--mm-s2);
+  color: var(--mm-pearl);
+  border-radius: var(--r-sm);
+  border: 0.5px solid var(--b2);
   padding: 0.75rem 1rem;
-  font-family: var(--font-primary);
-  font-size: var(--fs-base);
+  font-family: var(--f-ui);
+  font-size: var(--t-sm);
   transition: all var(--transition-normal);
   width: 100%;
   box-sizing: border-box;
@@ -56,8 +58,8 @@ input:focus,
 textarea:focus,
 select:focus {
   outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(255, 136, 56, 0.1);
+  border-color: var(--mm-gold);
+  box-shadow: 0 0 0 3px var(--mm-gold-soft);
 }
 
 /* Button styles */
@@ -76,23 +78,23 @@ select:focus {
 }
 
 .btn-primary {
-  background-color: var(--color-primary);
-  color: white;
+  background-color: var(--mm-gold, #D4A843);
+  color: #07090F;
 }
 
 .btn-primary:hover {
-  background-color: #3a22c0;
+  background-color: var(--mm-gold-l, #F0C96A);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(78, 50, 223, 0.25);
+  box-shadow: 0 4px 12px rgba(212, 168, 67, 0.3);
 }
 
 .btn-secondary {
-  background-color: var(--secondary-color);
-  color: var(--dark-color);
+  background-color: var(--mm-sea, #2A9D8F);
+  color: #F0F3F8;
 }
 
 .btn-secondary:hover {
-  background-color: #e9b82c;
+  background-color: var(--mm-sea-l, #3DBFB0);
 }
 
 .btn-outline {

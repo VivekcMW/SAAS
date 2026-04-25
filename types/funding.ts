@@ -1,5 +1,5 @@
 /**
- * Funding Preferences Types for SaaSWorld Onboarding
+ * Funding Preferences Types for Moonmart Onboarding
  * Defines data structures for founder funding preferences
  */
 

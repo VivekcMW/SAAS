@@ -9,7 +9,7 @@ export default defineEventHandler((event) => {
   const id = getRouterParam(event, 'id') || ''
   const app = getMarketplaceAppByIdOrSlug(id)
 
-  const name = app?.name || 'SaaSWorld'
+  const name = app?.name || 'Moonmart'
   const provider = app?.provider || ''
   const description = (app?.description || 'Discover the best SaaS tools for your business').slice(0, 140)
   const rating = app?.rating ? app.rating.toFixed(1) : ''
@@ -54,7 +54,7 @@ export default defineEventHandler((event) => {
   </g>` : ''}
 
   <text x="60" y="598" font-family="Inter, system-ui, sans-serif" font-size="20" font-weight="500" fill="#9ca3af">
-    saasworld.com/marketplace/app/${escape(id)}
+    moonmart.ai/marketplace/app/${escape(id)}
   </text>
 
   <g transform="translate(1000, 520)">

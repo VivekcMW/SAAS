@@ -2,9 +2,9 @@
   <LegalShell
     title="Terms of Service"
     eyebrow="Legal · Terms"
-    lede="The rules for using SaaSWorld — what we promise to do, and what we ask of you in return."
+    lede="The rules for using Moonmart — what we promise to do, and what we ask of you in return."
     :updated="updatedAt"
-    contact-email="legal@saasworld.com"
+    contact-email="legal@moonmart.ai"
     :sections="tocSections"
   >
     <div class="terms-content">
@@ -13,7 +13,7 @@
         <section id="introduction" class="legal-section">
           <h2>1. Introduction</h2>
           <p>
-            Welcome to SaaSWorld ("we," "our," or "us"). These Terms of Service ("Terms") govern your use of our website located at saasworld.com (the "Service") operated by SaaSWorld Inc.
+            Welcome to Moonmart ("we," "our," or "us"). These Terms of Service ("Terms") govern your use of our website located at moonmart.ai (the "Service") operated by Moonmart Inc.
           </p>
           <p>
             By accessing or using our Service, you agree to be bound by these Terms. If you disagree with any part of these terms, then you may not access the Service.
@@ -25,7 +25,7 @@
           <h2>2. Definitions</h2>
           <div class="definition-list">
             <div class="definition-item">
-              <strong>"Service"</strong> refers to the SaaSWorld website and marketplace platform.
+              <strong>"Service"</strong> refers to the Moonmart website and marketplace platform.
             </div>
             <div class="definition-item">
               <strong>"User"</strong> refers to anyone who accesses or uses our Service.
@@ -100,7 +100,7 @@
           <h2>6. Intellectual Property</h2>
           <h3>6.1 Our Rights</h3>
           <p>
-            The Service and its original content, features, and functionality are and will remain the exclusive property of SaaSWorld and its licensors.
+            The Service and its original content, features, and functionality are and will remain the exclusive property of Moonmart and its licensors.
           </p>
           <h3>6.2 User Content</h3>
           <p>
@@ -108,7 +108,7 @@
           </p>
           <h3>6.3 DMCA Policy</h3>
           <p>
-            We respect intellectual property rights and will respond to valid DMCA takedown notices. Please contact us at dmca@saasworld.com for copyright concerns.
+            We respect intellectual property rights and will respond to valid DMCA takedown notices. Please contact us at dmca@moonmart.ai for copyright concerns.
           </p>
         </section>
 
@@ -180,8 +180,8 @@
             If you have any questions about these Terms of Service, please contact us:
           </p>
           <div class="contact-info">
-            <p><strong>Email:</strong> legal@saasworld.com</p>
-            <p><strong>Address:</strong> SaaSWorld Inc., 123 Tech Street, San Francisco, CA 94105</p>
+            <p><strong>Email:</strong> legal@moonmart.ai</p>
+            <p><strong>Address:</strong> Moonmart Inc., 123 Tech Street, San Francisco, CA 94105</p>
             <p><strong>Phone:</strong> +1 (555) 123-4567</p>
           </div>
         </section>
@@ -211,21 +211,21 @@ const tocSections = [
 ]
 
 applySEO({
-  title: 'Terms of Service | SaaSWorld - Legal Terms and Conditions',
-  description: 'Read SaaSWorld\'s Terms of Service. Understand your rights and obligations when using our software marketplace platform.',
-  keywords: 'terms of service, legal terms, user agreement, terms and conditions, SaaSWorld legal',
-  canonical: 'https://saasworld.com/terms',
+  title: 'Terms of Service | Moonmart - Legal Terms and Conditions',
+  description: 'Read Moonmart\'s Terms of Service. Understand your rights and obligations when using our software marketplace platform.',
+  keywords: 'terms of service, legal terms, user agreement, terms and conditions, Moonmart legal',
+  canonical: 'https://moonmart.ai/terms',
   ogType: 'website',
   jsonLd: {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     name: 'Terms of Service',
-    description: 'SaaSWorld Terms of Service and user agreement',
-    url: 'https://saasworld.com/terms',
+    description: 'Moonmart Terms of Service and user agreement',
+    url: 'https://moonmart.ai/terms',
     publisher: {
       '@type': 'Organization',
-      name: 'SaaSWorld',
-      url: 'https://saasworld.com'
+      name: 'Moonmart',
+      url: 'https://moonmart.ai'
     }
   }
 })

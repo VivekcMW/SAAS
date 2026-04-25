@@ -114,10 +114,10 @@ async function generateThumbnail(post) {
   ctx.arc(100, height - 100, 200, 0, Math.PI * 2);
   ctx.fill();
   
-  // Add SaaSWorld logo/brand
+  // Add Moonmart logo/brand
   ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
   ctx.font = 'bold 24px Arial';
-  ctx.fillText('SaaSWorld', 60, 60);
+  ctx.fillText('Moonmart', 60, 60);
   
   // Add category tag
   ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
@@ -143,7 +143,7 @@ async function generateThumbnail(post) {
   // Add date/read time
   ctx.font = '18px Arial';
   ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-  ctx.fillText('2025 • SaaSWorld Blog', 60, height - 60);
+  ctx.fillText('2025 • Moonmart Blog', 60, height - 60);
   
   // Reset shadow
   ctx.shadowColor = 'transparent';

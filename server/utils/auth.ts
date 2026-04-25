@@ -58,9 +58,9 @@ export function verifyPassword(password: string, storedHash: string) {
 export function ensureSeedCredentials() {
   const db = getDb()
   const seedAccounts = [
-    { email: 'demo@saasworld.com', password: 'demo123' },
-    { email: 'admin@saasworld.com', password: 'admin123' },
-    { email: 'buyer@saasworld.com', password: 'buyer123' }
+    { email: 'demo@moonmart.ai', password: 'demo123' },
+    { email: 'admin@moonmart.ai', password: 'admin123' },
+    { email: 'buyer@moonmart.ai', password: 'buyer123' }
   ]
 
   const updatePassword = db.prepare('UPDATE users SET password_hash = ? WHERE email = ?')
@@ -82,7 +82,7 @@ export function ensureSeedCredentials() {
 
     // Create the buyer seed if missing (vendor + admin are already seeded in database.ts)
     if (!row) {
-      if (account.email === 'buyer@saasworld.com') {
+      if (account.email === 'buyer@moonmart.ai') {
         const now = new Date().toISOString()
         insertUser.run({
           id: 'user_buyer_demo',

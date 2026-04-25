@@ -126,22 +126,22 @@ const showPanel = ref(false)
   align-items: center;
   gap: 6px;
   padding: 8px 14px;
-  border-radius: 8px;
+  border-radius: var(--r-md);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
-  background: #ffffff;
-  color: #374151;
-  border: 0.5px solid #e5e7eb;
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+  background: var(--mm-s3);
+  color: var(--mm-silver);
+  border: 0.5px solid var(--b1);
 }
-.stack-toggle:hover { border-color: #ff8838; color: #ff8838; }
+.stack-toggle:hover { border-color: var(--mm-gold); color: var(--mm-gold); }
 .stack-toggle.added {
-  background: #fff3e6;
-  color: #b45309;
-  border-color: #fde68a;
+  background: var(--mm-gold-soft);
+  color: var(--mm-gold);
+  border-color: var(--mm-gold);
 }
-.stack-view:hover { background: #f9fafb; }
+.stack-view:hover { background: var(--mm-s2); }
 .stack-toggle :deep(svg),
 .stack-view :deep(svg) { width: 14px; height: 14px; }
 
@@ -150,10 +150,10 @@ const showPanel = ref(false)
   top: calc(100% + 8px);
   right: 0;
   z-index: 20;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  background: var(--mm-s1);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lg);
   width: 320px;
   max-width: calc(100vw - 32px);
   padding: 12px;
@@ -165,18 +165,18 @@ const showPanel = ref(false)
   align-items: center;
   margin-bottom: 8px;
 }
-.panel-head h4 { margin: 0; font-size: 13px; font-weight: 700; color: #111827; }
+.panel-head h4 { margin: 0; font-size: 13px; font-weight: 700; color: var(--mm-pearl); }
 .panel-clear {
   background: transparent;
   border: 0;
-  color: #9ca3af;
+  color: var(--mm-slate);
   font-size: 11px;
   cursor: pointer;
   padding: 2px 6px;
-  border-radius: 4px;
-  transition: color 150ms ease;
+  border-radius: var(--r-xs);
+  transition: color var(--transition-fast);
 }
-.panel-clear:hover { color: #dc2626; }
+.panel-clear:hover { color: #f87171; }
 
 .stack-list {
   list-style: none;
@@ -190,21 +190,21 @@ const showPanel = ref(false)
   align-items: center;
   gap: 8px;
   padding: 6px 0;
-  border-bottom: 0.5px solid #f3f4f6;
+  border-bottom: 0.5px solid var(--b1);
 }
 .stack-list li:last-child { border-bottom: 0; }
 
 .stack-logo {
   width: 28px;
   height: 28px;
-  border-radius: 6px;
-  background: #f3f4f6;
+  border-radius: var(--r-sm);
+  background: var(--mm-s3);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   font-size: 12px;
-  color: #6b7280;
+  color: var(--mm-slate);
   font-weight: 700;
   flex-shrink: 0;
 }
@@ -213,50 +213,50 @@ const showPanel = ref(false)
 .stack-name {
   flex: 1;
   font-size: 13px;
-  color: #374151;
+  color: var(--mm-silver);
   text-decoration: none;
   font-weight: 500;
 }
-.stack-name:hover { color: #ff8838; }
+.stack-name:hover { color: var(--mm-gold); }
 
 .stack-remove {
   background: transparent;
   border: 0;
-  color: #9ca3af;
+  color: var(--mm-slate);
   cursor: pointer;
   padding: 2px;
-  border-radius: 4px;
+  border-radius: var(--r-xs);
   display: inline-flex;
   align-items: center;
-  transition: color 150ms ease;
+  transition: color var(--transition-fast);
 }
-.stack-remove:hover { color: #dc2626; }
+.stack-remove:hover { color: #f87171; }
 .stack-remove :deep(svg) { width: 14px; height: 14px; }
 
 .panel-foot {
-  border-top: 0.5px solid #f3f4f6;
+  border-top: 0.5px solid var(--b1);
   padding-top: 10px;
 }
 .panel-cta {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: #ff8838;
-  color: #ffffff;
+  background: var(--mm-gold);
+  color: #0A0700;
   font-size: 13px;
   font-weight: 600;
   padding: 8px 12px;
-  border-radius: 8px;
+  border-radius: var(--r-md);
   text-decoration: none;
   width: 100%;
   justify-content: center;
-  transition: background 150ms ease;
+  transition: background var(--transition-fast);
 }
-.panel-cta:hover { background: #e57320; }
+.panel-cta:hover { background: var(--mm-goldl); }
 .panel-cta :deep(svg) { width: 14px; height: 14px; }
 
-.panel-hint { font-size: 12px; color: #9ca3af; }
+.panel-hint { font-size: 12px; color: var(--mm-slate); }
 
-.fade-enter-active, .fade-leave-active { transition: opacity 150ms ease, transform 150ms ease; }
+.fade-enter-active, .fade-leave-active { transition: opacity var(--transition-fast), transform var(--transition-fast); }
 .fade-enter-from, .fade-leave-to { opacity: 0; transform: translateY(-4px); }
 </style>

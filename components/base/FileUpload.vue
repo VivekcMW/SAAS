@@ -110,23 +110,23 @@ const fileList = () => {
   align-items: center;
   justify-content: center;
   padding: 24px 16px;
-  background: #ffffff;
-  border: 1px dashed #d1d5db;
-  border-radius: 6px;
+  background: var(--mm-s2);
+  border: 1px dashed var(--b2);
+  border-radius: var(--r-md);
   cursor: pointer;
-  color: #6b7280;
+  color: var(--mm-slate);
   transition: background-color 150ms ease, border-color 150ms ease;
 }
-.upload:hover:not(.is-disabled) { background: #f9fafb; border-color: #ff8838; }
-.upload.dragging { background: #fff3e6; border-color: #ff8838; }
+.upload:hover:not(.is-disabled) { background: var(--mm-s3); border-color: var(--mm-gold); }
+.upload.dragging { background: var(--mm-gold-soft); border-color: var(--mm-gold); }
 .upload.is-disabled { opacity: 0.6; cursor: not-allowed; }
 
 .upload-input { display: none; }
 
-.upload-icon { color: #9ca3af; margin-bottom: 8px; }
-.upload-primary { margin: 0; font-size: 13px; color: #374151; }
-.upload-link { color: #ff8838; font-weight: 500; }
-.upload-hint { margin: 4px 0 0; font-size: 12px; color: #9ca3af; }
+.upload-icon { color: var(--mm-slate); margin-bottom: 8px; }
+.upload-primary { margin: 0; font-size: var(--t-sm); color: var(--mm-silver); }
+.upload-link { color: var(--mm-gold); font-weight: 500; }
+.upload-hint { margin: 4px 0 0; font-size: var(--t-xs); color: var(--mm-slate); }
 
 .upload-files { list-style: none; margin: 12px 0 0; padding: 0; width: 100%; display: flex; flex-direction: column; gap: 4px; }
 .upload-file {
@@ -135,16 +135,16 @@ const fileList = () => {
   justify-content: space-between;
   gap: 8px;
   padding: 6px 8px;
-  background: #f3f4f6;
-  border-radius: 4px;
-  font-size: 12px;
-  color: #1f2937;
+  background: var(--mm-s3);
+  border-radius: var(--r-sm);
+  font-size: var(--t-xs);
+  color: var(--mm-silver);
 }
 .upload-file-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
 .upload-file-remove {
   background: transparent;
   border: none;
-  color: #6b7280;
+  color: var(--mm-slate);
   cursor: pointer;
   padding: 2px;
   display: flex;

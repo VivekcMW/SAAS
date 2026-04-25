@@ -103,28 +103,28 @@ onBeforeUnmount(() => {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: #ffffff;
-  color: #374151;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 999px;
+  background: var(--mm-s3);
+  color: var(--mm-silver);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-full);
   padding: 6px 12px;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
 }
-.voice-btn:hover { border-color: #ff8838; color: #ff8838; }
+.voice-btn:hover { border-color: var(--mm-gold); color: var(--mm-gold); }
 .voice-btn.active {
-  background: #fff3e6;
-  color: #b45309;
-  border-color: #fde68a;
+  background: var(--mm-gold-soft);
+  color: var(--mm-gold);
+  border-color: var(--mm-gold);
 }
 .voice-btn.ghost {
-  color: #6b7280;
+  color: var(--mm-slate);
   border: 0;
   padding: 6px 8px;
 }
-.voice-btn.ghost:hover { color: #dc2626; }
+.voice-btn.ghost:hover { color: #f87171; }
 .voice-btn :deep(svg) { width: 12px; height: 12px; }
 
 .voice-pulse {
@@ -137,7 +137,7 @@ onBeforeUnmount(() => {
 .voice-pulse span {
   display: block;
   width: 2px;
-  background: #ff8838;
+  background: var(--mm-gold);
   border-radius: 1px;
   animation: bar 800ms ease-in-out infinite;
 }

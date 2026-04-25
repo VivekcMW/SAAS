@@ -264,7 +264,7 @@ export const useLLMOptimization = () => {
         "educationalLevel": content.difficulty,
         "mainEntityOfPage": {
           "@type": "WebPage",
-          "@id": "https://saasworld.com" + useRoute().path
+          "@id": "https://moonmart.ai" + useRoute().path
         }
       }
     }

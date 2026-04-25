@@ -170,15 +170,15 @@ onMounted(trackImpression)
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: #fffaf5;
-  color: #b45309;
+  background: var(--mm-gold-soft);
+  color: var(--mm-gold);
   font-size: 10px;
   font-weight: 700;
   padding: 2px 8px;
-  border-radius: 999px;
+  border-radius: var(--r-full);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  border: 0.5px solid #fde68a;
+  border: 0.5px solid var(--mm-gold);
 }
 .ad-pill.mini {
   position: absolute;
@@ -192,9 +192,9 @@ onMounted(trackImpression)
   flex-direction: column;
   gap: 10px;
   padding: 16px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 12px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-lg);
   text-decoration: none;
   color: inherit;
   transition: border-color 150ms ease, box-shadow 150ms ease;
@@ -205,31 +205,31 @@ onMounted(trackImpression)
   min-height: 100%;
 }
 .ad-card:hover {
-  border-color: #ff8838;
-  box-shadow: 0 4px 16px rgba(255,136,56,0.08);
+  border-color: var(--mm-gold);
+  box-shadow: 0 4px 16px var(--mm-gold-soft);
 }
 
 .ad-head { display: flex; align-items: center; gap: 10px; }
 .ad-logo {
   width: 40px;
   height: 40px;
-  border-radius: 8px;
+  border-radius: var(--r-sm);
   overflow: hidden;
-  background: #f3f4f6;
+  background: var(--mm-s3);
   flex-shrink: 0;
 }
 .ad-logo img { width: 100%; height: 100%; object-fit: cover; }
 
 .ad-titles { flex: 1; min-width: 0; padding-right: 80px; }
-.ad-name { margin: 0; font-size: 15px; font-weight: 700; color: #111827; }
-.ad-provider { margin: 2px 0 0; font-size: 12px; color: #6b7280; }
+.ad-name { margin: 0; font-size: 15px; font-weight: 700; color: var(--mm-pearl); font-family: var(--f-ui); }
+.ad-provider { margin: 2px 0 0; font-size: 12px; color: var(--mm-slate); }
 
 .ad-card .ad-pill { position: absolute; top: 12px; right: 12px; }
 
 .ad-desc {
   margin: 0;
   font-size: 13px;
-  color: #4b5563;
+  color: var(--mm-silver);
   line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -243,15 +243,15 @@ onMounted(trackImpression)
   align-items: center;
   gap: 12px;
   font-size: 12px;
-  border-top: 0.5px solid #f3f4f6;
+  border-top: 0.5px solid var(--b1);
   padding-top: 10px;
   margin-top: auto;
 }
-.ad-rating { display: inline-flex; align-items: center; gap: 4px; color: #111827; font-weight: 600; }
-.ad-rating :deep(svg) { width: 12px; height: 12px; color: #f59e0b; }
-.ad-count { color: #6b7280; font-weight: 400; margin-left: 2px; }
-.ad-price { color: #047857; font-weight: 600; }
-.ad-cta { margin-left: auto; color: #ff8838; font-weight: 600; }
+.ad-rating { display: inline-flex; align-items: center; gap: 4px; color: var(--mm-pearl); font-weight: 600; }
+.ad-rating :deep(svg) { width: 12px; height: 12px; color: var(--mm-gold); }
+.ad-count { color: var(--mm-slate); font-weight: 400; margin-left: 2px; }
+.ad-price { color: var(--mm-seal); font-weight: 600; }
+.ad-cta { margin-left: auto; color: var(--mm-gold); font-weight: 600; }
 
 /* ---------- Compact tile (sidebar) ---------- */
 .ad-tile {
@@ -259,32 +259,32 @@ onMounted(trackImpression)
   flex-direction: column;
   gap: 8px;
   padding: 14px;
-  background: #fffaf5;
-  border: 0.5px solid #ffedd5;
-  border-radius: 10px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-lg);
   position: relative;
   text-decoration: none;
   color: inherit;
-  transition: border-color 150ms ease;
+  transition: border-color 150ms ease, background-color 150ms ease;
 }
-.ad-tile:hover { border-color: #ff8838; }
+.ad-tile:hover { border-color: var(--mm-gold); background: var(--mm-gold-soft); }
 
 .tile-row { display: flex; gap: 8px; align-items: flex-start; padding-top: 8px; }
 .tile-logo {
   width: 32px;
   height: 32px;
-  border-radius: 6px;
+  border-radius: var(--r-sm);
   overflow: hidden;
-  background: #ffffff;
+  background: var(--mm-s3);
   flex-shrink: 0;
 }
 .tile-logo img { width: 100%; height: 100%; object-fit: cover; }
 .tile-info { flex: 1; min-width: 0; }
-.tile-name { margin: 0; font-size: 13px; font-weight: 700; color: #111827; }
+.tile-name { margin: 0; font-size: 13px; font-weight: 700; color: var(--mm-pearl); font-family: var(--f-ui); }
 .tile-desc {
   margin: 2px 0 0;
   font-size: 11px;
-  color: #6b7280;
+  color: var(--mm-slate);
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -293,11 +293,11 @@ onMounted(trackImpression)
 }
 
 .tile-meta { display: flex; gap: 10px; font-size: 11px; }
-.tile-rating { display: inline-flex; align-items: center; gap: 2px; color: #111827; font-weight: 600; }
-.tile-rating :deep(svg) { width: 10px; height: 10px; color: #f59e0b; }
-.tile-price { color: #047857; font-weight: 600; }
+.tile-rating { display: inline-flex; align-items: center; gap: 2px; color: var(--mm-pearl); font-weight: 600; }
+.tile-rating :deep(svg) { width: 10px; height: 10px; color: var(--mm-gold); }
+.tile-price { color: var(--mm-seal); font-weight: 600; }
 
-.tile-cta { font-size: 12px; color: #b45309; font-weight: 600; }
+.tile-cta { font-size: 12px; color: var(--mm-gold); font-weight: 600; }
 
 /* ---------- Banner ---------- */
 .ad-banner {
@@ -305,9 +305,9 @@ onMounted(trackImpression)
   position: relative;
   width: 100%;
   flex: 1 1 100%;
-  background: #fffaf5;
-  border: 0.5px solid #ffedd5;
-  border-radius: 14px;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-lg);
   padding: 20px 24px;
   text-decoration: none;
   color: inherit;
@@ -318,12 +318,13 @@ onMounted(trackImpression)
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(600px 120px at 95% 50%, rgba(255, 136, 56, 0.08), transparent 70%);
+  background: var(--mm-gold-soft);
+  opacity: 0.4;
   pointer-events: none;
 }
 .ad-banner:hover {
-  border-color: #ff8838;
-  box-shadow: 0 4px 14px rgba(255, 136, 56, 0.12);
+  border-color: var(--mm-gold);
+  box-shadow: 0 4px 14px var(--mm-gold-soft);
 }
 /* Override the shared absolute pill position for banners — sit inline, top-left */
 .ad-banner .ad-pill.mini {
@@ -343,10 +344,10 @@ onMounted(trackImpression)
 .banner-logo {
   width: 56px;
   height: 56px;
-  border-radius: 12px;
+  border-radius: var(--r-md);
   overflow: hidden;
-  background: #ffffff;
-  border: 0.5px solid #ffedd5;
+  background: var(--mm-s3);
+  border: 0.5px solid var(--b2);
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -355,11 +356,11 @@ onMounted(trackImpression)
 }
 .banner-logo img { width: 100%; height: 100%; object-fit: contain; }
 .banner-text { flex: 1 1 260px; min-width: 0; }
-.banner-name { margin: 0; font-size: 17px; font-weight: 700; color: #111827; letter-spacing: -0.01em; }
+.banner-name { margin: 0; font-size: 17px; font-weight: 700; color: var(--mm-pearl); font-family: var(--f-ui); letter-spacing: -0.01em; }
 .banner-desc {
   margin: 4px 0 0;
   font-size: 13px;
-  color: #4b5563;
+  color: var(--mm-silver);
   line-height: 1.5;
   max-width: 58ch;
   overflow: hidden;
@@ -378,23 +379,24 @@ onMounted(trackImpression)
 }
 .banner-price {
   font-size: 14px;
-  color: #111827;
+  color: var(--mm-pearl);
   font-weight: 700;
   white-space: nowrap;
 }
 .banner-cta {
   display: inline-flex;
   align-items: center;
-  background: #ff8838;
-  color: #ffffff;
+  background: var(--mm-gold);
+  color: #0A0700;
   padding: 10px 18px;
-  border-radius: 10px;
+  border-radius: var(--r-sm);
   font-size: 13px;
   font-weight: 600;
   white-space: nowrap;
+  font-family: var(--f-ui);
   transition: background 150ms ease;
 }
-.ad-banner:hover .banner-cta { background: #e57320; }
+.ad-banner:hover .banner-cta { background: var(--mm-goldl); }
 
 @media (max-width: 640px) {
   .ad-banner { padding: 16px; }

@@ -3,7 +3,7 @@
     <section class="mk-hero demo-hero">
       <div class="mk-hero__inner">
         <p class="mk-eyebrow">Book a demo</p>
-        <h1 class="mk-hero__title">See SaaSWorld on your stack</h1>
+        <h1 class="mk-hero__title">See Moonmart on your stack</h1>
         <p class="mk-hero__lede">
           30 minutes with a product specialist. We'll walk through the marketplace, your
           shortlist, and how vendor distribution works — then you decide what's useful.
@@ -63,7 +63,7 @@
           <label class="demo-form__consent">
             <input v-model="form.consent" type="checkbox" required>
             <span>
-              I agree to SaaSWorld's <NuxtLink to="/privacy">Privacy Policy</NuxtLink> and to
+              I agree to Moonmart's <NuxtLink to="/privacy">Privacy Policy</NuxtLink> and to
               being contacted about my request.
             </span>
           </label>
@@ -107,9 +107,9 @@
 <script setup lang="ts">
 const { applySEO } = useSEO()
 applySEO({
-  title: 'Book a demo | SaaSWorld',
-  description: 'Book a 30-minute demo with a SaaSWorld product specialist.',
-  canonical: 'https://saasworld.com/demo',
+  title: 'Book a demo | Moonmart',
+  description: 'Book a 30-minute demo with a Moonmart product specialist.',
+  canonical: 'https://moonmart.ai/demo',
   ogType: 'website'
 })
 
@@ -152,43 +152,43 @@ const bullets = [
 @media (max-width: 900px) { .demo-grid { grid-template-columns: 1fr; } }
 
 /* Form */
-.demo-form { background: #fff; border: 1px solid #f0efec; border-radius: 16px; padding: 2rem; display: flex; flex-direction: column; gap: 1rem; }
-.demo-form__title { font-family: var(--font-heading, 'Poppins', system-ui, sans-serif); font-size: 1.25rem; font-weight: 700; color: #1e1e1e; margin: 0 0 0.25rem; }
+.demo-form { background: var(--mm-s2); border: 0.5px solid var(--b1); border-radius: var(--r-xl); padding: 2rem; display: flex; flex-direction: column; gap: 1rem; }
+.demo-form__title { font-family: var(--f-display); font-size: 1.25rem; font-weight: 700; color: var(--mm-pearl); margin: 0 0 0.25rem; }
 .demo-form__row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 @media (max-width: 540px) { .demo-form__row { grid-template-columns: 1fr; } }
 
-.demo-form label { display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.875rem; color: #3f3f46; font-weight: 500; }
-.demo-form label span em { color: #a1a1aa; font-style: normal; font-weight: 400; }
+.demo-form label { display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.875rem; color: var(--mm-silver); font-weight: 500; }
+.demo-form label span em { color: var(--mm-slate); font-style: normal; font-weight: 400; }
 .demo-form input, .demo-form select, .demo-form textarea {
-  padding: 0.7rem 0.9rem; border: 1px solid #e7e5e4; border-radius: 10px; font-size: 0.95rem;
-  background: #fff; color: #1e1e1e; outline: none; transition: border-color 0.15s, box-shadow 0.15s;
+  padding: 0.7rem 0.9rem; border: 0.5px solid var(--b2); border-radius: var(--r-md); font-size: 0.95rem;
+  background: var(--mm-s3); color: var(--mm-pearl); outline: none; transition: border-color 0.15s, box-shadow 0.15s;
   font-family: inherit;
 }
 .demo-form input:focus, .demo-form select:focus, .demo-form textarea:focus {
-  border-color: var(--sw-primary, #ff8838);
-  box-shadow: 0 0 0 3px rgba(255, 136, 56, 0.15);
+  border-color: var(--mm-gold);
+  box-shadow: 0 0 0 3px var(--mm-gold-soft);
 }
 .demo-form textarea { resize: vertical; min-height: 80px; }
 
-.demo-form__consent { flex-direction: row !important; align-items: flex-start; gap: 0.6rem !important; font-size: 0.82rem !important; color: #52525b !important; }
+.demo-form__consent { flex-direction: row !important; align-items: flex-start; gap: 0.6rem !important; font-size: 0.82rem !important; color: var(--mm-silver) !important; }
 .demo-form__consent input { margin-top: 0.15rem; }
-.demo-form__consent a { color: var(--sw-primary, #ff8838); text-decoration: none; font-weight: 600; }
+.demo-form__consent a { color: var(--mm-gold); text-decoration: none; font-weight: 600; }
 
-.demo-form__success { color: #166534; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 0.7rem 0.9rem; font-size: 0.88rem; margin: 0; }
+.demo-form__success { color: var(--mm-seal); background: var(--mm-sea-soft); border: 0.5px solid var(--mm-sea); border-radius: var(--r-md); padding: 0.7rem 0.9rem; font-size: 0.88rem; margin: 0; }
 
 /* Sidebar */
-.demo-side { background: var(--sw-primary-soft, #fff1e6); border: 1px solid #f0d9bf; border-radius: 16px; padding: 2rem; }
-.demo-side__title { font-family: var(--font-heading, 'Poppins', system-ui, sans-serif); font-size: 1.1rem; font-weight: 700; color: #1e1e1e; margin: 0 0 1rem; }
+.demo-side { background: var(--mm-gold-soft); border: 0.5px solid var(--b1); border-radius: var(--r-xl); padding: 2rem; }
+.demo-side__title { font-family: var(--f-display); font-size: 1.1rem; font-weight: 700; color: var(--mm-pearl); margin: 0 0 1rem; }
 .demo-side__list { list-style: none; padding: 0; margin: 0 0 1.5rem; }
-.demo-side__list li { padding: 0.5rem 0 0.5rem 1.5rem; position: relative; color: #3f3f46; font-size: 0.92rem; line-height: 1.5; }
-.demo-side__list li::before { content: '✓'; position: absolute; left: 0; top: 0.5rem; color: var(--sw-primary, #ff8838); font-weight: 700; }
+.demo-side__list li { padding: 0.5rem 0 0.5rem 1.5rem; position: relative; color: var(--mm-silver); font-size: 0.92rem; line-height: 1.5; }
+.demo-side__list li::before { content: '✓'; position: absolute; left: 0; top: 0.5rem; color: var(--mm-gold); font-weight: 700; }
 
-.demo-side__quote { background: #fff; border-radius: 12px; padding: 1.1rem 1.25rem; margin-bottom: 1.25rem; border-left: 3px solid var(--sw-primary, #ff8838); }
-.demo-side__quote-text { font-size: 0.9rem; color: #3f3f46; line-height: 1.55; font-style: italic; margin: 0 0 0.5rem; }
-.demo-side__quote-attr { font-size: 0.78rem; color: #71717a; margin: 0; }
+.demo-side__quote { background: var(--mm-s2); border-radius: var(--r-md); padding: 1.1rem 1.25rem; margin-bottom: 1.25rem; border-left: 2px solid var(--mm-gold); }
+.demo-side__quote-text { font-size: 0.9rem; color: var(--mm-silver); line-height: 1.55; font-style: italic; margin: 0 0 0.5rem; }
+.demo-side__quote-attr { font-size: 0.78rem; color: var(--mm-slate); margin: 0; }
 
 .demo-side__badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.25rem; }
 
-.demo-side__alt { font-size: 0.85rem; color: #52370f; margin: 0; }
-.demo-side__alt a { color: var(--sw-primary, #ff8838); font-weight: 600; text-decoration: none; }
+.demo-side__alt { font-size: 0.85rem; color: var(--mm-silver); margin: 0; }
+.demo-side__alt a { color: var(--mm-gold); font-weight: 600; text-decoration: none; }
 </style>

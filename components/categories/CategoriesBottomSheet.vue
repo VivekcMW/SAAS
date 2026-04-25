@@ -117,7 +117,7 @@ const close = () => {
 .sheet-search {
   position: sticky;
   top: 0;
-  background: #ffffff;
+  background: var(--mm-s1);
   padding-bottom: 10px;
   margin-bottom: 4px;
   z-index: 1;
@@ -125,7 +125,7 @@ const close = () => {
 
 .sheet-empty {
   text-align: center;
-  color: #6b7280;
+  color: var(--mm-slate);
   font-size: 14px;
   padding: 24px 0;
 }
@@ -138,7 +138,7 @@ const close = () => {
   padding-bottom: 12px;
 }
 
-.sheet-group { border-bottom: 0.5px solid #e5e7eb; }
+.sheet-group { border-bottom: 0.5px solid var(--b1); }
 .sheet-group:last-child { border-bottom: none; }
 
 .sheet-group-head {
@@ -149,33 +149,33 @@ const close = () => {
   padding: 12px 4px;
   background: transparent;
   border: none;
-  font-family: inherit;
+  font-family: var(--f-ui);
   cursor: pointer;
   text-align: left;
   min-height: 48px;
   transition: background-color 150ms ease;
 }
-.sheet-group-head:hover { background: #f9fafb; }
+.sheet-group-head:hover { background: var(--mm-s3); }
 
 .sheet-group-icon {
   width: 36px;
   height: 36px;
-  background: #f3f4f6;
-  border-radius: 6px;
+  background: var(--mm-s3);
+  border-radius: var(--r-sm);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #6b7280;
+  color: var(--mm-gold);
   flex-shrink: 0;
 }
 .sheet-group-icon :deep(svg) { width: 18px; height: 18px; }
 
 .sheet-group-text { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.sheet-group-name { font-size: 14px; font-weight: 500; color: #1f2937; }
-.sheet-group-count { font-size: 12px; color: #6b7280; }
+.sheet-group-name { font-size: 14px; font-weight: 500; color: var(--mm-pearl); }
+.sheet-group-count { font-size: 12px; color: var(--mm-slate); }
 
 .sheet-group-chev {
-  color: #9ca3af;
+  color: var(--mm-slate);
   flex-shrink: 0;
   transition: transform 150ms ease;
 }
@@ -193,20 +193,20 @@ const close = () => {
   align-items: center;
   gap: 10px;
   padding: 10px 8px;
-  border-radius: 6px;
+  border-radius: var(--r-sm);
   text-decoration: none;
-  color: #374151;
+  color: var(--mm-silver);
   font-size: 14px;
   min-height: 44px;
   transition: background-color 150ms ease, color 150ms ease;
 }
-.sheet-cat:hover { background: #f9fafb; color: #ff8838; }
+.sheet-cat:hover { background: var(--mm-s3); color: var(--mm-gold); }
 .sheet-cat-sub { padding-left: 4px; }
 
-.sheet-cat-icon { width: 18px; height: 18px; color: #9ca3af; flex-shrink: 0; }
-.sheet-cat:hover .sheet-cat-icon { color: #ff8838; }
+.sheet-cat-icon { width: 18px; height: 18px; color: var(--mm-slate); flex-shrink: 0; }
+.sheet-cat:hover .sheet-cat-icon { color: var(--mm-gold); }
 .sheet-cat-name { flex: 1; min-width: 0; }
-.sheet-chev { color: #9ca3af; }
+.sheet-chev { color: var(--mm-slate); }
 
 .sheet-group-viewall {
   display: block;
@@ -214,9 +214,9 @@ const close = () => {
   margin-top: 4px;
   font-size: 13px;
   font-weight: 500;
-  color: #ff8838;
+  color: var(--mm-gold);
   text-decoration: none;
-  border-top: 0.5px solid #e5e7eb;
+  border-top: 0.5px solid var(--b1);
 }
 
 /* Hide on desktop — MegaMenu takes over */

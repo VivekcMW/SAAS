@@ -1,10 +1,10 @@
-/* Critical CSS Variables */
+/* Critical CSS Variables — Moonmart dark theme */
 :root {
-  --primary-color: #FF8838;
-  --secondary-color: #F9C845;
-  --dark-color: #1E1E1E;
-  --light-color: #FFFFFF;
-  --bg-gray: #F8F9FA;
-  --text-primary: #4A5568;
-  --text-secondary: #718096;
+  --primary-color: #D4A843;
+  --secondary-color: #2A9D8F;
+  --dark-color: #07090F;
+  --light-color: #F0F3F8;
+  --bg-gray: #0F1220;
+  --text-primary: #F0F3F8;
+  --text-secondary: #A8B4CC;
 }

@@ -76,9 +76,9 @@
 <script setup lang="ts">
 const { applySEO } = useSEO()
 applySEO({
-  title: 'SaaS alternatives | SaaSWorld',
+  title: 'SaaS alternatives | Moonmart',
   description: 'Curated alternatives to popular SaaS tools across CRM, support, analytics, design and more.',
-  canonical: 'https://saasworld.com/alternatives',
+  canonical: 'https://moonmart.ai/alternatives',
   ogType: 'website'
 })
 
