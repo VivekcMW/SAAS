@@ -136,14 +136,15 @@
             </span>
           </div>
           
-          <button 
+          <button
             @click="toggleHelpful(review.id)"
-            class="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 transition-colors"
+            :disabled="votedReviews.has(review.id)"
+            class="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 transition-colors disabled:opacity-50 disabled:cursor-default"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L9 7H5m7 3v10M5 7l7 3" />
             </svg>
-            Helpful ({{ review.helpfulVotes }})
+            {{ votedReviews.has(review.id) ? 'Voted helpful' : 'Helpful' }} ({{ getHelpfulCount(review) }})
           </button>
         </div>
       </div>
@@ -236,9 +237,27 @@ const formatDate = (date: Date): string => {
   }).format(new Date(date))
 }
 
+const votedReviews = ref<Set<string>>(new Set())
+const reviewVoteCounts = ref<Record<string, number>>({})
+
+const getHelpfulCount = (review: Review) => {
+  return reviewVoteCounts.value[review.id] ?? review.helpfulVotes
+}
+
 const toggleHelpful = async (reviewId: string) => {
-  // In real implementation, this would call API to toggle helpful vote
-  console.log('Toggle helpful for review:', reviewId)
+  if (votedReviews.value.has(reviewId)) return
+  try {
+    const res = await $fetch<{ helpfulVotes: number; alreadyVoted: boolean }>(
+      `/api/apps/${props.appId}/reviews/${reviewId}/vote`,
+      { method: 'POST' }
+    )
+    if (!res.alreadyVoted) {
+      votedReviews.value.add(reviewId)
+    }
+    reviewVoteCounts.value[reviewId] = res.helpfulVotes
+  } catch {
+    // ignore — non-critical action
+  }
 }
 
 const loadMoreReviews = async () => {

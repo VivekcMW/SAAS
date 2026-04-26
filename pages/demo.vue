@@ -128,8 +128,19 @@ const sent = ref(false)
 async function onSubmit () {
   submitting.value = true
   try {
-    // Placeholder: wire up to your real intake endpoint when ready.
-    await new Promise(resolve => setTimeout(resolve, 600))
+    await $fetch('/api/demos', {
+      method: 'POST',
+      body: {
+        firstName: form.firstName,
+        lastName: form.lastName,
+        email: form.email,
+        company: form.company,
+        role: form.role,
+        size: form.size,
+        goal: form.goal,
+        consent: form.consent
+      }
+    })
     sent.value = true
   } finally {
     submitting.value = false

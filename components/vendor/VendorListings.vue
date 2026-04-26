@@ -81,21 +81,51 @@
           <button class="bw-btn bw-btn--ghost bw-btn--sm" @click="toggleStatus(l.id, l.status)">
             {{ l.status === 'live' ? 'Pause' : l.status === 'paused' ? 'Resume' : 'Publish' }}
           </button>
-          <button class="bw-btn bw-btn--subtle bw-btn--sm">Edit</button>
+          <button class="bw-btn bw-btn--subtle bw-btn--sm" @click="startEdit(l)">Edit</button>
           <button class="bw-btn bw-btn--subtle bw-btn--sm">View public page</button>
+          <button class="bw-btn bw-btn--danger bw-btn--sm" @click="deleteListing(l.id)">Delete</button>
         </div>
       </li>
     </ul>
+
+    <!-- Edit modal -->
+    <div v-if="editTarget" class="vl-modal-overlay" @click.self="editTarget = null">
+      <div class="vl-modal">
+        <h2 class="vl-modal__title">Edit listing</h2>
+        <form class="vl-modal__form" @submit.prevent="saveEdit">
+          <label>Name<input v-model="editForm.name" required /></label>
+          <label>Short description<textarea v-model="editForm.description" rows="2" /></label>
+          <label>Category<input v-model="editForm.category" /></label>
+          <label>Pricing type
+            <select v-model="editForm.pricingType">
+              <option value="free">Free</option>
+              <option value="trial">Free trial</option>
+              <option value="paid">Paid</option>
+              <option value="contact">Contact us</option>
+            </select>
+          </label>
+          <label v-if="editForm.pricingType === 'paid'">Price (USD/mo)<input v-model.number="editForm.pricingValue" type="number" min="0" /></label>
+          <div class="vl-modal__actions">
+            <button type="button" class="bw-btn bw-btn--ghost bw-btn--sm" @click="editTarget = null">Cancel</button>
+            <button type="submit" class="bw-btn bw-btn--primary bw-btn--sm" :disabled="saving">{{ saving ? 'Saving…' : 'Save changes' }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 const { listings, updateListingStatus } = useVendorData()
 
 const q = ref('')
 const filter = ref('all')
 const toast = ref('')
+
+const editTarget = ref<string | null>(null)
+const saving = ref(false)
+const editForm = reactive({ name: '', description: '', category: '', pricingType: 'contact', pricingValue: null as number | null })
 
 const filtered = computed(() => listings.value.filter(l => {
   if (filter.value !== 'all' && l.status !== filter.value) return false
@@ -130,6 +160,52 @@ function create() {
   toast.value = 'New draft created — head to Content assistant to fill it.'
   setTimeout(() => (toast.value = ''), 2600)
 }
+
+function startEdit(l: any) {
+  editTarget.value = l.id
+  editForm.name = l.name
+  editForm.description = l.description || ''
+  editForm.category = l.category || ''
+  editForm.pricingType = l.pricing?.type || 'contact'
+  editForm.pricingValue = l.pricing?.value ?? null
+}
+
+async function saveEdit() {
+  if (!editTarget.value) return
+  saving.value = true
+  try {
+    await $fetch(`/api/vendor/apps/${editTarget.value}`, {
+      method: 'PUT',
+      body: {
+        name: editForm.name,
+        description: editForm.description,
+        category: editForm.category,
+        pricingType: editForm.pricingType,
+        pricingValue: editForm.pricingValue
+      }
+    })
+    toast.value = 'Listing updated'
+    editTarget.value = null
+  } catch {
+    toast.value = 'Failed to save — please try again'
+  } finally {
+    saving.value = false
+    setTimeout(() => (toast.value = ''), 2500)
+  }
+}
+
+async function deleteListing(id: string) {
+  if (!confirm('Delete this listing? This cannot be undone.')) return
+  try {
+    await $fetch(`/api/vendor/apps/${id}`, { method: 'DELETE' })
+    toast.value = 'Listing deleted'
+    listings.value = listings.value.filter((l: any) => l.id !== id)
+  } catch {
+    toast.value = 'Failed to delete — please try again'
+  } finally {
+    setTimeout(() => (toast.value = ''), 2500)
+  }
+}
 </script>
 
 <style scoped>
@@ -161,4 +237,21 @@ function create() {
 .list-ai__actions { display: flex; justify-content: flex-end; }
 
 .list-actions { display: flex; gap: 8px; flex-wrap: wrap; padding-top: 6px; border-top: 1px solid var(--vw-border); margin-top: auto; padding-top: 12px; }
+
+.bw-btn--danger { background: rgba(220,38,38,0.12); color: #f87171; border: 0.5px solid rgba(220,38,38,0.3); }
+.bw-btn--danger:hover { background: rgba(220,38,38,0.22); }
+
+/* Edit modal */
+.vl-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+.vl-modal { background: var(--mm-s1); border: 0.5px solid var(--b2); border-radius: var(--r-xl); padding: 2rem; width: 100%; max-width: 520px; }
+.vl-modal__title { font-size: 1.15rem; font-weight: 700; color: var(--mm-pearl); margin: 0 0 1.25rem; font-family: var(--f-display); }
+.vl-modal__form { display: flex; flex-direction: column; gap: 0.85rem; }
+.vl-modal__form label { display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.85rem; color: var(--mm-silver); font-weight: 500; }
+.vl-modal__form input, .vl-modal__form textarea, .vl-modal__form select {
+  padding: 0.65rem 0.85rem; border: 0.5px solid var(--b2); border-radius: var(--r-md);
+  background: var(--mm-s2); color: var(--mm-pearl); font-size: 0.9rem; font-family: inherit; outline: none;
+}
+.vl-modal__form input:focus, .vl-modal__form textarea:focus, .vl-modal__form select:focus { border-color: var(--mm-gold); }
+.vl-modal__form textarea { resize: vertical; min-height: 64px; }
+.vl-modal__actions { display: flex; justify-content: flex-end; gap: 0.5rem; padding-top: 0.5rem; }
 </style>

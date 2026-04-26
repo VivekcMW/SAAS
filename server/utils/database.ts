@@ -323,6 +323,31 @@ function createSchema(db: Database.Database) {
   for (const sql of alterations) {
     try { db.exec(sql) } catch { /* column already exists */ }
   }
+
+  // New tables added after initial schema — idempotent
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS review_votes (
+      review_id TEXT NOT NULL,
+      voter_key TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      PRIMARY KEY (review_id, voter_key)
+    );
+
+    CREATE TABLE IF NOT EXISTS demo_bookings (
+      id TEXT PRIMARY KEY,
+      first_name TEXT NOT NULL,
+      last_name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      company TEXT NOT NULL,
+      role TEXT NOT NULL,
+      team_size TEXT NOT NULL,
+      goal TEXT,
+      status TEXT NOT NULL DEFAULT 'new',
+      created_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_demo_created ON demo_bookings(created_at);
+    CREATE INDEX IF NOT EXISTS idx_demo_status ON demo_bookings(status);
+  `)
 }
 
 function createId(prefix: string) {

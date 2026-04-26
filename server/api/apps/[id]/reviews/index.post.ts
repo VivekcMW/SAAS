@@ -61,7 +61,7 @@ export default defineEventHandler(async (event) => {
     rating,
     title: String(body.title).trim().slice(0, 200),
     content: String(body.content).trim().slice(0, 5000),
-    verified: 0,
+    verified: sessionUser ? 1 : 0,
     helpful_votes: 0,
     status: 'pending',
     platform: body.platform ? String(body.platform).slice(0, 40) : null,

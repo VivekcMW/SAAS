@@ -71,9 +71,12 @@ interface Application {
 
 const applications = ref<Application[]>([])
 const loading = ref(true)
+const totalApps = ref(0)
 const favorites = ref<string[]>([])
 const route = useRoute()
 const router = useRouter()
+
+const emit = defineEmits<{ (e: 'total-loaded', total: number): void }>()
 
 // Used to exclude apps already on the page from the sponsored slot rotation
 const visibleAppIds = computed(() => applications.value.map(a => a.id))
@@ -97,14 +100,22 @@ const loadApplications = async () => {
   loading.value = true
 
   try {
-    const response = await $fetch<{ apps: Application[] }>('/api/apps', {
+    const response = await $fetch<{ apps: Application[], total: number }>('/api/apps', {
       query: {
         search: typeof route.query.search === 'string' ? route.query.search : undefined,
-        category: typeof route.query.category === 'string' ? route.query.category : undefined
+        category: typeof route.query.category === 'string' ? route.query.category : undefined,
+        pricing_type: typeof route.query.pricing_type === 'string' ? route.query.pricing_type : undefined,
+        sort: typeof route.query.sort === 'string' ? route.query.sort : undefined,
+        featured: route.query.featured === 'true' ? 'true' : undefined,
+        trending: route.query.trending === 'true' ? 'true' : undefined,
+        page: typeof route.query.page === 'string' ? route.query.page : undefined,
+        per_page: typeof route.query.size === 'string' ? route.query.size : undefined
       }
     })
 
     applications.value = response.apps || []
+    totalApps.value = response.total || 0
+    emit('total-loaded', totalApps.value)
   } catch (error) {
     console.error('Failed to load marketplace applications:', error)
     applications.value = []

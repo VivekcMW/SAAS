@@ -13,7 +13,7 @@
 
         <MarketplaceFilters />
         <div class="applications-grid-container">
-          <MarketplaceGrid />
+          <MarketplaceGrid @total-loaded="totalApplications = $event" />
           <MarketplacePagination :totalItems="totalApplications" />
         </div>
       </div>
