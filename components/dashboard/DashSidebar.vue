@@ -130,6 +130,7 @@ const vendorGroups: NavGroup[] = [
     items: [
       { to: '/dashboard/overview', label: 'Overview', icon: ICONS.home },
       { to: '/dashboard/products', label: 'Listings', icon: ICONS.apps },
+      { to: '/dashboard/news', label: 'News', icon: ICONS.file },
       { to: '/dashboard/leads', label: 'Leads', icon: ICONS.inbox },
       { to: '/dashboard/reviews', label: 'Reviews', icon: ICONS.star }
     ]
@@ -174,6 +175,7 @@ const adminGroups: NavGroup[] = [
     title: 'Operations',
     items: [
       { to: '/dashboard/pending-apps', label: 'Pending approvals', icon: ICONS.file },
+      { to: '/dashboard/news', label: 'News moderation', icon: ICONS.file },
       { to: '/dashboard/support', label: 'Support', icon: ICONS.inbox }
     ]
   },

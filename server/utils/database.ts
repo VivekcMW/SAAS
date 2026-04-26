@@ -110,6 +110,26 @@ export interface DbEvent {
   updated_at: string
 }
 
+export interface DbNewsPost {
+  id: string
+  vendor_id: string
+  app_id: string | null
+  post_type: 'product-update' | 'feature' | 'culture' | 'announcement' | 'case-study'
+  title: string
+  slug: string
+  excerpt: string
+  body_markdown: string
+  cover_image: string | null
+  status: 'draft' | 'submitted' | 'published' | 'rejected'
+  featured: number
+  view_count: number
+  upvote_count: number
+  published_at: string | null
+  admin_note: string | null
+  created_at: string
+  updated_at: string
+}
+
 let database: Database.Database | null = null
 
 function getDatabasePath() {
@@ -347,6 +367,50 @@ function createSchema(db: Database.Database) {
     );
     CREATE INDEX IF NOT EXISTS idx_demo_created ON demo_bookings(created_at);
     CREATE INDEX IF NOT EXISTS idx_demo_status ON demo_bookings(status);
+
+    -- News Portal tables
+    CREATE TABLE IF NOT EXISTS news_posts (
+      id TEXT PRIMARY KEY,
+      vendor_id TEXT NOT NULL,
+      app_id TEXT,
+      post_type TEXT NOT NULL DEFAULT 'announcement',
+      title TEXT NOT NULL,
+      slug TEXT NOT NULL UNIQUE,
+      excerpt TEXT NOT NULL,
+      body_markdown TEXT NOT NULL,
+      cover_image TEXT,
+      status TEXT NOT NULL DEFAULT 'draft',
+      featured INTEGER NOT NULL DEFAULT 0,
+      view_count INTEGER NOT NULL DEFAULT 0,
+      upvote_count INTEGER NOT NULL DEFAULT 0,
+      published_at TEXT,
+      admin_note TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      FOREIGN KEY (vendor_id) REFERENCES vendor_profiles(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_news_slug ON news_posts(slug);
+    CREATE INDEX IF NOT EXISTS idx_news_status ON news_posts(status);
+    CREATE INDEX IF NOT EXISTS idx_news_vendor ON news_posts(vendor_id);
+    CREATE INDEX IF NOT EXISTS idx_news_published ON news_posts(published_at);
+    CREATE INDEX IF NOT EXISTS idx_news_type ON news_posts(post_type);
+
+    CREATE TABLE IF NOT EXISTS news_post_tags (
+      post_id TEXT NOT NULL,
+      tag TEXT NOT NULL,
+      PRIMARY KEY (post_id, tag),
+      FOREIGN KEY (post_id) REFERENCES news_posts(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_news_tags_tag ON news_post_tags(tag);
+
+    CREATE TABLE IF NOT EXISTS news_post_reactions (
+      post_id TEXT NOT NULL,
+      voter_key TEXT NOT NULL,
+      reaction TEXT NOT NULL DEFAULT 'upvote',
+      created_at TEXT NOT NULL,
+      PRIMARY KEY (post_id, voter_key, reaction),
+      FOREIGN KEY (post_id) REFERENCES news_posts(id) ON DELETE CASCADE
+    );
   `)
 }
 

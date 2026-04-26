@@ -385,6 +385,7 @@ const route = useRoute();
 // Navigation items
 const navItems = [
   { label: 'Marketplace', path: '/marketplace' },
+  { label: 'News', path: '/news' },
   // { label: 'Contact', path: '/contact' }
 ];
 

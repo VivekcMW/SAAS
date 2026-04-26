@@ -1,912 +1,275 @@
-<script setup lang="ts">
-useHead({
-  title: 'Events & News — Moonmart',
-  meta: [
-    {
-      name: 'description',
-      content:
-        'Upcoming webinars, product launches, meetups and workshops from Moonmart and our vendor community. Join a live session or submit your own event.'
-    }
-  ]
-})
-
-interface PublicEvent {
-  id: string
-  slug: string
-  title: string
-  summary: string
-  category: string
-  eventType: 'webinar' | 'conference' | 'meetup' | 'launch' | 'workshop' | 'other'
-  location: string
-  isOnline: boolean
-  startsAt: string
-  endsAt: string | null
-  timezone: string
-  coverImage: string | null
-  registerUrl: string | null
-  hostName: string | null
-  featured: boolean
-}
-
-interface EventsResponse {
-  upcoming: PublicEvent[]
-  past: PublicEvent[]
-  featured: PublicEvent | null
-}
-
-const { data, pending, refresh } = await useFetch<EventsResponse>('/api/events', {
-  key: 'public-events',
-  default: () => ({ upcoming: [], past: [], featured: null })
-})
-
-const activeView = ref<'upcoming' | 'past'>('upcoming')
-const activeType = ref<string>('all')
-
-const list = computed(() => {
-  const source = activeView.value === 'upcoming' ? data.value?.upcoming || [] : data.value?.past || []
-  if (activeType.value === 'all') return source
-  return source.filter((e) => e.eventType === activeType.value)
-})
-
-const availableTypes = computed(() => {
-  const source = activeView.value === 'upcoming' ? data.value?.upcoming || [] : data.value?.past || []
-  const set = new Set(source.map((e) => e.eventType))
-  return Array.from(set)
-})
-
-function typeLabel(t: string): string {
-  switch (t) {
-    case 'webinar': return 'Webinar'
-    case 'conference': return 'Conference'
-    case 'meetup': return 'Meetup'
-    case 'launch': return 'Launch'
-    case 'workshop': return 'Workshop'
-    default: return 'Event'
-  }
-}
-
-function formatDate(iso: string): string {
-  try {
-    return new Date(iso).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    })
-  } catch {
-    return iso
-  }
-}
-
-function formatTime(iso: string): string {
-  try {
-    return new Date(iso).toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit'
-    })
-  } catch {
-    return ''
-  }
-}
-
-function splitDate(iso: string): { month: string; day: string } {
-  try {
-    const d = new Date(iso)
-    return {
-      month: d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase(),
-      day: d.toLocaleDateString('en-US', { day: '2-digit' })
-    }
-  } catch {
-    return { month: '--', day: '--' }
-  }
-}
-
-// Submit form state
-const showForm = ref(false)
-const form = reactive({
-  title: '',
-  summary: '',
-  description: '',
-  eventType: 'webinar',
-  category: 'Product',
-  location: 'Online',
-  isOnline: true,
-  startsAt: '',
-  endsAt: '',
-  timezone: 'UTC',
-  registerUrl: '',
-  hostName: '',
-  hostEmail: ''
-})
-const submitting = ref(false)
-const submitError = ref<string | null>(null)
-const submitSuccess = ref(false)
-
-async function submitEvent() {
-  submitError.value = null
-  submitSuccess.value = false
-  submitting.value = true
-  try {
-    await $fetch('/api/events/submit', {
-      method: 'POST',
-      body: {
-        title: form.title,
-        summary: form.summary,
-        description: form.description,
-        eventType: form.eventType,
-        category: form.category,
-        location: form.location,
-        isOnline: form.isOnline,
-        startsAt: form.startsAt,
-        endsAt: form.endsAt || null,
-        timezone: form.timezone,
-        registerUrl: form.registerUrl || null,
-        hostName: form.hostName,
-        hostEmail: form.hostEmail
-      }
-    })
-    submitSuccess.value = true
-    // Reset form
-    form.title = ''
-    form.summary = ''
-    form.description = ''
-    form.startsAt = ''
-    form.endsAt = ''
-    form.registerUrl = ''
-    form.hostName = ''
-    form.hostEmail = ''
-  } catch (err: unknown) {
-    const e = err as { statusMessage?: string; data?: { statusMessage?: string } }
-    submitError.value = e.statusMessage || e.data?.statusMessage || 'Could not submit event. Please try again.'
-  } finally {
-    submitting.value = false
-  }
-}
-
-function openSubmit() {
-  showForm.value = true
-  submitSuccess.value = false
-  submitError.value = null
-  nextTick(() => {
-    const el = document.getElementById('submit-event')
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  })
-}
-</script>
-
 <template>
-  <div class="news">
-    <!-- Intro -->
-    <header class="news__intro">
-      <div class="news__wrap">
-        <span class="news__label">Events &amp; news</span>
-        <h1 class="news__headline">What’s happening on Moonmart.</h1>
-        <p class="news__lede">
-          Live webinars, product launches, workshops and meetups from our team and the
-          vendor community. Join a session, or host your own.
+  <div class="news-feed">
+    <!-- Header -->
+    <header class="nf-header">
+      <div class="nf-wrap">
+        <span class="nf-eyebrow">Vendor News</span>
+        <h1 class="nf-headline">From the Moonmart community.</h1>
+        <p class="nf-lede">
+          Product launches, feature deep-dives, case studies, and culture stories written
+          by the vendors building on Moonmart.
         </p>
-        <div class="news__cta-row">
-          <button type="button" class="btn btn--primary" @click="openSubmit">
-            Host an event
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M5 12h14" />
-              <path d="M13 6l6 6-6 6" />
-            </svg>
-          </button>
-          <a href="#upcoming" class="btn btn--ghost">Browse upcoming</a>
-        </div>
       </div>
     </header>
 
-    <!-- Featured -->
-    <section v-if="data?.featured" class="news__feature">
-      <div class="news__wrap">
-        <article class="feature">
-          <div class="feature__date" aria-hidden="true">
-            <span class="feature__date-month">{{ splitDate(data.featured.startsAt).month }}</span>
-            <span class="feature__date-day">{{ splitDate(data.featured.startsAt).day }}</span>
+    <!-- Featured hero (first featured post) -->
+    <section v-if="featuredPost" class="nf-hero">
+      <div class="nf-wrap">
+        <NuxtLink :to="`/news/${featuredPost.slug}`" class="nf-hero__card">
+          <div class="nf-hero__media">
+            <img v-if="featuredPost.coverImage" :src="featuredPost.coverImage" :alt="featuredPost.title" loading="eager" class="nf-hero__img" />
+            <div v-else class="nf-hero__placeholder" aria-hidden="true"></div>
           </div>
-          <div class="feature__body">
-            <div class="feature__meta">
-              <span class="feature__tag">{{ typeLabel(data.featured.eventType) }}</span>
-              <span aria-hidden="true">·</span>
-              <span>{{ formatDate(data.featured.startsAt) }} · {{ formatTime(data.featured.startsAt) }} {{ data.featured.timezone }}</span>
-              <span aria-hidden="true">·</span>
-              <span>{{ data.featured.isOnline ? 'Online' : data.featured.location }}</span>
+          <div class="nf-hero__body">
+            <div class="nf-hero__top">
+              <span class="nf-badge" :data-type="featuredPost.postType">{{ typeLabel(featuredPost.postType) }}</span>
+              <span class="nf-hero__vendor">{{ featuredPost.vendor.name }}</span>
             </div>
-            <h2 class="feature__title">{{ data.featured.title }}</h2>
-            <p class="feature__summary">{{ data.featured.summary }}</p>
-            <div class="feature__actions">
-              <a
-                v-if="data.featured.registerUrl"
-                :href="data.featured.registerUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="btn btn--primary"
-              >Register</a>
-              <span v-if="data.featured.hostName" class="feature__host">
-                Hosted by <strong>{{ data.featured.hostName }}</strong>
+            <h2 class="nf-hero__title">{{ featuredPost.title }}</h2>
+            <p class="nf-hero__excerpt">{{ featuredPost.excerpt }}</p>
+            <div class="nf-hero__footer">
+              <time :datetime="featuredPost.publishedAt">{{ fmtDate(featuredPost.publishedAt) }}</time>
+              <span class="nf-hero__upvotes">
+                <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M12 20.9l-7.7-8.1a5.5 5.5 0 0 1 7.7-7.8 5.5 5.5 0 0 1 7.7 7.8z" fill="currentColor"/></svg>
+                {{ featuredPost.upvoteCount }}
               </span>
             </div>
           </div>
-        </article>
+        </NuxtLink>
       </div>
     </section>
 
     <!-- Filter bar -->
-    <div id="upcoming" class="news__bar">
-      <div class="news__wrap">
-        <div class="tabs" role="tablist" aria-label="Event timeline">
-          <button
-            type="button"
-            role="tab"
-            class="tab"
-            :class="{ 'tab--on': activeView === 'upcoming' }"
-            :aria-selected="activeView === 'upcoming'"
-            @click="activeView = 'upcoming'; activeType = 'all'"
-          >
-            Upcoming
-            <span class="tab__count">{{ data?.upcoming.length || 0 }}</span>
-          </button>
-          <button
-            type="button"
-            role="tab"
-            class="tab"
-            :class="{ 'tab--on': activeView === 'past' }"
-            :aria-selected="activeView === 'past'"
-            @click="activeView = 'past'; activeType = 'all'"
-          >
-            Past
-            <span class="tab__count">{{ data?.past.length || 0 }}</span>
-          </button>
-        </div>
-
-        <div v-if="availableTypes.length > 1" class="types">
-          <button
-            type="button"
-            class="type"
-            :class="{ 'type--on': activeType === 'all' }"
-            @click="activeType = 'all'"
-          >All types</button>
-          <button
-            v-for="t in availableTypes"
-            :key="t"
-            type="button"
-            class="type"
-            :class="{ 'type--on': activeType === t }"
-            @click="activeType = t"
-          >{{ typeLabel(t) }}</button>
-        </div>
+    <div class="nf-bar">
+      <div class="nf-wrap nf-bar__inner">
+        <NewsTypeFilter v-model="activeType" />
+        <p v-if="total > 0" class="nf-bar__count">{{ total }} post{{ total === 1 ? '' : 's' }}</p>
       </div>
     </div>
 
-    <!-- List -->
-    <section class="news__list">
-      <div class="news__wrap">
-        <div v-if="pending" class="state state--loading">
-          <p>Loading events…</p>
+    <!-- Grid -->
+    <section class="nf-grid-section">
+      <div class="nf-wrap">
+        <!-- Loading skeleton -->
+        <div v-if="pending" class="nf-skeleton-grid">
+          <div v-for="n in 6" :key="n" class="nf-skeleton"></div>
         </div>
 
-        <div v-else-if="list.length === 0" class="state state--empty">
-          <h3 v-if="activeView === 'upcoming'">No upcoming events yet.</h3>
-          <h3 v-else>No past events to show.</h3>
-          <p v-if="activeView === 'upcoming'">
-            Be the first to host — share your launch, webinar or workshop with the Moonmart community.
-          </p>
-          <p v-else>Check back after our first live sessions have wrapped.</p>
-          <button
-            v-if="activeView === 'upcoming'"
-            type="button"
-            class="btn btn--primary"
-            @click="openSubmit"
-          >Host an event</button>
+        <!-- Empty -->
+        <div v-else-if="!posts.length" class="nf-empty">
+          <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p>No news posts yet{{ activeType ? ' for this category' : '' }}.</p>
         </div>
 
-        <ul v-else class="events">
-          <li v-for="ev in list" :key="ev.id" class="event">
-            <div class="event__date" aria-hidden="true">
-              <span class="event__date-month">{{ splitDate(ev.startsAt).month }}</span>
-              <span class="event__date-day">{{ splitDate(ev.startsAt).day }}</span>
-            </div>
-            <div class="event__body">
-              <div class="event__meta">
-                <span class="event__tag">{{ typeLabel(ev.eventType) }}</span>
-                <span aria-hidden="true">·</span>
-                <span>{{ formatTime(ev.startsAt) }} {{ ev.timezone }}</span>
-                <span aria-hidden="true">·</span>
-                <span>{{ ev.isOnline ? 'Online' : ev.location }}</span>
-              </div>
-              <h3 class="event__title">{{ ev.title }}</h3>
-              <p class="event__summary">{{ ev.summary }}</p>
-              <div v-if="ev.hostName" class="event__host">Hosted by <strong>{{ ev.hostName }}</strong></div>
-            </div>
-            <div class="event__action">
-              <a
-                v-if="ev.registerUrl && activeView === 'upcoming'"
-                :href="ev.registerUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="btn btn--primary btn--sm"
-              >Register</a>
-              <span v-else-if="activeView === 'past'" class="event__ended">Ended</span>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Submit form -->
-    <section id="submit-event" class="news__submit">
-      <div class="news__wrap">
-        <div class="submit-head">
-          <span class="news__label">For hosts</span>
-          <h2 class="submit-title">Host an event on Moonmart.</h2>
-          <p class="submit-sub">
-            Tell us about your event and we’ll review and publish it. Approved events appear
-            in the listing above and get featured in our community digest.
-          </p>
+        <!-- Cards -->
+        <div v-else class="nf-grid">
+          <NewsCard v-for="post in posts" :key="post.id" :post="post" />
         </div>
 
-        <div v-if="submitSuccess" class="notice notice--success">
-          <strong>Thanks!</strong> Your event has been submitted for review. We’ll email you once it’s approved.
-        </div>
-
-        <form v-if="!submitSuccess || showForm" class="submit-form" @submit.prevent="submitEvent">
-          <div class="field">
-            <label for="ev-title">Event title</label>
-            <input id="ev-title" v-model="form.title" type="text" required placeholder="e.g. Scaling your SaaS pricing in 2026">
-          </div>
-
-          <div class="field">
-            <label for="ev-summary">Short summary</label>
-            <textarea id="ev-summary" v-model="form.summary" rows="2" required placeholder="One or two sentences attendees will see on the listing."></textarea>
-          </div>
-
-          <div class="field">
-            <label for="ev-description">Description (optional)</label>
-            <textarea id="ev-description" v-model="form.description" rows="4" placeholder="Agenda, speakers, what people will learn…"></textarea>
-          </div>
-
-          <div class="field-row">
-            <div class="field">
-              <label for="ev-type">Type</label>
-              <select id="ev-type" v-model="form.eventType">
-                <option value="webinar">Webinar</option>
-                <option value="conference">Conference</option>
-                <option value="meetup">Meetup</option>
-                <option value="launch">Launch</option>
-                <option value="workshop">Workshop</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="ev-category">Category</label>
-              <input id="ev-category" v-model="form.category" type="text" placeholder="e.g. Product, Marketing, Sales">
-            </div>
-          </div>
-
-          <div class="field-row">
-            <div class="field">
-              <label for="ev-starts">Starts at</label>
-              <input id="ev-starts" v-model="form.startsAt" type="datetime-local" required>
-            </div>
-            <div class="field">
-              <label for="ev-ends">Ends at (optional)</label>
-              <input id="ev-ends" v-model="form.endsAt" type="datetime-local">
-            </div>
-          </div>
-
-          <div class="field-row">
-            <div class="field">
-              <label for="ev-tz">Timezone</label>
-              <input id="ev-tz" v-model="form.timezone" type="text" placeholder="e.g. IST, UTC, PST">
-            </div>
-            <div class="field">
-              <label class="field__check">
-                <input v-model="form.isOnline" type="checkbox">
-                <span>This is an online event</span>
-              </label>
-            </div>
-          </div>
-
-          <div v-if="!form.isOnline" class="field">
-            <label for="ev-location">Location</label>
-            <input id="ev-location" v-model="form.location" type="text" placeholder="Venue, city, country">
-          </div>
-
-          <div class="field">
-            <label for="ev-url">Registration URL (optional)</label>
-            <input id="ev-url" v-model="form.registerUrl" type="url" placeholder="https://…">
-          </div>
-
-          <div class="field-row">
-            <div class="field">
-              <label for="ev-host">Your name</label>
-              <input id="ev-host" v-model="form.hostName" type="text" required placeholder="Host name">
-            </div>
-            <div class="field">
-              <label for="ev-email">Your email</label>
-              <input id="ev-email" v-model="form.hostEmail" type="email" required placeholder="you@example.com">
-            </div>
-          </div>
-
-          <div v-if="submitError" class="notice notice--error">{{ submitError }}</div>
-
-          <div class="submit-actions">
-            <button type="submit" class="btn btn--primary" :disabled="submitting">
-              <span v-if="submitting">Submitting…</span>
-              <span v-else>Submit for review</span>
-            </button>
-            <p class="submit-note">We review every submission within 1–2 business days.</p>
-          </div>
-        </form>
+        <!-- Pagination -->
+        <nav v-if="totalPages > 1" class="nf-pagination" aria-label="Pagination">
+          <button class="nf-page-btn" :disabled="page <= 1" @click="setPage(page - 1)">
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <span class="nf-page-info">Page {{ page }} of {{ totalPages }}</span>
+          <button class="nf-page-btn" :disabled="page >= totalPages" @click="setPage(page + 1)">
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </nav>
       </div>
     </section>
   </div>
 </template>
 
+<script setup lang="ts">
+useHead({
+  title: 'Vendor News — Moonmart',
+  meta: [
+    { name: 'description', content: 'Product launches, feature updates, case studies and culture posts from software vendors on Moonmart.' }
+  ]
+})
+
+interface NewsPost {
+  id: string
+  postType: string
+  title: string
+  slug: string
+  excerpt: string
+  coverImage: string | null
+  featured: boolean
+  upvoteCount: number
+  viewCount: number
+  publishedAt: string | null
+  tags: string[]
+  vendor: { id: string; name: string; slug: string }
+  authorName: string
+}
+
+interface NewsResponse {
+  success: boolean
+  posts: NewsPost[]
+  total: number
+  page: number
+  perPage: number
+  totalPages: number
+}
+
+const TYPE_LABELS: Record<string, string> = {
+  'product-update': 'Product Update',
+  'feature': 'Feature',
+  'case-study': 'Case Study',
+  'culture': 'Culture',
+  'announcement': 'Announcement'
+}
+
+const route = useRoute()
+const router = useRouter()
+
+const activeType = ref<string | null>((route.query.type as string) || null)
+const page = ref(Number(route.query.page) || 1)
+
+watch(activeType, () => { page.value = 1; sync() })
+
+const queryParams = computed(() => ({
+  page: page.value,
+  per_page: 12,
+  ...(activeType.value ? { type: activeType.value } : {})
+}))
+
+const { data, pending, refresh } = await useFetch<NewsResponse>('/api/news', {
+  query: queryParams,
+  key: 'news-feed'
+})
+
+const posts = computed(() => data.value?.posts || [])
+const total = computed(() => data.value?.total || 0)
+const totalPages = computed(() => data.value?.totalPages || 1)
+const featuredPost = computed(() => posts.value.find(p => p.featured) || (page.value === 1 ? posts.value[0] : null))
+
+function typeLabel(t: string) { return TYPE_LABELS[t] || t }
+
+function fmtDate(iso: string | null) {
+  if (!iso) return ''
+  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+}
+
+function setPage(p: number) {
+  page.value = p
+  sync()
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+function sync() {
+  const q: Record<string, string> = {}
+  if (activeType.value) q.type = activeType.value
+  if (page.value > 1) q.page = String(page.value)
+  router.replace({ query: q })
+}
+</script>
+
 <style scoped>
-/* Shell ---------------------------------------------------------- */
-.news { background: var(--mm-bg); color: var(--mm-pearl); }
-.news__wrap { max-width: 1080px; margin: 0 auto; padding: 0 1.5rem; }
-.news__label {
-  display: inline-block;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--mm-gold);
-  margin-bottom: 1rem;
-}
+.news-feed { background: var(--mm-bg); color: var(--mm-pearl); min-height: 100vh; }
+.nf-wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
 
-/* Intro ---------------------------------------------------------- */
-.news__intro {
-  padding: 5rem 0 3rem;
-  border-bottom: 0.5px solid var(--b1);
+/* Header */
+.nf-header { padding: 64px 0 40px; border-bottom: 1px solid var(--b1); }
+.nf-eyebrow {
+  display: inline-block; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--mm-gold); margin-bottom: 16px;
 }
-.news__headline {
-  font-family: var(--f-display);
-  font-size: clamp(2.25rem, 5vw, 3.25rem);
-  font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -0.01em;
-  color: var(--mm-pearl);
-  margin: 0 0 1rem;
-  max-width: 720px;
+.nf-headline {
+  font-size: clamp(2rem, 4.5vw, 3rem); font-weight: 700; line-height: 1.1;
+  letter-spacing: -0.01em; margin: 0 0 16px; color: var(--mm-pearl); max-width: 700px;
 }
-.news__lede {
-  font-size: 1.0625rem;
-  line-height: 1.6;
-  color: var(--mm-silver);
-  margin: 0 0 1.75rem;
-  max-width: 620px;
-}
-.news__cta-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.nf-lede { font-size: 16px; line-height: 1.65; color: var(--mm-silver); margin: 0; max-width: 580px; }
 
-/* Buttons -------------------------------------------------------- */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.7rem 1.25rem;
-  border-radius: var(--r-sm);
-  border: 0.5px solid transparent;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-  font-family: inherit;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+/* Hero */
+.nf-hero { padding: 40px 0; border-bottom: 1px solid var(--b1); }
+.nf-hero__card {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+  text-decoration: none; border-radius: var(--r-xl);
+  background: var(--mm-s1); border: 1px solid var(--b1);
+  overflow: hidden; transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
-.btn svg { width: 14px; height: 14px; }
-.btn--primary {
-  background: var(--mm-gold);
-  color: #0A0700;
-  border-color: var(--mm-gold);
-}
-.btn--primary:hover:not(:disabled) {
-  background: var(--mm-goldl);
-  border-color: var(--mm-goldl);
-  transform: translateY(-1px);
-}
-.btn--primary:disabled { opacity: 0.6; cursor: not-allowed; }
-.btn--ghost {
-  background: transparent;
-  color: var(--mm-silver);
-  border-color: var(--b2);
-}
-.btn--ghost:hover { border-color: var(--mm-pearl); color: var(--mm-pearl); }
-.btn--sm { padding: 0.4rem 0.9rem; font-size: 0.8125rem; }
+.nf-hero__card:hover { border-color: var(--b2); box-shadow: var(--shadow-lg); }
+.nf-hero__media { aspect-ratio: 16/9; overflow: hidden; background: var(--mm-s2); }
+.nf-hero__img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.nf-hero__placeholder { width: 100%; height: 100%; background: var(--mm-s3); }
+.nf-hero__body { padding: 32px 32px 32px 0; display: flex; flex-direction: column; gap: 12px; justify-content: center; }
+.nf-hero__top { display: flex; align-items: center; gap: 10px; }
+.nf-hero__vendor { font-size: 13px; color: var(--mm-slate); }
+.nf-hero__title { font-size: clamp(18px, 2.5vw, 26px); font-weight: 700; color: var(--mm-pearl); line-height: 1.3; margin: 0; }
+.nf-hero__excerpt { font-size: 14px; line-height: 1.65; color: var(--mm-silver); margin: 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.nf-hero__footer { display: flex; align-items: center; gap: 16px; font-size: 12px; color: var(--mm-slate); margin-top: auto; }
+.nf-hero__upvotes { display: flex; align-items: center; gap: 4px; }
+.nf-hero__upvotes svg { color: var(--mm-gold); }
 
-/* Featured ------------------------------------------------------- */
-.news__feature { padding: 3rem 0; }
-.feature {
+/* Badge */
+.nf-badge {
+  display: inline-block; padding: 3px 9px; border-radius: var(--r-full);
+  font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.nf-badge[data-type="product-update"] { background: rgba(74,128,212,0.18); color: #6fa0e8; }
+.nf-badge[data-type="feature"]        { background: rgba(212,168,67,0.18);  color: var(--mm-goldl); }
+.nf-badge[data-type="case-study"]     { background: rgba(42,157,143,0.18);  color: var(--mm-sea); }
+.nf-badge[data-type="culture"]        { background: rgba(148,103,189,0.18); color: #c39de0; }
+.nf-badge[data-type="announcement"]   { background: rgba(229,101,74,0.18);  color: #f08070; }
+
+/* Filter bar */
+.nf-bar {
+  position: sticky; top: 0; z-index: 10;
+  background: rgba(7,9,15,0.92); backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--b1);
+}
+.nf-bar__inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 14px; padding-bottom: 14px; }
+.nf-bar__count { font-size: 12px; color: var(--mm-slate); white-space: nowrap; margin: 0; }
+
+/* Grid */
+.nf-grid-section { padding: 40px 0 72px; }
+.nf-grid {
   display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: 2rem;
-  align-items: center;
-  background: var(--mm-gold-soft);
-  border: 0.5px solid var(--mm-gold);
-  border-radius: var(--r-xl);
-  padding: 2rem;
-}
-.feature__date {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: var(--mm-s2);
-  border-radius: var(--r-lg);
-  padding: 1.25rem 0.5rem;
-  box-shadow: 0 4px 14px rgba(212, 168, 67, 0.12);
-}
-.feature__date-month {
-  font-family: var(--f-ui);
-  font-size: 0.8125rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: var(--mm-gold);
-}
-.feature__date-day {
-  font-family: var(--f-display);
-  font-size: 2.5rem;
-  font-weight: 700;
-  line-height: 1;
-  color: var(--mm-pearl);
-  margin-top: 0.25rem;
-}
-.feature__meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.8125rem;
-  color: var(--mm-slate);
-  margin-bottom: 0.75rem;
-}
-.feature__tag {
-  background: var(--mm-s2);
-  color: var(--mm-gold);
-  font-weight: 700;
-  padding: 0.2rem 0.65rem;
-  border-radius: 999px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-size: 0.6875rem;
-}
-.feature__title {
-  font-family: var(--f-display);
-  font-size: clamp(1.375rem, 2.4vw, 1.875rem);
-  font-weight: 700;
-  line-height: 1.2;
-  color: var(--mm-pearl);
-  margin: 0 0 0.75rem;
-}
-.feature__summary {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: var(--mm-silver);
-  margin: 0 0 1.25rem;
-}
-.feature__actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1rem;
-}
-.feature__host { color: var(--mm-slate); font-size: 0.875rem; }
-
-/* Filter bar ----------------------------------------------------- */
-.news__bar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: rgba(15, 18, 32, 0.94);
-  backdrop-filter: saturate(180%) blur(8px);
-  border-top: 0.5px solid var(--b1);
-  border-bottom: 0.5px solid var(--b1);
-}
-.news__bar .news__wrap {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  padding-top: 0.85rem;
-  padding-bottom: 0.85rem;
-  flex-wrap: wrap;
-}
-.tabs { display: flex; gap: 0.25rem; }
-.tab {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: transparent;
-  border: none;
-  color: var(--mm-slate);
-  padding: 0.5rem 0.75rem;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  cursor: pointer;
-  font-family: inherit;
-  position: relative;
-  transition: color 0.15s ease;
-}
-.tab:hover { color: var(--mm-pearl); }
-.tab--on { color: var(--mm-pearl); font-weight: 600; }
-.tab--on::after {
-  content: '';
-  position: absolute;
-  left: 0.75rem;
-  right: 0.75rem;
-  bottom: -0.85rem;
-  height: 2px;
-  background: var(--mm-gold);
-}
-.tab__count {
-  font-size: 0.75rem;
-  background: var(--mm-s3);
-  color: var(--mm-slate);
-  padding: 0.1rem 0.5rem;
-  border-radius: 999px;
-  font-weight: 600;
-}
-.tab--on .tab__count {
-  background: var(--mm-gold-soft);
-  color: var(--mm-gold);
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
 }
 
-.types {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
+/* Skeleton */
+.nf-skeleton-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+.nf-skeleton {
+  height: 300px; border-radius: var(--r-lg);
+  background: linear-gradient(90deg, var(--mm-s1) 0%, var(--mm-s2) 50%, var(--mm-s1) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
 }
-.type {
-  background: var(--mm-s2);
-  border: 0.5px solid var(--b1);
-  color: var(--mm-silver);
-  padding: 0.35rem 0.75rem;
-  border-radius: 999px;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  cursor: pointer;
-  font-family: inherit;
-  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
-}
-.type:hover { border-color: var(--mm-gold); color: var(--mm-pearl); }
-.type--on {
-  background: var(--mm-gold);
-  border-color: var(--mm-gold);
-  color: #0A0700;
-}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-/* List ----------------------------------------------------------- */
-.news__list { padding: 3rem 0 4rem; }
-.events {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
+/* Empty */
+.nf-empty {
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+  padding: 64px 24px; color: var(--mm-slate); text-align: center;
 }
-.event {
-  display: grid;
-  grid-template-columns: 88px 1fr auto;
-  gap: 1.5rem;
-  align-items: center;
-  padding: 1.5rem 0;
-  border-bottom: 0.5px solid var(--b1);
-}
-.event:last-child { border-bottom: none; }
-.event__date {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: var(--mm-s2);
-  border: 0.5px solid var(--b1);
-  border-radius: var(--r-lg);
-  padding: 0.75rem 0.25rem;
-}
-.event__date-month {
-  font-family: var(--f-ui);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: var(--mm-gold);
-}
-.event__date-day {
-  font-family: var(--f-display);
-  font-size: 1.625rem;
-  font-weight: 700;
-  line-height: 1;
-  color: var(--mm-pearl);
-  margin-top: 0.2rem;
-}
-.event__meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.75rem;
-  color: var(--mm-slate);
-  margin-bottom: 0.4rem;
-}
-.event__tag {
-  color: var(--mm-gold);
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-.event__title {
-  font-family: var(--f-display);
-  font-size: 1.0625rem;
-  font-weight: 700;
-  line-height: 1.3;
-  color: var(--mm-pearl);
-  margin: 0 0 0.35rem;
-}
-.event__summary {
-  font-size: 0.9375rem;
-  line-height: 1.55;
-  color: var(--mm-silver);
-  margin: 0 0 0.35rem;
-}
-.event__host { font-size: 0.8125rem; color: var(--mm-slate); }
-.event__action { white-space: nowrap; }
-.event__ended {
-  font-size: 0.75rem;
-  color: var(--mm-slate);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  font-weight: 600;
-}
+.nf-empty p { font-size: 15px; margin: 0; }
 
-/* State ---------------------------------------------------------- */
-.state {
-  text-align: center;
-  padding: 4rem 1.5rem;
-  border: 0.5px dashed var(--b2);
-  border-radius: var(--r-lg);
-  background: var(--mm-s2);
+/* Pagination */
+.nf-pagination {
+  display: flex; align-items: center; justify-content: center;
+  gap: 16px; margin-top: 40px;
 }
-.state h3 {
-  font-family: var(--f-display);
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--mm-pearl);
-  margin: 0 0 0.5rem;
+.nf-page-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: var(--r-md);
+  background: var(--mm-s1); border: 1px solid var(--b1); color: var(--mm-silver);
+  cursor: pointer; transition: border-color var(--transition-fast), color var(--transition-fast);
 }
-.state p { color: var(--mm-silver); margin: 0 0 1.5rem; font-size: 0.9375rem; }
-.state--loading p { color: var(--mm-slate); }
+.nf-page-btn:hover:not(:disabled) { border-color: var(--b2); color: var(--mm-pearl); }
+.nf-page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.nf-page-info { font-size: 13px; color: var(--mm-slate); }
 
-/* Submit form ---------------------------------------------------- */
-.news__submit {
-  padding: 4.5rem 0 6rem;
-  border-top: 0.5px solid var(--b1);
-  background: var(--mm-s1);
-}
-.submit-head { max-width: 640px; margin: 0 auto 2rem; text-align: center; }
-.submit-title {
-  font-family: var(--f-display);
-  font-size: clamp(1.75rem, 3.5vw, 2.25rem);
-  font-weight: 700;
-  line-height: 1.2;
-  margin: 0 0 0.75rem;
-  color: var(--mm-pearl);
-}
-.submit-sub { color: var(--mm-silver); font-size: 1rem; line-height: 1.6; margin: 0; }
-
-.submit-form {
-  max-width: 640px;
-  margin: 0 auto;
-  display: grid;
-  gap: 1.25rem;
-  background: var(--mm-s2);
-  padding: 2rem;
-  border-radius: var(--r-lg);
-  border: 0.5px solid var(--b1);
-}
-.field { display: flex; flex-direction: column; gap: 0.4rem; }
-.field label {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--mm-silver);
-}
-.field input[type='text'],
-.field input[type='email'],
-.field input[type='url'],
-.field input[type='datetime-local'],
-.field select,
-.field textarea {
-  border: 0.5px solid var(--b2);
-  border-radius: var(--r-md);
-  padding: 0.65rem 0.85rem;
-  font-size: 0.9375rem;
-  font-family: inherit;
-  color: var(--mm-pearl);
-  background: var(--mm-s3);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-.field input:focus,
-.field select:focus,
-.field textarea:focus {
-  outline: none;
-  border-color: var(--mm-gold);
-  box-shadow: 0 0 0 3px var(--mm-gold-soft);
-}
-.field textarea { resize: vertical; min-height: 4rem; }
-.field__check {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  color: var(--mm-silver);
-  cursor: pointer;
-  padding-top: 1.4rem;
-}
-.field__check input { width: 16px; height: 16px; }
-.field-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.submit-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 0.5rem;
-}
-.submit-note { font-size: 0.8125rem; color: var(--mm-slate); margin: 0; }
-
-.notice {
-  padding: 0.85rem 1rem;
-  border-radius: var(--r-md);
-  font-size: 0.9375rem;
-  max-width: 640px;
-  margin: 0 auto;
-}
-.notice--success {
-  background: var(--mm-gold-soft);
-  color: var(--mm-goldl);
-  border: 0.5px solid var(--mm-gold);
-  margin-bottom: 1.5rem;
-}
-.notice--error {
-  background: rgba(220, 38, 38, 0.08);
-  color: #fca5a5;
-  border: 0.5px solid rgba(220, 38, 38, 0.4);
-}
-
-/* Responsive ----------------------------------------------------- */
+/* Responsive */
 @media (max-width: 720px) {
-  .news__intro { padding: 3.5rem 0 2.5rem; }
-  .feature {
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
-    padding: 1.5rem;
-  }
-  .feature__date {
-    flex-direction: row;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    align-self: flex-start;
-  }
-  .feature__date-day { font-size: 1.75rem; margin-top: 0; }
-  .event {
-    grid-template-columns: 72px 1fr;
-    gap: 1rem;
-  }
-  .event__action {
-    grid-column: 1 / -1;
-    padding-left: 88px;
-  }
-  .field-row { grid-template-columns: 1fr; }
-  .news__bar .news__wrap {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .tabs { overflow-x: auto; }
+  .nf-header { padding: 40px 0 28px; }
+  .nf-hero__card { grid-template-columns: 1fr; }
+  .nf-hero__body { padding: 20px; }
+  .nf-bar__inner { flex-wrap: wrap; }
 }
 </style>
