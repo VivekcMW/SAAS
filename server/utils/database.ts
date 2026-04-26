@@ -286,11 +286,39 @@ function createSchema(db: Database.Database) {
     CREATE INDEX IF NOT EXISTS idx_events_status ON events(status);
     CREATE INDEX IF NOT EXISTS idx_events_starts_at ON events(starts_at);
     CREATE INDEX IF NOT EXISTS idx_events_featured ON events(featured);
+
+    -- Billing: one row per active subscription per user
+    CREATE TABLE IF NOT EXISTS user_subscriptions (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      stripe_customer_id TEXT NOT NULL,
+      stripe_subscription_id TEXT NOT NULL UNIQUE,
+      plan TEXT NOT NULL,
+      stripe_status TEXT NOT NULL DEFAULT 'active',
+      current_period_start TEXT,
+      current_period_end TEXT,
+      cancel_at_period_end INTEGER NOT NULL DEFAULT 0,
+      canceled_at TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_subs_user ON user_subscriptions(user_id);
+    CREATE INDEX IF NOT EXISTS idx_subs_stripe_sub ON user_subscriptions(stripe_subscription_id);
+
+    -- Flexible key-value store for platform settings managed by admin
+    CREATE TABLE IF NOT EXISTS admin_settings (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL,
+      updated_by TEXT,
+      updated_at TEXT NOT NULL
+    );
   `)
 
   // Idempotent column migrations for existing databases
   const alterations = [
-    `ALTER TABLE users ADD COLUMN email_verified INTEGER NOT NULL DEFAULT 0`
+    `ALTER TABLE users ADD COLUMN email_verified INTEGER NOT NULL DEFAULT 0`,
+    `ALTER TABLE users ADD COLUMN stripe_customer_id TEXT`
   ]
   for (const sql of alterations) {
     try { db.exec(sql) } catch { /* column already exists */ }
@@ -318,7 +346,7 @@ function seedDatabase(db: Database.Database) {
 
   const now = new Date().toISOString()
   const insertUser = db.prepare(`
-    INSERT INTO users (
+    INSERT OR IGNORE INTO users (
       id, email, password_hash, first_name, last_name, full_name,
       company_name, company_size, job_title, phone_number, role, plan,
       created_at, updated_at

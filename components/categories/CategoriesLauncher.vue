@@ -81,25 +81,33 @@ onBeforeUnmount(() => {
 .cat-trigger {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  background: #ffffff;
-  border: 0.5px solid #e5e7eb;
-  border-radius: 6px;
-  padding: 8px 14px;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  border-radius: var(--r-md, 8px);
+  padding: 8px 12px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 0.9375rem;
   font-weight: 500;
-  color: #374151;
+  color: var(--sw-text-muted, var(--mm-silver));
   cursor: pointer;
-  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+  white-space: nowrap;
+  transition: color 0.15s ease, background 0.15s ease;
 }
-.cat-trigger:hover { background: #f9fafb; border-color: #d1d5db; color: #1f2937; }
-.cat-trigger[aria-expanded="true"] { background: #fff3e6; border-color: #ff8838; color: #b45309; }
+.cat-trigger:hover {
+  color: var(--mm-pearl);
+  background: rgba(242, 244, 248, 0.05);
+}
+.cat-trigger[aria-expanded="true"] {
+  color: var(--mm-gold);
+  background: var(--mm-gold-soft);
+}
 
 .cat-trigger-icon { flex-shrink: 0; }
 .cat-trigger-chev {
-  color: #9ca3af;
-  transition: transform 150ms ease;
+  color: var(--mm-slate);
+  transition: transform 0.15s ease;
 }
 .cat-trigger-chev.open { transform: rotate(180deg); }
+.cat-trigger[aria-expanded="true"] .cat-trigger-chev { color: var(--mm-gold); }
 </style>

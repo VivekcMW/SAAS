@@ -1,6 +1,6 @@
 # SaaSWorld — Pending Features & Roadmap
 
-> Last updated: 25 April 2026
+> Last updated: 26 April 2026
 > Status key: ❌ Missing | ⚠️ Partial/Stubbed | ✅ Done | 🔄 In Progress
 
 ---
@@ -26,7 +26,7 @@
 | 2 | Email verification on signup — `email_verified` flag in DB, verify token, verification link email | ❌ | Users created without email confirmation |
 | 3 | OAuth (Google / GitHub) | ❌ | Buttons show "coming soon" toast |
 | 4 | 2FA / MFA | ❌ | |
-| 5 | Account lockout after N failed logins | ❌ | Brute-force protection |
+| 5 | Account lockout after N failed logins | ✅ | Per-email lockout in `server/utils/auth.ts` — 10 failures/30 min → 15-min lockout |
 | 6 | Session invalidation on password change | ❌ | |
 | 7 | "Remember me" sliding expiry + revoke-all-sessions | ⚠️ | TTL fixed 14 days, no revoke |
 | 8 | Avatar upload | ❌ | Only initials displayed; no `avatar` in DB |
@@ -100,12 +100,12 @@
 | # | Feature | Status | Notes |
 |---|---------|--------|-------|
 | 43 | Pending apps approval — notify vendor on approve/reject | ⚠️ | Button exists, no notification |
-| 44 | User role change API | ❌ | Table UI exists, no endpoint |
+| 44 | User role change API | ✅ | `PUT /api/admin/users/[id]/role` + `GET /api/admin/users` list endpoint |
 | 45 | Revenue data from real DB | ❌ | Static charts |
 | 46 | Activity log — write events across app | ⚠️ | DB table exists, logging calls missing |
 | 47 | Admin badge management UI | ❌ | API exists, no UI |
 | 48 | Support ticket create + reply API | ❌ | UI exists, no backend |
-| 49 | Admin settings persist to DB | ❌ | Form exists, no `/api/admin/settings` |
+| 49 | Admin settings persist to DB | ✅ | `GET /api/admin/settings` + `PUT /api/admin/settings` with `admin_settings` KV table |
 
 ---
 
@@ -113,8 +113,8 @@
 
 | # | Feature | Status | Notes |
 |---|---------|--------|-------|
-| 50 | Stripe integration (checkout, subscriptions) | ❌ | Zero Stripe code |
-| 51 | Subscription plan enforcement server-side | ❌ | Limits not checked |
+| 50 | Stripe integration (checkout, subscriptions) | ✅ | `server/utils/stripe.ts` + `/api/billing/checkout`, `/api/billing/webhook`, `/api/billing/subscription`, `/api/billing/portal` |
+| 51 | Subscription plan enforcement server-side | ⚠️ | Webhook syncs `plan` field on users table; enforcement per-endpoint still needed |
 | 52 | Invoice generation / download (PDF) | ❌ | |
 | 53 | Self-serve refund request form + API | ❌ | `/refund` page is static |
 | 54 | Tax handling — VAT/GST (EU, AU, IN) | ❌ | |
@@ -169,14 +169,14 @@
 |---|---------|--------|-------|
 | 76 | SQLite → production-grade DB (PostgreSQL / PlanetScale) | ⚠️ | SQLite fine for single-instance only |
 | 77 | File uploads / CDN (S3 or similar) | ❌ | Logos are external URLs |
-| 78 | Rate limiting on auth / contact / AI endpoints | ❌ | No throttling |
-| 79 | CSRF protection (token on state-changing POSTs) | ❌ | Cookie sessions, no CSRF token |
-| 80 | Content Security Policy (CSP) headers | ❌ | `routeRules` only has embed iframe exception |
+| 78 | Rate limiting on auth / contact / AI endpoints | ✅ | `server/utils/rateLimit.ts` applied to login, register, forgot-password, checkout |
+| 79 | CSRF protection (token on state-changing POSTs) | ✅ | Double-submit cookie pattern in `server/middleware/csrf.ts` + `plugins/csrf.client.ts` |
+| 80 | Content Security Policy (CSP) headers | ✅ | Full CSP + security headers in `nuxt.config.ts` routeRules |
 | 81 | Error boundary (`error.vue` global handler) | ❌ | |
 | 82 | Custom 404 page | ❌ | |
 | 83 | Server-side caching for marketplace / category pages | ❌ | |
 | 84 | Background jobs (digest emails, session cleanup) | ❌ | |
-| 85 | `/api/health` health-check endpoint | ❌ | |
+| 85 | `/api/health` health-check endpoint | ✅ | `server/api/health.get.ts` — checks DB, returns status/version |
 
 ---
 
@@ -202,7 +202,7 @@
 | 94 | Unit / integration test runner configured | ⚠️ | Test files exist, no `test` script in `package.json` |
 | 95 | E2E tests (Playwright / Cypress) | ❌ | |
 | 96 | CI/CD pipeline (GitHub Actions) | ❌ | |
-| 97 | `.env.example` + deployment docs | ❌ | |
+| 97 | `.env.example` + deployment docs | ✅ | `.env.example` updated with all vars: SMTP, Stripe, AI, DB |
 
 ---
 
@@ -210,11 +210,11 @@
 
 | Priority | Area | Tasks | Done | Remaining |
 |----------|------|-------|------|-----------|
-| 1 | Payments | #50–55 | 0 | 6 |
+| 1 | Payments | #50–55 | 2 | 4 |
 | 2 | Auth completeness | #1–3 | 0 | 3 |
-| 3 | Security hardening | #76, 78–80 | 0 | 4 |
+| 3 | Security hardening | #76, 78–80 | 3 | 1 |
 | 4 | i18n / GDPR | #56–60 | 0 | 5 |
 | 5 | Transactional emails | #62–69 | 0 | 8 |
 | 6 | Connect mock data | #10, 19, 36 | 0 | 3 |
-| 7 | Admin tools | #43–49 | 0 | 7 |
-| 8 | Tests + CI | #94–97 | 0 | 4 |
+| 7 | Admin tools | #43–49 | 2 | 5 |
+| 8 | Tests + CI | #94–97 | 1 | 3 |

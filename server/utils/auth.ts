@@ -7,6 +7,59 @@ import { getDb, makeId, makeSlug } from './database'
 const SESSION_COOKIE = 'saasworld_session'
 const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 14
 
+// ─── Account Lockout ─────────────────────────────────────────────────────────
+// Per-email sliding-window: after MAX_FAILURES in FAILURE_WINDOW_MS, lock for LOCKOUT_MS.
+const FAILURE_WINDOW_MS = 30 * 60 * 1000 // 30 minutes
+const LOCKOUT_MS = 15 * 60 * 1000        // 15-minute lockout
+const MAX_FAILURES = 10
+
+interface FailureEntry { count: number; windowStart: number; lockedUntil?: number }
+const failureStore = new Map<string, FailureEntry>()
+
+// Prune stale entries every 10 minutes
+if (typeof setInterval !== 'undefined') {
+  setInterval(() => {
+    const now = Date.now()
+    for (const [key, entry] of failureStore) {
+      if ((entry.lockedUntil ?? 0) < now && now - entry.windowStart > FAILURE_WINDOW_MS) {
+        failureStore.delete(key)
+      }
+    }
+  }, 10 * 60 * 1000)
+}
+
+function recordLoginFailure(email: string): void {
+  const key = email.toLowerCase()
+  const now = Date.now()
+  const entry = failureStore.get(key)
+
+  if (!entry || now - entry.windowStart > FAILURE_WINDOW_MS) {
+    failureStore.set(key, { count: 1, windowStart: now })
+    return
+  }
+
+  entry.count++
+  if (entry.count >= MAX_FAILURES) {
+    entry.lockedUntil = now + LOCKOUT_MS
+  }
+}
+
+function clearLoginFailures(email: string): void {
+  failureStore.delete(email.toLowerCase())
+}
+
+function checkAccountLocked(email: string): { locked: boolean; retryAfterSec?: number } {
+  const entry = failureStore.get(email.toLowerCase())
+  if (!entry?.lockedUntil) return { locked: false }
+  const now = Date.now()
+  if (entry.lockedUntil > now) {
+    return { locked: true, retryAfterSec: Math.ceil((entry.lockedUntil - now) / 1000) }
+  }
+  // Lockout expired — clear it
+  failureStore.delete(email.toLowerCase())
+  return { locked: false }
+}
+
 export interface AuthUser {
   id: string
   email: string
@@ -66,7 +119,7 @@ export function ensureSeedCredentials() {
   const updatePassword = db.prepare('UPDATE users SET password_hash = ? WHERE email = ?')
   const selectUser = db.prepare('SELECT password_hash FROM users WHERE email = ?')
   const insertUser = db.prepare(`
-    INSERT INTO users (
+    INSERT OR IGNORE INTO users (
       id, email, password_hash, first_name, last_name, full_name,
       company_name, company_size, job_title, phone_number, role, plan,
       created_at, updated_at
@@ -280,15 +333,29 @@ export function requireVendor(event: H3Event) {
 }
 
 export function authenticateUser(email: string, password: string) {
-  const user = findUserByEmail(email)
+  const normalised = normalizeEmail(email)
+
+  // Check per-account lockout before touching the DB
+  const lockStatus = checkAccountLocked(normalised)
+  if (lockStatus.locked) {
+    throw createError({
+      statusCode: 429,
+      statusMessage: `Account temporarily locked due to too many failed attempts. Please try again in ${lockStatus.retryAfterSec} seconds.`
+    })
+  }
+
+  const user = findUserByEmail(normalised)
 
   if (!user || !verifyPassword(password, user.password_hash)) {
+    recordLoginFailure(normalised)
     throw createError({
       statusCode: 401,
       statusMessage: 'Invalid email or password'
     })
   }
 
+  // Successful login — clear failure counter
+  clearLoginFailures(normalised)
   return mapUser(user)
 }
 
