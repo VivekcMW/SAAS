@@ -98,7 +98,10 @@ export default defineNuxtConfig({
       { code: 'es', name: 'Español', file: 'es.json', flag: 'es' },
       { code: 'fr', name: 'Français', file: 'fr.json', flag: 'fr' },
       { code: 'de', name: 'Deutsch', file: 'de.json', flag: 'de' },
-      { code: 'pt', name: 'Português', file: 'pt.json', flag: 'pt' }
+      { code: 'pt', name: 'Português', file: 'pt.json', flag: 'pt' },
+      { code: 'zh', name: '中文', file: 'zh.json', flag: 'cn' },
+      { code: 'ja', name: '日本語', file: 'ja.json', flag: 'jp' },
+      { code: 'ar', name: 'العربية', file: 'ar.json', flag: 'sa', dir: 'rtl' }
     ],
     lazy: true,
     langDir: 'locales',
@@ -125,6 +128,7 @@ export default defineNuxtConfig({
     '~/assets/css/buyer.css',     // Buyer workspace design system
     '~/assets/css/vendor.css',    // Vendor workspace design system
     '~/assets/css/admin.css',     // Admin console design system
+    '~/assets/css/rtl.css',       // RTL (Arabic) directional overrides
   ],
 
   // Vite configuration for SCSS
@@ -222,9 +226,17 @@ export default defineNuxtConfig({
 
   // Runtime config for global features
   runtimeConfig: {
+    // Private (server-only) — set via .env
+    googleClientId: process.env.GOOGLE_CLIENT_ID || '',
+    googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+    githubClientId: process.env.GITHUB_CLIENT_ID || '',
+    githubClientSecret: process.env.GITHUB_CLIENT_SECRET || '',
     public: {
       // Exchange rates API (example: fixer.io or similar)
       exchangeRatesApi: 'https://api.exchangerate-api.com/v4/latest/',
+      siteUrl: process.env.SITE_URL || 'http://localhost:3000',
+      oauthGoogleEnabled: !!(process.env.GOOGLE_CLIENT_ID),
+      oauthGithubEnabled: !!(process.env.GITHUB_CLIENT_ID),
       // Regional settings
       regions: {
         US: { name: 'United States', currency: 'USD', tax: 8.5, locale: 'en-US', flag: 'us' },

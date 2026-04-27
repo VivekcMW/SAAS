@@ -676,6 +676,107 @@ function createSchema(db: Database.Database) {
       updated_at TEXT NOT NULL
     );
     CREATE INDEX IF NOT EXISTS idx_cl_visitor ON consent_log(visitor_key);
+
+    CREATE TABLE IF NOT EXISTS blog_posts (
+      id TEXT PRIMARY KEY,
+      slug TEXT NOT NULL UNIQUE,
+      title TEXT NOT NULL,
+      excerpt TEXT NOT NULL,
+      category TEXT NOT NULL,
+      author TEXT NOT NULL DEFAULT 'Moonmart Editorial',
+      author_title TEXT,
+      read_minutes INTEGER NOT NULL DEFAULT 8,
+      image TEXT,
+      tags TEXT NOT NULL DEFAULT '[]',
+      toc TEXT NOT NULL DEFAULT '[]',
+      content TEXT NOT NULL DEFAULT '',
+      status TEXT NOT NULL DEFAULT 'published',
+      is_auto_generated INTEGER NOT NULL DEFAULT 0,
+      published_at TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_blog_slug ON blog_posts(slug);
+    CREATE INDEX IF NOT EXISTS idx_blog_cat ON blog_posts(category);
+    CREATE INDEX IF NOT EXISTS idx_blog_pub ON blog_posts(published_at DESC);
+
+    CREATE TABLE IF NOT EXISTS forum_threads (
+      id TEXT PRIMARY KEY,
+      user_id TEXT,
+      author_name TEXT NOT NULL,
+      author_email TEXT,
+      title TEXT NOT NULL,
+      body TEXT NOT NULL,
+      category TEXT NOT NULL DEFAULT 'general',
+      pinned INTEGER NOT NULL DEFAULT 0,
+      locked INTEGER NOT NULL DEFAULT 0,
+      reply_count INTEGER NOT NULL DEFAULT 0,
+      view_count INTEGER NOT NULL DEFAULT 0,
+      last_reply_at TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_forum_cat ON forum_threads(category);
+    CREATE INDEX IF NOT EXISTS idx_forum_created ON forum_threads(created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS forum_replies (
+      id TEXT PRIMARY KEY,
+      thread_id TEXT NOT NULL,
+      user_id TEXT,
+      author_name TEXT NOT NULL,
+      author_email TEXT,
+      body TEXT NOT NULL,
+      is_accepted INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (thread_id) REFERENCES forum_threads(id) ON DELETE CASCADE,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_forum_reply_thread ON forum_replies(thread_id);
+
+    CREATE TABLE IF NOT EXISTS partner_applications (
+      id TEXT PRIMARY KEY,
+      company_name TEXT NOT NULL,
+      contact_name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      website TEXT,
+      partnership_type TEXT NOT NULL,
+      description TEXT,
+      status TEXT NOT NULL DEFAULT 'pending',
+      notes TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_partner_email ON partner_applications(email);
+    CREATE INDEX IF NOT EXISTS idx_partner_status ON partner_applications(status);
+
+    CREATE TABLE IF NOT EXISTS affiliate_accounts (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL UNIQUE,
+      referral_code TEXT NOT NULL UNIQUE,
+      commission_rate REAL NOT NULL DEFAULT 0.20,
+      status TEXT NOT NULL DEFAULT 'active',
+      total_clicks INTEGER NOT NULL DEFAULT 0,
+      total_conversions INTEGER NOT NULL DEFAULT 0,
+      total_earned REAL NOT NULL DEFAULT 0.0,
+      pending_payout REAL NOT NULL DEFAULT 0.0,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_affiliate_code ON affiliate_accounts(referral_code);
+    CREATE INDEX IF NOT EXISTS idx_affiliate_user ON affiliate_accounts(user_id);
+
+    CREATE TABLE IF NOT EXISTS affiliate_clicks (
+      id TEXT PRIMARY KEY,
+      affiliate_id TEXT NOT NULL,
+      visitor_key TEXT,
+      ref_url TEXT,
+      converted INTEGER NOT NULL DEFAULT 0,
+      converted_at TEXT,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (affiliate_id) REFERENCES affiliate_accounts(id)
+    );
   `)
 }
 

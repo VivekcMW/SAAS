@@ -177,11 +177,18 @@
 <script setup lang="ts">
 import { computed, onMounted, onBeforeUnmount, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { getPostBySlug, getRelatedPosts, getAdjacentPosts } from '~/utils/blogPosts'
+import { getPostBySlug, getRelatedPosts, getAdjacentPosts, type BlogPost } from '~/utils/blogPosts'
 
 const route = useRoute()
 const slug = computed(() => String(route.params.slug))
-const post = computed(() => getPostBySlug(slug.value))
+
+// Fetch from API first (covers DB-seeded and auto-generated posts)
+const { data: apiPost } = await useAsyncData(`blog-${slug.value}`, () =>
+  $fetch<BlogPost>(`/api/blog/${slug.value}`).catch(() => null)
+)
+
+// Fall back to static utility for the 6 hard-coded posts
+const post = computed<BlogPost | null>(() => (apiPost.value as BlogPost | null) || getPostBySlug(slug.value) || null)
 const related = computed(() => getRelatedPosts(slug.value, 3))
 const { prev, next } = getAdjacentPosts(slug.value)
 
@@ -204,7 +211,8 @@ if (post.value) {
 
 const formattedDate = computed(() => {
   if (!post.value) return ''
-  return new Date(post.value.date).toLocaleDateString('en-US', {
+  const d = (post.value as any).published_at || post.value.date
+  return new Date(d).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'

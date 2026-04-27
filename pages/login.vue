@@ -213,7 +213,8 @@ const handleLogin = async () => {
 }
 
 const handleSocial = (provider: 'google' | 'github') => {
-  errorMessage.value = `${provider === 'google' ? 'Google' : 'GitHub'} sign-in is coming soon.`
+  // Redirect to server-side OAuth handler
+  window.location.href = `/api/auth/oauth/${provider}`
 }
 
 interface DemoAccount {

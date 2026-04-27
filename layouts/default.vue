@@ -21,6 +21,16 @@
 </template>
 
 <script setup lang="ts">
+const { locale } = useI18n()
+const RTL_LOCALES = ['ar']
+const isRTL = computed(() => RTL_LOCALES.includes(locale.value))
+
+useHead({
+  htmlAttrs: {
+    dir: () => (isRTL.value ? 'rtl' : 'ltr'),
+    lang: () => locale.value
+  }
+})
 </script>
 
 <style scoped>

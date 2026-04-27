@@ -1,0 +1,95 @@
+{
+  "nav": {
+    "home": "الرئيسية",
+    "about": "حول",
+    "features": "المميزات",
+    "marketplace": "السوق",
+    "integrations": "التكاملات",
+    "blog": "المدونة",
+    "contact": "اتصل بنا",
+    "listProduct": "أدرج منتجك / خدمتك",
+    "login": "تسجيل الدخول",
+    "signup": "إنشاء حساب"
+  },
+  "hero": {
+    "title": "عزّز أعمالك مع منصة {platform}",
+    "subtitle": "{platform} سوق رقمي للتطبيقات على الويب يوفر مجموعة واسعة من التطبيقات للبحث وفق احتياجات المستخدمين ويساعد الشركات الصغيرة والمتوسطة على اتخاذ القرارات.",
+    "searchPlaceholder": "ابحث عن تطبيقات...",
+    "trending": "الأكثر رواجاً:"
+  },
+  "features": {
+    "title": "مميزات قوية",
+    "subtitle": "كل ما تحتاجه لتنمية أعمالك وإرضاء عملائك."
+  },
+  "integrations": {
+    "title": "تكامل سلس مع أدواتك المفضلة",
+    "subtitle": "ربط Moonmart بأكثر من 100 تطبيق وخدمة تستخدمها بالفعل.",
+    "viewAll": "عرض جميع التكاملات"
+  },
+  "cta": {
+    "title": "هل أنت مستعد لتحويل أعمالك؟",
+    "subtitle": "انضم إلى آلاف الشركات التي تستخدم Moonmart لتوسيع نطاق عملياتها.",
+    "startTrial": "ابدأ التجربة المجانية",
+    "contactSales": "تواصل مع المبيعات"
+  },
+  "marketplace": {
+    "title": "سوق Moonmart",
+    "subtitle": "اكتشف أفضل التطبيقات والخدمات",
+    "categories": "الفئات",
+    "filters": "الفلاتر",
+    "price": "السعر",
+    "rating": "التقييم",
+    "free": "مجاني",
+    "freemium": "مجاني جزئياً",
+    "paid": "مدفوع",
+    "enterprise": "للمؤسسات",
+    "featured": "مميز",
+    "trending": "رائج",
+    "new": "جديد",
+    "viewDetails": "عرض التفاصيل",
+    "noResults": "لم يتم العثور على تطبيقات",
+    "noResultsDesc": "حاول تعديل الفلاتر أو معايير البحث",
+    "resetFilters": "إعادة تعيين الفلاتر"
+  },
+  "pricing": {
+    "currency": "SAR",
+    "symbol": "ر.س",
+    "free": "مجاني",
+    "trial": "تجربة مجانية",
+    "month": "شهر",
+    "year": "سنة",
+    "perMonth": "في الشهر",
+    "perYear": "في السنة",
+    "billedMonthly": "يُحسب شهرياً",
+    "billedAnnually": "يُحسب سنوياً"
+  },
+  "common": {
+    "loading": "جار التحميل...",
+    "search": "بحث",
+    "filter": "تصفية",
+    "sort": "ترتيب",
+    "page": "صفحة",
+    "of": "من",
+    "results": "نتيجة",
+    "showMore": "عرض المزيد",
+    "showLess": "عرض أقل",
+    "learnMore": "اعرف المزيد",
+    "getStarted": "ابدأ الآن",
+    "subscribe": "اشترك",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "close": "إغلاق",
+    "back": "رجوع",
+    "next": "التالي",
+    "previous": "السابق",
+    "yes": "نعم",
+    "no": "لا"
+  },
+  "footer": {
+    "copyright": "جميع الحقوق محفوظة",
+    "privacy": "سياسة الخصوصية",
+    "terms": "شروط الخدمة",
+    "support": "الدعم",
+    "language": "اللغة"
+  }
+}

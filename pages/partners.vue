@@ -206,20 +206,73 @@
     </section>
 
     <!-- CTA Section -->
+    <!-- Partner Application Form -->
     <section class="partner-cta" id="become-partner">
       <div class="container">
         <div class="cta-content">
           <h2>Ready to Partner with Us?</h2>
           <p>Join hundreds of companies already growing their business through our partnership program.</p>
-          
-          <div class="cta-buttons">
-            <a href="#" class="btn btn-primary btn-large">Apply Now</a>
-            <a href="#" class="btn btn-secondary btn-large">Contact Partner Team</a>
+
+          <div v-if="applySuccess" class="apply-success">
+            <strong>Application submitted!</strong> We will be in touch within 5 business days.
           </div>
-          
+
+          <form v-else class="apply-form" @submit.prevent="submitApplication">
+            <div class="form-row">
+              <input v-model="applyForm.company_name" class="form-input" placeholder="Company name *" required />
+              <input v-model="applyForm.contact_name" class="form-input" placeholder="Contact name *" required />
+            </div>
+            <div class="form-row">
+              <input v-model="applyForm.email" class="form-input" type="email" placeholder="Business email *" required />
+              <input v-model="applyForm.website" class="form-input" type="url" placeholder="Website (optional)" />
+            </div>
+            <select v-model="applyForm.partnership_type" class="form-input" required>
+              <option value="" disabled>Partnership type *</option>
+              <option value="reseller">Reseller</option>
+              <option value="integration">Integration Partner</option>
+              <option value="technology">Technology Partner</option>
+              <option value="referral">Referral Partner</option>
+              <option value="agency">Agency</option>
+            </select>
+            <textarea v-model="applyForm.description" class="form-textarea" placeholder="Tell us about your company and goals (optional)" rows="3" />
+            <button type="submit" class="btn btn-primary btn-large" :disabled="applySubmitting">
+              {{ applySubmitting ? 'Submitting...' : 'Apply Now' }}
+            </button>
+            <p v-if="applyError" class="apply-error">{{ applyError }}</p>
+          </form>
+
           <div class="contact-info">
             <p>Questions? Contact our partner team at <a href="mailto:partners@moonmart.ai">partners@moonmart.ai</a></p>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Affiliate Program Section -->
+    <section class="affiliate-section" id="affiliate">
+      <div class="container">
+        <div class="section-header">
+          <h2>Affiliate Program</h2>
+          <p>Earn 20% commission for every customer you refer to Moonmart.</p>
+        </div>
+        <div class="affiliate-grid">
+          <div class="affiliate-stat">
+            <strong>20%</strong>
+            <span>Commission rate</span>
+          </div>
+          <div class="affiliate-stat">
+            <strong>30 days</strong>
+            <span>Cookie window</span>
+          </div>
+          <div class="affiliate-stat">
+            <strong>Monthly</strong>
+            <span>Payouts</span>
+          </div>
+        </div>
+        <div class="affiliate-cta">
+          <p>Already a member? <NuxtLink to="/dashboard">Join the affiliate program</NuxtLink> from your dashboard, or sign up below.</p>
+          <button class="btn btn-secondary" @click="joinAffiliate">Join as Affiliate</button>
+          <p v-if="affiliateMsg" class="affiliate-msg">{{ affiliateMsg }}</p>
         </div>
       </div>
     </section>
@@ -227,6 +280,48 @@
 </template>
 
 <script setup lang="ts">
+// Partner application form state
+const applyForm = reactive({
+  company_name: '',
+  contact_name: '',
+  email: '',
+  website: '',
+  partnership_type: '',
+  description: ''
+})
+const applySubmitting = ref(false)
+const applySuccess = ref(false)
+const applyError = ref('')
+
+async function submitApplication() {
+  applyError.value = ''
+  applySubmitting.value = true
+  try {
+    await $fetch('/api/partner/apply', { method: 'POST', body: { ...applyForm } })
+    applySuccess.value = true
+  } catch (err: any) {
+    applyError.value = err?.data?.statusMessage || 'Submission failed. Please try again.'
+  } finally {
+    applySubmitting.value = false
+  }
+}
+
+// Affiliate join
+const affiliateMsg = ref('')
+async function joinAffiliate() {
+  affiliateMsg.value = ''
+  try {
+    const res = await $fetch<{ referral_code: string; message: string }>('/api/affiliate/join', { method: 'POST' })
+    affiliateMsg.value = `${res.message}. Your referral code: ${res.referral_code}`
+  } catch (err: any) {
+    if (err?.status === 401) {
+      affiliateMsg.value = 'Please log in to join the affiliate program.'
+    } else {
+      affiliateMsg.value = err?.data?.statusMessage || 'Failed to join affiliate program.'
+    }
+  }
+}
+
 // SEO Configuration
 useSeoMeta({
   title: 'Partners - Moonmart',
@@ -735,4 +830,21 @@ useHead({
     gap: 2rem;
   }
 }
+
+/* Partner application form */
+.apply-form { max-width: 620px; margin: 2rem auto 0; display: flex; flex-direction: column; gap: 1rem; text-align: left; }
+.form-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+.form-row .form-input { flex: 1; min-width: 200px; }
+.form-input, .form-textarea { padding: 0.65rem 1rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.9rem; width: 100%; }
+.apply-success { background: #d1fae5; color: #065f46; padding: 1rem 1.5rem; border-radius: 10px; margin: 1.5rem auto; max-width: 500px; }
+.apply-error { color: #dc2626; font-size: 0.875rem; margin-top: 0.5rem; }
+
+/* Affiliate section */
+.affiliate-section { padding: 4rem 0; background: #f8fafc; }
+.affiliate-grid { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin: 2rem 0; }
+.affiliate-stat { text-align: center; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.5rem 2.5rem; }
+.affiliate-stat strong { display: block; font-size: 2rem; color: var(--color-primary, #0073e6); font-weight: 700; }
+.affiliate-stat span { font-size: 0.9rem; color: #6b7280; }
+.affiliate-cta { text-align: center; }
+.affiliate-msg { margin-top: 0.75rem; font-size: 0.9rem; color: #16a34a; }
 </style>

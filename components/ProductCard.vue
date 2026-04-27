@@ -216,6 +216,7 @@ const emit = defineEmits<{
 }>()
 
 const router = useRouter()
+const { formatPrice } = useCurrency()
 const isFavorited = ref(props.product.isFavorited ?? false)
 const logoFailed = ref(false)
 
@@ -248,8 +249,7 @@ const formattedPrice = computed(() => {
   const pricing = props.product.pricing
   if (pricing.type === 'free') return 'Free'
   if (pricing.value !== undefined) {
-    const period = pricing.period ? `/${pricing.period}` : ''
-    return `From $${pricing.value}${period}`
+    return `From ${formatPrice(pricing.value, { period: pricing.period })}`
   }
   return pricing.type === 'paid' ? 'Paid' : 'Contact us'
 })

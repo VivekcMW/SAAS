@@ -1,0 +1,95 @@
+{
+  "nav": {
+    "home": "ホーム",
+    "about": "会社概要",
+    "features": "機能",
+    "marketplace": "マーケットプレイス",
+    "integrations": "インテグレーション",
+    "blog": "ブログ",
+    "contact": "お問い合わせ",
+    "listProduct": "製品・サービスを掲載する",
+    "login": "ログイン",
+    "signup": "新規登録"
+  },
+  "hero": {
+    "title": "{platform} プラットフォームでビジネスを強化する",
+    "subtitle": "{platform} は、中小企業の意思決定を支援するWebアプリのデジタルマーケットプレイスです。",
+    "searchPlaceholder": "アプリを検索...",
+    "trending": "トレンド："
+  },
+  "features": {
+    "title": "強力な機能",
+    "subtitle": "ビジネスの成長と顧客満足に必要なすべてを提供します。"
+  },
+  "integrations": {
+    "title": "お気に入りのツールとシームレスに統合",
+    "subtitle": "Moonmartをすでにお使いの100以上のアプリやサービスと連携。",
+    "viewAll": "すべてのインテグレーションを見る"
+  },
+  "cta": {
+    "title": "ビジネスの変革を始めませんか？",
+    "subtitle": "Moonmartを活用して事業を拡大する数千社に参加しましょう。",
+    "startTrial": "無料トライアル開始",
+    "contactSales": "営業に問い合わせる"
+  },
+  "marketplace": {
+    "title": "Moonmart マーケットプレイス",
+    "subtitle": "トップアプリ・サービスを発見",
+    "categories": "カテゴリー",
+    "filters": "フィルター",
+    "price": "価格",
+    "rating": "評価",
+    "free": "無料",
+    "freemium": "フリーミアム",
+    "paid": "有料",
+    "enterprise": "エンタープライズ",
+    "featured": "注目",
+    "trending": "トレンド",
+    "new": "新着",
+    "viewDetails": "詳細を見る",
+    "noResults": "アプリが見つかりません",
+    "noResultsDesc": "フィルターや検索条件を変更してみてください",
+    "resetFilters": "フィルターをリセット"
+  },
+  "pricing": {
+    "currency": "JPY",
+    "symbol": "¥",
+    "free": "無料",
+    "trial": "無料トライアル",
+    "month": "月",
+    "year": "年",
+    "perMonth": "月あたり",
+    "perYear": "年あたり",
+    "billedMonthly": "月次請求",
+    "billedAnnually": "年次請求"
+  },
+  "common": {
+    "loading": "読み込み中...",
+    "search": "検索",
+    "filter": "フィルター",
+    "sort": "並び替え",
+    "page": "ページ",
+    "of": "/",
+    "results": "件",
+    "showMore": "もっと見る",
+    "showLess": "閉じる",
+    "learnMore": "詳しく見る",
+    "getStarted": "始める",
+    "subscribe": "登録する",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "close": "閉じる",
+    "back": "戻る",
+    "next": "次へ",
+    "previous": "前へ",
+    "yes": "はい",
+    "no": "いいえ"
+  },
+  "footer": {
+    "copyright": "全著作権所有",
+    "privacy": "プライバシーポリシー",
+    "terms": "利用規約",
+    "support": "サポート",
+    "language": "言語"
+  }
+}

@@ -11,7 +11,8 @@
     "generate-thumbnails": "tsx scripts/generate-thumbnails.ts",
     "generate-thumbnails:batch": "tsx scripts/generate-thumbnails.ts --batch-size=5",
     "generate-static-thumbnails": "chmod +x scripts/create-svg-thumbnails.sh && ./scripts/create-svg-thumbnails.sh",
-    "thumbnail:clear-cache": "rm -rf public/assets/images/blog/thumbnail-* && echo 'Thumbnail cache cleared'"
+    "thumbnail:clear-cache": "rm -rf public/assets/images/blog/thumbnail-* && echo 'Thumbnail cache cleared'",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@iconify-json/heroicons": "^1.2.2",
@@ -40,6 +41,7 @@
   "devDependencies": {
     "@iconify/json": "^2.2.357",
     "@nuxt/icon": "^1.15.0",
+    "@playwright/test": "^1.59.1",
     "sass": "^1.89.2"
   }
 }

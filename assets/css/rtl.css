@@ -1,0 +1,73 @@
+/**
+ * RTL (Right-to-Left) overrides for Arabic locale.
+ * Applied when <html dir="rtl"> is set.
+ *
+ * Prefer CSS logical properties (margin-inline-start, padding-inline-end, etc.)
+ * in new components, but use these overrides for existing directional classes.
+ */
+
+/* ---- Text alignment ---- */
+[dir="rtl"] body {
+  text-align: right;
+}
+
+/* ---- Flexbox row reversal ---- */
+[dir="rtl"] .navbar-inner,
+[dir="rtl"] .navbar-links,
+[dir="rtl"] .footer-inner {
+  flex-direction: row-reverse;
+}
+
+/* ---- Margin / padding overrides ---- */
+[dir="rtl"] .ml-auto { margin-inline-start: auto; margin-inline-end: unset; }
+[dir="rtl"] .mr-auto { margin-inline-end: auto; margin-inline-start: unset; }
+
+/* ---- Icon / arrow directional flip ---- */
+[dir="rtl"] .icon-arrow-right,
+[dir="rtl"] .chevron-right {
+  transform: scaleX(-1);
+}
+
+/* ---- Sidebar (admin/vendor dashboard) ---- */
+[dir="rtl"] .sidebar {
+  left: unset;
+  right: 0;
+  border-left: none;
+  border-right: 1px solid var(--color-border, #e5e7eb);
+}
+
+[dir="rtl"] .sidebar + .main-content {
+  margin-left: 0;
+  margin-right: var(--sidebar-width, 240px);
+}
+
+/* ---- Input prefix icons ---- */
+[dir="rtl"] .input-icon-left {
+  left: unset;
+  right: 12px;
+}
+[dir="rtl"] .input-icon-left ~ input {
+  padding-left: 12px;
+  padding-right: 40px;
+}
+
+/* ---- Dropdown menus ---- */
+[dir="rtl"] .dropdown-menu {
+  left: unset;
+  right: 0;
+}
+
+/* ---- Breadcrumbs separator ---- */
+[dir="rtl"] .breadcrumb-separator {
+  transform: scaleX(-1);
+}
+
+/* ---- Product cards meta row ---- */
+[dir="rtl"] .product-card-meta {
+  flex-direction: row-reverse;
+}
+
+/* ---- Font: use a system Arabic-friendly stack when RTL ---- */
+[dir="rtl"] {
+  font-family: 'Segoe UI', Tahoma, 'Arabic Typesetting', Arial, sans-serif;
+}
