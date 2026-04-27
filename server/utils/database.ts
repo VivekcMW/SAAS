@@ -882,6 +882,214 @@ function createSchema(db: Database.Database) {
       tag TEXT PRIMARY KEY,
       question_count INTEGER NOT NULL DEFAULT 0
     );
+
+    -- ─────────────────────────────────────────────────────────────────
+    -- PHASE 2: Price Intelligence
+    -- ─────────────────────────────────────────────────────────────────
+    CREATE TABLE IF NOT EXISTS price_reports (
+      id TEXT PRIMARY KEY,
+      app_id TEXT NOT NULL REFERENCES app_listings(id) ON DELETE CASCADE,
+      reporter_key TEXT NOT NULL,
+      plan_name TEXT NOT NULL,
+      price_usd REAL NOT NULL,
+      billing_period TEXT NOT NULL DEFAULT 'month',
+      seats INTEGER,
+      currency TEXT NOT NULL DEFAULT 'USD',
+      source TEXT NOT NULL DEFAULT 'community',
+      verified INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_price_reports_app ON price_reports(app_id, created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS price_aggregates (
+      id TEXT PRIMARY KEY,
+      app_id TEXT NOT NULL UNIQUE REFERENCES app_listings(id) ON DELETE CASCADE,
+      plan_name TEXT NOT NULL,
+      min_price REAL,
+      max_price REAL,
+      avg_price REAL,
+      median_price REAL,
+      sample_count INTEGER NOT NULL DEFAULT 0,
+      last_updated TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_price_agg_app ON price_aggregates(app_id);
+
+    -- ─────────────────────────────────────────────────────────────────
+    -- PHASE 2: Integration Graph
+    -- ─────────────────────────────────────────────────────────────────
+    CREATE TABLE IF NOT EXISTS integrations (
+      id TEXT PRIMARY KEY,
+      app_id TEXT NOT NULL REFERENCES app_listings(id) ON DELETE CASCADE,
+      partner_app_id TEXT REFERENCES app_listings(id) ON DELETE SET NULL,
+      partner_name TEXT NOT NULL,
+      partner_logo TEXT,
+      description TEXT,
+      integration_type TEXT NOT NULL DEFAULT 'native',
+      direction TEXT NOT NULL DEFAULT 'bidirectional',
+      vote_score INTEGER NOT NULL DEFAULT 0,
+      verified INTEGER NOT NULL DEFAULT 0,
+      status TEXT NOT NULL DEFAULT 'active',
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_integrations_app ON integrations(app_id, status);
+    CREATE INDEX IF NOT EXISTS idx_integrations_partner ON integrations(partner_app_id);
+
+    CREATE TABLE IF NOT EXISTS integration_votes (
+      id TEXT PRIMARY KEY,
+      integration_id TEXT NOT NULL REFERENCES integrations(id) ON DELETE CASCADE,
+      voter_key TEXT NOT NULL,
+      value INTEGER NOT NULL DEFAULT 1,
+      created_at TEXT NOT NULL,
+      UNIQUE (integration_id, voter_key)
+    );
+    CREATE INDEX IF NOT EXISTS idx_int_votes_integration ON integration_votes(integration_id);
+
+    -- ─────────────────────────────────────────────────────────────────
+    -- PHASE 3: Stack Intelligence
+    -- ─────────────────────────────────────────────────────────────────
+    CREATE TABLE IF NOT EXISTS user_stacks (
+      id TEXT PRIMARY KEY,
+      user_key TEXT NOT NULL,
+      app_id TEXT NOT NULL REFERENCES app_listings(id) ON DELETE CASCADE,
+      app_name TEXT NOT NULL,
+      app_logo TEXT,
+      category TEXT,
+      price_usd REAL,
+      billing_period TEXT DEFAULT 'month',
+      seats INTEGER DEFAULT 1,
+      renewal_date TEXT,
+      notes TEXT,
+      added_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      UNIQUE (user_key, app_id)
+    );
+    CREATE INDEX IF NOT EXISTS idx_stacks_user ON user_stacks(user_key);
+    CREATE INDEX IF NOT EXISTS idx_stacks_app  ON user_stacks(app_id);
+
+    CREATE TABLE IF NOT EXISTS stack_overlaps (
+      id TEXT PRIMARY KEY,
+      app_id_a TEXT NOT NULL REFERENCES app_listings(id) ON DELETE CASCADE,
+      app_id_b TEXT NOT NULL REFERENCES app_listings(id) ON DELETE CASCADE,
+      co_occurrence INTEGER NOT NULL DEFAULT 1,
+      last_updated TEXT NOT NULL,
+      UNIQUE (app_id_a, app_id_b)
+    );
+    CREATE INDEX IF NOT EXISTS idx_overlaps_a ON stack_overlaps(app_id_a, co_occurrence DESC);
+    CREATE INDEX IF NOT EXISTS idx_overlaps_b ON stack_overlaps(app_id_b, co_occurrence DESC);
+
+    CREATE TABLE IF NOT EXISTS renewal_reminders (
+      id TEXT PRIMARY KEY,
+      user_key TEXT NOT NULL,
+      stack_item_id TEXT NOT NULL REFERENCES user_stacks(id) ON DELETE CASCADE,
+      remind_at TEXT NOT NULL,
+      sent INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_reminders_user ON renewal_reminders(user_key, remind_at);
+
+    -- ─────────────────────────────────────────────────────────────────
+    -- PHASE 4: Enterprise Procurement
+    -- ─────────────────────────────────────────────────────────────────
+    CREATE TABLE IF NOT EXISTS rfps (
+      id TEXT PRIMARY KEY,
+      user_id TEXT REFERENCES users(id) ON DELETE SET NULL,
+      title TEXT NOT NULL,
+      slug TEXT NOT NULL UNIQUE,
+      category TEXT,
+      budget_min REAL,
+      budget_max REAL,
+      currency TEXT NOT NULL DEFAULT 'USD',
+      seats INTEGER,
+      requirements TEXT,
+      deadline TEXT,
+      status TEXT NOT NULL DEFAULT 'draft',
+      response_count INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_rfps_user   ON rfps(user_id, created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_rfps_status ON rfps(status, created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS rfp_responses (
+      id TEXT PRIMARY KEY,
+      rfp_id TEXT NOT NULL REFERENCES rfps(id) ON DELETE CASCADE,
+      vendor_id TEXT REFERENCES vendor_profiles(id) ON DELETE SET NULL,
+      app_id TEXT REFERENCES app_listings(id) ON DELETE SET NULL,
+      message TEXT NOT NULL,
+      price_usd REAL,
+      billing_period TEXT,
+      attachment_url TEXT,
+      status TEXT NOT NULL DEFAULT 'pending',
+      created_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_rfp_resp_rfp ON rfp_responses(rfp_id, created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS buying_rooms (
+      id TEXT PRIMARY KEY,
+      owner_id TEXT REFERENCES users(id) ON DELETE SET NULL,
+      title TEXT NOT NULL,
+      slug TEXT NOT NULL UNIQUE,
+      description TEXT,
+      status TEXT NOT NULL DEFAULT 'active',
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_brooms_owner ON buying_rooms(owner_id, created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS buying_room_members (
+      id TEXT PRIMARY KEY,
+      room_id TEXT NOT NULL REFERENCES buying_rooms(id) ON DELETE CASCADE,
+      user_id TEXT REFERENCES users(id) ON DELETE SET NULL,
+      email TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT 'member',
+      invited_at TEXT NOT NULL,
+      UNIQUE (room_id, email)
+    );
+    CREATE INDEX IF NOT EXISTS idx_broom_members ON buying_room_members(room_id);
+
+    CREATE TABLE IF NOT EXISTS buying_room_apps (
+      id TEXT PRIMARY KEY,
+      room_id TEXT NOT NULL REFERENCES buying_rooms(id) ON DELETE CASCADE,
+      app_id TEXT NOT NULL REFERENCES app_listings(id) ON DELETE CASCADE,
+      added_by TEXT REFERENCES users(id) ON DELETE SET NULL,
+      vote_score INTEGER NOT NULL DEFAULT 0,
+      status TEXT NOT NULL DEFAULT 'considering',
+      notes TEXT,
+      added_at TEXT NOT NULL,
+      UNIQUE (room_id, app_id)
+    );
+    CREATE INDEX IF NOT EXISTS idx_broom_apps ON buying_room_apps(room_id);
+
+    CREATE TABLE IF NOT EXISTS buying_room_comments (
+      id TEXT PRIMARY KEY,
+      room_id TEXT NOT NULL REFERENCES buying_rooms(id) ON DELETE CASCADE,
+      app_id TEXT REFERENCES app_listings(id) ON DELETE SET NULL,
+      user_id TEXT REFERENCES users(id) ON DELETE SET NULL,
+      author_name TEXT NOT NULL,
+      body TEXT NOT NULL,
+      created_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_broom_comments ON buying_room_comments(room_id, created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS contracts (
+      id TEXT PRIMARY KEY,
+      user_id TEXT REFERENCES users(id) ON DELETE SET NULL,
+      app_id TEXT REFERENCES app_listings(id) ON DELETE SET NULL,
+      app_name TEXT NOT NULL,
+      vendor_name TEXT,
+      price_usd REAL,
+      billing_period TEXT,
+      seats INTEGER,
+      start_date TEXT,
+      end_date TEXT,
+      auto_renews INTEGER NOT NULL DEFAULT 1,
+      notes TEXT,
+      status TEXT NOT NULL DEFAULT 'active',
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_contracts_user ON contracts(user_id, end_date);
   `)
 }
 

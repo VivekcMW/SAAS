@@ -482,14 +482,13 @@
         <div class="container">
           <div class="section-header">
             <h2>Integrations</h2>
-            <p>Connect {{ app.name }} with your favorite tools</p>
+            <p>Connect {{ app?.name }} with your favourite tools</p>
           </div>
-          <div class="integrations-grid">
-            <div v-for="integration in appIntegrations" :key="integration.id" class="integration-card">
-              <img :src="integration.logo" :alt="integration.name" class="integration-logo">
-              <h4>{{ integration.name }}</h4>
-              <p>{{ integration.description }}</p>
-            </div>
+          <!-- Real integration graph from API -->
+          <IntegrationGraph :app-id="String(app?.id)" />
+          <!-- Price Intelligence -->
+          <div class="price-intel-wrap">
+            <PriceIntelligence :app-id="String(app?.id)" />
           </div>
         </div>
       </section>
@@ -1215,6 +1214,8 @@ interface SimilarApp {
 import TrustReviewCard from '~/components/trust/ReviewCard.vue'
 import TrustReviewForm from '~/components/trust/ReviewForm.vue'
 import TrustStarRating from '~/components/trust/StarRating.vue'
+import IntegrationGraph from '~/components/integrations/IntegrationGraph.vue'
+import PriceIntelligence from '~/components/price/PriceIntelligence.vue'
 
 const route = useRoute();
 const appId = computed(() => route.params.id as string);
