@@ -593,6 +593,89 @@ function createSchema(db: Database.Database) {
     );
     CREATE INDEX IF NOT EXISTS idx_vct_token   ON vendor_claim_tokens(token_hash);
     CREATE INDEX IF NOT EXISTS idx_vct_listing ON vendor_claim_tokens(listing_id);
+
+    -- Review replies (vendor reply to review)
+    CREATE TABLE IF NOT EXISTS review_replies (
+      id TEXT PRIMARY KEY,
+      review_id TEXT NOT NULL UNIQUE,
+      vendor_id TEXT NOT NULL,
+      body TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE CASCADE,
+      FOREIGN KEY (vendor_id) REFERENCES vendor_profiles(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_rr_review_id ON review_replies(review_id);
+    CREATE INDEX IF NOT EXISTS idx_rr_vendor_id ON review_replies(vendor_id);
+
+    -- App page view events (for vendor analytics)
+    CREATE TABLE IF NOT EXISTS app_views (
+      id TEXT PRIMARY KEY,
+      app_id TEXT NOT NULL,
+      vendor_id TEXT NOT NULL,
+      viewer_key TEXT NOT NULL,
+      ref TEXT,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (app_id) REFERENCES app_listings(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_av_app_id    ON app_views(app_id);
+    CREATE INDEX IF NOT EXISTS idx_av_vendor_id ON app_views(vendor_id);
+    CREATE INDEX IF NOT EXISTS idx_av_created   ON app_views(created_at DESC);
+
+    -- Team members (per vendor)
+    CREATE TABLE IF NOT EXISTS team_members (
+      id TEXT PRIMARY KEY,
+      vendor_id TEXT NOT NULL,
+      user_id TEXT,
+      email TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT 'member',
+      status TEXT NOT NULL DEFAULT 'invited',
+      invited_at TEXT NOT NULL,
+      accepted_at TEXT,
+      FOREIGN KEY (vendor_id) REFERENCES vendor_profiles(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_tm_vendor_id ON team_members(vendor_id);
+    CREATE INDEX IF NOT EXISTS idx_tm_email     ON team_members(email);
+
+    -- Enquiries / buyer-vendor messaging threads
+    CREATE TABLE IF NOT EXISTS enquiries (
+      id TEXT PRIMARY KEY,
+      app_id TEXT NOT NULL,
+      vendor_id TEXT NOT NULL,
+      buyer_id TEXT,
+      buyer_email TEXT NOT NULL,
+      buyer_name TEXT NOT NULL,
+      subject TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'open',
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      FOREIGN KEY (app_id) REFERENCES app_listings(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_enq_vendor_id ON enquiries(vendor_id);
+    CREATE INDEX IF NOT EXISTS idx_enq_buyer_id  ON enquiries(buyer_id);
+    CREATE INDEX IF NOT EXISTS idx_enq_app_id    ON enquiries(app_id);
+
+    CREATE TABLE IF NOT EXISTS enquiry_messages (
+      id TEXT PRIMARY KEY,
+      enquiry_id TEXT NOT NULL,
+      sender_id TEXT,
+      sender_email TEXT NOT NULL,
+      body TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (enquiry_id) REFERENCES enquiries(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_em_enquiry_id ON enquiry_messages(enquiry_id);
+
+    -- GDPR consent log
+    CREATE TABLE IF NOT EXISTS consent_log (
+      id TEXT PRIMARY KEY,
+      visitor_key TEXT NOT NULL,
+      analytics INTEGER NOT NULL DEFAULT 0,
+      marketing INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_cl_visitor ON consent_log(visitor_key);
   `)
 }
 

@@ -35,7 +35,7 @@
               <td>{{ i.date }}</td>
               <td>${{ i.amount }}</td>
               <td><span class="bw-chip bw-chip--success">paid</span></td>
-              <td><a href="#" class="bw-link">Download</a></td>
+              <td><a :href="invoiceUrl" target="_blank" class="bw-link">Download</a></td>
             </tr>
           </tbody>
         </table>
@@ -58,6 +58,7 @@
 
 <script setup lang="ts">
 const renewDate = new Date(Date.now() + 20 * 86400000).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
+const invoiceUrl = '/api/billing/invoice'
 const invoices = [
   { id: 'i1', date: 'Nov 1, 2025', amount: 149 },
   { id: 'i2', date: 'Oct 1, 2025', amount: 149 },

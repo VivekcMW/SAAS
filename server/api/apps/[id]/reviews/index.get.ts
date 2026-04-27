@@ -70,6 +70,17 @@ export default defineEventHandler(async (event) => {
     .prepare(`SELECT * FROM reviews WHERE ${whereSql} ORDER BY ${orderBy} LIMIT ? OFFSET ?`)
     .all(...whereParams, limit, offset) as DbReview[]
 
+  // Attach vendor replies
+  const reviewIds = rows.map(r => r.id)
+  let repliesMap: Record<string, { body: string; created_at: string }> = {}
+  if (reviewIds.length > 0) {
+    const placeholders = reviewIds.map(() => '?').join(',')
+    const replyRows = db.prepare(
+      `SELECT review_id, body, created_at FROM review_replies WHERE review_id IN (${placeholders})`
+    ).all(...reviewIds) as Array<{ review_id: string; body: string; created_at: string }>
+    replyRows.forEach(r => { repliesMap[r.review_id] = { body: r.body, created_at: r.created_at } })
+  }
+
   const breakdownRows = db
     .prepare(
       `SELECT rating, COUNT(*) as count FROM reviews WHERE app_id = ? AND status = 'approved' GROUP BY rating`
@@ -91,7 +102,7 @@ export default defineEventHandler(async (event) => {
   const averageRating = avgRow.avg ? Math.round(avgRow.avg * 10) / 10 : 0
 
   const response: PaginatedReviews = {
-    reviews: rows.map(mapReview),
+    reviews: rows.map(r => ({ ...mapReview(r), vendorReply: repliesMap[r.id] || null })),
     total,
     page,
     limit,

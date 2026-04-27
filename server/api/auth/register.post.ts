@@ -53,7 +53,7 @@ export default defineEventHandler(async (event) => {
     const verifyUrl = `${baseUrl}/api/auth/verify-email?token=${rawToken}`
     sendEmail(buildWelcomeEmail({
       to: user.email,
-      firstName: user.firstName,
+      firstName: user.first_name,
       role: user.role,
       verifyUrl
     })).catch(err => console.error('[register] welcome email failed:', err))

@@ -4,6 +4,7 @@
  */
 import { getDb } from '~/server/utils/database'
 import { requireAdmin } from '~/server/utils/auth'
+import { buildListingStatusEmail, sendEmail } from '~/server/utils/email'
 
 const VALID_STATUSES = ['published', 'draft', 'submitted', 'archived']
 
@@ -19,7 +20,13 @@ export default defineEventHandler(async (event) => {
   }
 
   const db = getDb()
-  const existing = db.prepare('SELECT id FROM app_listings WHERE id = ?').get(id) as { id: string } | undefined
+  const existing = db.prepare(`
+    SELECT a.id, a.name, u.email, u.first_name, u.last_name
+    FROM app_listings a
+    LEFT JOIN vendor_profiles vp ON vp.id = a.vendor_id
+    LEFT JOIN users u ON u.id = vp.user_id
+    WHERE a.id = ?
+  `).get(id) as { id: string; name: string; email: string | null; first_name: string | null; last_name: string | null } | undefined
   if (!existing) throw createError({ statusCode: 404, statusMessage: 'Listing not found' })
 
   const now = new Date().toISOString()
@@ -29,6 +36,18 @@ export default defineEventHandler(async (event) => {
 
   const setClauses = Object.keys(updates).map(k => `${k} = ?`).join(', ')
   db.prepare(`UPDATE app_listings SET ${setClauses} WHERE id = ?`).run(...Object.values(updates), id)
+
+  // Notify vendor by email on approval / rejection
+  if ((body.status === 'published' || body.status === 'draft') && existing.email) {
+    const mappedStatus = body.status === 'published' ? 'approved' : 'rejected'
+    sendEmail(buildListingStatusEmail({
+      to: existing.email,
+      vendorName: existing.first_name || 'Vendor',
+      productName: existing.name,
+      status: mappedStatus,
+      adminNotes: body.adminNote
+    })).catch(err => console.error('[admin/listings/status] email failed:', err))
+  }
 
   return { success: true, status: body.status }
 })

@@ -5,7 +5,7 @@
 import { getDb } from '~/server/utils/database'
 import { requireUser } from '~/server/utils/auth'
 
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
   const user = await requireUser(event)
   const db = getDb()
 

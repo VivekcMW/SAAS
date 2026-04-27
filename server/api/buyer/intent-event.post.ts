@@ -2,10 +2,12 @@
  * POST /api/buyer/intent-event
  * Records a buyer intent signal — used by the vendor intent dashboard.
  * Also fires for anonymous sessions (session_id via cookie).
+ * High-intent events (demo_request, pricing_view) email the vendor.
  */
 import { getDb, makeId } from '~/server/utils/database'
 import { getSessionUser } from '~/server/utils/auth'
 import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
+import { sendEmail } from '~/server/utils/email'
 
 const VALID_EVENT_TYPES = [
   'view', 'compare', 'pricing_view', 'bookmark', 'demo_request', 'copilot_mention'
@@ -74,6 +76,33 @@ export default defineEventHandler(async (event) => {
     null, // location enrichment future phase
     now
   )
+
+  // Notify vendor for high-intent signals (demo_request, pricing_view)
+  if (signalStrength === 'purchase_proximate' || (signalStrength === 'hot' && eventType === 'pricing_view')) {
+    try {
+      const vendorRow = db.prepare(`
+        SELECT u.email, u.first_name, a.name AS app_name
+        FROM vendor_profiles vp
+        JOIN users u ON u.id = vp.user_id
+        JOIN app_listings a ON a.vendor_id = vp.id AND a.id = ?
+        WHERE vp.id = ?
+        LIMIT 1
+      `).get(appId, app.vendor_id) as { email: string; first_name: string; app_name: string } | undefined
+
+      if (vendorRow) {
+        const eventLabel = eventType === 'demo_request' ? 'a demo request' : 'a pricing page visit'
+        sendEmail({
+          to: vendorRow.email,
+          subject: `New lead signal for ${vendorRow.app_name} on Moonmart`,
+          text: `Hi ${vendorRow.first_name},\n\nA potential buyer just triggered ${eventLabel} for ${vendorRow.app_name}.\n\n${user?.companyName ? `Company: ${user.companyName}\n` : ''}${user?.jobTitle ? `Role: ${user.jobTitle}\n` : ''}\nSign in to your vendor dashboard to view and respond:\nhttps://moonmart.ai/dashboard/leads\n\n— The Moonmart Team`,
+          html: `<p>Hi ${vendorRow.first_name},</p><p>A potential buyer just triggered <strong>${eventLabel}</strong> for <strong>${vendorRow.app_name}</strong>.</p>${user?.companyName ? `<p>Company: ${user.companyName}</p>` : ''}${user?.jobTitle ? `<p>Role: ${user.jobTitle}</p>` : ''}<p><a href="https://moonmart.ai/dashboard/leads" style="background:#FF8838;color:#fff;padding:8px 16px;border-radius:6px;text-decoration:none;display:inline-block">View Lead</a></p><p>— The Moonmart Team</p>`
+        }).catch(err => console.error('[intent-event] vendor notify email failed:', err))
+        db.prepare('UPDATE buyer_intent_events SET notified_vendor = 1 WHERE app_id = ? AND created_at = ?').run(appId, now)
+      }
+    } catch (err) {
+      console.error('[intent-event] vendor notify failed:', err)
+    }
+  }
 
   return { success: true }
 })

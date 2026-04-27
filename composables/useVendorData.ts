@@ -393,13 +393,7 @@ const similarVendors = ref<SimilarVendor[]>([
   }
 ])
 
-const funnel = ref<FunnelStep[]>([
-  { label: 'Listing views', value: 19510, rate: 100 },
-  { label: 'Saves / shortlists', value: 2340, rate: 12 },
-  { label: 'Enquiries', value: 114, rate: 4.9 },
-  { label: 'Demos booked', value: 42, rate: 37 },
-  { label: 'Deals won', value: 11, rate: 26 }
-])
+// funnel is now a computed property inside useVendorData(), backed by real analytics API
 
 const todayActions = ref<TodayAction[]>([
   {
@@ -460,17 +454,65 @@ const insights = ref<InsightItem[]>([
 ])
 
 export function useVendorData() {
-  const kpis = computed(() => ({
-    activeListings: listings.value.filter(l => l.status === 'live').length,
-    totalListings: listings.value.length,
-    openLeads: leads.value.filter(l => l.status === 'new' || l.status === 'awaiting').length,
-    hotLeads: leads.value.filter(l => l.temperature === 'hot' && l.status !== 'closed').length,
-    avgRating: (listings.value.reduce((s, l) => s + (l.rating || 0) * (l.reviewsCount || 0), 0) /
-      Math.max(1, listings.value.reduce((s, l) => s + (l.reviewsCount || 0), 0))).toFixed(1),
-    views30d: listings.value.reduce((s, l) => s + l.views30d, 0),
-    leads30d: listings.value.reduce((s, l) => s + l.leads30d, 0),
-    mrr: 8420 // mock
-  }))
+  // Live analytics from real DB
+  const analyticsData = ref<{
+    views: number; uniqueViews: number; leads: number; hotLeads: number
+    demos: number; reviews: number; avgRating: number; allTimeRating: number
+    totalReviews: number; mrr: number
+    funnel: Array<{ label: string; value: number; rate: number }>
+    period: string
+  } | null>(null)
+  const analyticsLoading = ref(false)
+  const analyticsPeriod = ref('30d')
+
+  async function loadAnalytics(period = '30d') {
+    analyticsLoading.value = true
+    analyticsPeriod.value = period
+    try {
+      const data = await $fetch<typeof analyticsData.value>(`/api/vendor/analytics?period=${period}`)
+      analyticsData.value = data
+    } catch (err) {
+      console.error('[useVendorData] analytics fetch failed:', err)
+    } finally {
+      analyticsLoading.value = false
+    }
+  }
+
+  const kpis = computed(() => {
+    if (analyticsData.value) {
+      return {
+        activeListings: listings.value.filter(l => l.status === 'live').length,
+        totalListings: listings.value.length,
+        openLeads: leads.value.filter(l => l.status === 'new' || l.status === 'awaiting').length,
+        hotLeads: analyticsData.value.hotLeads,
+        avgRating: analyticsData.value.allTimeRating.toFixed(1),
+        views30d: analyticsData.value.views,
+        leads30d: analyticsData.value.leads,
+        mrr: analyticsData.value.mrr
+      }
+    }
+    return {
+      activeListings: listings.value.filter(l => l.status === 'live').length,
+      totalListings: listings.value.length,
+      openLeads: leads.value.filter(l => l.status === 'new' || l.status === 'awaiting').length,
+      hotLeads: leads.value.filter(l => l.temperature === 'hot' && l.status !== 'closed').length,
+      avgRating: (listings.value.reduce((s, l) => s + (l.rating || 0) * (l.reviewsCount || 0), 0) /
+        Math.max(1, listings.value.reduce((s, l) => s + (l.reviewsCount || 0), 0))).toFixed(1),
+      views30d: listings.value.reduce((s, l) => s + l.views30d, 0),
+      leads30d: listings.value.reduce((s, l) => s + l.leads30d, 0),
+      mrr: 0
+    }
+  })
+
+  const funnel = computed(() =>
+    analyticsData.value?.funnel ?? [
+      { label: 'Impressions', value: 0, rate: 100 },
+      { label: 'Profile Views', value: 0, rate: 0 },
+      { label: 'Leads', value: 0, rate: 0 },
+      { label: 'Demos', value: 0, rate: 0 }
+    ]
+  )
+
 
   function updateListingStatus(id: string, status: ListingStatus) {
     const l = listings.value.find(x => x.id === id)
@@ -501,6 +543,10 @@ export function useVendorData() {
     todayActions,
     insights,
     kpis,
+    analyticsData,
+    analyticsLoading,
+    analyticsPeriod,
+    loadAnalytics,
     updateListingStatus,
     replyLead,
     markReviewReplied

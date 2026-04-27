@@ -5,7 +5,7 @@
 import { requireUser } from '~/server/utils/auth'
 import { getDb } from '~/server/utils/database'
 
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
   const admin = await requireUser(event)
   if (admin.role !== 'admin') throw createError({ statusCode: 403, statusMessage: 'Admin access required' })
 

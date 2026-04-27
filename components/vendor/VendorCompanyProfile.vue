@@ -27,8 +27,12 @@
         <h2 class="bw-card__title">Brand</h2>
         <label class="bw-label">Logo</label>
         <div class="pf-logo">
-          <div class="pf-logo__preview">{{ form.name.charAt(0) }}</div>
-          <button class="bw-btn bw-btn--subtle bw-btn--sm">Upload</button>
+          <img v-if="form.logoUrl" :src="form.logoUrl" alt="logo" class="pf-logo__preview" style="object-fit:contain;" />
+          <div v-else class="pf-logo__preview">{{ form.name.charAt(0) }}</div>
+          <label class="bw-btn bw-btn--subtle bw-btn--sm" style="cursor:pointer;">
+            {{ uploading ? 'Uploading…' : 'Upload' }}
+            <input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" style="display:none" @change="uploadLogo" />
+          </label>
         </div>
         <label class="bw-label">Primary colour</label>
         <div class="pf-color">
@@ -49,10 +53,30 @@ const form = ref({
   website: 'https://acme.example',
   hq: 'Austin, TX',
   bio: 'We build focused SaaS tools for growing teams — CRM, Inbox, Forms, and Analytics.',
-  color: '#FF8838'
+  color: '#FF8838',
+  logoUrl: ''
 })
 const toast = ref('')
+const uploading = ref(false)
 function save() { toast.value = 'Profile saved'; setTimeout(() => toast.value = '', 1800) }
+async function uploadLogo(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  if (!file) return
+  uploading.value = true
+  try {
+    const fd = new FormData()
+    fd.append('file', file)
+    const res = await $fetch<{ url: string }>('/api/vendor/upload', { method: 'POST', body: fd })
+    form.value.logoUrl = res.url
+    toast.value = 'Logo uploaded'
+    setTimeout(() => toast.value = '', 1800)
+  } catch (err: any) {
+    toast.value = err?.data?.statusMessage || 'Upload failed'
+    setTimeout(() => toast.value = '', 2500)
+  } finally {
+    uploading.value = false
+  }
+}
 </script>
 
 <style scoped>

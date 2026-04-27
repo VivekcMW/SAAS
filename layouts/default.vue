@@ -13,6 +13,10 @@
     </ClientOnly>
     <!-- Global Auth Modal - Always Available -->
     <GlobalAuthModal />
+    <!-- GDPR Consent Banner -->
+    <ClientOnly>
+      <GdprConsentBanner />
+    </ClientOnly>
   </div>
 </template>
 

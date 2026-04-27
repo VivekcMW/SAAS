@@ -1,5 +1,5 @@
-import { getMarketplaceAppByIdOrSlug } from '../../../utils/apps'
-import { computeMoonmartScore } from '../../../utils/moonmartScore'
+import { getMarketplaceAppByIdOrSlug } from '~/server/utils/apps'
+import { computeMoonmartScore } from '~/utils/moonmartScore'
 
 export default defineEventHandler(async (event) => {
   const slug = event.context.params?.slug as string
@@ -14,9 +14,8 @@ export default defineEventHandler(async (event) => {
     ? computeMoonmartScore({
         reviewCount: app.reviewCount,
         rating: app.rating,
-        integrationCount: (app.integrations || []).length,
-        pricingType: (app.pricing.type || 'paid') as 'free' | 'paid' | 'contact' | 'trial',
-        hasSecurityBadge: false
+        integrationCount: 0,
+        pricingType: (app.pricing.type || 'paid') as 'free' | 'paid' | 'contact' | 'trial'
       })
     : 0
 

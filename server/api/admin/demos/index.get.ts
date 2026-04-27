@@ -6,7 +6,7 @@ import { createError, defineEventHandler, getQuery } from 'h3'
 import { getDb } from '~/server/utils/database'
 import { requireAdmin } from '~/server/utils/auth'
 
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
   await requireAdmin(event)
 
   const query = getQuery(event)

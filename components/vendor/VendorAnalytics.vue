@@ -86,11 +86,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-const { kpis, funnel } = useVendorData()
+import { ref, computed, watch, onMounted } from 'vue'
+const { kpis, funnel, loadAnalytics, analyticsLoading } = useVendorData()
 const ai = useAICopilot()
 
 const period = ref('30d')
+
+// Load real analytics on mount and when period changes
+onMounted(() => loadAnalytics(period.value))
+watch(period, (val) => loadAnalytics(val))
+
 const nlQuery = ref('')
 const nlAnswer = ref('')
 const thinking = ref(false)

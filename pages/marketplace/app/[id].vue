@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import { computeMoonmartScore, getMoonmartScoreLabel } from '~/utils/moonmartScore'
 
 const route = useRoute()
 const router = useRouter()
@@ -227,6 +228,28 @@ const ratingBreakdown = computed(() => {
   }
 })
 
+// moonmart Score
+const moonmartScore = computed(() => {
+  if (!app.value) return null
+  const score = computeMoonmartScore({
+    rating: app.value.rating,
+    reviewCount: app.value.reviewCount,
+    integrationCount: normalizedIntegrations.value.length,
+    pricingType: app.value.pricing?.type,
+    pricingValue: app.value.pricing?.value,
+    certifications: app.value.security?.certifications,
+    featured: app.value.featured
+  })
+  return { score, label: getMoonmartScoreLabel(score) }
+})
+
+// Track page view
+if (import.meta.client) {
+  onMounted(() => {
+    $fetch(`/api/apps/${appId.value}/view`, { method: 'POST' }).catch(() => {})
+  })
+}
+
 const sentimentTags = [
   { tag: 'Easy onboarding', percent: 92, positive: true },
   { tag: 'Great support', percent: 87, positive: true },
@@ -343,6 +366,7 @@ const aboutHighlights = computed(() => {
       icon: 'heroicons:sparkles',
       color: '#D4A843',
       bg: 'rgba(212,168,67,0.12)',
+      title: 'Top Rated',
       body: `Rated ${rating.toFixed(1)}★ across ${app.value?.reviewCount || 0}+ reviews — teams praise onboarding, support, and day-to-day usability.`
     }
   }
@@ -419,6 +443,18 @@ useHead(() => ({
             updatedAt: app.value.lastUpdated,
             alternativeNames: alternatives.value.slice(0, 3).map(a => a.name)
           }))
+        },
+        {
+          type: 'application/ld+json',
+          innerHTML: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: faqs.value.map(faq => ({
+              '@type': 'Question',
+              name: faq.q,
+              acceptedAnswer: { '@type': 'Answer', text: faq.a }
+            }))
+          })
         }
       ]
     : []
@@ -493,6 +529,7 @@ function getCategoryLabel(cat?: string): string {
         <AppHero
           :app="app"
           :verdict="verdict"
+          :moonmart-score="moonmartScore"
           @trial="handleTrial"
           @demo="handleDemo"
           @save="handleSave"
