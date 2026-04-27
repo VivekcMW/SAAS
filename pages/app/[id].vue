@@ -154,6 +154,15 @@
                   <button v-if="heroContent.secondaryCta" class="btn btn-secondary btn-large hero-btn-secondary">
                     {{ heroContent.secondaryCta }}
                   </button>
+                  <button
+                    class="btn btn-stack"
+                    :class="{ 'btn-stack--added': inStack }"
+                    @click="toggleStack"
+                    :disabled="stackLoading"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14" v-if="!inStack"/><polyline points="20 6 9 17 4 12" v-else /></svg>
+                    {{ inStack ? 'In my stack' : 'Add to stack' }}
+                  </button>
                 </div>
               </div>
             </div>
@@ -1255,6 +1264,25 @@ const { data: appQuestions } = await useAsyncData(
   `app-qa-${appId.value}`,
   () => $fetch('/api/qa/questions', { params: { app: appId.value, limit: 5 } })
 )
+
+// ── Stack Intelligence ──────────────────────────────────────
+const { data: myStack, refresh: refreshMyStack } = await useAsyncData('my-stack-app', () => $fetch('/api/stack'))
+const inStack = computed(() => (myStack.value as any)?.items?.some((i: any) => i.app_id === appId.value) ?? false)
+const stackLoading = ref(false)
+async function toggleStack() {
+  stackLoading.value = true
+  try {
+    if (inStack.value) {
+      const item = (myStack.value as any)?.items?.find((i: any) => i.app_id === appId.value)
+      if (item) await $fetch(`/api/stack/${item.id}`, { method: 'DELETE' })
+    } else {
+      await $fetch('/api/stack', { method: 'POST', body: { app_id: appId.value } })
+    }
+    await refreshMyStack()
+  } finally {
+    stackLoading.value = false
+  }
+}
 
 // Navigation state
 const activeSection = ref('home');
@@ -6976,6 +7004,10 @@ onMounted(() => {
 }
 
 /* ── Trust Engine & Q&A additions ──────────────────────────── */
+.btn-stack { display: inline-flex; align-items: center; gap: 6px; background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; border-radius: 8px; padding: 0.5rem 1.1rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+.btn-stack:hover { background: #e0e7ff; color: #4f46e5; border-color: #a5b4fc; }
+.btn-stack--added { background: #d1fae5; color: #065f46; border-color: #6ee7b7; }
+.btn-stack--added:hover { background: #a7f3d0; }
 .reviews-content-real { display: flex; flex-direction: column; gap: 1.5rem; }
 .reviews-filters { display: flex; gap: 6px; flex-wrap: wrap; }
 .sort-btn { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 4px 14px; font-size: 0.8rem; cursor: pointer; }
