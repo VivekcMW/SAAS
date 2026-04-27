@@ -9,7 +9,7 @@ import { getOrCreateStripeCustomer, getStripe } from '~/server/utils/stripe'
 import { requireUser } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
-  const user = requireUser(event)
+  const user = await requireUser(event)
 
   const customerId = await getOrCreateStripeCustomer(
     user.id,

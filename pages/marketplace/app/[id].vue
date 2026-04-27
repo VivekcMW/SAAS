@@ -380,11 +380,13 @@ const pageUrl = computed(() => {
   return `${base}/marketplace/app/${appId.value}`
 })
 
+const { generateAppPageSchema } = useSchemaMarkup()
+
 useHead(() => ({
-  title: app.value ? `${app.value.name} — Reviews, Pricing, Alternatives | Moonmart` : 'App Details | Moonmart',
+  title: app.value ? `${app.value.name} — Reviews, Pricing, Alternatives | moonmart.ai` : 'App Details | moonmart.ai',
   meta: [
-    { name: 'description', content: app.value?.description || 'Discover SaaS tools on Moonmart.' },
-    { property: 'og:title', content: app.value?.name || 'Moonmart' },
+    { name: 'description', content: app.value?.description || 'Discover SaaS tools on moonmart.ai.' },
+    { property: 'og:title', content: app.value ? `${app.value.name} — moonmart.ai` : 'moonmart.ai' },
     { property: 'og:description', content: app.value?.description || '' },
     { property: 'og:image', content: `/api/og/app/${appId.value}` },
     { property: 'og:url', content: pageUrl.value },
@@ -392,35 +394,31 @@ useHead(() => ({
     { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:title', content: app.value?.name || '' },
     { name: 'twitter:description', content: app.value?.description || '' },
-    { name: 'twitter:image', content: `/api/og/app/${appId.value}` }
+    { name: 'twitter:image', content: `/api/og/app/${appId.value}` },
+    { name: 'robots', content: 'index, follow' }
+  ],
+  link: [
+    { rel: 'canonical', href: pageUrl.value }
   ],
   script: app.value
     ? [
         {
           type: 'application/ld+json',
-          innerHTML: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'SoftwareApplication',
+          innerHTML: JSON.stringify(generateAppPageSchema({
             name: app.value.name,
+            slug: app.value.slug || appId.value,
             description: app.value.description,
-            image: app.value.logo,
-            applicationCategory: app.value.category,
-            operatingSystem: 'Web, iOS, Android',
-            aggregateRating: {
-              '@type': 'AggregateRating',
-              ratingValue: app.value.rating,
-              reviewCount: app.value.reviewCount
-            },
-            offers: {
-              '@type': 'Offer',
-              price: app.value.pricing?.value ?? 0,
-              priceCurrency: 'USD'
-            },
-            brand: {
-              '@type': 'Brand',
-              name: app.value.provider
-            }
-          })
+            category: app.value.category || 'software',
+            rating: app.value.rating,
+            reviewCount: app.value.reviewCount,
+            pricingType: app.value.pricing?.type,
+            pricingValue: app.value.pricing?.value,
+            logo: app.value.logo,
+            screenshots: normalizedScreenshots.value.map(s => s.url),
+            features: normalizedFeatures.value.map(f => f.name),
+            updatedAt: app.value.lastUpdated,
+            alternativeNames: alternatives.value.slice(0, 3).map(a => a.name)
+          }))
         }
       ]
     : []

@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  createSession(event, user.id, true)
+  await createSession(event, user.id, true)
 
   // Send welcome + email verification (fire-and-forget)
   try {
@@ -63,7 +63,7 @@ export default defineEventHandler(async (event) => {
 
   return {
     success: true,
-    user: getSessionUser(event),
+    user: await getSessionUser(event),
     redirectTo: '/dashboard'
   }
 })

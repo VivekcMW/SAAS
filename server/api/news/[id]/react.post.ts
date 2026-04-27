@@ -17,7 +17,7 @@ export default defineEventHandler((event) => {
 
   if (!post) throw createError({ statusCode: 404, statusMessage: 'Post not found' })
 
-  const user = getSessionUser(event)
+  const user = await getSessionUser(event)
   const ip = (event.node.req.headers['x-forwarded-for'] as string | undefined)?.split(',')[0]?.trim()
     || event.node.req.socket?.remoteAddress || 'unknown'
   const voterKey = user

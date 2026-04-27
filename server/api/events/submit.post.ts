@@ -54,7 +54,7 @@ export default defineEventHandler(async (event) => {
     ? (body.eventType as string).toLowerCase()
     : 'webinar'
 
-  const user = getSessionUser(event)
+  const user = await getSessionUser(event)
   const db = getDb()
   const now = new Date().toISOString()
   const id = makeId('evt')

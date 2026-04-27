@@ -10,7 +10,7 @@ import { getVendorProfileForUser, requireVendor } from '~/server/utils/auth'
 const VALID_TYPES = ['product-update', 'feature', 'culture', 'announcement', 'case-study'] as const
 
 export default defineEventHandler(async (event) => {
-  const user = requireVendor(event)
+  const user = await requireVendor(event)
   const vendor = getVendorProfileForUser(user.id)
   if (!vendor) throw createError({ statusCode: 400, statusMessage: 'Vendor profile not found' })
 

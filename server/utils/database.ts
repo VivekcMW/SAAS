@@ -130,6 +130,20 @@ export interface DbNewsPost {
   updated_at: string
 }
 
+export interface DbDiscoveryItem {
+  id: string
+  source: 'github_awesome' | 'product_hunt' | 'manual' | 'suggest'
+  source_url: string | null
+  website_url: string
+  extracted_data: string  // JSON string of ExtractedListing
+  confidence_score: number
+  status: 'pending' | 'auto_submitted' | 'review' | 'approved' | 'rejected' | 'discarded'
+  listing_id: string | null
+  reject_reason: string | null
+  processed_at: string | null
+  created_at: string
+}
+
 let database: Database.Database | null = null
 
 function getDatabasePath() {
@@ -337,8 +351,50 @@ function createSchema(db: Database.Database) {
 
   // Idempotent column migrations for existing databases
   const alterations = [
+    // users
     `ALTER TABLE users ADD COLUMN email_verified INTEGER NOT NULL DEFAULT 0`,
-    `ALTER TABLE users ADD COLUMN stripe_customer_id TEXT`
+    `ALTER TABLE users ADD COLUMN stripe_customer_id TEXT`,
+    `ALTER TABLE users ADD COLUMN avatar_url TEXT`,
+    `ALTER TABLE users ADD COLUMN locale TEXT DEFAULT 'en'`,
+    `ALTER TABLE users ADD COLUMN timezone TEXT DEFAULT 'UTC'`,
+    // vendor_profiles
+    `ALTER TABLE vendor_profiles ADD COLUMN website_url TEXT`,
+    `ALTER TABLE vendor_profiles ADD COLUMN logo_url TEXT`,
+    `ALTER TABLE vendor_profiles ADD COLUMN tagline TEXT`,
+    `ALTER TABLE vendor_profiles ADD COLUMN description TEXT`,
+    `ALTER TABLE vendor_profiles ADD COLUMN founded_year INTEGER`,
+    `ALTER TABLE vendor_profiles ADD COLUMN company_size TEXT`,
+    `ALTER TABLE vendor_profiles ADD COLUMN funding_stage TEXT`,
+    `ALTER TABLE vendor_profiles ADD COLUMN funding_total REAL`,
+    `ALTER TABLE vendor_profiles ADD COLUMN headquarters TEXT`,
+    `ALTER TABLE vendor_profiles ADD COLUMN social_links TEXT DEFAULT '{}'`,
+    `ALTER TABLE vendor_profiles ADD COLUMN verified INTEGER NOT NULL DEFAULT 0`,
+    // app_listings
+    `ALTER TABLE app_listings ADD COLUMN key_features TEXT DEFAULT '[]'`,
+    `ALTER TABLE app_listings ADD COLUMN integrations TEXT DEFAULT '[]'`,
+    `ALTER TABLE app_listings ADD COLUMN screenshots TEXT DEFAULT '[]'`,
+    `ALTER TABLE app_listings ADD COLUMN pricing_tiers TEXT DEFAULT '[]'`,
+    `ALTER TABLE app_listings ADD COLUMN target_audience TEXT`,
+    `ALTER TABLE app_listings ADD COLUMN website_url TEXT`,
+    `ALTER TABLE app_listings ADD COLUMN demo_url TEXT`,
+    `ALTER TABLE app_listings ADD COLUMN support_email TEXT`,
+    `ALTER TABLE app_listings ADD COLUMN founded_year INTEGER`,
+    `ALTER TABLE app_listings ADD COLUMN headquarters TEXT`,
+    `ALTER TABLE app_listings ADD COLUMN security_certs TEXT DEFAULT '[]'`,
+    `ALTER TABLE app_listings ADD COLUMN compliance_score REAL DEFAULT 0`,
+    `ALTER TABLE app_listings ADD COLUMN verified INTEGER NOT NULL DEFAULT 0`,
+    `ALTER TABLE app_listings ADD COLUMN auto_discovered INTEGER NOT NULL DEFAULT 0`,
+    `ALTER TABLE app_listings ADD COLUMN published_at TEXT`,
+    `ALTER TABLE app_listings ADD COLUMN short_description TEXT`,
+    // reviews
+    `ALTER TABLE reviews ADD COLUMN user_role TEXT`,
+    `ALTER TABLE reviews ADD COLUMN company_size TEXT`,
+    `ALTER TABLE reviews ADD COLUMN pros TEXT DEFAULT '[]'`,
+    `ALTER TABLE reviews ADD COLUMN cons TEXT DEFAULT '[]'`,
+    `ALTER TABLE reviews ADD COLUMN authenticity_score REAL`,
+    `ALTER TABLE reviews ADD COLUMN outcome_metric TEXT`,
+    // discovery_queue
+    `ALTER TABLE discovery_queue ADD COLUMN claim_email_sent INTEGER NOT NULL DEFAULT 0`
   ]
   for (const sql of alterations) {
     try { db.exec(sql) } catch { /* column already exists */ }
@@ -411,6 +467,132 @@ function createSchema(db: Database.Database) {
       PRIMARY KEY (post_id, voter_key, reaction),
       FOREIGN KEY (post_id) REFERENCES news_posts(id) ON DELETE CASCADE
     );
+
+    CREATE TABLE IF NOT EXISTS discovery_queue (
+      id TEXT PRIMARY KEY,
+      source TEXT NOT NULL,
+      source_url TEXT,
+      website_url TEXT NOT NULL UNIQUE,
+      extracted_data TEXT NOT NULL DEFAULT '{}',
+      confidence_score REAL NOT NULL DEFAULT 0,
+      status TEXT NOT NULL DEFAULT 'pending',
+      listing_id TEXT,
+      reject_reason TEXT,
+      claim_email_sent INTEGER NOT NULL DEFAULT 0,
+      processed_at TEXT,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (listing_id) REFERENCES app_listings(id) ON DELETE SET NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_dq_status ON discovery_queue(status);
+    CREATE INDEX IF NOT EXISTS idx_dq_website ON discovery_queue(website_url);
+    CREATE INDEX IF NOT EXISTS idx_dq_created ON discovery_queue(created_at);
+    CREATE INDEX IF NOT EXISTS idx_dq_score ON discovery_queue(confidence_score DESC);
+
+    -- ── Phase 1 tables ────────────────────────────────────────────────────────
+
+    CREATE TABLE IF NOT EXISTS buyer_intent_events (
+      id TEXT PRIMARY KEY,
+      app_id TEXT NOT NULL,
+      vendor_id TEXT NOT NULL,
+      user_id TEXT,
+      session_id TEXT,
+      event_type TEXT NOT NULL,
+      signal_strength TEXT NOT NULL DEFAULT 'warm',
+      metadata TEXT NOT NULL DEFAULT '{}',
+      user_company TEXT,
+      user_role TEXT,
+      user_location TEXT,
+      notified_vendor INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (app_id) REFERENCES app_listings(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_bie_vendor_id ON buyer_intent_events(vendor_id);
+    CREATE INDEX IF NOT EXISTS idx_bie_app_id    ON buyer_intent_events(app_id);
+    CREATE INDEX IF NOT EXISTS idx_bie_created   ON buyer_intent_events(created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_bie_notified  ON buyer_intent_events(notified_vendor);
+
+    CREATE TABLE IF NOT EXISTS ai_match_sessions (
+      id TEXT PRIMARY KEY,
+      user_id TEXT,
+      session_key TEXT NOT NULL,
+      messages TEXT NOT NULL DEFAULT '[]',
+      matched_apps TEXT NOT NULL DEFAULT '[]',
+      context TEXT NOT NULL DEFAULT '{}',
+      lead_score REAL NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_ams_user_id ON ai_match_sessions(user_id);
+    CREATE INDEX IF NOT EXISTS idx_ams_session_key ON ai_match_sessions(session_key);
+    CREATE INDEX IF NOT EXISTS idx_ams_created ON ai_match_sessions(created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS buyer_stacks (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL UNIQUE,
+      tools TEXT NOT NULL DEFAULT '[]',
+      total_spend REAL NOT NULL DEFAULT 0,
+      overlap_alerts TEXT NOT NULL DEFAULT '[]',
+      updated_at TEXT NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS review_synthesis_cache (
+      id TEXT PRIMARY KEY,
+      app_id TEXT NOT NULL UNIQUE,
+      consensus TEXT NOT NULL,
+      power_user_view TEXT NOT NULL,
+      deal_breakers TEXT NOT NULL DEFAULT '[]',
+      best_for TEXT NOT NULL DEFAULT '[]',
+      worst_for TEXT NOT NULL DEFAULT '[]',
+      sentiment_trend TEXT NOT NULL DEFAULT '{}',
+      review_count_at_synthesis INTEGER NOT NULL,
+      generated_at TEXT NOT NULL,
+      expires_at TEXT NOT NULL,
+      FOREIGN KEY (app_id) REFERENCES app_listings(id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS negotiation_briefs (
+      id TEXT PRIMARY KEY,
+      user_id TEXT,
+      app_id TEXT NOT NULL,
+      brief_content TEXT NOT NULL,
+      list_price REAL,
+      typical_discount_pct REAL,
+      best_quarter TEXT,
+      tips TEXT NOT NULL DEFAULT '[]',
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (app_id) REFERENCES app_listings(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_ngb_app_id ON negotiation_briefs(app_id);
+    CREATE INDEX IF NOT EXISTS idx_ngb_user_id ON negotiation_briefs(user_id);
+
+    CREATE TABLE IF NOT EXISTS evaluation_briefs (
+      id TEXT PRIMARY KEY,
+      user_id TEXT,
+      app_ids TEXT NOT NULL,
+      title TEXT NOT NULL,
+      content_md TEXT NOT NULL,
+      share_token TEXT UNIQUE,
+      views INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_evb_share_token ON evaluation_briefs(share_token);
+    CREATE INDEX IF NOT EXISTS idx_evb_user_id ON evaluation_briefs(user_id);
+
+    CREATE TABLE IF NOT EXISTS vendor_claim_tokens (
+      id TEXT PRIMARY KEY,
+      listing_id TEXT NOT NULL,
+      token_hash TEXT NOT NULL UNIQUE,
+      email TEXT NOT NULL,
+      expires_at TEXT NOT NULL,
+      used_at TEXT,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (listing_id) REFERENCES app_listings(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_vct_token   ON vendor_claim_tokens(token_hash);
+    CREATE INDEX IF NOT EXISTS idx_vct_listing ON vendor_claim_tokens(listing_id);
   `)
 }
 

@@ -14,9 +14,6 @@ export default defineEventHandler((event) => {
   try {
     const row = getDb().prepare('SELECT 1 AS ok').get() as { ok: number } | undefined
     dbOk = row?.ok === 1
-  try {
-    const row = getDb().prepare('SELECT 1 AS ok').get() as { ok: number } | undefined
-    dbOk = row?.ok === 1
   } catch {
     dbError = 'Database connection failed'
   }

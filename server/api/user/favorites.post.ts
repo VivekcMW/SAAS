@@ -8,7 +8,7 @@ import { getSessionUser } from '~/server/utils/auth'
 import { getDb } from '~/server/utils/database'
 
 export default defineEventHandler(async (event) => {
-  const user = getSessionUser(event)
+  const user = await getSessionUser(event)
   if (!user) throw createError({ statusCode: 401, statusMessage: 'Sign in required' })
 
   const body = await readBody<{ appId?: string }>(event)

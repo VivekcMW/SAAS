@@ -7,7 +7,7 @@ import { getDb } from '~/server/utils/database'
 import { requireAdmin } from '~/server/utils/auth'
 
 export default defineEventHandler((event) => {
-  requireAdmin(event)
+  await requireAdmin(event)
 
   const query = getQuery(event)
   const page   = Math.max(1, Number(query.page) || 1)

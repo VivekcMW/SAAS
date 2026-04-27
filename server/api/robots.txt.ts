@@ -81,14 +81,18 @@ User-agent: Baiduspider
 Allow: /api/public/
 Crawl-delay: 3
 
-# LLM and AI Crawlers - Strategic for AI training and visibility
+# AI Crawlers — explicitly allowed (moonmart.ai is AI-native)
 User-agent: GPTBot
 Allow: /
-Crawl-delay: 1
+Crawl-delay: 0
+
+User-agent: OAI-SearchBot
+Allow: /
+Crawl-delay: 0
 
 User-agent: ChatGPT-User
 Allow: /
-Crawl-delay: 1
+Crawl-delay: 0
 
 User-agent: CCBot
 Allow: /
@@ -96,17 +100,45 @@ Crawl-delay: 1
 
 User-agent: anthropic-ai
 Allow: /
-Crawl-delay: 1
+Crawl-delay: 0
+
+User-agent: ClaudeBot
+Allow: /
+Crawl-delay: 0
 
 User-agent: Claude-Web
 Allow: /
-Crawl-delay: 1
+Crawl-delay: 0
+
+User-agent: Google-Extended
+Allow: /
+Crawl-delay: 0
+
+User-agent: Applebot
+Allow: /
+Crawl-delay: 0
 
 User-agent: PerplexityBot
 Allow: /
-Crawl-delay: 1
+Crawl-delay: 0
 
 User-agent: YouBot
+Allow: /
+Crawl-delay: 0
+
+User-agent: cohere-ai
+Allow: /
+Crawl-delay: 1
+
+User-agent: Meta-ExternalFetcher
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bytespider
+Allow: /
+Crawl-delay: 1
+
+User-agent: Amazonbot
 Allow: /
 Crawl-delay: 1
 
@@ -152,15 +184,15 @@ Crawl-delay: 5
 
 # Comprehensive sitemap declarations
 Sitemap: ${baseUrl}/api/sitemap.xml
-Sitemap: ${baseUrl}/api/sitemap-news.xml
-Sitemap: ${baseUrl}/api/sitemap-images.xml
+Sitemap: ${baseUrl}/api/sitemap-apps.xml
+Sitemap: ${baseUrl}/api/sitemap-categories.xml
+Sitemap: ${baseUrl}/api/sitemap-blog.xml
+Sitemap: ${baseUrl}/api/sitemap-comparisons.xml
 Sitemap: ${baseUrl}/api/sitemap-hreflang.xml
 
-# Additional specific sitemaps for different content types
-Sitemap: ${baseUrl}/api/sitemap-categories.xml
-Sitemap: ${baseUrl}/api/sitemap-comparisons.xml
-Sitemap: ${baseUrl}/api/sitemap-alternatives.xml
-Sitemap: ${baseUrl}/api/sitemap-apps.xml
+# AI-readable full content
+LLMs: ${baseUrl}/llms.txt
+LLMs-full: ${baseUrl}/llms-full.txt
 
 # Host directive for canonical domain
 Host: ${baseUrl}

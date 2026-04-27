@@ -2,7 +2,7 @@ import { createVendorApp } from '~/server/utils/apps'
 import { getVendorProfileForUser, requireVendor } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
-  const user = requireVendor(event)
+  const user = await requireVendor(event)
   const vendor = getVendorProfileForUser(user.id)
   const body = await readBody(event)
 

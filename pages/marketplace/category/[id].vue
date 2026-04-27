@@ -125,9 +125,24 @@ useHead(() => ({
       content: `Explore the best ${getCategoryName(categoryId.value)} applications for your business on Moonmart Marketplace.` 
     },
     { property: 'og:type', content: 'website' },
-    { property: 'og:url', content: `https://moonmart.ai/marketplace/category/${categoryId.value}` }
+    { property: 'og:url', content: `https://moonmart.ai/marketplace/category/${categoryId.value}` },
+    { name: 'robots', content: 'index, follow' }
+  ],
+  link: [{ rel: 'canonical', href: `https://moonmart.ai/marketplace/category/${categoryId.value}` }],
+  script: [
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify(generateCategoryPageSchema(
+        getCategoryName(categoryId.value),
+        categoryId.value,
+        []
+      ))
+    }
   ]
 }));
+
+// Wire category schema
+const { generateCategoryPageSchema } = useSchemaMarkup();
 </script>
 
 <style scoped>

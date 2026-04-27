@@ -31,13 +31,13 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    createSession(event, user.id, true)
+    await createSession(event, user.id, true)
 
     return {
       success: true,
       message: 'Your account has been created successfully!',
       redirectTo: '/dashboard',
-      user: getSessionUser(event)
+      user: await getSessionUser(event)
     }
   } catch (error: any) {
     if (error?.statusCode) {

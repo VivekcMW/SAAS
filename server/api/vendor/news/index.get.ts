@@ -7,7 +7,7 @@ import { getDb, type DbNewsPost } from '~/server/utils/database'
 import { getVendorProfileForUser, requireVendor } from '~/server/utils/auth'
 
 export default defineEventHandler((event) => {
-  const user = requireVendor(event)
+  const user = await requireVendor(event)
   const vendor = getVendorProfileForUser(user.id)
 
   const query = getQuery(event)

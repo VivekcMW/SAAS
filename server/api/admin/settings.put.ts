@@ -15,7 +15,7 @@ const KEY_RE = /^[a-z0-9._-]{1,128}$/i
 const BLOCKED_PREFIXES = ['stripe_', 'smtp_', 'secret_', 'password']
 
 export default defineEventHandler(async (event) => {
-  const admin = requireUser(event)
+  const admin = await requireUser(event)
   if (admin.role !== 'admin') throw createError({ statusCode: 403, statusMessage: 'Admin access required' })
 
   const body = await readBody<Record<string, unknown>>(event)

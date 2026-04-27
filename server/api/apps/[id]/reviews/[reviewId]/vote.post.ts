@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // Determine voter key — authenticated user id or hashed IP
-  const user = getSessionUser(event)
+  const user = await getSessionUser(event)
   const ip = (
     event.node.req.headers['x-forwarded-for'] as string | undefined
   )?.split(',')[0]?.trim() || event.node.req.socket?.remoteAddress || 'unknown'

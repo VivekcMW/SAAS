@@ -1,4 +1,4 @@
-/**
+che/**
  * PUT /api/admin/news/:id/status
  * Admin approves or rejects a news post.
  * Body: { status: 'published' | 'rejected', adminNote?: string, featured?: boolean }
@@ -10,7 +10,7 @@ import { requireAdmin } from '~/server/utils/auth'
 const ALLOWED = ['published', 'rejected'] as const
 
 export default defineEventHandler(async (event) => {
-  requireAdmin(event)
+  await requireAdmin(event)
 
   const { id } = getRouterParams(event)
   if (!id) throw createError({ statusCode: 400, statusMessage: 'Missing post id' })

@@ -52,11 +52,22 @@ const vcMetaConfig = generateVCMeta({
   marketSize: '$500+ billion SaaS market'
 });
 
+// noindex filter/sort/paginated URLs to prevent crawl waste
+const route = useRoute()
+const hasFilterParams = computed(() => {
+  const q = route.query
+  return !!(q.sort || q.filter || q.category || q.page || q.pricing || q.tag || q.search)
+})
+
 // Apply comprehensive SEO with VC focus
 useHead({
   ...vcMetaConfig,
   link: [
     { rel: 'canonical', href: 'https://moonmart.ai/marketplace' }
+  ],
+  meta: [
+    ...(vcMetaConfig.meta || []),
+    { name: 'robots', content: hasFilterParams.value ? 'noindex, follow' : 'index, follow' }
   ]
 });
 

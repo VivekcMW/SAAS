@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
     userEmail?: string
   }
 
-  const sessionUser = getSessionUser(event)
+  const sessionUser = await getSessionUser(event)
 
   if (!body?.rating || !body?.title || !body?.content) {
     throw createError({

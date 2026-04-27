@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const user = authenticateUser(body.email, body.password)
-  createSession(event, user.id, body.rememberMe !== false)
+  await createSession(event, user.id, body.rememberMe !== false)
 
   return {
     success: true,

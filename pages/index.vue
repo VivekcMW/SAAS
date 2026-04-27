@@ -50,15 +50,23 @@
           >{{ ex }}</button>
         </div>
 
+        <div v-if="aiError" class="home-results home-results--error">
+          <p>{{ aiError }}</p>
+        </div>
+
         <div v-if="aiResults.length" class="home-results">
           <h3>Top picks for you</h3>
-          <ul>
-            <li v-for="r in aiResults" :key="r.name">
-              <strong>{{ r.name }}</strong>
-              <span>— {{ r.reason }}</span>
+          <ul class="home-results__list">
+            <li v-for="r in aiResults" :key="r.app.id" class="home-results__item">
+              <NuxtLink :to="`/apps/${r.app.slug}`" class="home-results__link">
+                <strong class="home-results__name">{{ r.app.name }}</strong>
+                <span class="home-results__score">{{ Math.round(r.score) }}% match</span>
+              </NuxtLink>
+              <p class="home-results__reason">{{ r.reasoning }}</p>
+              <p v-if="r.tradeoff" class="home-results__tradeoff">Trade-off: {{ r.tradeoff }}</p>
             </li>
           </ul>
-          <small>Demo results. Full AI matching launches soon.</small>
+          <NuxtLink to="/marketplace" class="home-results__more">Browse all matches in marketplace &rarr;</NuxtLink>
         </div>
 
         <div class="home-trust">
@@ -272,7 +280,8 @@ applySEO({
 
 const aiPrompt = ref('')
 const aiLoading = ref(false)
-const aiResults = ref<Array<{ name: string; reason: string }>>([])
+const aiResults = ref<Array<{ app: { id: string; name: string; slug: string }; score: number; reasoning: string; tradeoff: string }>>([])
+const aiError = ref('')
 const searchPlaceholder =
   'Describe what you need — e.g. "CRM for a 10-person remote sales team under $20/user"'
 
@@ -282,18 +291,22 @@ const examples = [
   'All-in-one HR + payroll under $200/mo'
 ]
 
-function runAIMatch() {
+async function runAIMatch() {
   if (!aiPrompt.value.trim() || aiLoading.value) return
   aiLoading.value = true
   aiResults.value = []
-  setTimeout(() => {
-    aiResults.value = [
-      { name: 'Notion', reason: 'Flexible docs + lightweight project tracking for small teams' },
-      { name: 'Linear', reason: 'Fast issue tracking loved by product-led teams' },
-      { name: 'HubSpot', reason: 'Free CRM tier that scales to a full revenue stack' }
-    ]
+  aiError.value = ''
+  try {
+    const data = await $fetch<{ matches: Array<{ app: { id: string; name: string; slug: string }; score: number; reasoning: string; tradeoff: string }> }>('/api/ai/match', {
+      method: 'POST',
+      body: { painPoint: aiPrompt.value }
+    })
+    aiResults.value = data.matches || []
+  } catch {
+    aiError.value = 'Something went wrong. Please try again.'
+  } finally {
     aiLoading.value = false
-  }, 700)
+  }
 }
 
 const trustedBrands = ['Shopify', 'Notion', 'Stripe', 'Airbnb', 'Linear', 'Figma', 'Zapier', 'Intercom']

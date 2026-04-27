@@ -11,7 +11,7 @@ import { getDb } from '~/server/utils/database'
 const VALID_ROLES = new Set(['buyer', 'vendor', 'admin'])
 
 export default defineEventHandler(async (event) => {
-  const admin = requireUser(event)
+  const admin = await requireUser(event)
 
   if (admin.role !== 'admin') {
     throw createError({ statusCode: 403, statusMessage: 'Admin access required' })

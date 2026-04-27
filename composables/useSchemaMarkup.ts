@@ -238,7 +238,7 @@ export const useSchemaMarkup = () => {
   }
 
   // Apply schema markup to page
-  const applySchema = (schema: Record<string, any> | Array<Record<string, any>>) => {
+  const applySchema = (schema: Record<string, unknown> | Array<Record<string, unknown>>) => {
     const schemas = Array.isArray(schema) ? schema : [schema]
     
     useHead({
@@ -249,6 +249,239 @@ export const useSchemaMarkup = () => {
     })
   }
 
+  // ── App page: full @graph with SoftwareApplication + FAQPage + BreadcrumbList ──
+  const generateAppPageSchema = (app: {
+    name: string
+    slug: string
+    description: string
+    shortDescription?: string
+    category: string
+    categorySlug?: string
+    rating: number
+    reviewCount: number
+    pricingType?: string
+    pricingValue?: number
+    logo?: string
+    screenshots?: string[]
+    features?: string[]
+    updatedAt?: string
+    // AI synthesis consensus — injected when available
+    synthConsensus?: string
+    // alternatives list — top 3 names
+    alternativeNames?: string[]
+    moonmartScore?: number
+  }) => {
+    const BASE = 'https://moonmart.ai'
+    const appUrl = `${BASE}/marketplace/app/${app.slug}`
+    const catLabel = app.category.charAt(0).toUpperCase() + app.category.slice(1).replaceAll('-', ' ')
+    const catSlug = app.categorySlug || app.category
+
+    const pricingText = app.pricingType === 'free'
+      ? `${app.name} offers a free plan. Paid plans start at ${app.pricingValue ? `$${app.pricingValue}/month` : 'competitive rates'}.`
+      : app.pricingType === 'contact'
+        ? `${app.name} uses custom pricing — contact their sales team for a quote.`
+        : app.pricingValue
+          ? `${app.name} starts at $${app.pricingValue}/month. See full pricing on moonmart.ai.`
+          : `${app.name} offers paid plans. Visit moonmart.ai for full pricing details.`
+
+    const worthItText = app.synthConsensus
+      ? `${app.synthConsensus} — Full AI synthesis available on moonmart.ai.`
+      : app.rating >= 4.5
+        ? `Yes. ${app.name} is highly rated at ${app.rating}/5 across ${app.reviewCount} verified reviews on moonmart.ai. Buyers consistently praise its reliability and ease of use.`
+        : `${app.name} is rated ${app.rating}/5 based on ${app.reviewCount} verified reviews on moonmart.ai. Read the full review synthesis to decide if it fits your needs.`
+
+    const altsText = app.alternativeNames?.length
+      ? `Top alternatives to ${app.name} include ${app.alternativeNames.join(', ')}. Compare them side-by-side at moonmart.ai/alternatives/${app.slug}.`
+      : `Find the best alternatives to ${app.name} on moonmart.ai — compare features, pricing, and verified reviews side-by-side.`
+
+    const scoreText = app.moonmartScore != null
+      ? `moonmart.ai Score: ${app.moonmartScore}/10 — `
+      : ''
+
+    return {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'SoftwareApplication',
+          '@id': `${appUrl}#software`,
+          name: app.name,
+          description: app.shortDescription || app.description,
+          url: appUrl,
+          applicationCategory: 'BusinessApplication',
+          operatingSystem: 'Web, iOS, Android',
+          image: app.logo,
+          screenshot: app.screenshots?.map(s => ({ '@type': 'ImageObject', url: s })),
+          featureList: app.features,
+          dateModified: app.updatedAt,
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: String(app.rating),
+            reviewCount: String(app.reviewCount),
+            bestRating: '5',
+            worstRating: '1'
+          },
+          offers: {
+            '@type': 'Offer',
+            price: app.pricingType === 'free' ? '0' : String(app.pricingValue ?? ''),
+            priceCurrency: 'USD',
+            availability: 'https://schema.org/InStock'
+          },
+          publisher: {
+            '@type': 'Organization',
+            name: 'moonmart.ai',
+            url: BASE
+          }
+        },
+        {
+          '@type': 'FAQPage',
+          '@id': `${appUrl}#faq`,
+          mainEntity: [
+            {
+              '@type': 'Question',
+              name: `What is ${app.name}?`,
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: `${app.shortDescription || app.description} ${scoreText}Reviewed on moonmart.ai.`
+              }
+            },
+            {
+              '@type': 'Question',
+              name: `How much does ${app.name} cost?`,
+              acceptedAnswer: { '@type': 'Answer', text: pricingText }
+            },
+            {
+              '@type': 'Question',
+              name: `What are the best alternatives to ${app.name}?`,
+              acceptedAnswer: { '@type': 'Answer', text: altsText }
+            },
+            {
+              '@type': 'Question',
+              name: `Is ${app.name} worth it?`,
+              acceptedAnswer: { '@type': 'Answer', text: worthItText }
+            },
+            {
+              '@type': 'Question',
+              name: `Is ${app.name} good for small businesses?`,
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: `${app.name} is used by teams of all sizes. Check moonmart.ai for reviews filtered by company size — small business buyers rate it ${app.rating}/5.`
+              }
+            }
+          ]
+        },
+        {
+          '@type': 'BreadcrumbList',
+          '@id': `${appUrl}#breadcrumb`,
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'moonmart.ai', item: BASE },
+            { '@type': 'ListItem', position: 2, name: 'Marketplace', item: `${BASE}/marketplace` },
+            { '@type': 'ListItem', position: 3, name: catLabel, item: `${BASE}/marketplace/category/${catSlug}` },
+            { '@type': 'ListItem', position: 4, name: app.name, item: appUrl }
+          ]
+        },
+        {
+          '@type': 'WebPage',
+          '@id': appUrl,
+          url: appUrl,
+          name: `${app.name} — Reviews, Pricing, Alternatives | moonmart.ai`,
+          description: app.shortDescription || app.description,
+          dateModified: app.updatedAt,
+          speakable: {
+            '@type': 'SpeakableSpecification',
+            cssSelector: ['#app-quick-verdict', '#moonmart-score', '#ai-synthesis-consensus']
+          },
+          breadcrumb: { '@id': `${appUrl}#breadcrumb` },
+          primaryImageOfPage: app.logo ? { '@type': 'ImageObject', url: app.logo } : undefined
+        }
+      ]
+    }
+  }
+
+  // ── Comparison page schema ─────────────────────────────────────────────────
+  const generateComparisonPageSchema = (appA: { name: string; slug: string; rating: number; reviewCount: number }, appB: { name: string; slug: string; rating: number; reviewCount: number }) => {
+    const BASE = 'https://moonmart.ai'
+    const pageUrl = `${BASE}/compare/${appA.slug}-vs-${appB.slug}`
+    return {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'FAQPage',
+          mainEntity: [
+            {
+              '@type': 'Question',
+              name: `${appA.name} vs ${appB.name}: which is better?`,
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: `${appA.name} is rated ${appA.rating}/5 (${appA.reviewCount} reviews) and ${appB.name} is rated ${appB.rating}/5 (${appB.reviewCount} reviews) on moonmart.ai. The best choice depends on your team size, budget, and use case. Compare them in full at ${pageUrl}.`
+              }
+            },
+            {
+              '@type': 'Question',
+              name: `What is the difference between ${appA.name} and ${appB.name}?`,
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: `${appA.name} and ${appB.name} are both SaaS tools in the same category. See a detailed feature-by-feature and pricing comparison on moonmart.ai at ${pageUrl}.`
+              }
+            }
+          ]
+        },
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'moonmart.ai', item: BASE },
+            { '@type': 'ListItem', position: 2, name: 'Compare', item: `${BASE}/compare` },
+            { '@type': 'ListItem', position: 3, name: `${appA.name} vs ${appB.name}`, item: pageUrl }
+          ]
+        },
+        {
+          '@type': 'WebPage',
+          url: pageUrl,
+          name: `${appA.name} vs ${appB.name} — Side-by-Side Comparison | moonmart.ai`,
+          speakable: {
+            '@type': 'SpeakableSpecification',
+            cssSelector: ['#comparison-verdict', '#comparison-winner']
+          }
+        }
+      ]
+    }
+  }
+
+  // ── Category page schema ───────────────────────────────────────────────────
+  const generateCategoryPageSchema = (category: string, categorySlug: string, apps: Array<{ name: string; slug: string; rating: number }>) => {
+    const BASE = 'https://moonmart.ai'
+    const pageUrl = `${BASE}/marketplace/category/${categorySlug}`
+    return {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'ItemList',
+          name: `Best ${category} Software`,
+          description: `Top-rated ${category} tools reviewed by verified buyers on moonmart.ai`,
+          url: pageUrl,
+          numberOfItems: apps.length,
+          itemListElement: apps.slice(0, 10).map((a, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            item: {
+              '@type': 'SoftwareApplication',
+              name: a.name,
+              url: `${BASE}/marketplace/app/${a.slug}`,
+              aggregateRating: { '@type': 'AggregateRating', ratingValue: String(a.rating), bestRating: '5' }
+            }
+          }))
+        },
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'moonmart.ai', item: BASE },
+            { '@type': 'ListItem', position: 2, name: 'Marketplace', item: `${BASE}/marketplace` },
+            { '@type': 'ListItem', position: 3, name: category, item: pageUrl }
+          ]
+        }
+      ]
+    }
+  }
+
   return {
     generateOrganizationSchema,
     generateWebsiteSchema,
@@ -257,6 +490,9 @@ export const useSchemaMarkup = () => {
     generateComparisonSchema,
     generateCollectionSchema,
     generateBlogPostSchema,
+    generateAppPageSchema,
+    generateComparisonPageSchema,
+    generateCategoryPageSchema,
     applySchema
   }
 }

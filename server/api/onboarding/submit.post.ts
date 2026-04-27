@@ -46,7 +46,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Invalid form data structure' })
   }
 
-  const sessionUser = getSessionUser(event)
+  const sessionUser = await getSessionUser(event)
   const submissionId = makeId('sub')
   const now = new Date().toISOString()
 

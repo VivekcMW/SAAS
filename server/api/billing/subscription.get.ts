@@ -6,6 +6,6 @@ import { getUserSubscription } from '~/server/utils/stripe'
 import { requireUser } from '~/server/utils/auth'
 
 export default defineEventHandler((event) => {
-  const user = requireUser(event)
+  const user = await requireUser(event)
   return getUserSubscription(user.id)
 })

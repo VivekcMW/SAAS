@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Password must be at least 8 characters' })
   }
 
-  const ok = resetPasswordWithToken(body.token, body.password)
+  const ok = await resetPasswordWithToken(body.token, body.password)
 
   if (!ok) {
     throw createError({

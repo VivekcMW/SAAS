@@ -24,9 +24,16 @@
         <div class="bw-kpi__foot">+{{ kpis.mrrGrowth }}% 12-mo</div>
       </div>
       <div class="bw-kpi">
-        <div class="bw-kpi__label">Open tickets</div>
-        <div class="bw-kpi__value">{{ kpis.openTickets }}</div>
-        <div class="bw-kpi__foot">Support queue</div>
+        <div class="bw-kpi__label">Intent signals</div>
+        <div class="bw-kpi__value">{{ liveStats?.intentEvents.last30d ?? '—' }}</div>
+        <div class="bw-kpi__foot">Last 30 days</div>
+      </div>
+      <div class="bw-kpi">
+        <div class="bw-kpi__label">Discovery queue</div>
+        <div class="bw-kpi__value">
+          <NuxtLink to="/dashboard/discovery" class="bw-kpi__link">{{ liveStats?.discovery.pending ?? kpis.pendingApps }}</NuxtLink>
+        </div>
+        <div class="bw-kpi__foot">Pending review</div>
       </div>
     </div>
 
@@ -35,7 +42,7 @@
         <section v-if="pendingApps.length > 0" class="bw-card bw-section">
           <div class="bw-card__head">
             <h2 class="bw-card__title">Needs your attention</h2>
-            <NuxtLink to="/dashboard/pending-apps" class="bw-card__link">Open queue →</NuxtLink>
+            <NuxtLink to="/dashboard/pending-apps" class="bw-card__link">Manual queue →</NuxtLink>
           </div>
           <ul class="q-list">
             <li v-for="a in pendingApps" :key="a.id" class="q-item">
@@ -95,11 +102,45 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-const { kpis, apps, activity, tickets, signupsByDay } = useAdminData()
+import { ref, computed, onMounted } from 'vue'
+const { kpis: mockKpis, apps, activity, tickets, signupsByDay } = useAdminData()
 const maxSignup = computed(() => Math.max(...signupsByDay))
 const pendingApps = computed(() => apps.value.filter(a => a.status === 'pending').slice(0, 4))
 const openTickets = computed(() => tickets.value.filter(t => t.status === 'open'))
+
+interface LiveStats {
+  users: { total: number; buyers: number; vendors: number }
+  listings: { total: number; published: number; pending: number; autoDiscovered: number }
+  reviews: { total: number; pending: number }
+  discovery: { total: number; pending: number }
+  subscriptions: { active: number; mrr: number }
+  intentEvents: { last30d: number }
+  topCategories: Array<{ category: string; count: number }>
+}
+
+const liveStats = ref<LiveStats | null>(null)
+const kpis = computed(() => {
+  if (liveStats.value) {
+    const s = liveStats.value
+    return {
+      totalUsers: s.users.total,
+      totalBuyers: s.users.buyers,
+      totalVendors: s.users.vendors,
+      liveApps: s.listings.published,
+      pendingApps: s.listings.pending,
+      mrr: s.subscriptions.mrr,
+      mrrGrowth: 0,
+      openTickets: 0
+    }
+  }
+  return mockKpis
+})
+
+onMounted(async () => {
+  try {
+    liveStats.value = await $fetch<LiveStats>('/api/admin/stats')
+  } catch { /* use mock fallback */ }
+})
 </script>
 
 <style scoped>

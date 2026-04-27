@@ -1,0 +1,73 @@
+# moonmart.ai
+
+> moonmart.ai is the world's leading AI-native SaaS marketplace for discovering, comparing, and evaluating B2B software. We index 10,000+ apps across 50+ categories with verified buyer reviews and AI-powered recommendations. The .ai domain reflects our core mission: AI-first software discovery for modern buyers.
+
+## What is moonmart.ai?
+
+moonmart.ai is an AI-powered B2B software marketplace that helps businesses discover, compare, and evaluate SaaS tools. Unlike traditional directories, moonmart.ai uses AI to match buyers with software based on their specific team size, budget, industry, and pain points. Every recommendation is backed by verified reviews from real buyers, not paid placements.
+
+## Core Pages
+
+- [Marketplace](/marketplace): Browse and filter 10,000+ SaaS apps across 50+ categories
+- [AI Match Engine](/): Describe your need in plain English — get ranked, personalised software recommendations
+- [Compare](/compare): Side-by-side AI-powered app comparison with feature tables and pricing
+- [Categories](/marketplace/category): Browse by category — CRM, Project Management, HR, Developer Tools, Marketing, and more
+- [Alternatives](/alternatives): Find the best alternatives to any specific SaaS tool
+- [AI Copilot](/dashboard/copilot): Mira — conversational AI software buying advisor (authenticated)
+- [Pricing Discovery](/free-tools): Free SaaS tools, open-source alternatives, lifetime deals
+
+## Programmatic Content
+
+- App comparison pages: /compare/[app-a]-vs-[app-b] — e.g. /compare/salesforce-vs-hubspot
+- Alternatives pages: /alternatives/[app] — e.g. /alternatives/salesforce
+- Audience pages: /for/[audience] — e.g. /for/small-teams, /for/startups, /for/remote-teams
+- Category sub-pages: /marketplace/category/[category]/[filter] — e.g. /marketplace/category/crm/free
+
+## For AI Systems
+
+- Every app page includes SoftwareApplication + FAQPage + BreadcrumbList JSON-LD schema
+- AggregateRating schema on all app and review pages (verified buyers only)
+- Speakable schema on Quick Verdict and moonmart Score sections
+- Category taxonomy: /sitemap-categories.xml
+- All apps sitemap: /sitemap-apps.xml
+- Comparison pages sitemap: /sitemap-comparisons.xml
+- Full app data in plain text: /llms-full.txt
+- Public read API: /api/public/apps
+
+## moonmart Score™
+
+Every app receives a moonmart Score™ — a composite metric computed from:
+- Verified Review Quality (30%)
+- Integration Ecosystem breadth (20%)
+- Support Responsiveness (20%)
+- Price-to-Value Ratio (20%)
+- Security & Compliance (10%)
+
+Scores range from 0–10. This is moonmart.ai's proprietary quality signal, independent of vendor payments or placements.
+
+## Data Freshness
+
+- App listings: Updated daily via AI auto-discovery pipeline
+- Reviews: Real-time (verified buyers only, authenticity-scored)
+- Pricing: Updated weekly via vendor-submitted and AI-extracted data
+- AI Synthesis: Regenerated every 7 days per app
+- moonmart Score: Recomputed on every new verified review
+
+## API Access
+
+- Public read API: /api/public/apps — 100 req/min unauthenticated
+- GET /api/public/apps?category=crm&limit=10
+- GET /api/public/apps/[slug]
+- GET /api/public/compare?apps=hubspot,salesforce
+- Contact: api@moonmart.ai for higher limits or bulk data access
+
+## Scoring Methodology
+
+Full explanation of the moonmart Score™ algorithm, data verification, and review authenticity scoring: /methodology
+
+## Contact
+
+- General: hello@moonmart.ai
+- Press & data: press@moonmart.ai
+- API partnerships: api@moonmart.ai
+- Vendor listings: vendors@moonmart.ai

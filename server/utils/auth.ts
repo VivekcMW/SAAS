@@ -3,6 +3,14 @@ import type { H3Event } from 'h3'
 import { createError, deleteCookie, getCookie, setCookie } from 'h3'
 import type { DbUser } from './database'
 import { getDb, makeId, makeSlug } from './database'
+import {
+  isRedisEnabled,
+  redisDestroySession,
+  redisDestroyUserSessions,
+  redisGetSession,
+  redisSetSession,
+  redisTrackUserSession,
+} from './redis'
 
 const SESSION_COOKIE = 'saasworld_session'
 const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 14
@@ -248,18 +256,25 @@ export function createUser(payload: RegisterPayload) {
   return findUserByEmail(email)
 }
 
-export function createSession(event: H3Event, userId: string, remember = true) {
-  const db = getDb()
+export async function createSession(event: H3Event, userId: string, remember = true) {
+  const sessionId = makeId('session')
   const now = Date.now()
   const expiresAt = new Date(now + SESSION_TTL_MS).toISOString()
-  const sessionId = makeId('session')
 
-  db.prepare('INSERT INTO sessions (id, user_id, expires_at, created_at) VALUES (?, ?, ?, ?)').run(
-    sessionId,
-    userId,
-    expiresAt,
-    new Date(now).toISOString()
-  )
+  if (isRedisEnabled()) {
+    // Primary: store session in Redis (TTL-based, no table needed)
+    await redisSetSession(sessionId, userId, SESSION_TTL_MS / 1000)
+    await redisTrackUserSession(userId, sessionId, SESSION_TTL_MS / 1000)
+  } else {
+    // Fallback: SQLite sessions table (dev / no-Redis mode)
+    const db = getDb()
+    db.prepare('INSERT INTO sessions (id, user_id, expires_at, created_at) VALUES (?, ?, ?, ?)').run(
+      sessionId,
+      userId,
+      expiresAt,
+      new Date(now).toISOString()
+    )
+  }
 
   setCookie(event, SESSION_COOKIE, sessionId, {
     httpOnly: true,
@@ -271,26 +286,45 @@ export function createSession(event: H3Event, userId: string, remember = true) {
   })
 }
 
-export function destroySession(event: H3Event) {
-  const db = getDb()
+export async function destroySession(event: H3Event) {
   const sessionId = getCookie(event, SESSION_COOKIE)
 
   if (sessionId) {
-    db.prepare('DELETE FROM sessions WHERE id = ?').run(sessionId)
+    if (isRedisEnabled()) {
+      await redisDestroySession(sessionId)
+    } else {
+      const db = getDb()
+      db.prepare('DELETE FROM sessions WHERE id = ?').run(sessionId)
+    }
   }
 
   deleteCookie(event, SESSION_COOKIE, { path: '/' })
 }
 
-export function getSessionUser(event: H3Event): AuthUser | null {
-  const db = getDb()
+export async function getSessionUser(event: H3Event): Promise<AuthUser | null> {
   ensureSeedCredentials()
   const sessionId = getCookie(event, SESSION_COOKIE)
 
-  if (!sessionId) {
-    return null
+  if (!sessionId) return null
+
+  if (isRedisEnabled()) {
+    const userId = await redisGetSession(sessionId)
+    if (!userId) {
+      deleteCookie(event, SESSION_COOKIE, { path: '/' })
+      return null
+    }
+    const db = getDb()
+    const row = db.prepare('SELECT * FROM users WHERE id = ?').get(userId) as DbUser | undefined
+    if (!row) {
+      await redisDestroySession(sessionId)
+      deleteCookie(event, SESSION_COOKIE, { path: '/' })
+      return null
+    }
+    return mapUser(row)
   }
 
+  // Fallback: SQLite
+  const db = getDb()
   const row = db.prepare(`
     SELECT u.*
     FROM sessions s
@@ -307,8 +341,8 @@ export function getSessionUser(event: H3Event): AuthUser | null {
   return mapUser(row)
 }
 
-export function requireUser(event: H3Event) {
-  const user = getSessionUser(event)
+export async function requireUser(event: H3Event) {
+  const user = await getSessionUser(event)
 
   if (!user) {
     throw createError({
@@ -320,12 +354,24 @@ export function requireUser(event: H3Event) {
   return user
 }
 
-export function requireVendor(event: H3Event) {
-  const user = requireUser(event)
+export async function requireVendor(event: H3Event) {
+  const user = await requireUser(event)
   if (!['vendor', 'admin'].includes(user.role)) {
     throw createError({
       statusCode: 403,
       statusMessage: 'Vendor access required'
+    })
+  }
+
+  return user
+}
+
+export async function requireAdmin(event: H3Event) {
+  const user = await requireUser(event)
+  if (user.role !== 'admin') {
+    throw createError({
+      statusCode: 403,
+      statusMessage: 'Admin access required'
     })
   }
 
@@ -396,7 +442,7 @@ export function createPasswordResetToken(email: string): string | null {
 }
 
 /** Validate token, reset password, invalidate token. Returns true on success. */
-export function resetPasswordWithToken(rawToken: string, newPassword: string): boolean {
+export async function resetPasswordWithToken(rawToken: string, newPassword: string): Promise<boolean> {
   const db = getDb()
   const tokenHash = createHash('sha256').update(rawToken).digest('hex')
 
@@ -415,7 +461,11 @@ export function resetPasswordWithToken(rawToken: string, newPassword: string): b
   db.prepare('UPDATE password_reset_tokens SET used = 1 WHERE id = ?')
     .run(row.id)
   // Invalidate all sessions for this user after password change
-  db.prepare('DELETE FROM sessions WHERE user_id = ?').run(row.user_id)
+  if (isRedisEnabled()) {
+    await redisDestroyUserSessions(row.user_id)
+  } else {
+    db.prepare('DELETE FROM sessions WHERE user_id = ?').run(row.user_id)
+  }
 
   return true
 }

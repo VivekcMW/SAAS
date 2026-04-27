@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 429, statusMessage: 'Too many requests. Please try again later.' })
   }
 
-  const user = requireUser(event)
+  const user = await requireUser(event)
 
   const body = await readBody<{ planId?: string; cycle?: string }>(event)
 
