@@ -393,6 +393,10 @@ function createSchema(db: Database.Database) {
     `ALTER TABLE reviews ADD COLUMN cons TEXT DEFAULT '[]'`,
     `ALTER TABLE reviews ADD COLUMN authenticity_score REAL`,
     `ALTER TABLE reviews ADD COLUMN outcome_metric TEXT`,
+    `ALTER TABLE reviews ADD COLUMN use_case TEXT`,
+    `ALTER TABLE reviews ADD COLUMN purchase_verified INTEGER NOT NULL DEFAULT 0`,
+    `ALTER TABLE reviews ADD COLUMN verified_purchase_id TEXT`,
+    `ALTER TABLE reviews ADD COLUMN flag_count INTEGER NOT NULL DEFAULT 0`,
     // discovery_queue
     `ALTER TABLE discovery_queue ADD COLUMN claim_email_sent INTEGER NOT NULL DEFAULT 0`
   ]
@@ -776,6 +780,107 @@ function createSchema(db: Database.Database) {
       converted_at TEXT,
       created_at TEXT NOT NULL,
       FOREIGN KEY (affiliate_id) REFERENCES affiliate_accounts(id)
+    );
+
+    -- ── Trust Engine ─────────────────────────────────────────────────────────
+
+    CREATE TABLE IF NOT EXISTS verified_purchases (
+      id TEXT PRIMARY KEY,
+      app_id TEXT NOT NULL,
+      user_id TEXT,
+      email TEXT NOT NULL,
+      token TEXT NOT NULL UNIQUE,
+      used INTEGER NOT NULL DEFAULT 0,
+      expires_at TEXT NOT NULL,
+      created_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_vp_token ON verified_purchases(token);
+    CREATE INDEX IF NOT EXISTS idx_vp_app_email ON verified_purchases(app_id, email);
+
+    CREATE TABLE IF NOT EXISTS vendor_health_scores (
+      id TEXT PRIMARY KEY,
+      vendor_id TEXT NOT NULL,
+      response_rate REAL NOT NULL DEFAULT 0,
+      avg_rating REAL NOT NULL DEFAULT 0,
+      review_count INTEGER NOT NULL DEFAULT 0,
+      review_velocity REAL NOT NULL DEFAULT 0,
+      flagged_count INTEGER NOT NULL DEFAULT 0,
+      verified_pct REAL NOT NULL DEFAULT 0,
+      score REAL NOT NULL DEFAULT 0,
+      computed_at TEXT NOT NULL,
+      FOREIGN KEY (vendor_id) REFERENCES vendor_profiles(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_vhs_vendor ON vendor_health_scores(vendor_id);
+
+    CREATE TABLE IF NOT EXISTS review_flags (
+      id TEXT PRIMARY KEY,
+      review_id TEXT NOT NULL,
+      reporter_key TEXT NOT NULL,
+      flag_reason TEXT NOT NULL,
+      details TEXT,
+      resolved INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_rf_review ON review_flags(review_id);
+    CREATE INDEX IF NOT EXISTS idx_rf_resolved ON review_flags(resolved);
+
+    -- ── Community Q&A ────────────────────────────────────────────────────────
+
+    CREATE TABLE IF NOT EXISTS questions (
+      id TEXT PRIMARY KEY,
+      user_id TEXT,
+      author_name TEXT NOT NULL DEFAULT 'Anonymous',
+      author_email TEXT,
+      title TEXT NOT NULL,
+      body TEXT NOT NULL,
+      slug TEXT NOT NULL UNIQUE,
+      app_id TEXT,
+      tags TEXT NOT NULL DEFAULT '[]',
+      view_count INTEGER NOT NULL DEFAULT 0,
+      answer_count INTEGER NOT NULL DEFAULT 0,
+      vote_score INTEGER NOT NULL DEFAULT 0,
+      solved INTEGER NOT NULL DEFAULT 0,
+      accepted_answer_id TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_q_slug ON questions(slug);
+    CREATE INDEX IF NOT EXISTS idx_q_app ON questions(app_id);
+    CREATE INDEX IF NOT EXISTS idx_q_created ON questions(created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_q_solved ON questions(solved);
+
+    CREATE TABLE IF NOT EXISTS answers (
+      id TEXT PRIMARY KEY,
+      question_id TEXT NOT NULL,
+      user_id TEXT,
+      author_name TEXT NOT NULL DEFAULT 'Anonymous',
+      author_email TEXT,
+      body TEXT NOT NULL,
+      is_accepted INTEGER NOT NULL DEFAULT 0,
+      vote_score INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_ans_question ON answers(question_id);
+
+    CREATE TABLE IF NOT EXISTS qa_votes (
+      id TEXT PRIMARY KEY,
+      voter_key TEXT NOT NULL,
+      target_type TEXT NOT NULL,
+      target_id TEXT NOT NULL,
+      value INTEGER NOT NULL DEFAULT 1,
+      created_at TEXT NOT NULL,
+      UNIQUE (voter_key, target_type, target_id)
+    );
+    CREATE INDEX IF NOT EXISTS idx_qav_target ON qa_votes(target_type, target_id);
+
+    CREATE TABLE IF NOT EXISTS question_tags (
+      tag TEXT PRIMARY KEY,
+      question_count INTEGER NOT NULL DEFAULT 0
     );
   `)
 }

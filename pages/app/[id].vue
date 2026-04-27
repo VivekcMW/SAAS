@@ -563,14 +563,82 @@
         </div>
       </section>
 
-      <!-- Reviews/Comments Section -->
+      <!-- Reviews/Comments Section — real data from Trust Engine -->
       <section id="reviews" class="website-section reviews-section">
         <div class="container">
           <div class="section-header">
             <h2>Customer Reviews & Comments</h2>
             <p>Real feedback from verified users</p>
           </div>
-          <div class="reviews-content">
+
+          <!-- Real reviews from API -->
+          <div v-if="realReviews" class="reviews-content-real">
+            <!-- Summary row -->
+            <div class="reviews-summary-row">
+              <div class="overall-rating-card">
+                <div class="overall-rating">
+                  <span class="rating-number">{{ realReviews.app?.rating?.toFixed(1) ?? app.rating }}</span>
+                  <TrustStarRating :rating="realReviews.app?.rating ?? app.rating" :show-number="false" />
+                  <p>Based on {{ realReviews.total }} reviews</p>
+                </div>
+              </div>
+              <div class="rating-breakdown-card">
+                <div class="rating-breakdown">
+                  <div v-for="star in [5,4,3,2,1]" :key="star" class="rating-bar">
+                    <span class="rating-label">{{ star }} stars</span>
+                    <div class="bar-container">
+                      <div class="bar-fill" :style="{ width: `${((realReviews.distribution?.[star] ?? 0) / Math.max(realReviews.total, 1)) * 100}%` }"></div>
+                    </div>
+                    <span class="rating-count">{{ realReviews.distribution?.[star] ?? 0 }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sort filters -->
+            <div class="reviews-filters">
+              <button v-for="s in REVIEW_SORTS" :key="s.v" :class="['sort-btn', { 'sort-btn--active': reviewSort === s.v }]" @click="setReviewSort(s.v)">{{ s.l }}</button>
+            </div>
+
+            <!-- Review cards -->
+            <div class="reviews-list-real">
+              <TrustReviewCard
+                v-for="r in realReviews.reviews"
+                :key="r.id"
+                :review="r"
+                @flag="flagReview"
+              />
+              <p v-if="!realReviews.reviews?.length" class="muted-hint">No reviews yet. Be the first!</p>
+            </div>
+
+            <!-- Write review toggle -->
+            <div class="reviews-write-toggle">
+              <button v-if="!showReviewForm" class="btn-write-review" @click="showReviewForm = true">Write a review</button>
+              <TrustReviewForm v-else :app-id="String(app.id)" @submitted="onReviewSubmitted" />
+            </div>
+          </div>
+          <!-- Q&A teaser -->
+          <div class="app-qa-teaser">
+            <div class="app-qa-teaser__header">
+              <h3>Community Q&amp;A</h3>
+              <NuxtLink :to="`/qa/ask?app=${app.id}`" class="btn-ask">Ask a question</NuxtLink>
+            </div>
+            <div v-if="appQuestions?.questions?.length" class="app-qa-teaser__list">
+              <NuxtLink
+                v-for="q in appQuestions.questions.slice(0, 5)"
+                :key="q.id"
+                :to="`/qa/${q.slug}`"
+                class="app-qa-teaser__item"
+              >
+                <span class="app-qa-teaser__q">{{ q.title }}</span>
+                <span class="app-qa-teaser__badge" :class="{ 'solved': q.solved }">{{ q.answer_count }} {{ q.answer_count === 1 ? 'answer' : 'answers' }}</span>
+              </NuxtLink>
+            </div>
+            <p v-else class="muted-hint">No questions yet for this app. <NuxtLink :to="`/qa/ask?app=${app.id}`">Be the first to ask!</NuxtLink></p>
+            <NuxtLink :to="`/qa?app=${app.id}`" class="app-qa-teaser__all">View all questions</NuxtLink>
+          </div>
+          <!-- LEGACY: static reviews content hidden in favour of real API above -->
+          <div class="reviews-content" style="display:none">
             <!-- Overall Rating Summary Row -->
             <div class="reviews-summary-row">
               <div class="overall-rating-card">
@@ -1144,11 +1212,48 @@ interface SimilarApp {
 }
 
 // Use route params properly in Nuxt 3
+import TrustReviewCard from '~/components/trust/ReviewCard.vue'
+import TrustReviewForm from '~/components/trust/ReviewForm.vue'
+import TrustStarRating from '~/components/trust/StarRating.vue'
+
 const route = useRoute();
 const appId = computed(() => route.params.id as string);
 
 const loading = ref(true);
 const app = ref<App | null>(null);
+
+// ── Trust Engine: real reviews ──────────────────────────────
+const REVIEW_SORTS = [
+  { v: 'recent', l: 'Recent' },
+  { v: 'verified', l: 'Verified' },
+  { v: 'highest', l: 'Highest' },
+  { v: 'helpful', l: 'Helpful' }
+]
+const reviewSort = ref('recent')
+const showReviewForm = ref(false)
+
+const { data: realReviews, refresh: refreshReviews } = await useAsyncData(
+  `app-reviews-${appId.value}`,
+  () => $fetch(`/api/apps/${appId.value}/reviews`, { params: { sort: reviewSort.value, limit: 10 } }),
+  { watch: [reviewSort] }
+)
+
+function setReviewSort(s: string) { reviewSort.value = s }
+async function flagReview(id: string) {
+  try {
+    await $fetch(`/api/reviews/${id}/flag`, { method: 'POST', body: { reason: 'other' } })
+  } catch {}
+}
+async function onReviewSubmitted() {
+  showReviewForm.value = false
+  await refreshReviews()
+}
+
+// ── Community Q&A teaser ────────────────────────────────────
+const { data: appQuestions } = await useAsyncData(
+  `app-qa-${appId.value}`,
+  () => $fetch('/api/qa/questions', { params: { app: appId.value, limit: 5 } })
+)
 
 // Navigation state
 const activeSection = ref('home');
@@ -6868,4 +6973,28 @@ onMounted(() => {
     font-size: 0.8rem;
   }
 }
+
+/* ── Trust Engine & Q&A additions ──────────────────────────── */
+.reviews-content-real { display: flex; flex-direction: column; gap: 1.5rem; }
+.reviews-filters { display: flex; gap: 6px; flex-wrap: wrap; }
+.sort-btn { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 4px 14px; font-size: 0.8rem; cursor: pointer; }
+.sort-btn--active { background: #4f46e5; color: #fff; border-color: #4f46e5; }
+.reviews-list-real { display: flex; flex-direction: column; gap: 1rem; }
+.reviews-write-toggle { margin-top: 0.5rem; }
+.btn-write-review { background: #4f46e5; color: #fff; border: none; border-radius: 8px; padding: 0.5rem 1.25rem; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+.btn-write-review:hover { background: #4338ca; }
+.muted-hint { color: #9ca3af; font-size: 0.875rem; }
+.app-qa-teaser { background: #f8faff; border: 1px solid #e0e7ff; border-radius: 14px; padding: 1.5rem; margin-top: 2rem; }
+.app-qa-teaser__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.app-qa-teaser__header h3 { font-size: 1.05rem; font-weight: 700; }
+.btn-ask { background: #4f46e5; color: #fff; padding: 0.4rem 1rem; border-radius: 7px; text-decoration: none; font-size: 0.85rem; font-weight: 600; }
+.btn-ask:hover { background: #4338ca; }
+.app-qa-teaser__list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 0.75rem; }
+.app-qa-teaser__item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; text-decoration: none; color: #111827; font-size: 0.875rem; }
+.app-qa-teaser__item:hover { border-color: #6366f1; }
+.app-qa-teaser__q { flex: 1; }
+.app-qa-teaser__badge { font-size: 0.72rem; font-weight: 600; background: #e5e7eb; color: #6b7280; padding: 2px 8px; border-radius: 99px; margin-left: 8px; }
+.app-qa-teaser__badge.solved { background: #d1fae5; color: #065f46; }
+.app-qa-teaser__all { font-size: 0.8rem; color: #4f46e5; text-decoration: none; }
+.app-qa-teaser__all:hover { text-decoration: underline; }
 </style>
