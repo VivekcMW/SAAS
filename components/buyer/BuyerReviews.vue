@@ -73,7 +73,7 @@
         </section>
 
         <section class="bw-card" style="margin-top: 16px; background: var(--bw-primary-50); border-color: var(--bw-primary);">
-          <h3 style="font-family: 'Syne', sans-serif; margin: 0 0 8px; font-size: 0.95rem;">Verified Buyer badge</h3>
+          <h3 style="font-family: var(--f-ui); margin: 0 0 8px; font-size: 0.95rem;">Verified Buyer badge</h3>
           <p style="font-size: 0.86rem; color: var(--bw-text); margin: 0 0 12px;">Write 3 verified reviews to unlock the Verified Buyer badge on your profile.</p>
           <div class="progress"><div class="progress__fill" :style="{ width: `${progress}%` }"></div></div>
           <div style="font-size: 0.78rem; color: var(--bw-text-muted); margin-top: 6px;">{{ reviews.length }} / 3 reviews</div>
@@ -112,14 +112,14 @@ const formatDate = (s: string) => new Date(s).toLocaleDateString('en', { month: 
 .rev-product:hover { color: var(--bw-primary); }
 .rev-stars { color: var(--bw-border-strong); font-size: 1rem; letter-spacing: 1px; }
 .rev-star.is-on { color: var(--bw-warning); }
-.rev-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 600; margin: 0 0 6px; }
+.rev-title { font-family: var(--f-ui); font-size: 1rem; font-weight: 600; margin: 0 0 6px; }
 .rev-body { color: var(--bw-text-muted); font-size: 0.88rem; margin: 0 0 10px; }
 .rev-foot { display: flex; gap: 6px; font-size: 0.78rem; color: var(--bw-text-subtle); align-items: center; }
 
 .review-next { list-style: none; margin: 0; padding: 0; }
 .review-next__item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid var(--bw-border); }
 .review-next__item:first-child { border-top: none; }
-.review-next__logo { width: 32px; height: 32px; border-radius: 8px; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.82rem; }
+.review-next__logo { width: 32px; height: 32px; border-radius: 8px; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-family: var(--f-ui); font-weight: 700; font-size: 0.82rem; }
 .review-next__body { flex: 1; min-width: 0; }
 .review-next__name { font-weight: 600; font-size: 0.88rem; }
 .review-next__cat { font-size: 0.78rem; color: var(--bw-text-subtle); }

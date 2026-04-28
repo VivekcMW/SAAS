@@ -94,7 +94,7 @@ function postReply(id: string) { markReviewReplied(id) }
 .rv-tags { display: flex; align-items: center; gap: 8px; }
 .rv-stars { color: #f59e0b; font-size: 0.95rem; letter-spacing: 1px; }
 
-.rv-title { font-family: 'Syne'; font-size: 1rem; margin: 0; }
+.rv-title { font-family: var(--f-ui); font-size: 1rem; margin: 0; }
 .rv-body { font-size: 0.88rem; color: var(--vw-text-muted); line-height: 1.5; margin: 0; }
 
 .rv-draft { font-size: 0.85rem; line-height: 1.5; margin: 4px 0 10px; }

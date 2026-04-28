@@ -8,7 +8,7 @@ import { requireVendor } from '~/server/utils/auth'
 
 const PAID_PLANS = ['growth', 'scale', 'professional', 'enterprise', 'pro']
 
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
   const user = await requireVendor(event)
   const db = getDb()
 

@@ -6,7 +6,7 @@ import { defineEventHandler, getQuery } from 'h3'
 import { getDb, type DbNewsPost } from '~/server/utils/database'
 import { getVendorProfileForUser, requireVendor } from '~/server/utils/auth'
 
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
   const user = await requireVendor(event)
   const vendor = getVendorProfileForUser(user.id)
 

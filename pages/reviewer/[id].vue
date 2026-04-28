@@ -58,7 +58,7 @@
               <span class="reviewer-card__app-cat">{{ rev.app.category }}</span>
             </div>
             <div class="reviewer-card__rating-row">
-              <span class="reviewer-card__stars">{{ '★'.repeat(rev.rating) }}{{ '☆'.repeat(5 - rev.rating) }}</span>
+              <span class="reviewer-card__stars" :aria-label="`${rev.rating} out of 5 stars`"><BaseRating :value="rev.rating" :max="5" /></span>
               <span v-if="rev.verified" class="reviewer-card__verified">Verified</span>
               <span class="reviewer-card__date">{{ formatDate(rev.createdAt) }}</span>
             </div>

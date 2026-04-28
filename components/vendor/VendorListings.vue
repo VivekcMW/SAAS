@@ -221,7 +221,7 @@ async function deleteListing(id: string) {
   color: white; font-weight: 700; flex-shrink: 0;
 }
 .list-meta { flex: 1; min-width: 0; }
-.list-name { font-weight: 700; font-size: 1rem; font-family: 'Syne', sans-serif; }
+.list-name { font-weight: 700; font-size: 1rem; font-family: var(--f-ui); }
 .list-sub { font-size: 0.82rem; color: var(--vw-text-muted); }
 
 .list-health__row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.82rem; color: var(--vw-text-muted); font-weight: 500; }

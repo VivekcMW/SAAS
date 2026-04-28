@@ -1,185 +1,86 @@
 <!--
   ReviewFormModal Component
-  Modal for submitting new reviews
+  Modal for submitting new reviews — uses Moonmart BaseModal, BaseInput, BaseTextarea, BaseSelect, BaseButton
 -->
 <template>
-  <div class="fixed inset-0 z-50 flex items-center justify-center">
-    <!-- Backdrop -->
-    <div 
-      class="absolute inset-0 bg-black bg-opacity-50"
-      @click="emit('close')"
-    ></div>
-    
-    <!-- Modal -->
-    <div class="relative bg-white dark:bg-gray-900 rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-      <!-- Header -->
-      <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-          Write a Review
-        </h3>
-        <button 
-          @click="emit('close')"
-          class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-        >
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+  <BaseModal :model-value="true" title="Write a Review" size="lg" @close="emit('close')" @update:model-value="emit('close')">
+    <form @submit.prevent="submitReview" class="rfm-form">
+
+      <BaseInput
+        v-model="formData.userName"
+        label="Your Name"
+        placeholder="Enter your name"
+        required
+      />
+
+      <BaseInput
+        v-model="formData.userEmail"
+        type="email"
+        label="Email (Optional)"
+        placeholder="your@email.com"
+        hint="Used for verification and to contact you about your review"
+      />
+
+      <!-- Rating -->
+      <div class="rfm-field">
+        <span class="rfm-label">Rating <span class="rfm-required">*</span></span>
+        <div class="rfm-rating-row">
+          <BaseRating v-model="formData.rating" size="lg" />
+          <span class="rfm-rating-val">{{ formData.rating > 0 ? `${formData.rating}/5` : 'Select rating' }}</span>
+        </div>
+        <p v-if="ratingError" class="rfm-error">Please select a rating</p>
       </div>
 
-      <!-- Form -->
-      <form @submit.prevent="submitReview" class="p-6">
-        <!-- User Name -->
-        <div class="mb-6">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Your Name *
-          </label>
-          <input 
-            v-model="formData.userName"
-            type="text"
-            required
-            class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Enter your name"
-          />
-        </div>
+      <BaseInput
+        v-model="formData.title"
+        label="Review Title"
+        placeholder="Summarize your experience"
+        required
+        :maxlength="100"
+      />
 
-        <!-- Email (Optional) -->
-        <div class="mb-6">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Email (Optional)
-          </label>
-          <input 
-            v-model="formData.userEmail"
-            type="email"
-            class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="your@email.com"
-          />
-          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Used for verification and to contact you about your review
-          </p>
-        </div>
+      <BaseTextarea
+        v-model="formData.content"
+        label="Your Review"
+        placeholder="Share your experience with this application..."
+        required
+        :rows="6"
+        :maxlength="1000"
+      />
 
-        <!-- Rating -->
-        <div class="mb-6">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-            Rating *
-          </label>
-          <div class="flex items-center gap-4">
-            <Rating 
-              v-model="formData.rating"
-              size="lg"
-            />
-            <span class="text-lg font-semibold text-gray-900 dark:text-white">
-              {{ formData.rating > 0 ? `${formData.rating}/5` : 'Select rating' }}
-            </span>
-          </div>
-          <div v-if="ratingError" class="text-red-500 text-sm mt-1">
-            Please select a rating
-          </div>
-        </div>
+      <div class="rfm-grid">
+        <BaseSelect
+          v-model="formData.platform"
+          label="Platform Used"
+          :options="platformOptions"
+          placeholder="Select platform"
+        />
+        <BaseInput
+          v-model="formData.version"
+          label="Version Used"
+          placeholder="e.g., 2.1.0"
+        />
+      </div>
 
-        <!-- Review Title -->
-        <div class="mb-6">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Review Title *
-          </label>
-          <input 
-            v-model="formData.title"
-            type="text"
-            required
-            maxlength="100"
-            class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Summarize your experience"
-          />
-          <div class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-right">
-            {{ formData.title.length }}/100
-          </div>
-        </div>
+      <!-- Guidelines -->
+      <div class="rfm-notice">
+        <p class="rfm-notice-title">Review Guidelines</p>
+        <ul class="rfm-notice-list">
+          <li>Be honest and constructive in your feedback</li>
+          <li>Focus on your experience with the application</li>
+          <li>Avoid personal attacks or inappropriate language</li>
+          <li>Reviews are moderated and may take time to appear</li>
+        </ul>
+      </div>
 
-        <!-- Review Content -->
-        <div class="mb-6">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Your Review *
-          </label>
-          <textarea 
-            v-model="formData.content"
-            required
-            rows="6"
-            maxlength="1000"
-            class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-            placeholder="Share your experience with this application..."
-          ></textarea>
-          <div class="text-xs text-gray-500 dark:text-gray-400 mt-1 text-right">
-            {{ formData.content.length }}/1000
-          </div>
-        </div>
-
-        <!-- Platform & Version (Optional) -->
-        <div class="grid md:grid-cols-2 gap-4 mb-6">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Platform Used
-            </label>
-            <select 
-              v-model="formData.platform"
-              class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="">Select platform</option>
-              <option value="web">Web</option>
-              <option value="ios">iOS</option>
-              <option value="android">Android</option>
-              <option value="windows">Windows</option>
-              <option value="mac">Mac</option>
-              <option value="linux">Linux</option>
-            </select>
-          </div>
-          
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Version Used
-            </label>
-            <input 
-              v-model="formData.version"
-              type="text"
-              class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="e.g., 2.1.0"
-            />
-          </div>
-        </div>
-
-        <!-- Review Guidelines -->
-        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
-          <h4 class="font-medium text-blue-900 dark:text-blue-300 mb-2">
-            Review Guidelines
-          </h4>
-          <ul class="text-sm text-blue-700 dark:text-blue-400 space-y-1">
-            <li>• Be honest and constructive in your feedback</li>
-            <li>• Focus on your experience with the application</li>
-            <li>• Avoid personal attacks or inappropriate language</li>
-            <li>• Reviews are moderated and may take time to appear</li>
-          </ul>
-        </div>
-
-        <!-- Submit Button -->
-        <div class="flex justify-end gap-3">
-          <button 
-            type="button"
-            @click="emit('close')"
-            class="px-6 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-          >
-            Cancel
-          </button>
-          <button 
-            type="submit"
-            :disabled="!isFormValid || submitting"
-            class="px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg transition-colors disabled:cursor-not-allowed"
-          >
-            {{ submitting ? 'Submitting...' : 'Submit Review' }}
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
+      <div class="rfm-actions">
+        <BaseButton variant="ghost" type="button" @click="emit('close')">Cancel</BaseButton>
+        <BaseButton variant="primary" type="submit" :disabled="!isFormValid || submitting" :loading="submitting">
+          {{ submitting ? 'Submitting…' : 'Submit Review' }}
+        </BaseButton>
+      </div>
+    </form>
+  </BaseModal>
 </template>
 
 <script setup lang="ts">
@@ -196,6 +97,15 @@ interface Emits {
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
+
+const platformOptions = [
+  { label: 'Web', value: 'web' },
+  { label: 'iOS', value: 'ios' },
+  { label: 'Android', value: 'android' },
+  { label: 'Windows', value: 'windows' },
+  { label: 'Mac', value: 'mac' },
+  { label: 'Linux', value: 'linux' },
+]
 
 // Form data
 const formData = reactive<ReviewFormData & { userName: string; userEmail?: string }>({
@@ -261,13 +171,66 @@ watch(() => formData.rating, (newRating) => {
     ratingError.value = false
   }
 })
-
-// Prevent background scroll when modal is open
-onMounted(() => {
-  document.body.style.overflow = 'hidden'
-})
-
-onUnmounted(() => {
-  document.body.style.overflow = ''
-})
 </script>
+
+<style scoped>
+.rfm-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  padding: var(--sp-6);
+}
+.rfm-field { display: flex; flex-direction: column; gap: var(--sp-2); }
+.rfm-label {
+  font-size: var(--t-sm);
+  font-weight: 500;
+  color: var(--mm-silver);
+}
+.rfm-required { color: var(--mm-err, #dc2626); margin-left: 2px; }
+.rfm-rating-row { display: flex; align-items: center; gap: var(--sp-4); }
+.rfm-rating-val {
+  font-size: var(--t-md);
+  font-weight: 600;
+  color: var(--mm-pearl);
+}
+.rfm-error { font-size: var(--t-xs); color: var(--mm-err, #dc2626); margin: 0; }
+.rfm-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+}
+@media (max-width: 560px) {
+  .rfm-grid { grid-template-columns: 1fr; }
+}
+.rfm-notice {
+  background: var(--mm-gold-soft, rgba(212, 168, 67, 0.08));
+  border: 0.5px solid var(--mm-border-md);
+  border-left: 3px solid var(--mm-gold);
+  border-radius: var(--r-md);
+  padding: var(--sp-4) var(--sp-5);
+}
+.rfm-notice-title {
+  font-size: var(--t-base);
+  font-weight: 600;
+  color: var(--mm-pearl);
+  margin: 0 0 var(--sp-2);
+}
+.rfm-notice-list {
+  list-style: disc;
+  padding-left: 1.25rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.rfm-notice-list li {
+  font-size: var(--t-sm);
+  color: var(--mm-silver);
+  line-height: 1.5;
+}
+.rfm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+}
+</style>

@@ -23,6 +23,10 @@ export default defineNuxtConfig({
     }],
   ],
 
+  image: {
+    provider: 'none'
+  },
+
   // SEO and Performance Configuration
   experimental: {
     payloadExtraction: false

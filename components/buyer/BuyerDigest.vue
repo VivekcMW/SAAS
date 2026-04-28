@@ -76,7 +76,7 @@ const filtered = computed(() => tab.value === 'all' ? digest.value : digest.valu
 .feed__icon.is-review { background: var(--bw-warning-50); color: var(--bw-warning); }
 .feed__body { flex: 1; min-width: 0; }
 .feed__head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-.feed__title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin: 0; flex: 1; }
+.feed__title { font-family: var(--f-ui); font-size: 1rem; font-weight: 700; margin: 0; flex: 1; }
 .feed__desc { font-size: 0.88rem; color: var(--bw-text-muted); margin: 0 0 6px; line-height: 1.5; }
 .feed__foot { font-size: 0.78rem; color: var(--bw-text-subtle); }
 </style>

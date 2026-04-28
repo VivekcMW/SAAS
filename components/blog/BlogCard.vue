@@ -175,7 +175,9 @@ const formatDate = (date: string) => {
 }
 
 .thumbnail-placeholder {
-  @apply absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 text-gray-500;
+  @apply absolute inset-0 flex flex-col items-center justify-center;
+  background: var(--mm-surface-2);
+  color: var(--mm-slate);
 }
 
 .regenerate-btn {

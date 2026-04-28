@@ -102,7 +102,7 @@ function decide(d: 'approved' | 'rejected') {
 .pq-meta--muted { font-size: 0.72rem; color: var(--aw-text-subtle); }
 
 .pq-detail-head { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
-.pq-detail-title { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; margin: 0; }
+.pq-detail-title { font-family: var(--f-ui); font-size: 1.15rem; font-weight: 700; margin: 0; }
 .pq-detail-sub { font-size: 0.85rem; color: var(--aw-text-muted); margin: 3px 0 0; }
 
 .pq-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; font-size: 0.88rem; }

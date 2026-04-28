@@ -43,7 +43,7 @@
     <section class="bw-card bw-section" style="background: var(--bw-primary-50); border-color: var(--bw-primary);">
       <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
         <div>
-          <h3 style="font-family: 'Syne', sans-serif; margin: 0 0 4px; font-size: 1.05rem;">Get new deals in your inbox</h3>
+          <h3 style="font-family: var(--f-ui); margin: 0 0 4px; font-size: 1.05rem;">Get new deals in your inbox</h3>
           <p style="font-size: 0.88rem; color: var(--bw-text-muted); margin: 0;">We'll email you only when a deal matches your saved categories.</p>
         </div>
         <button class="bw-btn bw-btn--primary">Turn on alerts</button>
@@ -86,9 +86,9 @@ const formatDate = (s: string) => new Date(s).toLocaleDateString('en', { month: 
 <style scoped>
 .deal { display: flex; flex-direction: column; gap: 10px; }
 .deal__head { display: flex; justify-content: space-between; align-items: flex-start; }
-.deal__pct { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.8rem; color: var(--bw-primary); line-height: 1; }
+.deal__pct { font-family: var(--f-ui); font-weight: 800; font-size: 1.8rem; color: var(--bw-primary); line-height: 1; }
 .deal__pct span { display: block; font-size: 0.7rem; letter-spacing: 0.08em; color: var(--bw-text-muted); font-weight: 600; }
-.deal__title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin: 0; }
+.deal__title { font-family: var(--f-ui); font-size: 1rem; font-weight: 700; margin: 0; }
 .deal__product { font-size: 0.85rem; color: var(--bw-text-muted); }
 
 .deal__code { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px 8px 14px; background: var(--bw-surface-2); border: 1px dashed var(--bw-border-strong); border-radius: 8px; gap: 8px; }

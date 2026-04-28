@@ -1,0 +1,95 @@
+{
+  "nav": {
+    "home": "首页",
+    "about": "关于",
+    "features": "功能",
+    "marketplace": "应用市场",
+    "integrations": "集成",
+    "blog": "博客",
+    "contact": "联系我们",
+    "listProduct": "上架您的产品 / 服务",
+    "login": "登录",
+    "signup": "注册"
+  },
+  "hero": {
+    "title": "用我们的 {platform} 平台赋能您的业务",
+    "subtitle": "{platform} 是一个面向网络应用的数字市场，提供多种可按需搜索的应用，帮助中小企业做出明智决策，适用于多种角色和业务场景。",
+    "searchPlaceholder": "搜索应用...",
+    "trending": "热门："
+  },
+  "features": {
+    "title": "强大功能",
+    "subtitle": "一切您所需，助力业务增长并取悦您的客户。"
+  },
+  "integrations": {
+    "title": "与您喜爱的工具无缝集成",
+    "subtitle": "将 Moonmart 与您已使用的 100+ 应用和服务连接。",
+    "viewAll": "查看全部集成"
+  },
+  "cta": {
+    "title": "准备好转型您的业务了吗？",
+    "subtitle": "加入数千家使用 Moonmart 扩大运营的企业。",
+    "startTrial": "免费试用",
+    "contactSales": "联系销售"
+  },
+  "marketplace": {
+    "title": "Moonmart 应用市场",
+    "subtitle": "发现顶级应用与服务",
+    "categories": "分类",
+    "filters": "筛选",
+    "price": "价格",
+    "rating": "评分",
+    "free": "免费",
+    "freemium": "免费增值",
+    "paid": "付费",
+    "enterprise": "企业版",
+    "featured": "精选",
+    "trending": "热门",
+    "new": "新品",
+    "viewDetails": "查看详情",
+    "noResults": "未找到应用",
+    "noResultsDesc": "请尝试调整筛选条件或搜索词",
+    "resetFilters": "重置筛选"
+  },
+  "pricing": {
+    "currency": "CNY",
+    "symbol": "¥",
+    "free": "免费",
+    "trial": "免费试用",
+    "month": "月",
+    "year": "年",
+    "perMonth": "每月",
+    "perYear": "每年",
+    "billedMonthly": "按月计费",
+    "billedAnnually": "按年计费"
+  },
+  "common": {
+    "loading": "加载中...",
+    "search": "搜索",
+    "filter": "筛选",
+    "sort": "排序",
+    "page": "第",
+    "of": "共",
+    "results": "条结果",
+    "showMore": "显示更多",
+    "showLess": "收起",
+    "learnMore": "了解更多",
+    "getStarted": "立即开始",
+    "subscribe": "订阅",
+    "save": "保存",
+    "cancel": "取消",
+    "close": "关闭",
+    "back": "返回",
+    "next": "下一步",
+    "previous": "上一步",
+    "yes": "是",
+    "no": "否"
+  },
+  "footer": {
+    "copyright": "版权所有",
+    "privacy": "隐私政策",
+    "terms": "服务条款",
+    "support": "支持",
+    "language": "语言"
+  }
+}

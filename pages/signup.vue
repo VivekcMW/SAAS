@@ -354,9 +354,9 @@ const handleSocial = (provider: 'google' | 'github') => {
   border-color: var(--mm-gold);
   box-shadow: 0 0 0 3px var(--mm-gold-soft);
 }
-.field input[aria-invalid="true"] { border-color: #dc2626; }
+.field input[aria-invalid="true"] { border-color: var(--mm-err, #dc2626); }
 .field input:disabled { background: var(--mm-s3); color: var(--mm-slate); cursor: not-allowed; }
-.field-error { margin: 0; font-size: 12px; color: #dc2626; }
+.field-error { margin: 0; font-size: 12px; color: var(--mm-err, #dc2626); }
 
 .password-wrap { position: relative; }
 .password-wrap input { padding-right: 40px; }
@@ -389,15 +389,15 @@ const handleSocial = (provider: 'google' | 'github') => {
   border-radius: 2px;
   transition: width 200ms ease, background-color 200ms ease;
 }
-.strength-fill.weak { background: #ef4444; }
-.strength-fill.fair { background: #f59e0b; }
-.strength-fill.good { background: #3b82f6; }
-.strength-fill.strong { background: #10b981; }
+.strength-fill.weak { background: var(--mm-err, #ef4444); }
+.strength-fill.fair { background: var(--color-warning, #f59e0b); }
+.strength-fill.good { background: var(--mm-blue, #3b82f6); }
+.strength-fill.strong { background: var(--mm-teal, #10b981); }
 .strength-label { font-size: 11px; font-weight: 500; min-width: 42px; text-align: right; }
-.strength-label.weak { color: #ef4444; }
-.strength-label.fair { color: #f59e0b; }
-.strength-label.good { color: #3b82f6; }
-.strength-label.strong { color: #10b981; }
+.strength-label.weak { color: var(--mm-err, #ef4444); }
+.strength-label.fair { color: var(--color-warning, #f59e0b); }
+.strength-label.good { color: var(--mm-blue, #3b82f6); }
+.strength-label.strong { color: var(--mm-teal, #10b981); }
 
 .terms {
   display: flex;
@@ -420,7 +420,7 @@ const handleSocial = (provider: 'google' | 'github') => {
   padding: 10px 12px;
   border: 0.5px solid rgba(220, 38, 38, 0.4);
   background: rgba(220, 38, 38, 0.08);
-  color: #fca5a5;
+  color: var(--mm-err-light, #fca5a5);
   border-radius: var(--r-sm);
   font-size: 13px;
 }
@@ -435,7 +435,7 @@ const handleSocial = (provider: 'google' | 'github') => {
   padding: 12px 16px;
   margin-top: 4px;
   background: var(--mm-gold);
-  color: #0A0700;
+  color: var(--mm-bg);
   border: 0;
   border-radius: var(--r-sm);
   font-family: inherit;

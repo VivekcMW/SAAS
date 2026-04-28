@@ -393,16 +393,16 @@
                       Mobile App Access
                     </td>
                     <td class="plan-value">
-                      ✓ Included
+                      <span class="feat-yes" aria-label="Included">✓</span> Included
                     </td>
                     <td class="plan-value featured-value">
-                      ✓ Included
+                      <span class="feat-yes" aria-label="Included">✓</span> Included
                     </td>
                     <td class="plan-value">
-                      ✓ Included
+                      <span class="feat-yes" aria-label="Included">✓</span> Included
                     </td>
                     <td class="plan-value">
-                      ✓ Included
+                      <span class="feat-yes" aria-label="Included">✓</span> Included
                     </td>
                   </tr>
                   
@@ -412,16 +412,16 @@
                       Custom Workflows
                     </td>
                     <td class="plan-value">
-                      ✗ Not included
+                      <span class="feat-no" aria-label="Not included">✗</span> Not included
                     </td>
                     <td class="plan-value featured-value">
-                      ✓ Included
+                      <span class="feat-yes" aria-label="Included">✓</span> Included
                     </td>
                     <td class="plan-value">
-                      ✓ Included
+                      <span class="feat-yes" aria-label="Included">✓</span> Included
                     </td>
                     <td class="plan-value">
-                      ✓ Included
+                      <span class="feat-yes" aria-label="Included">✓</span> Included
                     </td>
                   </tr>
                   
@@ -431,16 +431,16 @@
                       Advanced Security
                     </td>
                     <td class="plan-value">
-                      ✗ Not included
+                      <span class="feat-no" aria-label="Not included">✗</span> Not included
                     </td>
                     <td class="plan-value featured-value">
-                      ✗ Not included
+                      <span class="feat-no" aria-label="Not included">✗</span> Not included
                     </td>
                     <td class="plan-value">
-                      ✓ Included
+                      <span class="feat-yes" aria-label="Included">✓</span> Included
                     </td>
                     <td class="plan-value">
-                      ✓ Included
+                      <span class="feat-yes" aria-label="Included">✓</span> Included
                     </td>
                   </tr>
                   
@@ -450,10 +450,10 @@
                       SLA Guarantee
                     </td>
                     <td class="plan-value">
-                      ✗ Not included
+                      <span class="feat-no" aria-label="Not included">✗</span> Not included
                     </td>
                     <td class="plan-value featured-value">
-                      ✗ Not included
+                      <span class="feat-no" aria-label="Not included">✗</span> Not included
                     </td>
                     <td class="plan-value">99.9% uptime</td>
                     <td class="plan-value">Custom SLA</td>
@@ -6837,6 +6837,9 @@ onMounted(() => {
 .feature-row:hover {
   background: var(--mm-s2);
 }
+
+.feat-yes { color: var(--mm-teal, #2A9D8F); font-weight: 700; }
+.feat-no { color: var(--mm-err, #dc2626); font-weight: 700; }
 
 .plan-value {
   padding: 1.5rem;

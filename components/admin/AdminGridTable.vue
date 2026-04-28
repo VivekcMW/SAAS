@@ -779,7 +779,7 @@ onBeforeUnmount(() => document.removeEventListener('click', handleDocClick))
   margin-bottom: 4px;
 }
 .agt-empty__title {
-  font-family: 'Syne', sans-serif;
+  font-family: var(--f-ui);
   font-weight: 700;
   font-size: 1rem;
   color: var(--bw-text, #1E1E1E);

@@ -7,7 +7,7 @@ import { getDb } from '~/server/utils/database'
 import { getSessionUser } from '~/server/utils/auth'
 import { createHash } from 'node:crypto'
 
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
   const { id } = getRouterParams(event)
   if (!id) throw createError({ statusCode: 400, statusMessage: 'Missing post id' })
 

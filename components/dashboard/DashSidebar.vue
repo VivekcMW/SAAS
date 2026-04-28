@@ -219,7 +219,7 @@ const groups = computed<NavGroup[]>(() => {
   gap: 10px;
   text-decoration: none;
   color: var(--mm-pearl, #F0F3F8);
-  font-family: var(--font-heading, 'Syne', system-ui, sans-serif);
+  font-family: var(--f-ui);
   font-weight: 800;
   font-size: 1.05rem;
   letter-spacing: -0.01em;

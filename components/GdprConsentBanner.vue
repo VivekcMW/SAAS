@@ -64,9 +64,9 @@ function acceptEssential() { saveConsent(false) }
   left: 0;
   right: 0;
   z-index: 9999;
-  background: #fff;
-  border-top: 1px solid var(--bw-border, #ECEAE3);
-  box-shadow: 0 -4px 24px rgba(0,0,0,0.08);
+  background: var(--mm-surface-2);
+  border-top: 0.5px solid var(--mm-border-md);
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.5);
 }
 .gdpr-inner {
   max-width: 1120px;
@@ -80,18 +80,18 @@ function acceptEssential() { saveConsent(false) }
 .gdpr-text { flex: 1; min-width: 260px; }
 .gdpr-title {
   font-weight: 700;
-  font-size: 0.9rem;
-  color: var(--bw-text, #1E1E1E);
+  font-size: var(--t-sm);
+  color: var(--mm-pearl);
   margin: 0 0 4px;
 }
 .gdpr-body {
-  font-size: 0.82rem;
-  color: var(--bw-text-muted, #6B6B6B);
+  font-size: var(--t-sm);
+  color: var(--mm-silver);
   margin: 0;
   line-height: 1.5;
 }
 .gdpr-link {
-  color: var(--sw-primary, #FF8838);
+  color: var(--mm-gold);
   text-decoration: none;
 }
 .gdpr-link:hover { text-decoration: underline; }
@@ -103,27 +103,27 @@ function acceptEssential() { saveConsent(false) }
 .gdpr-btn {
   height: 36px;
   padding: 0 16px;
-  border-radius: 8px;
-  font-size: 0.83rem;
+  border-radius: var(--r-full);
+  font-size: var(--t-sm);
   font-weight: 600;
   cursor: pointer;
-  border: 1px solid transparent;
-  font-family: inherit;
+  border: 0.5px solid transparent;
+  font-family: var(--f-ui);
   white-space: nowrap;
-  transition: all 0.15s;
+  transition: all var(--transition-fast);
 }
 .gdpr-btn--primary {
-  background: var(--sw-primary, #FF8838);
-  color: #fff;
-  border-color: var(--sw-primary, #FF8838);
+  background: var(--mm-gold);
+  color: var(--mm-bg);
+  border-color: var(--mm-gold);
 }
-.gdpr-btn--primary:hover { background: #e8702a; border-color: #e8702a; }
+.gdpr-btn--primary:hover { background: var(--mm-goldl); border-color: var(--mm-goldl); }
 .gdpr-btn--ghost {
   background: transparent;
-  color: var(--bw-text, #1E1E1E);
-  border-color: var(--bw-border, #ECEAE3);
+  color: var(--mm-silver);
+  border-color: var(--mm-border-md);
 }
-.gdpr-btn--ghost:hover { background: var(--bw-surface-2, #F6F4EF); }
+.gdpr-btn--ghost:hover { background: var(--mm-surface-3); color: var(--mm-pearl); }
 
 .gdpr-slide-enter-active,
 .gdpr-slide-leave-active { transition: transform 0.3s ease, opacity 0.3s ease; }

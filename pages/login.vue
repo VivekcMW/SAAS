@@ -363,9 +363,9 @@ const tryDemo = async (d: DemoAccount) => {
   border-color: var(--mm-gold);
   box-shadow: 0 0 0 3px var(--mm-gold-soft);
 }
-.field input[aria-invalid="true"] { border-color: #dc2626; }
+.field input[aria-invalid="true"] { border-color: var(--mm-err, #dc2626); }
 .field input:disabled { background: var(--mm-s3); color: var(--mm-slate); cursor: not-allowed; }
-.field-error { margin: 0; font-size: 12px; color: #dc2626; }
+.field-error { margin: 0; font-size: 12px; color: var(--mm-err, #dc2626); }
 
 .forgot {
   font-size: 12px;
@@ -412,7 +412,7 @@ const tryDemo = async (d: DemoAccount) => {
   padding: 10px 12px;
   border: 0.5px solid rgba(220, 38, 38, 0.4);
   background: rgba(220, 38, 38, 0.08);
-  color: #fca5a5;
+  color: var(--mm-err-light, #fca5a5);
   border-radius: var(--r-sm);
   font-size: 13px;
 }
@@ -427,7 +427,7 @@ const tryDemo = async (d: DemoAccount) => {
   padding: 12px 16px;
   margin-top: 4px;
   background: var(--mm-gold);
-  color: #0A0700;
+  color: var(--mm-bg);
   border: 0;
   border-radius: var(--r-sm);
   font-family: inherit;

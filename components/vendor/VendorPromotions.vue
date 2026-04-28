@@ -69,7 +69,7 @@
 
     <div v-if="openNew" class="new-modal" @click.self="openNew = false">
       <div class="new-modal__card bw-card">
-        <h3 style="font-family: 'Syne'; margin: 0 0 12px;">New promotion</h3>
+        <h3 style="font-family: var(--f-ui); margin: 0 0 12px;">New promotion</h3>
         <p style="color: var(--vw-text-muted); font-size: 0.88rem; margin: 0 0 14px;">AI will suggest a discount % based on your conversion rate and competitor offers.</p>
         <label class="bw-label">Listing</label>
         <select class="bw-select" style="margin-bottom: 10px;">
@@ -120,7 +120,7 @@ function statusChip(s: string) {
 .promo { display: flex; flex-direction: column; gap: 10px; }
 .promo-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
 .promo-listing { font-size: 0.78rem; color: var(--vw-text-subtle); }
-.promo-label { font-family: 'Syne'; font-size: 1rem; margin: 2px 0 0; }
+.promo-label { font-family: var(--f-ui); font-size: 1rem; margin: 2px 0 0; }
 .promo-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 10px; background: var(--vw-surface-2); border-radius: 10px; }
 .promo-stat { display: flex; flex-direction: column; text-align: center; }
 .promo-stat__n { font-weight: 700; font-size: 0.95rem; }

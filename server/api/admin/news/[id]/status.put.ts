@@ -1,4 +1,4 @@
-che/**
+/**
  * PUT /api/admin/news/:id/status
  * Admin approves or rejects a news post.
  * Body: { status: 'published' | 'rejected', adminNote?: string, featured?: boolean }

@@ -1,4 +1,4 @@
-import { getDb } from '../../../utils/database'
+import { getDb } from '~/server/utils/database'
 
 export default defineEventHandler(async (event) => {
   const userId = event.context.params?.id as string

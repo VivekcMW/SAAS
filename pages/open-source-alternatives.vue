@@ -24,7 +24,7 @@
           <span class="oss-card__cat">{{ app.category }}</span>
           <p class="oss-card__desc">{{ app.description }}</p>
           <div class="oss-card__meta">
-            <span class="oss-card__rating">★ {{ app.rating.toFixed(1) }}</span>
+            <span class="oss-card__rating"><span class="oss-star" aria-hidden="true">★</span> {{ app.rating.toFixed(1) }}</span>
             <span class="oss-card__badge">Open Source</span>
           </div>
         </div>
@@ -80,7 +80,8 @@ useHead({
 .oss-card__cat { font-size: 0.7rem; color: var(--aw-text-muted); text-transform: uppercase; }
 .oss-card__desc { font-size: 0.83rem; color: var(--aw-text-muted); line-height: 1.5; }
 .oss-card__meta { display: flex; gap: 10px; align-items: center; }
-.oss-card__rating { font-size: 0.8rem; color: var(--aw-accent); font-weight: 700; }
+.oss-card__rating { font-size: 0.8rem; color: var(--mm-gold); font-weight: 700; }
+.oss-star { color: var(--mm-gold); }
 .oss-card__badge { background: var(--aw-green-50, #ecfdf5); color: var(--aw-green-700, #047857); font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
 .spinner { width: 28px; height: 28px; border: 3px solid var(--aw-border); border-top-color: var(--aw-accent); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto; }
 @keyframes spin { to { transform: rotate(360deg); } }
