@@ -9,7 +9,7 @@
     <div class="dash-shell__main">
       <DashTopbar :user="currentUser" @toggleSidebar="sidebarCollapsed = !sidebarCollapsed" @logout="onLogout" />
       <main class="dash-shell__content">
-        <NuxtPage />
+        <NuxtPage :key="$route.path" />
       </main>
     </div>
   </div>
