@@ -20,18 +20,18 @@
       </div>
       <div class="bw-kpi">
         <div class="bw-kpi__label">MRR</div>
-        <div class="bw-kpi__value">${{ kpis.mrr.toLocaleString() }}</div>
-        <div class="bw-kpi__foot">+{{ kpis.mrrGrowth }}% 12-mo</div>
+        <div class="bw-kpi__value">${{ (kpis.mrr ?? 0).toLocaleString() }}</div>
+        <div class="bw-kpi__foot">+{{ kpis.mrrGrowth ?? 0 }}% 12-mo</div>
       </div>
       <div class="bw-kpi">
         <div class="bw-kpi__label">Intent signals</div>
-        <div class="bw-kpi__value">{{ liveStats?.intentEvents.last30d ?? '—' }}</div>
+        <div class="bw-kpi__value">{{ liveStats?.intentEvents?.last30d ?? '—' }}</div>
         <div class="bw-kpi__foot">Last 30 days</div>
       </div>
       <div class="bw-kpi">
         <div class="bw-kpi__label">Discovery queue</div>
         <div class="bw-kpi__value">
-          <NuxtLink to="/dashboard/discovery" class="bw-kpi__link">{{ liveStats?.discovery.pending ?? kpis.pendingApps }}</NuxtLink>
+          <NuxtLink to="/dashboard/discovery" class="bw-kpi__link">{{ liveStats?.discovery?.pending ?? kpis.pendingApps }}</NuxtLink>
         </div>
         <div class="bw-kpi__foot">Pending review</div>
       </div>
@@ -123,12 +123,12 @@ const kpis = computed(() => {
   if (liveStats.value) {
     const s = liveStats.value
     return {
-      totalUsers: s.users.total,
-      totalBuyers: s.users.buyers,
-      totalVendors: s.users.vendors,
-      liveApps: s.listings.published,
-      pendingApps: s.listings.pending,
-      mrr: s.subscriptions.mrr,
+      totalUsers: s.users?.total ?? 0,
+      totalBuyers: s.users?.buyers ?? 0,
+      totalVendors: s.users?.vendors ?? 0,
+      liveApps: s.listings?.published ?? 0,
+      pendingApps: s.listings?.pending ?? 0,
+      mrr: s.subscriptions?.mrr ?? 0,
       mrrGrowth: 0,
       openTickets: 0
     }
