@@ -7,7 +7,7 @@
 import { getDb, makeId } from '~/server/utils/database'
 import { getSessionUser } from '~/server/utils/auth'
 import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
-import { sendEmail } from '~/server/utils/email'
+import { buildNewLeadAlertEmail, sendEmail } from '~/server/utils/email'
 
 const VALID_EVENT_TYPES = [
   'view', 'compare', 'pricing_view', 'bookmark', 'demo_request', 'copilot_mention'
@@ -91,12 +91,15 @@ export default defineEventHandler(async (event) => {
 
       if (vendorRow) {
         const eventLabel = eventType === 'demo_request' ? 'a demo request' : 'a pricing page visit'
-        sendEmail({
+        sendEmail(buildNewLeadAlertEmail({
           to: vendorRow.email,
-          subject: `New lead signal for ${vendorRow.app_name} on Moonmart`,
-          text: `Hi ${vendorRow.first_name},\n\nA potential buyer just triggered ${eventLabel} for ${vendorRow.app_name}.\n\n${user?.companyName ? `Company: ${user.companyName}\n` : ''}${user?.jobTitle ? `Role: ${user.jobTitle}\n` : ''}\nSign in to your vendor dashboard to view and respond:\nhttps://moonmart.ai/dashboard/leads\n\n— The Moonmart Team`,
-          html: `<p>Hi ${vendorRow.first_name},</p><p>A potential buyer just triggered <strong>${eventLabel}</strong> for <strong>${vendorRow.app_name}</strong>.</p>${user?.companyName ? `<p>Company: ${user.companyName}</p>` : ''}${user?.jobTitle ? `<p>Role: ${user.jobTitle}</p>` : ''}<p><a href="https://moonmart.ai/dashboard/leads" style="background:#FF8838;color:#fff;padding:8px 16px;border-radius:6px;text-decoration:none;display:inline-block">View Lead</a></p><p>— The Moonmart Team</p>`
-        }).catch(err => console.error('[intent-event] vendor notify email failed:', err))
+          vendorName: vendorRow.first_name || 'there',
+          appName: vendorRow.app_name,
+          eventType,
+          companyName: user?.companyName ?? undefined,
+          jobTitle: user?.jobTitle ?? undefined
+        })).catch(err => console.error('[intent-event] vendor notify email failed:', err))
+        void eventLabel // suppress unused warning
         db.prepare('UPDATE buyer_intent_events SET notified_vendor = 1 WHERE app_id = ? AND created_at = ?').run(appId, now)
       }
     } catch (err) {

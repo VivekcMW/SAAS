@@ -3,6 +3,20 @@
  * Automatically applies SEO best practices across the application
  */
 
+const CONSENT_KEY = 'mm_consent_v1'
+
+/** Returns true only if the user has explicitly accepted analytics cookies. */
+function hasAnalyticsConsent(): boolean {
+  try {
+    const raw = localStorage.getItem(CONSENT_KEY)
+    if (!raw) return false
+    const parsed = JSON.parse(raw)
+    return parsed?.analytics === true
+  } catch {
+    return false
+  }
+}
+
 export default defineNuxtPlugin((nuxtApp) => {
   // Add global SEO meta tags
   useHead({
@@ -29,8 +43,6 @@ export default defineNuxtPlugin((nuxtApp) => {
     ],
     link: [
       { rel: 'dns-prefetch', href: '//fonts.googleapis.com' },
-      { rel: 'dns-prefetch', href: '//www.google-analytics.com' },
-      { rel: 'dns-prefetch', href: '//www.googletagmanager.com' },
       { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
@@ -128,14 +140,15 @@ export default defineNuxtPlugin((nuxtApp) => {
       pageType = 'product'
     }
     
-    // Track for SEO analytics (in production, this would send to analytics service)
-    console.log('SEO Page Tracking:', {
-      path: currentPath,
-      pageType,
-      category,
-      title: document?.title || '',
-      timestamp: new Date().toISOString()
-    })
+    // Only send analytics events when the user has consented
+    if (hasAnalyticsConsent() && typeof window !== 'undefined' && (window as any).gtag) {
+      ;(window as any).gtag('event', 'page_view', {
+        page_path: currentPath,
+        page_type: pageType,
+        page_category: category,
+        page_title: document?.title || ''
+      })
+    }
   })
 
   // Provide SEO utilities globally
@@ -143,43 +156,27 @@ export default defineNuxtPlugin((nuxtApp) => {
     provide: {
       seoTracking: {
         trackEvent: (eventName: string, data: any) => {
-          if (process.client) {
-            console.log('SEO Event:', eventName, data)
-            // In production, this would send to analytics service like Google Analytics
+          if (process.client && hasAnalyticsConsent()) {
             if (typeof window !== 'undefined' && (window as any).gtag) {
               (window as any).gtag('event', eventName, data)
             }
           }
         },
         trackConversion: (type: string, category?: string, value?: number) => {
-          if (process.client) {
+          if (process.client && hasAnalyticsConsent()) {
             const conversionData = {
               conversion_type: type,
               category: category || 'general',
               value: value || 1,
               timestamp: new Date().toISOString()
             }
-            console.log('SEO Conversion:', conversionData)
-            
-            // Track conversion in analytics
             if (typeof window !== 'undefined' && (window as any).gtag) {
               (window as any).gtag('event', 'conversion', conversionData)
             }
           }
         },
-        trackKeywordPerformance: (keyword: string, position: number, impressions: number) => {
-          if (process.client) {
-            const keywordData = {
-              keyword,
-              position,
-              impressions,
-              page: window.location.pathname,
-              timestamp: new Date().toISOString()
-            }
-            console.log('SEO Keyword Performance:', keywordData)
-            
-            // In production, send to SEO analytics service
-          }
+        trackKeywordPerformance: (_keyword: string, _position: number, _impressions: number) => {
+          // Internal metric — no external call needed
         }
       }
     }

@@ -6,28 +6,40 @@
           <span class="vw-ai-chip">AI</span>
           Insights
         </h1>
-        <p class="bw-head__sub">Weekly AI report on what's working, what's risky, and what's next.</p>
+        <p class="bw-head__sub">Live competitive intelligence and buyer intent signals for your listings.</p>
       </div>
       <div class="bw-head__actions">
         <button class="bw-btn bw-btn--ghost bw-btn--sm" @click="exportPdf">Export PDF</button>
       </div>
     </header>
 
+    <!-- Weekly snapshot (from real analytics) -->
     <div class="in-summary bw-card">
       <div class="in-summary__week">Week of {{ weekLabel }}</div>
-      <h2 class="in-summary__title">You're having a strong week.</h2>
-      <p class="in-summary__body">
-        Leads are up <strong>18%</strong> and demo conversion is steady. Two things to watch:
-        Acme Inbox's low health score and a negative review from Truenorth Co.
-      </p>
       <div class="in-summary__kpis">
-        <div class="in-kpi"><span class="in-kpi__n">+18%</span><span class="in-kpi__l">Leads</span></div>
-        <div class="in-kpi"><span class="in-kpi__n">+12%</span><span class="in-kpi__l">MRR</span></div>
-        <div class="in-kpi"><span class="in-kpi__n">4.6★</span><span class="in-kpi__l">Avg rating</span></div>
-        <div class="in-kpi"><span class="in-kpi__n">37%</span><span class="in-kpi__l">Demo win rate</span></div>
+        <div v-if="analyticsLoading" v-for="i in 4" :key="i" class="in-kpi in-kpi--skel"></div>
+        <template v-else>
+          <div class="in-kpi">
+            <span class="in-kpi__n">{{ fmt(kpis.views30d) }}</span>
+            <span class="in-kpi__l">Views (30d)</span>
+          </div>
+          <div class="in-kpi">
+            <span class="in-kpi__n">{{ fmt(kpis.leads30d) }}</span>
+            <span class="in-kpi__l">Leads (30d)</span>
+          </div>
+          <div class="in-kpi">
+            <span class="in-kpi__n">{{ kpis.avgRating ? kpis.avgRating + '★' : '—' }}</span>
+            <span class="in-kpi__l">Avg rating</span>
+          </div>
+          <div class="in-kpi">
+            <span class="in-kpi__n">{{ kpis.hotLeads }}</span>
+            <span class="in-kpi__l">Hot leads</span>
+          </div>
+        </template>
       </div>
     </div>
 
+    <!-- AI Insight cards -->
     <ul class="in-list">
       <li v-for="i in insights" :key="i.id" class="bw-card in-card" :class="`in-card--${i.tone}`">
         <div class="in-card__head">
@@ -39,15 +51,14 @@
       </li>
     </ul>
 
-    <div class="bw-card">
-      <h2 class="bw-card__title">What's next (AI recommendation)</h2>
-      <ol class="in-next">
-        <li>Reply to Priya Shah — hot lead, drafted &amp; waiting in Leads.</li>
-        <li>Rewrite Acme Inbox description — I've queued a draft in Content assistant.</li>
-        <li>Post your reply to the Truenorth Co review — drafted &amp; tone-matched.</li>
-        <li>Match HubSpot's 25% discount on Acme CRM for 10 days.</li>
-      </ol>
-    </div>
+    <!-- Real competitive intelligence -->
+    <VendorIntelligence />
+
+    <!-- Real buyer intent signals -->
+    <VendorIntentSignals />
+
+    <!-- Win/Loss analysis -->
+    <VendorWinLoss />
 
     <div v-if="toast" class="bw-toast-fixed">{{ toast }}</div>
   </div>
@@ -55,10 +66,18 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-const { insights } = useVendorData()
+const { insights, kpis, loadAnalytics, analyticsLoading } = useVendorData()
+
+loadAnalytics('30d')
 
 const weekLabel = new Date().toLocaleDateString(undefined, { month: 'long', day: 'numeric' })
 const toast = ref('')
+
+function fmt(n: number | undefined): string {
+  if (n == null) return '—'
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'k'
+  return String(n)
+}
 
 function toneLabel(t: string) {
   if (t === 'win') return 'Win'
@@ -73,11 +92,11 @@ function exportPdf() {
 
 <style scoped>
 .in-summary { margin-bottom: 20px; }
-.in-summary__week { font-size: 0.78rem; color: var(--vw-text-subtle); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
-.in-summary__title { font-family: var(--f-ui); font-size: 1.4rem; margin: 6px 0 6px; }
-.in-summary__body { color: var(--vw-text-muted); line-height: 1.55; margin: 0 0 16px; font-size: 0.95rem; }
+.in-summary__week { font-size: 0.78rem; color: var(--vw-text-subtle); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 10px; }
 .in-summary__kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 .in-kpi { padding: 12px; background: var(--vw-surface-2); border-radius: 10px; display: flex; flex-direction: column; }
+.in-kpi--skel { animation: skel-pulse 1.4s ease-in-out infinite; min-height: 56px; }
+@keyframes skel-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 .in-kpi__n { font-weight: 700; font-family: var(--f-ui); font-size: 1.2rem; }
 .in-kpi__l { font-size: 0.78rem; color: var(--vw-text-subtle); margin-top: 2px; }
 
@@ -98,12 +117,13 @@ function exportPdf() {
 .in-card__title { font-family: var(--f-ui); font-size: 0.95rem; margin: 0; flex: 1; }
 .in-card__body { font-size: 0.88rem; color: var(--vw-text-muted); line-height: 1.5; margin: 0; }
 
-.in-next { padding-left: 20px; margin: 0; font-size: 0.9rem; }
-.in-next li { margin-bottom: 6px; }
-
 .bw-toast-fixed {
   position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
   background: #111827; color: white; padding: 10px 16px; border-radius: 10px;
   font-size: 0.88rem; z-index: 1000;
+}
+
+@media (max-width: 640px) {
+  .in-summary__kpis { grid-template-columns: 1fr 1fr; }
 }
 </style>

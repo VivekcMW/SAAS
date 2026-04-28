@@ -1090,6 +1090,20 @@ function createSchema(db: Database.Database) {
       updated_at TEXT NOT NULL
     );
     CREATE INDEX IF NOT EXISTS idx_contracts_user ON contracts(user_id, end_date);
+
+    CREATE TABLE IF NOT EXISTS vendor_compliance_badges (
+      id TEXT PRIMARY KEY,
+      app_id TEXT NOT NULL REFERENCES app_listings(id) ON DELETE CASCADE,
+      badge_type TEXT NOT NULL,
+      region TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'verified',
+      verified_at TEXT,
+      source_url TEXT,
+      created_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_vcb_app ON vendor_compliance_badges(app_id);
+    CREATE INDEX IF NOT EXISTS idx_vcb_region ON vendor_compliance_badges(region);
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_vcb_app_badge ON vendor_compliance_badges(app_id, badge_type, region);
   `)
 }
 

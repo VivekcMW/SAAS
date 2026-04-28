@@ -16,8 +16,8 @@ export function useCsrf() {
   const csrfCookie = useCookie<string>('csrf_token')
 
   const csrfHeaders = computed<Record<string, string>>(() => {
-    if (!csrfCookie.value) return {}
-    return { 'X-CSRF-Token': csrfCookie.value }
+    if (!csrfCookie.value) return {} as Record<string, string>
+    return { 'X-CSRF-Token': csrfCookie.value } as Record<string, string>
   })
 
   return { csrfHeaders, csrfToken: csrfCookie }

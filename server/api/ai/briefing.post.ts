@@ -4,7 +4,7 @@
  * Requires authentication (Pro feature).
  */
 import { getDb, makeId } from '~/server/utils/database'
-import { requireUser } from '~/server/utils/auth'
+import { requirePlan } from '~/server/utils/auth'
 import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
 import { getMarketplaceAppByIdOrSlug } from '~/server/utils/apps'
 import { randomBytes } from 'node:crypto'
@@ -21,7 +21,7 @@ interface BriefingRequest {
 }
 
 export default defineEventHandler(async (event) => {
-  const user = await requireUser(event)
+  const user = await requirePlan(event, 'Professional')
 
   if (!checkRateLimit(getClientIp(event), { limit: 10, windowMs: 24 * 60 * 60 * 1000, prefix: 'ai-briefing' })) {
     throw createError({ statusCode: 429, statusMessage: 'Briefing limit reached. Please try again tomorrow.' })

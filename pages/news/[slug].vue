@@ -64,6 +64,9 @@
           <div class="na-body-col">
             <div class="na-body">
               <div class="na-body__content prose" v-html="bodyHtml"></div>
+
+              <!-- AI Insight: what this means for buyers -->
+              <NewsAIInsight :slug="slug" />
             </div>
 
             <!-- Tags -->

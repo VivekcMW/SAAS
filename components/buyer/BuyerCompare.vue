@@ -7,7 +7,10 @@
       </div>
       <div class="bw-head__actions">
         <button class="bw-btn bw-btn--ghost" :disabled="picks.length === 0" @click="picks = []">Clear</button>
-        <button class="bw-btn bw-btn--primary" :disabled="picks.length < 2" @click="exportCompare">Export PDF</button>
+        <button class="bw-btn bw-btn--primary" :disabled="picks.length < 2" @click="showBriefing = true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>
+          Generate AI Brief
+        </button>
       </div>
     </header>
 
@@ -84,6 +87,14 @@
       <p class="bw-empty__desc">Select 2–4 apps above to see the side-by-side comparison and total-cost estimate.</p>
     </div>
   </div>
+
+  <!-- Briefing modal (mounted outside the scroll container) -->
+  <BriefingModal
+    v-if="showBriefing"
+    :app-ids="picks"
+    :app-names="selectedApps.map(a => a.name)"
+    @close="showBriefing = false"
+  />
 </template>
 
 <script setup lang="ts">
@@ -93,6 +104,7 @@ import { useBuyerData, type SavedApp } from '~/composables/useBuyerData'
 const { savedApps } = useBuyerData()
 const picks = ref<string[]>(savedApps.value.slice(0, 2).map(a => a.id))
 const seats = ref(10)
+const showBriefing = ref(false)
 
 const selectedApps = computed(() => savedApps.value.filter(a => picks.value.includes(a.id)))
 
@@ -105,10 +117,6 @@ const rows: Row[] = [
   { key: 'integrations', label: 'Key integrations', render: a => a.integrations.slice(0, 3).join(', ') },
   { key: 'status', label: 'Your stage', render: a => a.status.replace('-', ' ') }
 ]
-
-const exportCompare = () => {
-  window.print()
-}
 </script>
 
 <style scoped>

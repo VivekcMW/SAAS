@@ -11,6 +11,8 @@ const props = defineProps<{
   appName: string
 }>()
 
+const { currentUser } = useAuth()
+
 const suggestions = [
   `Does ${props.appName} integrate with Slack?`,
   `Is ${props.appName} HIPAA compliant?`,
@@ -22,6 +24,7 @@ const messages = ref<ChatMessage[]>([])
 const input = ref('')
 const loading = ref(false)
 const scrollEl = ref<HTMLElement | null>(null)
+const sessionId = ref<string | null>(null)
 
 async function send(text?: string) {
   const q = (text ?? input.value).trim()
@@ -33,20 +36,35 @@ async function send(text?: string) {
   await scrollToBottom()
 
   try {
-    // Phase 2 stub: derive a contextual answer from the summary endpoint.
-    // Replace with a streaming chat endpoint when wiring a real LLM.
-    const res = await $fetch<{ pitch: string; pros: string[]; cons: string[]; verdict: string }>(
-      '/api/ai/app-summary',
-      { method: 'POST', body: { appId: props.appId } }
-    )
-    const answer = composeAnswer(q, res)
-    messages.value.push({ role: 'assistant', text: answer })
-  } catch (e) {
-    console.error(e)
-    messages.value.push({
-      role: 'assistant',
-      text: "I'm having trouble answering that right now. Please try again."
-    })
+    if (currentUser.value) {
+      // Authenticated: use real AI copilot with app context
+      const res = await $fetch<{ sessionId: string; reply: string }>(
+        '/api/ai/copilot',
+        {
+          method: 'POST',
+          body: {
+            message: q,
+            sessionId: sessionId.value ?? undefined,
+            context: { appId: props.appId, appName: props.appName }
+          }
+        }
+      )
+      sessionId.value = res.sessionId
+      messages.value.push({ role: 'assistant', text: res.reply })
+    } else {
+      // Unauthenticated: derive a contextual answer from the app-summary endpoint
+      const res = await $fetch<{ pitch: string; pros: string[]; cons: string[]; verdict: string }>(
+        '/api/ai/app-summary',
+        { method: 'POST', body: { appId: props.appId } }
+      )
+      messages.value.push({ role: 'assistant', text: composeAnswer(q, res) })
+    }
+  } catch (e: unknown) {
+    const code = (e as { statusCode?: number })?.statusCode
+    const msg = code === 429
+      ? 'Rate limit reached. Please try again in a moment.'
+      : "I'm having trouble answering that right now. Please try again."
+    messages.value.push({ role: 'assistant', text: msg })
   } finally {
     loading.value = false
     await scrollToBottom()
@@ -73,7 +91,6 @@ function composeAnswer(
   if (/(verdict|recommend|should i|worth)/.test(lower)) {
     return data.verdict
   }
-  // Fallback: short pitch
   const strength = data.pros[0] ? ` One key strength: ${data.pros[0].toLowerCase()}.` : ''
   return `${data.pitch}${strength}`
 }
@@ -87,6 +104,7 @@ async function scrollToBottom() {
 
 function clearChat() {
   messages.value = []
+  sessionId.value = null
 }
 </script>
 

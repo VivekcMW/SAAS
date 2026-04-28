@@ -1,5 +1,6 @@
 import { getDb, makeId } from '~/server/utils/database'
 import { getSessionUser } from '~/server/utils/auth'
+import { buildEnquiryNotificationEmail, sendEmail } from '~/server/utils/email'
 
 export default defineEventHandler(async (event) => {
   const db = getDb()
@@ -10,7 +11,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'appId, subject, and message are required' })
   }
 
-  const app = db.prepare('SELECT id, vendor_id FROM app_listings WHERE id = ?').get(body.appId) as { id: string; vendor_id: string } | undefined
+  const app = db.prepare('SELECT id, name, vendor_id FROM app_listings WHERE id = ?').get(body.appId) as { id: string; name: string; vendor_id: string } | undefined
   if (!app) throw createError({ statusCode: 404, statusMessage: 'App not found' })
 
   const buyerEmail = user?.email || body.buyerEmail
@@ -28,6 +29,24 @@ export default defineEventHandler(async (event) => {
     INSERT INTO enquiry_messages (id, enquiry_id, sender_id, sender_email, body, created_at)
     VALUES (?, ?, ?, ?, ?, datetime('now'))
   `).run(msgId, enquiryId, user?.id ?? null, buyerEmail, body.message)
+
+  // Notify the vendor by email
+  const vendorUser = db.prepare(`
+    SELECT u.email, u.first_name FROM users u
+    INNER JOIN vendor_profiles vp ON vp.user_id = u.id
+    WHERE vp.id = ?
+  `).get(app.vendor_id) as { email: string; first_name: string } | undefined
+
+  if (vendorUser?.email) {
+    sendEmail(buildEnquiryNotificationEmail({
+      to: vendorUser.email,
+      vendorName: vendorUser.first_name || 'there',
+      appName: app.name,
+      buyerName,
+      buyerEmail,
+      message: body.message
+    })).catch(err => console.error('[enquiries] vendor notification failed:', err))
+  }
 
   return { success: true, enquiryId }
 })

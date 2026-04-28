@@ -378,6 +378,47 @@ export async function requireAdmin(event: H3Event) {
   return user
 }
 
+/**
+ * Plan hierarchy for comparison.
+ * free < starter < Professional < Enterprise
+ */
+const PLAN_RANK: Record<string, number> = {
+  free: 0,
+  starter: 1,
+  professional: 2,
+  enterprise: 3,
+  // Stripe plan keys
+  'vendor-growth': 2,
+  'buyer-pro': 2,
+}
+
+function planRank(plan: string | null | undefined): number {
+  return PLAN_RANK[(plan ?? '').toLowerCase()] ?? 0
+}
+
+/**
+ * requirePlan — throws 402 if the authenticated user's plan rank is below
+ * the required minimum plan.
+ *
+ * Usage:
+ *   await requirePlan(event, 'Professional')
+ */
+export async function requirePlan(event: H3Event, minimumPlan: string) {
+  const user = await requireUser(event)
+  // Admins bypass plan gates
+  if (user.role === 'admin') return user
+
+  if (planRank(user.plan) < planRank(minimumPlan)) {
+    throw createError({
+      statusCode: 402,
+      statusMessage: `This feature requires a ${minimumPlan} plan or higher. Upgrade from your billing settings.`,
+      data: { requiredPlan: minimumPlan, currentPlan: user.plan }
+    })
+  }
+
+  return user
+}
+
 export function authenticateUser(email: string, password: string) {
   const normalised = normalizeEmail(email)
 

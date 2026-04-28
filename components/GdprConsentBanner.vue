@@ -47,6 +47,19 @@ function saveConsent(analytics: boolean) {
       method: 'POST',
       body: { analytics, marketing: false }
     }).catch(() => {})
+
+    // Inject analytics resources now that consent is granted
+    if (analytics && typeof document !== 'undefined') {
+      const addDnsPrefetch = (href: string) => {
+        if (document.querySelector(`link[href="${href}"]`)) return
+        const link = document.createElement('link')
+        link.rel = 'dns-prefetch'
+        link.href = href
+        document.head.appendChild(link)
+      }
+      addDnsPrefetch('//www.google-analytics.com')
+      addDnsPrefetch('//www.googletagmanager.com')
+    }
   } catch {
     // ignore
   }

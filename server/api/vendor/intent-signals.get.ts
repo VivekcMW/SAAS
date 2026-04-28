@@ -4,12 +4,10 @@
  * Requires a paid plan (starter or higher).
  */
 import { getDb } from '~/server/utils/database'
-import { requireVendor } from '~/server/utils/auth'
-
-const PAID_PLANS = ['starter', 'growth', 'scale', 'professional', 'enterprise', 'pro']
+import { requirePlan } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
-  const user = await requireVendor(event)
+  const user = await requirePlan(event, 'starter')
   const db = getDb()
 
   // Get vendor profile
@@ -20,20 +18,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'Vendor profile not found' })
   }
 
-  // Check plan — intent signals are a paid feature
   const planName = user.plan?.toLowerCase() ?? 'free'
-  const hasPaidPlan = PAID_PLANS.some(p => planName.includes(p))
-
-  if (!hasPaidPlan && user.role !== 'admin') {
-    return {
-      signals: [],
-      totalSignals: 0,
-      hotSignals: 0,
-      plan: planName,
-      upgradeRequired: true,
-      message: 'Upgrade to a paid plan to unlock buyer intent signals.'
-    }
-  }
 
   const q = getQuery(event)
   const page = Math.max(1, Number(q.page) || 1)

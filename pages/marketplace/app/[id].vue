@@ -567,6 +567,7 @@ function getCategoryLabel(cat?: string): string {
           <div v-if="trustBadges.length" class="trust-row">
             <AppTrustBadges :badges="trustBadges" />
           </div>
+          <ComplianceBadges :app-id="app.id" />
         </section>
 
         <!-- AI Insights (Phase 2) -->
@@ -695,6 +696,7 @@ function getCategoryLabel(cat?: string): string {
             <p class="section-sub">Simple plans that grow with you</p>
           </header>
           <AppPricingCards :plans="pricingPlans" @select="handleTrial" />
+          <PricingIntelligence :app-id="app.id" style="margin-top: 20px;" />
         </section>
 
         <!-- Power Tools (Phase 4): ROI + Price Alert -->

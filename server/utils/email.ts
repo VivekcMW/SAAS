@@ -335,3 +335,78 @@ Respond from your vendor dashboard: https://moonmart.ai/dashboard/leads
     text
   }
 }
+
+export function buildWeeklyDigestEmail(data: {
+  to: string
+  firstName: string
+  newApps: Array<{ name: string; tagline: string; slug: string }>
+  topCategories: string[]
+  weekNumber: number
+}): EmailMessage {
+  const appLines = data.newApps
+    .slice(0, 5)
+    .map(a => `• ${a.name} — ${a.tagline}\n  https://moonmart.ai/marketplace/${a.slug}`)
+    .join('\n\n')
+
+  const text = `Hi ${data.firstName},
+
+Here's your Moonmart weekly digest (Week ${data.weekNumber}):
+
+NEW TOOLS THIS WEEK
+${appLines || 'No new tools this week — check back soon!'}
+
+TRENDING CATEGORIES
+${data.topCategories.slice(0, 3).join(', ')}
+
+Browse everything: https://moonmart.ai/marketplace
+
+Manage your preferences: https://moonmart.ai/dashboard/overview
+
+— The Moonmart Team
+
+To unsubscribe, visit https://moonmart.ai/dashboard/overview and turn off Weekly Digest.
+`
+  return {
+    to: data.to,
+    subject: `Your Moonmart Weekly Digest — Week ${data.weekNumber}`,
+    text
+  }
+}
+
+export function buildNewLeadAlertEmail(data: {
+  to: string
+  vendorName: string
+  appName: string
+  eventType: string
+  companyName?: string
+  jobTitle?: string
+  dashboardUrl?: string
+}): EmailMessage {
+  const url = data.dashboardUrl ?? 'https://moonmart.ai/dashboard/leads'
+  const signal = data.eventType === 'demo_request'
+    ? 'requested a demo'
+    : data.eventType === 'pricing_view'
+    ? 'viewed your pricing page'
+    : `viewed ${data.appName}`
+
+  const text = `Hi ${data.vendorName},
+
+A potential buyer just ${signal} for ${data.appName} on Moonmart.
+
+${data.companyName ? `Company: ${data.companyName}\n` : ''}${data.jobTitle ? `Role: ${data.jobTitle}\n` : ''}
+View in your dashboard: ${url}
+
+— The Moonmart Team`
+
+  return {
+    to: data.to,
+    subject: `New lead signal for ${data.appName} on Moonmart`,
+    text,
+    html: `<p>Hi ${data.vendorName},</p>
+<p>A potential buyer just <strong>${signal}</strong> for <strong>${data.appName}</strong>.</p>
+${data.companyName ? `<p>Company: ${data.companyName}</p>` : ''}
+${data.jobTitle ? `<p>Role: ${data.jobTitle}</p>` : ''}
+<p><a href="${url}" style="background:#FF8838;color:#fff;padding:8px 16px;border-radius:6px;text-decoration:none;display:inline-block">View Lead</a></p>
+<p>— The Moonmart Team</p>`
+  }
+}

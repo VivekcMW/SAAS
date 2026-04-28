@@ -13,23 +13,65 @@ interface Summary {
   generatedAt?: string
 }
 
+interface ReviewSynthesis {
+  appId: string
+  cachedAt: string | null
+  reviewCount: number
+  consensus: string
+  powerUserView: string
+  dealBreakers: string[]
+  bestFor: string[]
+  worstFor: string[]
+  sentimentTrend: {
+    direction: 'improving' | 'stable' | 'declining'
+    last30d: number
+    last90d: number
+    note: string
+  }
+}
+
 const props = defineProps<{
   appId: string
   appName: string
 }>()
 
-type TabKey = 'pitch' | 'pros' | 'cons' | 'verdict'
+interface NegotiationData {
+  appId: string
+  appName: string
+  listPrice: number | null
+  typicalDiscountPct: number
+  bestQuarter: string
+  tips: string[]
+  briefContent: string
+  cachedAt: string | null
+}
+
+type TabKey = 'pitch' | 'pros' | 'cons' | 'verdict' | 'reviews' | 'negotiate'
 const tab = ref<TabKey>('pitch')
 const context = ref<'default' | 'sales' | 'engineering' | 'marketing'>('default')
 const summary = ref<Summary | null>(null)
 const loading = ref(false)
 const errMsg = ref('')
 
+// Review synthesis state — loaded lazily on first tab click
+const synthesis = ref<ReviewSynthesis | null>(null)
+const synthLoading = ref(false)
+const synthErr = ref('')
+const synthLoaded = ref(false)
+
+// Negotiation state — loaded lazily on first tab click
+const negotiation = ref<NegotiationData | null>(null)
+const negLoading = ref(false)
+const negErr = ref('')
+const negLoaded = ref(false)
+
 const tabs: { key: TabKey; label: string; icon: string }[] = [
   { key: 'pitch', label: '30-sec Pitch', icon: 'heroicons:megaphone' },
   { key: 'pros', label: 'Pros', icon: 'heroicons:hand-thumb-up' },
   { key: 'cons', label: 'Cons', icon: 'heroicons:hand-thumb-down' },
-  { key: 'verdict', label: 'Verdict', icon: 'heroicons:sparkles' }
+  { key: 'verdict', label: 'Verdict', icon: 'heroicons:sparkles' },
+  { key: 'reviews', label: 'Review Insights', icon: 'heroicons:star' },
+  { key: 'negotiate', label: 'Negotiate', icon: 'heroicons:scale' }
 ]
 
 async function load() {
@@ -48,12 +90,74 @@ async function load() {
   }
 }
 
-watch(() => props.appId, () => { load() }, { immediate: true })
+async function loadSynthesis() {
+  if (synthLoaded.value) return
+  synthLoading.value = true
+  synthErr.value = ''
+  try {
+    synthesis.value = await $fetch<ReviewSynthesis>('/api/ai/review-synthesis', {
+      method: 'POST',
+      body: { appId: props.appId }
+    })
+    synthLoaded.value = true
+  } catch (e: unknown) {
+    const code = (e as { statusCode?: number })?.statusCode
+    synthErr.value = code === 429
+      ? 'Rate limit reached. Please try again in a moment.'
+      : 'Unable to load review insights. Please try again.'
+  } finally {
+    synthLoading.value = false
+  }
+}
+
+async function loadNegotiation() {
+  if (negLoaded.value) return
+  negLoading.value = true
+  negErr.value = ''
+  try {
+    negotiation.value = await $fetch<NegotiationData>('/api/ai/negotiation', {
+      method: 'POST',
+      body: { appId: props.appId }
+    })
+    negLoaded.value = true
+  } catch (e: unknown) {
+    const code = (e as { statusCode?: number })?.statusCode
+    if (code === 401) {
+      negErr.value = 'Sign in to access negotiation intelligence.'
+    } else if (code === 429) {
+      negErr.value = 'Rate limit reached. Please try again later.'
+    } else {
+      negErr.value = 'Unable to load negotiation data. Please try again.'
+    }
+  } finally {
+    negLoading.value = false
+  }
+}
+
+watch(() => props.appId, () => {
+  load()
+  synthLoaded.value = false
+  synthesis.value = null
+  negLoaded.value = false
+  negotiation.value = null
+}, { immediate: true })
 watch(context, () => load())
+watch(tab, (t) => {
+  if (t === 'reviews') loadSynthesis()
+  if (t === 'negotiate') loadNegotiation()
+})
 
 const confidencePct = computed(() =>
   summary.value?.confidence ? Math.round(summary.value.confidence * 100) : 0
 )
+
+const trendIcon = computed(() => {
+  if (!synthesis.value) return ''
+  const d = synthesis.value.sentimentTrend.direction
+  if (d === 'improving') return 'heroicons:arrow-trending-up'
+  if (d === 'declining') return 'heroicons:arrow-trending-down'
+  return 'heroicons:minus'
+})
 </script>
 
 <template>
@@ -165,6 +269,130 @@ const confidencePct = computed(() =>
               </ul>
             </div>
           </div>
+        </div>
+
+        <!-- Review Insights -->
+        <div v-else-if="tab === 'reviews'" class="panel-content">
+          <div v-if="synthLoading" class="ai-skel">
+            <div class="skel-line w-90"></div>
+            <div class="skel-line w-75"></div>
+            <div class="skel-line w-60"></div>
+          </div>
+          <div v-else-if="synthErr" class="ai-error">
+            <Icon name="heroicons:exclamation-triangle" />
+            <span>{{ synthErr }}</span>
+            <button class="retry-btn" @click="loadSynthesis">Retry</button>
+          </div>
+          <template v-else-if="synthesis">
+            <!-- Sentiment trend bar -->
+            <div class="synth-trend" :class="`synth-trend--${synthesis.sentimentTrend.direction}`">
+              <Icon :name="trendIcon" class="trend-icon" />
+              <div>
+                <span class="trend-label">{{ synthesis.sentimentTrend.direction === 'improving' ? 'Trending up' : synthesis.sentimentTrend.direction === 'declining' ? 'Trending down' : 'Stable' }}</span>
+                <span class="trend-note">{{ synthesis.sentimentTrend.note }}</span>
+              </div>
+              <div class="trend-scores">
+                <span>Last 30d: <strong>{{ synthesis.sentimentTrend.last30d }}★</strong></span>
+                <span>Last 90d: <strong>{{ synthesis.sentimentTrend.last90d }}★</strong></span>
+              </div>
+            </div>
+
+            <!-- Consensus -->
+            <div class="synth-block">
+              <h3 class="synth-heading">What reviewers agree on</h3>
+              <p class="synth-text">{{ synthesis.consensus }}</p>
+            </div>
+
+            <!-- Power user view -->
+            <div class="synth-block">
+              <h3 class="synth-heading">Power user perspective</h3>
+              <p class="synth-text">{{ synthesis.powerUserView }}</p>
+            </div>
+
+            <!-- Best / Worst for -->
+            <div class="synth-grid">
+              <div class="synth-col synth-col--good">
+                <h3>Best for</h3>
+                <ul>
+                  <li v-for="(item, i) in synthesis.bestFor" :key="i">
+                    <Icon name="heroicons:check-circle" />
+                    <span>{{ item }}</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="synth-col synth-col--warn">
+                <h3>Watch out if you need</h3>
+                <ul>
+                  <li v-for="(item, i) in synthesis.worstFor" :key="i">
+                    <Icon name="heroicons:exclamation-circle" />
+                    <span>{{ item }}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Deal breakers -->
+            <div class="synth-block">
+              <h3 class="synth-heading">Recurring complaints</h3>
+              <ul class="panel-list cons-list">
+                <li v-for="(item, i) in synthesis.dealBreakers" :key="i">
+                  <Icon name="heroicons:x-circle" class="cons-icon" />
+                  <span>{{ item }}</span>
+                </li>
+              </ul>
+            </div>
+
+            <p class="synth-meta">Based on {{ synthesis.reviewCount }} verified reviews{{ synthesis.cachedAt ? ` · cached ${new Date(synthesis.cachedAt).toLocaleDateString()}` : '' }}</p>
+          </template>
+        </div>
+        <!-- Negotiate -->
+        <div v-else-if="tab === 'negotiate'" class="panel-content">
+          <div v-if="negLoading" class="ai-skel">
+            <div class="skel-line w-90"></div>
+            <div class="skel-line w-75"></div>
+            <div class="skel-line w-60"></div>
+          </div>
+          <div v-else-if="negErr" class="ai-error">
+            <Icon name="heroicons:exclamation-triangle" />
+            <span>{{ negErr }}</span>
+            <button class="retry-btn" @click="loadNegotiation">Retry</button>
+          </div>
+          <template v-else-if="negotiation">
+            <!-- Key stats -->
+            <div class="neg-stats">
+              <div class="neg-stat">
+                <span class="neg-stat__value">{{ negotiation.typicalDiscountPct }}%</span>
+                <span class="neg-stat__label">Typical discount achievable</span>
+              </div>
+              <div class="neg-stat">
+                <span class="neg-stat__value">{{ negotiation.bestQuarter }}</span>
+                <span class="neg-stat__label">Best quarter to negotiate</span>
+              </div>
+              <div v-if="negotiation.listPrice" class="neg-stat">
+                <span class="neg-stat__value">${{ Math.round(negotiation.listPrice * (1 - negotiation.typicalDiscountPct / 100)) }}</span>
+                <span class="neg-stat__label">Target price/mo after discount</span>
+              </div>
+            </div>
+
+            <!-- Brief -->
+            <div class="neg-brief">
+              <h3 class="synth-heading">Negotiation overview</h3>
+              <p class="synth-text">{{ negotiation.briefContent }}</p>
+            </div>
+
+            <!-- Tips -->
+            <div class="neg-tips">
+              <h3 class="synth-heading">Actionable tactics</h3>
+              <ol class="neg-tips-list">
+                <li v-for="(tip, i) in negotiation.tips" :key="i">
+                  <span class="neg-tip-num">{{ i + 1 }}</span>
+                  <span>{{ tip }}</span>
+                </li>
+              </ol>
+            </div>
+
+            <p v-if="negotiation.cachedAt" class="synth-meta">Intelligence cached · updated {{ new Date(negotiation.cachedAt).toLocaleDateString() }}</p>
+          </template>
         </div>
       </template>
     </div>
@@ -433,5 +661,130 @@ const confidencePct = computed(() =>
 
 @media (max-width: 640px) {
   .verdict-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Review Insights (synthesis) ─────────────────────────────────── */
+.synth-trend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--r-md);
+  border: 0.5px solid var(--b1);
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+.synth-trend--improving { background: rgba(16, 185, 129, 0.08); border-color: rgba(16,185,129,0.25); }
+.synth-trend--declining { background: rgba(239, 68, 68, 0.08); border-color: rgba(239,68,68,0.2); }
+.synth-trend--stable { background: var(--mm-s3); }
+
+.trend-icon { font-size: 20px; flex-shrink: 0; }
+.synth-trend--improving .trend-icon { color: #10b981; }
+.synth-trend--declining .trend-icon { color: #ef4444; }
+.synth-trend--stable .trend-icon { color: var(--mm-slate); }
+
+.trend-label { font-weight: 700; color: var(--mm-pearl); margin-right: 6px; }
+.trend-note { color: var(--mm-slate); }
+.trend-scores { margin-left: auto; display: flex; gap: 16px; font-size: 12px; color: var(--mm-slate); white-space: nowrap; }
+
+.synth-block { margin-bottom: 16px; }
+.synth-heading {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--mm-slate);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 6px;
+}
+.synth-text { font-size: 14px; color: var(--mm-silver); line-height: 1.6; margin: 0; }
+
+.synth-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.synth-col {
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  border: 0.5px solid var(--b1);
+}
+.synth-col h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 8px; }
+.synth-col ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+.synth-col li { display: flex; align-items: flex-start; gap: 6px; font-size: 13px; color: var(--mm-silver); line-height: 1.45; }
+.synth-col--good { background: rgba(16,185,129,0.06); }
+.synth-col--good h3 { color: #10b981; }
+.synth-col--good .iconify { color: #10b981; flex-shrink: 0; margin-top: 2px; }
+.synth-col--warn { background: rgba(251,191,36,0.06); }
+.synth-col--warn h3 { color: var(--mm-gold); }
+.synth-col--warn .iconify { color: var(--mm-gold); flex-shrink: 0; margin-top: 2px; }
+
+.synth-meta { font-size: 11px; color: var(--mm-slate); margin: 8px 0 0; font-style: italic; }
+
+@media (max-width: 640px) {
+  .synth-grid { grid-template-columns: 1fr; }
+  .trend-scores { display: none; }
+}
+
+/* ── Negotiation tab ────────────────────────────────────────────── */
+.neg-stats {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.neg-stat {
+  flex: 1;
+  min-width: 120px;
+  background: var(--mm-s3);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-md);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.neg-stat__value {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--mm-gold);
+  line-height: 1;
+}
+.neg-stat__label {
+  font-size: 11px;
+  color: var(--mm-slate);
+  font-weight: 500;
+}
+.neg-brief { margin-bottom: 16px; }
+.neg-tips { margin-bottom: 8px; }
+.neg-tips-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.neg-tips-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 14px;
+  color: var(--mm-silver);
+  line-height: 1.5;
+}
+.neg-tip-num {
+  min-width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--mm-gold-soft);
+  color: var(--mm-gold);
+  font-size: 11px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
 }
 </style>

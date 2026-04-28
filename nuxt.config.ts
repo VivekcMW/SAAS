@@ -235,9 +235,8 @@ export default defineNuxtConfig({
         
         // Preconnect for performance
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-        { rel: 'dns-prefetch', href: '//www.google-analytics.com' },
-        { rel: 'dns-prefetch', href: '//www.googletagmanager.com' }
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }
+        // Analytics dns-prefetch is injected client-side only after consent (see plugins/seo.client.ts)
       ],
       htmlAttrs: {
         lang: 'en'

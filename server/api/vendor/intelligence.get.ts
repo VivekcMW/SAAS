@@ -4,24 +4,16 @@
  * Requires a paid plan.
  */
 import { getDb } from '~/server/utils/database'
-import { requireVendor } from '~/server/utils/auth'
-
-const PAID_PLANS = ['growth', 'scale', 'professional', 'enterprise', 'pro']
+import { requirePlan } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
-  const user = await requireVendor(event)
+  const user = await requirePlan(event, 'Professional')
   const db = getDb()
+  const planName = user.plan?.toLowerCase() ?? 'free'
 
   const vendor = db.prepare('SELECT id FROM vendor_profiles WHERE user_id = ?').get(user.id) as
     | { id: string } | undefined
   if (!vendor) throw createError({ statusCode: 404, statusMessage: 'Vendor profile not found' })
-
-  const planName = user.plan?.toLowerCase() ?? 'free'
-  const hasPaidPlan = PAID_PLANS.some(p => planName.includes(p))
-
-  if (!hasPaidPlan && user.role !== 'admin') {
-    return { upgradeRequired: true, plan: planName }
-  }
 
   // Get vendor's listings
   const listings = db.prepare(`
