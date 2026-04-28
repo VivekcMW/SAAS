@@ -112,7 +112,7 @@ const formatDate = (s: string) => new Date(s).toLocaleDateString('en', { month: 
 .rev-product:hover { color: var(--bw-primary); }
 .rev-stars { color: var(--bw-border-strong); font-size: 1rem; letter-spacing: 1px; }
 .rev-star.is-on { color: var(--bw-warning); }
-.rev-title { font-family: var(--f-ui); font-size: 1rem; font-weight: 600; margin: 0 0 6px; }
+.rev-title { font-family: var(--f-ui); font-size: 1rem; font-weight: 600; margin: 0 0 6px; color: var(--bw-primary); }
 .rev-body { color: var(--bw-text-muted); font-size: 0.88rem; margin: 0 0 10px; }
 .rev-foot { display: flex; gap: 6px; font-size: 0.78rem; color: var(--bw-text-subtle); align-items: center; }
 
@@ -121,7 +121,7 @@ const formatDate = (s: string) => new Date(s).toLocaleDateString('en', { month: 
 .review-next__item:first-child { border-top: none; }
 .review-next__logo { width: 32px; height: 32px; border-radius: 8px; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-family: var(--f-ui); font-weight: 700; font-size: 0.82rem; }
 .review-next__body { flex: 1; min-width: 0; }
-.review-next__name { font-weight: 600; font-size: 0.88rem; }
+.review-next__name { font-weight: 600; font-size: 0.88rem; color: var(--bw-text); }
 .review-next__cat { font-size: 0.78rem; color: var(--bw-text-subtle); }
 
 .progress { height: 6px; border-radius: 999px; background: var(--bw-surface); overflow: hidden; }

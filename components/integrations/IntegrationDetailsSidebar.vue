@@ -520,6 +520,7 @@ const logKnowledgeAction = (integrationName: string, itemType: string) => {
 </script>
 
 <style scoped>
+/* ── Container & overlay ───────────────────────────────────── */
 .popover-container {
   position: fixed;
   top: 0;
@@ -540,9 +541,9 @@ const logKnowledgeAction = (integrationName: string, itemType: string) => {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
+  background: rgba(7, 9, 15, 0.75);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   z-index: 1000;
   opacity: 0;
   transition: opacity 0.35s ease;
@@ -552,15 +553,17 @@ const logKnowledgeAction = (integrationName: string, itemType: string) => {
   opacity: 1;
 }
 
+/* ── Drawer panel ──────────────────────────────────────────── */
 .popover-content {
   position: absolute;
   top: 0;
-  right: -480px; /* Start off-screen */
+  right: -480px;
   width: 100%;
-  max-width: 450px;
+  max-width: 460px;
   height: 100%;
-  background-color: var(--light-color);
-  box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
+  background: var(--mm-s1);
+  border-left: 0.5px solid var(--b2);
+  box-shadow: -8px 0 40px rgba(0, 0, 0, 0.6);
   z-index: 1001;
   overflow-y: auto;
   transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -572,20 +575,21 @@ const logKnowledgeAction = (integrationName: string, itemType: string) => {
   right: 0;
 }
 
+/* ── Header ────────────────────────────────────────────────── */
 .popover-header {
   padding: var(--spacing-lg);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--color-gray-200);
+  border-bottom: 0.5px solid var(--b1);
   position: sticky;
   top: 0;
-  background-color: var(--light-color);
+  background: var(--mm-s1);
   z-index: 2;
 }
 
 .integration-logo {
-  height: 50px;
+  height: 44px;
   width: auto;
   display: flex;
   align-items: center;
@@ -593,28 +597,31 @@ const logKnowledgeAction = (integrationName: string, itemType: string) => {
 
 .integration-logo img {
   max-height: 100%;
-  max-width: 180px;
+  max-width: 160px;
   object-fit: contain;
 }
 
 .close-button {
-  background: none;
-  border: none;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
   cursor: pointer;
-  color: var(--text-secondary);
-  padding: 8px;
-  border-radius: 50%;
+  color: var(--mm-slate);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color var(--transition-fast);
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .close-button:hover {
-  background-color: var(--color-gray-100);
-  color: var(--text-primary);
+  background: var(--mm-s3);
+  color: var(--mm-pearl);
+  border-color: var(--b2);
 }
 
+/* ── Body ──────────────────────────────────────────────────── */
 .popover-body {
   padding: var(--spacing-lg);
   flex-grow: 1;
@@ -622,8 +629,12 @@ const logKnowledgeAction = (integrationName: string, itemType: string) => {
 }
 
 .integration-title {
-  font-size: 1.75rem;
-  margin-bottom: var(--spacing-md);
+  font-family: var(--f-ser);
+  font-size: var(--t-2xl);
+  font-weight: 700;
+  color: var(--mm-pearl);
+  margin: 0 0 var(--spacing-md);
+  letter-spacing: -0.01em;
   position: relative;
   display: inline-block;
 }
@@ -631,55 +642,63 @@ const logKnowledgeAction = (integrationName: string, itemType: string) => {
 .integration-title::after {
   content: '';
   position: absolute;
-  bottom: -8px;
+  bottom: -6px;
   left: 0;
-  width: 40px;
-  height: 3px;
-  background-color: var(--primary-color);
-  border-radius: 2px;
+  width: 36px;
+  height: 2px;
+  background: var(--mm-gold);
+  border-radius: 1px;
 }
 
+/* ── Tags ──────────────────────────────────────────────────── */
 .integration-tags {
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-xs);
-  margin-bottom: var(--spacing-lg);
   margin-top: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
 }
 
 .tag {
-  font-size: 0.75rem;
-  padding: 4px var(--spacing-sm);
-  border-radius: 4px;
-  background-color: var(--bg-gray);
-  color: var(--text-secondary);
+  font-size: var(--t-xs);
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--mm-s3);
+  color: var(--mm-slate);
   font-weight: 500;
-  letter-spacing: 0.02em;
+  border: 0.5px solid var(--b1);
 }
 
 .popular-tag {
-  background-color: rgba(var(--primary-color-rgb), 0.1);
-  color: var(--primary-color);
+  background: var(--mm-gold-soft);
+  color: var(--mm-gold);
+  border-color: transparent;
 }
 
+/* ── Sections ──────────────────────────────────────────────── */
 .integration-section {
   margin-bottom: var(--spacing-xl);
-  position: relative;
   padding: var(--spacing-md);
-  border-radius: var(--border-radius-md);
-  transition: background-color 0.2s ease;
+  border-radius: var(--bw-radius);
+  border: 0.5px solid var(--b1);
+  transition: border-color var(--transition-fast), background var(--transition-fast);
 }
 
 .integration-section:hover {
-  background-color: var(--bg-gray);
+  border-color: var(--b2);
+  background: var(--mm-s2);
 }
 
 .integration-section h3 {
-  font-size: 1.25rem;
-  margin-bottom: var(--spacing-md);
+  font-family: var(--f-ui);
+  font-size: var(--t-base);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--mm-gold);
+  margin: 0 0 var(--spacing-md);
   padding-bottom: var(--spacing-xs);
-  border-bottom: 1px solid var(--color-gray-200);
-  color: var(--primary-color);
+  border-bottom: 0.5px solid var(--b1);
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
@@ -688,12 +707,14 @@ const logKnowledgeAction = (integrationName: string, itemType: string) => {
 .integration-section h3::before {
   content: '';
   display: inline-block;
-  width: 4px;
-  height: 16px;
-  background-color: var(--primary-color);
+  width: 3px;
+  height: 14px;
+  background: var(--mm-gold);
   border-radius: 2px;
+  flex-shrink: 0;
 }
 
+/* ── Benefits list ─────────────────────────────────────────── */
 .benefits-list {
   list-style: none;
   padding: 0;
@@ -707,13 +728,17 @@ const logKnowledgeAction = (integrationName: string, itemType: string) => {
   display: flex;
   align-items: flex-start;
   gap: var(--spacing-xs);
+  font-size: var(--t-sm);
+  color: var(--mm-silver);
 }
 
 .benefit-icon {
-  color: var(--primary-color);
+  color: var(--mm-sea);
   flex-shrink: 0;
+  margin-top: 1px;
 }
 
+/* ── Setup steps ───────────────────────────────────────────── */
 .setup-steps {
   display: flex;
   flex-direction: column;
@@ -727,36 +752,42 @@ const logKnowledgeAction = (integrationName: string, itemType: string) => {
 }
 
 .step-number {
-  background-color: var(--primary-color);
-  color: var(--light-color);
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
+  background: var(--mm-gold);
+  color: var(--mm-bg);
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 500;
+  font-family: var(--f-mono);
+  font-size: var(--t-xs);
+  font-weight: 700;
   flex-shrink: 0;
 }
 
-.step-content {
-  flex-grow: 1;
-}
+.step-content { flex-grow: 1; }
 
 .step-content h4 {
-  font-size: 1rem;
-  margin-bottom: var(--spacing-xs);
+  font-family: var(--f-ui);
+  font-size: var(--t-sm);
+  font-weight: 700;
+  color: var(--mm-pearl);
+  margin: 0 0 var(--spacing-xs);
 }
 
 .step-content p {
-  color: var(--text-secondary);
-  font-size: 0.875rem;
+  font-size: var(--t-sm);
+  color: var(--mm-silver);
+  margin: 0;
+  line-height: 1.55;
 }
 
+/* ── Knowledge base items ──────────────────────────────────── */
 .knowledge-items {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: 10px;
 }
 
 .knowledge-item {
@@ -764,171 +795,158 @@ const logKnowledgeAction = (integrationName: string, itemType: string) => {
   gap: var(--spacing-md);
   align-items: flex-start;
   padding: var(--spacing-md);
-  border: 1px solid var(--color-gray-200);
-  border-radius: var(--border-radius-md);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  border: 0.5px solid var(--b1);
+  border-radius: var(--bw-radius);
+  background: var(--mm-s2);
   cursor: pointer;
+  transition: border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-normal);
 }
 
-.knowledge-item:hover, .knowledge-item:focus {
+.knowledge-item:hover,
+.knowledge-item:focus {
+  border-color: var(--mm-gold);
+  background: var(--mm-s3);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-  border-color: var(--primary-color);
   outline: none;
 }
 
 .knowledge-item:focus-visible {
-  outline: 2px solid var(--primary-color);
+  outline: 2px solid var(--mm-gold);
   outline-offset: 2px;
 }
 
 .knowledge-icon {
-  color: var(--primary-color);
-  font-size: 1.5rem;
+  color: var(--mm-gold);
+  font-size: var(--t-lg);
+  flex-shrink: 0;
+  margin-top: 1px;
 }
 
-.knowledge-content {
-  flex-grow: 1;
-}
+.knowledge-content { flex-grow: 1; }
 
 .knowledge-content h4 {
-  font-size: 1rem;
-  margin-bottom: var(--spacing-xs);
+  font-family: var(--f-ui);
+  font-size: var(--t-sm);
+  font-weight: 700;
+  color: var(--mm-pearl);
+  margin: 0 0 var(--spacing-xs);
 }
 
 .knowledge-content p {
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  margin-bottom: var(--spacing-xs);
+  font-size: var(--t-sm);
+  color: var(--mm-silver);
+  margin: 0 0 var(--spacing-xs);
+  line-height: 1.5;
 }
 
 .kb-link {
-  color: var(--primary-color);
-  font-size: 0.875rem;
-  font-weight: 500;
-  text-decoration: none;
-  display: inline-block;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--border-radius-sm);
-  background-color: rgba(var(--primary-color-rgb), 0.1);
-  transition: background-color 0.2s ease, color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--t-xs);
+  font-weight: 600;
+  color: var(--mm-gold);
+  background: var(--mm-gold-soft);
+  padding: 2px 10px;
+  border-radius: 999px;
+  transition: background var(--transition-fast);
   cursor: pointer;
 }
 
-.kb-link:hover {
-  background-color: rgba(var(--primary-color-rgb), 0.2);
-  color: var(--primary-color);
-}
+.kb-link:hover { background: rgba(212, 168, 67, 0.2); }
 
 .kb-icon {
-  margin-right: var(--spacing-xs);
-  font-size: 0.875rem;
-  vertical-align: middle;
-  transition: transform 0.2s ease;
+  font-size: var(--t-xs);
+  transition: transform var(--transition-fast);
 }
 
-.kb-link:hover .kb-icon {
-  transform: translateX(2px);
-}
+.kb-link:hover .kb-icon { transform: translateX(2px); }
 
+/* ── Footer ────────────────────────────────────────────────── */
 .popover-footer {
-  padding: var(--spacing-lg);
-  border-top: 1px solid var(--color-gray-200);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-top: 0.5px solid var(--b1);
   display: flex;
   justify-content: flex-end;
   gap: var(--spacing-md);
   position: sticky;
   bottom: 0;
-  background-color: var(--light-color);
+  background: var(--mm-s1);
   z-index: 2;
-  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-.popover-content:not(:hover) .popover-footer {
-  transform: translateY(100%);
-  opacity: 0;
-}
-
-.popover-content:hover .popover-footer,
-.popover-content:focus-within .popover-footer {
-  transform: translateY(0);
-  opacity: 1;
-}
-
+/* ── Buttons ───────────────────────────────────────────────── */
 .btn {
-  display: inline-block;
-  padding: var(--spacing-sm) var(--spacing-lg);
-  border-radius: var(--border-radius-md);
-  font-weight: 500;
-  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 20px;
+  border-radius: var(--r-md);
+  font-family: var(--f-ui);
+  font-size: var(--t-sm);
+  font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-fast);
   text-decoration: none;
-  border: none;
 }
 
 .btn-outline {
-  background-color: transparent;
-  border: 1px solid var(--primary-color);
-  color: var(--primary-color);
+  background: transparent;
+  border: 0.5px solid var(--b2);
+  color: var(--mm-silver);
 }
 
 .btn-outline:hover {
-  background-color: var(--primary-color);
-  color: var(--light-color);
+  border-color: var(--mm-gold);
+  color: var(--mm-gold);
 }
 
 .btn-primary {
-  background-color: var(--primary-color);
-  color: var(--light-color);
+  background: var(--mm-gold);
+  color: var(--mm-bg);
+  border: 0.5px solid var(--mm-gold);
 }
 
 .btn-primary:hover {
-  background-color: var(--color-primary-dark);
+  background: var(--mm-gold-l);
+  border-color: var(--mm-gold-l);
 }
 
+/* ── Animations ────────────────────────────────────────────── */
 @keyframes fadeIn {
   from { opacity: 0; }
-  to { opacity: 1; }
+  to   { opacity: 1; }
 }
 
 @keyframes scaleIn {
-  from { 
-    opacity: 0; 
-    transform: scale(0.95);
-  }
-  to { 
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
 }
 
-/* Knowledge Base Modals */
+/* ── KB Modals ─────────────────────────────────────────────── */
 .kb-modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+  inset: 0;
+  background: rgba(7, 9, 15, 0.8);
+  backdrop-filter: blur(4px);
   z-index: 2000;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 20px;
   animation: fadeIn 0.2s ease;
-  backdrop-filter: blur(3px);
 }
 
 .kb-modal-container {
-  background-color: var(--light-color);
-  border-radius: var(--border-radius-md);
+  background: var(--mm-s1);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--bw-radius-lg);
   width: 100%;
   max-width: 800px;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: var(--shadow-lg);
-  animation: scaleIn 0.3s ease;
+  animation: scaleIn 0.25s ease;
 }
 
 .kb-modal-header {
@@ -936,66 +954,67 @@ const logKnowledgeAction = (integrationName: string, itemType: string) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--color-gray-200);
+  border-bottom: 0.5px solid var(--b1);
   position: sticky;
   top: 0;
-  background-color: var(--light-color);
+  background: var(--mm-s1);
   z-index: 2;
 }
 
 .kb-modal-header h3 {
-  font-size: 1.25rem;
+  font-family: var(--f-ui);
+  font-size: var(--t-md);
+  font-weight: 700;
+  color: var(--mm-pearl);
   margin: 0;
-  color: var(--primary-color);
 }
 
 .kb-modal-body {
   padding: var(--spacing-lg);
 }
 
-.kb-content {
-  font-size: 0.95rem;
-}
+.kb-content { font-size: var(--t-sm); }
 
-.kb-section {
-  margin-bottom: var(--spacing-xl);
-}
+.kb-section { margin-bottom: var(--spacing-xl); }
 
 .kb-section h4 {
-  font-size: 1.125rem;
-  margin-bottom: var(--spacing-md);
-  color: var(--primary-color);
-  border-bottom: 1px solid var(--color-gray-100);
+  font-family: var(--f-ui);
+  font-size: var(--t-base);
+  font-weight: 700;
+  color: var(--mm-pearl);
+  margin: 0 0 var(--spacing-md);
+  border-bottom: 0.5px solid var(--b1);
   padding-bottom: var(--spacing-xs);
 }
 
 .kb-section h5 {
-  font-size: 1rem;
-  margin-top: var(--spacing-md);
-  margin-bottom: var(--spacing-sm);
+  font-size: var(--t-sm);
+  font-weight: 700;
+  color: var(--mm-pearl);
+  margin: var(--spacing-md) 0 var(--spacing-sm);
 }
 
 .kb-section p {
   margin-bottom: var(--spacing-md);
-  color: var(--text-secondary);
-  line-height: 1.6;
+  color: var(--mm-silver);
+  line-height: 1.65;
 }
 
-.kb-section ul, .kb-section ol {
+.kb-section ul,
+.kb-section ol {
   padding-left: var(--spacing-lg);
   margin-bottom: var(--spacing-md);
 }
 
 .kb-section li {
   margin-bottom: var(--spacing-sm);
-  color: var(--text-secondary);
+  color: var(--mm-silver);
+  line-height: 1.55;
 }
 
-.kb-section strong {
-  color: var(--text-primary);
-}
+.kb-section strong { color: var(--mm-pearl); }
 
-/* Video Content Styles */
+/* ── Video content ─────────────────────────────────────────── */
 .video-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -1003,85 +1022,70 @@ const logKnowledgeAction = (integrationName: string, itemType: string) => {
 }
 
 .video-card {
-  border: 1px solid var(--color-gray-200);
-  border-radius: var(--border-radius-md);
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--bw-radius);
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: border-color var(--transition-fast), transform var(--transition-normal);
 }
 
 .video-card:hover {
+  border-color: var(--mm-gold);
   transform: translateY(-3px);
-  box-shadow: var(--shadow-md);
   cursor: pointer;
 }
 
 .video-placeholder {
-  background-color: var(--bg-gray);
+  background: var(--mm-bg);
   aspect-ratio: 16/9;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: var(--primary-color);
+  color: var(--mm-gold);
   position: relative;
   overflow: hidden;
-}
-
-.video-placeholder::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(var(--primary-color-rgb), 0.1) 0%, rgba(var(--primary-color-rgb), 0.2) 100%);
-  z-index: 1;
-}
-
-.video-placeholder Icon {
-  z-index: 2;
-  margin-bottom: var(--spacing-sm);
-  transition: transform 0.3s ease;
-}
-
-.video-card:hover .video-placeholder Icon {
-  transform: scale(1.2);
+  gap: 8px;
 }
 
 .video-placeholder span {
-  z-index: 2;
-  font-weight: 500;
-  font-size: 0.875rem;
-  color: var(--text-primary);
+  font-size: var(--t-xs);
+  font-weight: 600;
+  color: var(--mm-silver);
+  text-align: center;
+  padding: 0 12px;
 }
 
 .video-card h4 {
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md) 0;
   margin: 0;
-  font-size: 1rem;
+  font-size: var(--t-sm);
+  font-weight: 700;
+  color: var(--mm-pearl);
 }
 
 .video-card p {
-  padding: 0 var(--spacing-md);
-  margin-top: 0;
-  margin-bottom: var(--spacing-sm);
-  font-size: 0.875rem;
-  color: var(--text-secondary);
+  padding: 4px var(--spacing-md) 0;
+  margin: 0 0 var(--spacing-sm);
+  font-size: var(--t-xs);
+  color: var(--mm-silver);
 }
 
 .video-duration {
   display: inline-block;
-  padding: var(--spacing-xs) var(--spacing-md);
+  padding: 2px var(--spacing-md);
   margin: 0 var(--spacing-md) var(--spacing-md);
-  background-color: var(--bg-gray);
-  border-radius: 50px;
-  font-size: 0.75rem;
-  color: var(--text-secondary);
+  background: var(--mm-s3);
+  border-radius: 999px;
+  font-size: var(--t-xs);
+  color: var(--mm-slate);
+  font-family: var(--f-mono);
+  border: 0.5px solid var(--b1);
 }
 
-/* FAQ Styles */
+/* ── FAQ ───────────────────────────────────────────────────── */
 .faq-item {
-  border-bottom: 1px solid var(--color-gray-200);
+  border-bottom: 0.5px solid var(--b1);
 }
 
 .faq-question {
@@ -1090,23 +1094,26 @@ const logKnowledgeAction = (integrationName: string, itemType: string) => {
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: color var(--transition-fast);
 }
 
-.faq-question:hover {
-  color: var(--primary-color);
-}
+.faq-question:hover { color: var(--mm-gold); }
 
 .faq-question h4 {
-  font-size: 1rem;
+  font-size: var(--t-sm);
+  font-weight: 600;
+  color: var(--mm-pearl);
   margin: 0;
   flex: 1;
   padding-right: var(--spacing-md);
 }
 
+.faq-question:hover h4 { color: var(--mm-gold); }
+
 .faq-question .rotate-icon {
   transform: rotate(180deg);
   transition: transform 0.3s ease;
+  color: var(--mm-slate);
 }
 
 .faq-answer {
@@ -1116,40 +1123,24 @@ const logKnowledgeAction = (integrationName: string, itemType: string) => {
 }
 
 .faq-answer p {
-  color: var(--text-secondary);
+  color: var(--mm-silver);
+  font-size: var(--t-sm);
   margin: 0;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 .faq-answer-open {
-  max-height: 300px; /* Adjust as needed */
+  max-height: 300px;
   padding-bottom: var(--spacing-md);
 }
 
+/* ── Responsive ────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .benefits-list {
-    grid-template-columns: 1fr;
-  }
-  
-  .popover-footer {
-    flex-direction: column-reverse;
-  }
-  
-  .btn {
-    width: 100%;
-  }
-  
-  .popover-content {
-    max-width: 100%;
-  }
-  
-  .video-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .kb-modal-container {
-    width: 95%;
-    max-height: 80vh;
-  }
+  .benefits-list { grid-template-columns: 1fr; }
+  .popover-footer { flex-direction: column-reverse; }
+  .btn { width: 100%; }
+  .popover-content { max-width: 100%; }
+  .video-grid { grid-template-columns: 1fr; }
+  .kb-modal-container { width: 95%; max-height: 80vh; }
 }
 </style>

@@ -255,7 +255,6 @@
           <p class="home-final__lede">Start with a free shortlist. No account required, no sales call.</p>
           <div class="home-final__actions">
             <NuxtLink to="/marketplace" class="mk-btn mk-btn--primary">Browse apps</NuxtLink>
-            <NuxtLink to="/contact" class="mk-btn mk-btn--secondary">Talk to a human</NuxtLink>
           </div>
         </div>
       </div>

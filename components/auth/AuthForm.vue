@@ -755,25 +755,22 @@ const validateRegisterForm = () => {
 // Login handler
 const handleLogin = async () => {
   if (!validateLoginForm()) return;
-  
+
   try {
     isLoading.value = true;
-    
-    // Here you would typically make an API call to your authentication endpoint
-    // For now, we'll just simulate a successful login after a delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-        // After successful login
+    loginErrors.general = '';
+
+    const { login } = useAuth();
+    const user = await login({ email: loginForm.email, password: loginForm.password, rememberMe: loginForm.rememberMe });
+
     emit('login-success', {
       email: loginForm.email,
-      userTypes: selectedUserTypes.value.length > 0 ? selectedUserTypes.value : ['buyer'] // Default to buyer if no types selected
+      userTypes: [user?.role || 'buyer']
     });
-    
-    // Reset form and errors
-    loginErrors.general = '';
-  } catch (error) {
-    console.error('Login error:', error);
-    loginErrors.general = 'Invalid email or password. Please try again.';
+
+    await navigateTo('/dashboard');
+  } catch (error: any) {
+    loginErrors.general = error?.data?.statusMessage || error?.message || 'Invalid email or password. Please try again.';
   } finally {
     isLoading.value = false;
   }
@@ -782,27 +779,29 @@ const handleLogin = async () => {
 // Register handler
 const handleRegister = async () => {
   if (!validateRegisterForm()) return;
-  
+
   try {
     isLoading.value = true;
-    
-    // Here you would typically make an API call to your registration endpoint
-    // For now, we'll just simulate a successful registration after a delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // After successful registration
+    registerErrors.general = '';
+
+    const { register } = useAuth();
+    const user = await register({
+      firstName: registerForm.firstName,
+      lastName: registerForm.lastName,
+      email: registerForm.email,
+      password: registerForm.password
+    });
+
     emit('register-success', {
       firstName: registerForm.firstName,
       lastName: registerForm.lastName,
       email: registerForm.email,
-      userTypes: selectedUserTypes.value
+      userTypes: [user?.role || 'vendor']
     });
-    
-    // Reset form and errors
-    registerErrors.general = '';
-  } catch (error) {
-    console.error('Registration error:', error);
-    registerErrors.general = 'Registration failed. Please try again.';
+
+    await navigateTo('/dashboard');
+  } catch (error: any) {
+    registerErrors.general = error?.data?.statusMessage || error?.message || 'Registration failed. Please try again.';
   } finally {
     isLoading.value = false;
   }

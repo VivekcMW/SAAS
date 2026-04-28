@@ -10,7 +10,6 @@
         </p>
         <div class="mk-hero__cta">
           <NuxtLink to="/marketplace" class="mk-btn mk-btn--primary">Browse marketplace</NuxtLink>
-          <NuxtLink to="/compare" class="mk-btn mk-btn--ghost">Compare tools</NuxtLink>
         </div>
       </div>
     </section>

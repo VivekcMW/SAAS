@@ -65,7 +65,7 @@
       <!-- Aside -->
       <aside>
         <section class="bw-card">
-          <h3 style="font-family: var(--f-ui); font-weight: 700; font-size: 1rem; margin: 0 0 12px;">Plan options</h3>
+          <h3 style="font-family: var(--f-ui); font-weight: 700; font-size: 1rem; margin: 0 0 12px; color: var(--bw-primary);">Plan options</h3>
           <div v-for="p in allPlans" :key="p.name" class="plan-opt" :class="{ 'is-current': p.name === plan.name }">
             <div>
               <div class="plan-opt__name">{{ p.name }}</div>
@@ -76,7 +76,7 @@
           </div>
         </section>
         <section class="bw-card" style="margin-top: 16px;">
-          <h3 style="font-family: var(--f-ui); font-weight: 700; font-size: 1rem; margin: 0 0 8px;">Need help?</h3>
+          <h3 style="font-family: var(--f-ui); font-weight: 700; font-size: 1rem; margin: 0 0 8px; color: var(--bw-primary);">Need help?</h3>
           <p style="font-size: 0.86rem; color: var(--bw-text-muted); margin: 0 0 12px;">Questions about your plan, invoices or refunds?</p>
           <NuxtLink to="/contact" class="bw-btn bw-btn--ghost">Contact support</NuxtLink>
         </section>
@@ -115,7 +115,7 @@ const invoices = [
 <style scoped>
 .plan__head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
 .plan__eyebrow { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: var(--bw-text-subtle); }
-.plan__name { font-family: var(--f-ui); font-size: 1.4rem; font-weight: 700; margin: 4px 0; }
+.plan__name { font-family: var(--f-ui); font-size: 1.4rem; font-weight: 700; margin: 4px 0; color: var(--bw-text); }
 .plan__price { font-family: var(--f-ui); font-size: 2rem; font-weight: 700; color: var(--bw-primary); }
 .plan__price span { font-size: 0.9rem; color: var(--bw-text-muted); font-weight: 500; margin-left: 4px; }
 .plan__features { list-style: none; padding: 0; margin: 0 0 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; }
@@ -123,12 +123,12 @@ const invoices = [
 .plan__features svg { color: var(--bw-success); flex-shrink: 0; }
 .plan__foot { display: flex; gap: 24px; align-items: center; padding-top: 16px; border-top: 1px solid var(--bw-border); flex-wrap: wrap; }
 .plan__label { font-size: 0.76rem; text-transform: uppercase; color: var(--bw-text-subtle); letter-spacing: 0.05em; }
-.plan__value { font-weight: 600; font-size: 0.92rem; }
+.plan__value { font-weight: 600; font-size: 0.92rem; color: var(--bw-text); }
 
 .plan-opt { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--bw-border); }
 .plan-opt:last-child { border-bottom: none; }
 .plan-opt.is-current { background: var(--bw-primary-50); margin: 0 -20px; padding: 10px 20px; }
-.plan-opt__name { font-weight: 600; font-size: 0.92rem; }
+.plan-opt__name { font-weight: 600; font-size: 0.92rem; color: var(--bw-text); }
 .plan-opt__price { font-family: var(--f-ui); font-weight: 700; color: var(--bw-primary); }
 .plan-opt__price span { color: var(--bw-text-muted); font-size: 0.75rem; font-weight: 500; }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <article class="news-card" @click="navigate" :class="{ 'news-card--featured': post.featured }" role="article" tabindex="0" @keydown.enter="navigate">
+  <NuxtLink :to="`/news/${post.slug}`" class="news-card" :class="{ 'news-card--featured': post.featured }">
     <!-- Cover -->
     <div class="news-card__cover">
       <img v-if="post.coverImage" :src="post.coverImage" :alt="post.title" loading="lazy" class="news-card__img" />
@@ -26,7 +26,7 @@
         </span>
       </footer>
     </div>
-  </article>
+  </NuxtLink>
 </template>
 
 <script setup lang="ts">
@@ -45,8 +45,6 @@ const props = defineProps<{
   }
 }>()
 
-const router = useRouter()
-
 const TYPE_LABELS: Record<string, string> = {
   'product-update': 'Product Update',
   'feature': 'Feature',
@@ -63,19 +61,17 @@ const formattedDate = computed(() => {
     month: 'short', day: 'numeric', year: 'numeric'
   })
 })
-
-function navigate() {
-  router.push(`/news/${props.post.slug}`)
-}
 </script>
 
 <style scoped>
 .news-card {
   background: var(--mm-s1);
-  border: 1px solid var(--b1);
+  border: 0.5px solid var(--b1);
   border-radius: var(--r-lg);
   overflow: hidden;
   cursor: pointer;
+  text-decoration: none;
+  color: inherit;
   transition: border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
   display: flex;
   flex-direction: column;

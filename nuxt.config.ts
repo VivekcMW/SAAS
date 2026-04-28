@@ -74,11 +74,46 @@ export default defineNuxtConfig({
     // Cache static marketplace pages
     '/marketplace': { headers: { 'Cache-Control': 'public, max-age=60, s-maxage=300' } },
     '/marketplace/**': { headers: { 'Cache-Control': 'public, max-age=60, s-maxage=300' } },
+
+    // Public content pages — short cache with stale-while-revalidate
+    '/news': { headers: { 'Cache-Control': 'public, max-age=60, stale-while-revalidate=300' } },
+    '/news/**': { headers: { 'Cache-Control': 'public, max-age=60, stale-while-revalidate=300' } },
+    '/integrations': { headers: { 'Cache-Control': 'public, max-age=120, stale-while-revalidate=600' } },
+    '/integrations/**': { headers: { 'Cache-Control': 'public, max-age=120, stale-while-revalidate=600' } },
+    '/categories/**': { headers: { 'Cache-Control': 'public, max-age=300, stale-while-revalidate=900' } },
+
+    // Public API routes — Nitro-level cache + headers
+    '/api/news': { headers: { 'Cache-Control': 'public, max-age=60, s-maxage=60' } },
+    '/api/news/**': { headers: { 'Cache-Control': 'public, max-age=300, s-maxage=300' } },
+    '/api/apps': { headers: { 'Cache-Control': 'public, max-age=120, s-maxage=300' } },
+    '/api/apps/**': { headers: { 'Cache-Control': 'public, max-age=120, s-maxage=300' } },
+    '/api/categories/**': { headers: { 'Cache-Control': 'public, max-age=3600, s-maxage=3600' } },
+    '/api/public/**': { headers: { 'Cache-Control': 'public, max-age=300, s-maxage=600' } },
+    '/api/stats/**': { headers: { 'Cache-Control': 'public, max-age=3600, s-maxage=3600' } },
+    '/api/qa/questions': { headers: { 'Cache-Control': 'public, max-age=60, stale-while-revalidate=300' } },
+    '/api/qa/tags': { headers: { 'Cache-Control': 'public, max-age=3600, s-maxage=3600' } },
+    '/api/rfp': { headers: { 'Cache-Control': 'public, max-age=60, stale-while-revalidate=300' } },
+    '/api/prices/**': { headers: { 'Cache-Control': 'public, max-age=300, s-maxage=600' } },
+
     // Never cache auth or dashboard routes
     '/login': { headers: { 'Cache-Control': 'no-store' } },
     '/signup': { headers: { 'Cache-Control': 'no-store' } },
     '/dashboard/**': { headers: { 'Cache-Control': 'no-store' } },
-    '/api/auth/**': { headers: { 'Cache-Control': 'no-store' } }
+
+    // Auth APIs — never cache, ever
+    '/api/auth/**': { headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate', 'Pragma': 'no-cache' } },
+
+    // Private user/vendor/admin/billing APIs — never cache
+    '/api/user/**': { headers: { 'Cache-Control': 'no-store' } },
+    '/api/vendor/**': { headers: { 'Cache-Control': 'no-store' } },
+    '/api/admin/**': { headers: { 'Cache-Control': 'no-store' } },
+    '/api/billing/**': { headers: { 'Cache-Control': 'no-store' } },
+    '/api/stack/**': { headers: { 'Cache-Control': 'no-store' } },
+    '/api/affiliate/**': { headers: { 'Cache-Control': 'no-store' } },
+    '/api/buying-rooms/**': { headers: { 'Cache-Control': 'no-store' } },
+    '/api/ai/**': { headers: { 'Cache-Control': 'no-store' } },
+    '/api/onboarding/**': { headers: { 'Cache-Control': 'no-store' } },
+    '/api/rfp/*/respond': { headers: { 'Cache-Control': 'no-store' } },
   },
 
   // Configure @nuxt/icon

@@ -50,8 +50,6 @@ const groups = [
   {
     title: 'Solutions',
     links: [
-      { to: '/solutions', label: 'All solutions' },
-      { to: '/compare', label: 'Compare tools' },
       { to: '/alternatives', label: 'Alternatives' },
       { to: '/customers', label: 'Customer stories' },
       { to: '/reviews', label: 'Reviews' }

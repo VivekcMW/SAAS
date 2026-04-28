@@ -138,7 +138,7 @@ const queryParams = computed(() => ({
 
 const { data, pending, refresh } = await useFetch<NewsResponse>('/api/news', {
   query: queryParams,
-  key: 'news-feed'
+  key: computed(() => `news-feed-${activeType.value ?? 'all'}-p${page.value}`)
 })
 
 const posts = computed(() => data.value?.posts || [])
@@ -172,7 +172,7 @@ function sync() {
 .nf-wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
 
 /* Header */
-.nf-header { padding: 64px 0 40px; border-bottom: 1px solid var(--b1); }
+.nf-header { padding: 64px 0 40px; border-bottom: 0.5px solid var(--b1); }
 .nf-eyebrow {
   display: inline-block; font-size: 11px; font-weight: 700;
   letter-spacing: 0.18em; text-transform: uppercase;
@@ -185,11 +185,11 @@ function sync() {
 .nf-lede { font-size: 16px; line-height: 1.65; color: var(--mm-silver); margin: 0; max-width: 580px; }
 
 /* Hero */
-.nf-hero { padding: 40px 0; border-bottom: 1px solid var(--b1); }
+.nf-hero { padding: 40px 0; border-bottom: 0.5px solid var(--b1); }
 .nf-hero__card {
   display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
   text-decoration: none; border-radius: var(--r-xl);
-  background: var(--mm-s1); border: 1px solid var(--b1);
+  background: var(--mm-s1); border: 0.5px solid var(--b1);
   overflow: hidden; transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 .nf-hero__card:hover { border-color: var(--b2); box-shadow: var(--shadow-lg); }
@@ -220,7 +220,7 @@ function sync() {
 .nf-bar {
   position: sticky; top: 0; z-index: 10;
   background: rgba(7,9,15,0.92); backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--b1);
+  border-bottom: 0.5px solid var(--b1);
 }
 .nf-bar__inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 14px; padding-bottom: 14px; }
 .nf-bar__count { font-size: 12px; color: var(--mm-slate); white-space: nowrap; margin: 0; }
@@ -258,7 +258,7 @@ function sync() {
 .nf-page-btn {
   display: flex; align-items: center; justify-content: center;
   width: 36px; height: 36px; border-radius: var(--r-md);
-  background: var(--mm-s1); border: 1px solid var(--b1); color: var(--mm-silver);
+  background: var(--mm-s1); border: 0.5px solid var(--b1); color: var(--mm-silver);
   cursor: pointer; transition: border-color var(--transition-fast), color var(--transition-fast);
 }
 .nf-page-btn:hover:not(:disabled) { border-color: var(--b2); color: var(--mm-pearl); }

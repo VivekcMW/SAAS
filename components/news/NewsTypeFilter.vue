@@ -43,7 +43,7 @@ function select(val: string | null) {
 .type-filter__pill {
   padding: 6px 14px;
   border-radius: var(--r-full);
-  border: 1px solid var(--b1);
+  border: 0.5px solid var(--b1);
   background: var(--mm-s1);
   color: var(--mm-silver);
   font-size: 13px;

@@ -391,7 +391,7 @@ const aboutResources = computed(() => [
 const handleTrial = () => { /* Phase 2: route to vendor site or onboarding flow */ }
 const handleDemo = () => { /* Phase 2: open video demo modal */ }
 const handleSave = () => { /* Phase 2: add to user shortlist */ }
-const handleCompare = () => { router.push(`/marketplace/compare?apps=${appId.value}`) }
+const handleCompare = () => { /* removed: compare feature lives in dashboard */ }
 const handleShareScroll = () => { /* handled by <AppDetailsShareMenu> */ }
 const handlePrint = () => {
   if (globalThis.window === undefined) return
@@ -533,7 +533,6 @@ function getCategoryLabel(cat?: string): string {
           @trial="handleTrial"
           @demo="handleDemo"
           @save="handleSave"
-          @compare="handleCompare"
           @share="handleShareScroll"
         >
           <template #share>
@@ -584,7 +583,6 @@ function getCategoryLabel(cat?: string): string {
               :app-name="app.name"
               :app-rating="app.rating"
               @cta-trial="handleTrial"
-              @cta-compare="handleCompare"
             />
             <AIChatInline :app-id="app.id" :app-name="app.name" />
           </div>
@@ -789,9 +787,7 @@ function getCategoryLabel(cat?: string): string {
               <Button variant="primary" size="lg" @click="handleTrial">
                 {{ app.pricing.type === 'free' ? 'Get Started Free' : 'Start Free Trial' }}
               </Button>
-              <Button variant="ghost" size="lg" @click="handleCompare">
-                Compare with Alternatives
-              </Button>
+
             </div>
           </div>
         </section>

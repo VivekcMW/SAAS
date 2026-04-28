@@ -44,7 +44,7 @@
               </div>
             </td>
             <td>
-              <NuxtLink to="/compare" class="bw-btn bw-btn--ghost bw-btn--sm">Compare</NuxtLink>
+
             </td>
           </tr>
         </tbody>

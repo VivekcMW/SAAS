@@ -47,7 +47,7 @@
         <div class="app__head">
           <div class="app__logo" :style="{ background: a.color }">{{ a.logo }}</div>
           <div class="app__title">
-            <NuxtLink :to="`/app/${a.slug}`" class="app__name">{{ a.name }}</NuxtLink>
+            <NuxtLink :to="`/app/${a.slug}`" class="app__name" target="_blank" rel="noopener noreferrer">{{ a.name }}</NuxtLink>
             <div class="app__cat">{{ a.category }}</div>
           </div>
           <span class="bw-chip" :class="`bw-chip--${tone(a.status)}`">{{ label(a.status) }}</span>
@@ -87,7 +87,7 @@
             <option v-for="s in statuses" :key="s" :value="s">{{ label(s) }}</option>
           </select>
           <div class="app__actions">
-            <NuxtLink :to="`/app/${a.slug}`" class="bw-btn bw-btn--ghost bw-btn--sm">Open</NuxtLink>
+            <NuxtLink :to="`/app/${a.slug}`" class="bw-btn bw-btn--ghost bw-btn--sm" target="_blank" rel="noopener noreferrer">Open</NuxtLink>
             <button class="bw-icon-btn" title="Remove" @click="removeApp(a.id)">
               <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M6 6l1 14a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-14" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
@@ -134,7 +134,7 @@ const formatK = (n: number) => n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(
 
 .app__meta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 12px; background: var(--bw-surface-2); border-radius: 10px; }
 .app__meta-label { display: block; font-size: 0.7rem; text-transform: uppercase; color: var(--bw-text-subtle); letter-spacing: 0.05em; margin-bottom: 2px; }
-.app__meta-value { font-weight: 600; font-size: 0.86rem; }
+.app__meta-value { font-weight: 600; font-size: 0.86rem; color: var(--bw-text); }
 .app__meta-value small { color: var(--bw-text-subtle); font-weight: 400; }
 
 .app__note { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--bw-surface); border: 1px solid var(--bw-border); border-radius: 8px; color: var(--bw-text-subtle); }

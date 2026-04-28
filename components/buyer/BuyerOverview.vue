@@ -144,7 +144,7 @@ const nextStep = computed(() => {
 }
 .next-step__icon { width: 44px; height: 44px; border-radius: 12px; background: var(--bw-primary-50); color: var(--bw-primary); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .next-step__eyebrow { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--bw-primary); font-weight: 700; line-height: 1; }
-.next-step__title { font-family: var(--f-ui); font-weight: 700; font-size: 1.05rem; margin: 6px 0 3px; line-height: 1.25; }
+.next-step__title { font-family: var(--f-ui); font-weight: 700; font-size: 1.05rem; margin: 6px 0 3px; line-height: 1.25; color: var(--bw-primary); }
 .next-step__desc { font-size: 0.88rem; color: var(--bw-text-muted); line-height: 1.35; }
 .next-step__body { flex: 1; min-width: 0; }
 .next-step .bw-btn { flex-shrink: 0; }
@@ -174,6 +174,6 @@ const nextStep = computed(() => {
 .activity-dot.is-price-drop { background: var(--bw-success); }
 .activity-dot.is-new-feature { background: var(--bw-primary); }
 .activity-dot.is-review { background: var(--bw-warning); }
-.activity-title { font-size: 0.9rem; font-weight: 500; }
+.activity-title { font-size: 0.9rem; font-weight: 500; color: var(--bw-text); }
 .activity-meta { font-size: 0.78rem; color: var(--bw-text-subtle); margin-top: 2px; }
 </style>

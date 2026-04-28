@@ -85,7 +85,7 @@
           </div>
           <div class="alt-card__actions">
             <NuxtLink :to="`/marketplace/app/${alt.slug}`" class="bw-btn bw-btn--primary bw-btn--sm">View →</NuxtLink>
-            <NuxtLink :to="`/compare/${app.slug}-vs-${alt.slug}`" class="bw-btn bw-btn--ghost bw-btn--sm">Compare</NuxtLink>
+
           </div>
         </article>
       </section>

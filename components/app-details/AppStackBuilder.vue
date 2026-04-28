@@ -100,15 +100,7 @@ const showPanel = ref(false)
           </li>
         </ul>
         <footer class="panel-foot">
-          <NuxtLink
-            v-if="stack.length >= 2"
-            :to="`/marketplace/compare?apps=${stack.map(s => s.id).join(',')}`"
-            class="panel-cta"
-          >
-            <Icon name="heroicons:arrow-right" />
-            Compare {{ stack.length }} apps
-          </NuxtLink>
-          <span v-else class="panel-hint">Add at least 2 apps to compare</span>
+          <span class="panel-hint">Add apps to your stack</span>
         </footer>
       </div>
     </Transition>

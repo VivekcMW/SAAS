@@ -167,10 +167,7 @@ const currentQuestion = computed(() => questions[step.value])
             <Icon name="heroicons:rocket-launch" />
             Start Free Trial
           </Button>
-          <Button v-else variant="primary" size="md" @click="emit('cta-compare')">
-            <Icon name="heroicons:scale" />
-            Compare Alternatives
-          </Button>
+
           <button class="fc-retry" @click="reset">
             <Icon name="heroicons:arrow-path" />
             Retake quiz

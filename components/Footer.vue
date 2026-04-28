@@ -23,8 +23,6 @@
             <h3>Product</h3>
             <ul>
               <li><NuxtLink to="/marketplace">Marketplace</NuxtLink></li>
-              <li><NuxtLink to="/solutions">Solutions</NuxtLink></li>
-              <li><NuxtLink to="/compare">Compare tools</NuxtLink></li>
               <li><NuxtLink to="/alternatives">Alternatives</NuxtLink></li>
               <li><NuxtLink to="/integrations">Integrations</NuxtLink></li>
               <li><NuxtLink to="/pricing">Pricing</NuxtLink></li>

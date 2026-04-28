@@ -134,7 +134,7 @@ const save = () => {
 <style scoped>
 .notif-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--bw-border); }
 .notif-row:last-child { border-bottom: none; }
-.notif-row__title { font-weight: 600; font-size: 0.92rem; }
+.notif-row__title { font-weight: 600; font-size: 0.92rem; color: var(--bw-text); }
 .notif-row__desc { color: var(--bw-text-muted); font-size: 0.82rem; margin-top: 2px; max-width: 520px; }
 .switch { position: relative; width: 42px; height: 24px; flex-shrink: 0; }
 .switch input { opacity: 0; width: 0; height: 0; }

@@ -127,7 +127,7 @@ const exportCompare = () => {
 .compare__row-label { background: var(--bw-surface-2); font-weight: 600; color: var(--bw-text); text-transform: none; font-size: 0.85rem; letter-spacing: 0; }
 
 .tco { margin-top: 24px; padding: 20px; background: var(--bw-surface-2); border-radius: 12px; }
-.tco__title { font-family: var(--f-ui); font-weight: 700; font-size: 1rem; margin: 0 0 12px; }
+.tco__title { font-family: var(--f-ui); font-weight: 700; font-size: 1rem; margin: 0 0 12px; color: var(--bw-primary); }
 .tco__controls { display: flex; align-items: end; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
 .tco__controls .bw-label { margin: 0; display: flex; flex-direction: column; gap: 4px; }
 .tco__controls .bw-input { width: 100px; }

@@ -6,7 +6,7 @@ import { createError, defineEventHandler, getRouterParam } from 'h3'
 import { getDb, type DbNewsPost } from '~/server/utils/database'
 
 export default defineEventHandler((event) => {
-  const slug = getRouterParam(event, 'slug') || getRouterParam(event, 'id') || event.context.params?.slug || event.context.params?.id
+  const slug = getRouterParam(event, 'id')
   if (!slug) throw createError({ statusCode: 400, statusMessage: 'Missing slug' })
 
   const db = getDb()

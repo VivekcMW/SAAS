@@ -88,7 +88,7 @@ const formatDate = (s: string) => new Date(s).toLocaleDateString('en', { month: 
 .deal__head { display: flex; justify-content: space-between; align-items: flex-start; }
 .deal__pct { font-family: var(--f-ui); font-weight: 800; font-size: 1.8rem; color: var(--bw-primary); line-height: 1; }
 .deal__pct span { display: block; font-size: 0.7rem; letter-spacing: 0.08em; color: var(--bw-text-muted); font-weight: 600; }
-.deal__title { font-family: var(--f-ui); font-size: 1rem; font-weight: 700; margin: 0; }
+.deal__title { font-family: var(--f-ui); font-size: 1rem; font-weight: 700; margin: 0; color: var(--bw-primary); }
 .deal__product { font-size: 0.85rem; color: var(--bw-text-muted); }
 
 .deal__code { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px 8px 14px; background: var(--bw-surface-2); border: 1px dashed var(--bw-border-strong); border-radius: 8px; gap: 8px; }
