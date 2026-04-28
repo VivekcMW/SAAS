@@ -1,5 +1,10 @@
 <template>
-  <div class="dash-shell" :class="{ 'is-sidebar-collapsed': sidebarCollapsed }">
+  <!-- Loading screen while auth initializes (prevents empty-page flash on hard refresh) -->
+  <div v-if="!initialized" class="dash-init-loading">
+    <div class="dash-init-loading__spinner" />
+  </div>
+
+  <div v-else class="dash-shell" :class="{ 'is-sidebar-collapsed': sidebarCollapsed }">
     <DashSidebar
       :role="currentUser?.role ?? null"
       :collapsed="sidebarCollapsed"
@@ -65,6 +70,25 @@ const onLogout = async () => {
   transition: margin-left 0.2s ease;
 }
 .dash-shell.is-sidebar-collapsed .dash-shell__main { margin-left: 68px; }
+
+.dash-init-loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bw-bg, #FAFAF7);
+}
+.dash-init-loading__spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--bw-border, #E5E3DC);
+  border-top-color: var(--mm-gold, #D4A843);
+  border-radius: 50%;
+  animation: dash-spin 0.7s linear infinite;
+}
+@keyframes dash-spin {
+  to { transform: rotate(360deg); }
+}
 
 .dash-shell__content {
   flex: 1;

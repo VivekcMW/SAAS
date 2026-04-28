@@ -67,7 +67,11 @@ export const useAuth = () => {
     isLoading.value = true
 
     try {
-      const response = await $fetch<{ authenticated: boolean, user: AuthUser | null }>('/api/auth/me', {
+      // On the server, useRequestFetch() forwards the incoming request cookies
+      // so the session cookie is included in the /api/auth/me call.
+      // On the client, it falls back to regular $fetch.
+      const fetchFn = import.meta.server ? useRequestFetch() : $fetch
+      const response = await fetchFn<{ authenticated: boolean, user: AuthUser | null }>('/api/auth/me', {
         credentials: 'include'
       })
       setUser(response.user)
