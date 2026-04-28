@@ -124,19 +124,24 @@ export function ensureSeedCredentials() {
     { email: 'buyer@moonmart.ai', password: 'buyer123' }
   ]
 
-  const updatePassword = db.prepare('UPDATE users SET password_hash = ? WHERE email = ?')
+  const updatePassword = db.prepare('UPDATE users SET password_hash = ?, email_verified = 1 WHERE email = ?')
   const selectUser = db.prepare('SELECT password_hash FROM users WHERE email = ?')
   const insertUser = db.prepare(`
     INSERT OR IGNORE INTO users (
       id, email, password_hash, first_name, last_name, full_name,
       company_name, company_size, job_title, phone_number, role, plan,
-      created_at, updated_at
+      email_verified, created_at, updated_at
     ) VALUES (
       @id, @email, @password_hash, @first_name, @last_name, @full_name,
       @company_name, @company_size, @job_title, @phone_number, @role, @plan,
-      @created_at, @updated_at
+      1, @created_at, @updated_at
     )
   `)
+
+  // Ensure all existing seed accounts are verified (migration safety)
+  db.prepare('UPDATE users SET email_verified = 1 WHERE email IN (?, ?, ?)').run(
+    'demo@moonmart.ai', 'admin@moonmart.ai', 'buyer@moonmart.ai'
+  )
 
   seedAccounts.forEach(account => {
     const row = selectUser.get(account.email) as { password_hash?: string } | undefined
@@ -214,13 +219,16 @@ export function createUser(payload: RegisterPayload) {
   const companyName = payload.companyName?.trim() || null
   const role = payload.role || 'vendor'
   const userId = makeId('user')
+  // Auto-verify when no SMTP is configured (dev/local environment)
+  const smtpConfigured = !!(process.env.SMTP_HOST || process.env.MAIL_DRIVER === 'smtp')
+  const emailVerified = smtpConfigured ? 0 : 1
 
   db.prepare(`
     INSERT INTO users (
       id, email, password_hash, first_name, last_name, full_name,
       company_name, company_size, job_title, phone_number, role, plan,
-      created_at, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      email_verified, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     userId,
     email,
@@ -234,6 +242,7 @@ export function createUser(payload: RegisterPayload) {
     payload.phoneNumber?.trim() || null,
     role,
     payload.plan || 'Professional',
+    emailVerified,
     now,
     now
   )

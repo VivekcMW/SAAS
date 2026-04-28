@@ -20,29 +20,37 @@ export default defineEventHandler(async (event) => {
 
   const user = authenticateUser(body.email, body.password)
 
-  // Gate: email must be verified before login is allowed
+  // Gate: email must be verified before login is allowed.
+  // In dev (no SMTP configured), auto-verify so developers aren't locked out.
   const db = getDb()
   const dbUser = db.prepare('SELECT email_verified FROM users WHERE id = ?').get(user.id) as { email_verified: number } | undefined
-  if (dbUser && !dbUser.email_verified) {
-    // Re-send a fresh verification email so the user isn't stuck
-    try {
-      const rawToken = createEmailVerificationToken(user.id)
-      const baseUrl = process.env.SITE_URL || 'http://localhost:3000'
-      const verifyUrl = `${baseUrl}/api/auth/verify-email?token=${rawToken}`
-      sendEmail(buildWelcomeEmail({
-        to: user.email,
-        firstName: user.firstName,
-        role: user.role as 'buyer' | 'vendor' | 'admin',
-        verifyUrl
-      })).catch(err => console.error('[login] resend verification email failed:', err))
-    } catch (err) {
-      console.error('[login] failed to resend verification:', err)
-    }
+  const smtpConfigured = !!(process.env.SMTP_HOST || process.env.MAIL_DRIVER === 'smtp')
 
-    throw createError({
-      statusCode: 403,
-      statusMessage: 'Please verify your email address before logging in. A new verification link has been sent to your inbox.'
-    })
+  if (dbUser && !dbUser.email_verified) {
+    if (!smtpConfigured) {
+      // No email transport in this environment — auto-verify so login works
+      db.prepare('UPDATE users SET email_verified = 1 WHERE id = ?').run(user.id)
+    } else {
+      // Production: enforce verification gate and resend email
+      try {
+        const rawToken = createEmailVerificationToken(user.id)
+        const baseUrl = process.env.SITE_URL || 'http://localhost:3000'
+        const verifyUrl = `${baseUrl}/api/auth/verify-email?token=${rawToken}`
+        sendEmail(buildWelcomeEmail({
+          to: user.email,
+          firstName: user.firstName,
+          role: user.role as 'buyer' | 'vendor' | 'admin',
+          verifyUrl
+        })).catch(err => console.error('[login] resend verification email failed:', err))
+      } catch (err) {
+        console.error('[login] failed to resend verification:', err)
+      }
+
+      throw createError({
+        statusCode: 403,
+        statusMessage: 'Please verify your email address before logging in. A new verification link has been sent to your inbox.'
+      })
+    }
   }
 
   await createSession(event, user.id, body.rememberMe !== false)
