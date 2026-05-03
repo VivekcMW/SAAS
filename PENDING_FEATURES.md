@@ -1,6 +1,6 @@
 # SaaSWorld — Pending Features & Roadmap
 
-> Last updated: 26 April 2026
+> Last updated: 27 April 2026
 > Status key: ❌ Missing | ⚠️ Partial/Stubbed | ✅ Done | 🔄 In Progress
 
 ---
@@ -22,9 +22,9 @@
 
 | # | Feature | Status | Notes |
 |---|---------|--------|-------|
-| 1 | Password reset flow — `/api/auth/forgot-password` + `/api/auth/reset-password` endpoints, token storage, email send | ❌ | `forgot-password.vue` uses `setTimeout` stub |
-| 2 | Email verification on signup — `email_verified` flag in DB, verify token, verification link email | ❌ | Users created without email confirmation |
-| 3 | OAuth (Google / GitHub) | ❌ | Buttons show "coming soon" toast |
+| 1 | Password reset flow — `/api/auth/forgot-password` + `/api/auth/reset-password` endpoints, token storage, email send | ✅ | Full flow: token table, email send, client wired |
+| 2 | Email verification on signup — `email_verified` flag in DB, verify token, verification link email | ✅ | `register.post.ts` sends verification; `verify-email.get.ts` confirms token |
+| 3 | OAuth (Google / GitHub) | ✅ | `server/api/auth/oauth/github/` + `google/` — initiate + callback handlers |
 | 4 | 2FA / MFA | ❌ | |
 | 5 | Account lockout after N failed logins | ✅ | Per-email lockout in `server/utils/auth.ts` — 10 failures/30 min → 15-min lockout |
 | 6 | Session invalidation on password change | ❌ | |
@@ -38,7 +38,7 @@
 
 | # | Feature | Status | Notes |
 |---|---------|--------|-------|
-| 10 | Favorites / Saved apps persistence | ❌ | `isFavorited` is in-memory only |
+| 10 | Favorites / Saved apps persistence | ✅ | `user_favorites` table; `GET/POST/DELETE /api/user/favorites` wired |
 | 11 | Marketplace filters connected to real API | ⚠️ | `MarketplaceFilters` mock-counts client-side |
 | 12 | Search suggestions from real index | ⚠️ | `MarketplaceSearchBar` uses static array |
 | 13 | Pagination API (`page`/`limit` on `/api/apps`) | ⚠️ | UI exists, API lacks cursor |
@@ -54,7 +54,7 @@
 
 | # | Feature | Status | Notes |
 |---|---------|--------|-------|
-| 19 | Connect all data to real API (features, pricing, integrations, testimonials, reviews, gallery, certifications, security, similar apps) | ❌ | All are hardcoded `// Mock` blocks in `pages/app/[id].vue` |
+| 19 | Connect all data to real API (features, pricing, integrations, testimonials, reviews, gallery, certifications, security, similar apps) | ✅ | `pages/app/[id].vue` uses `useFetch` → real DB via `server/api/apps/[id].get.ts` + reviews + similar endpoints |
 | 20 | AI Inline Chat | ⚠️ | "Phase 2 stub" in `AIChatInline.vue` |
 | 21 | ROI Calculator (real user data) | ⚠️ | Static |
 | 22 | Stack Builder persistence | ❌ | No DB storage |
@@ -69,9 +69,9 @@
 
 | # | Feature | Status | Notes |
 |---|---------|--------|-------|
-| 27 | Listing CRUD (update + delete endpoints) | ⚠️ | Create exists; update/delete missing |
+| 27 | Listing CRUD (update + delete endpoints) | ✅ | `PUT /api/vendor/listings/[id]` + `DELETE /api/vendor/listings/[id]` both exist |
 | 28 | Media / screenshot upload for listings | ❌ | |
-| 29 | Analytics data from real DB | ❌ | `VendorAnalytics.vue` hardcoded |
+| 29 | Analytics data from real DB | ✅ | `GET /api/vendor/analytics?period=` queries real `app_views` + `buyer_intent_events` tables; `VendorAnalytics.vue` wired |
 | 30 | Lead capture pipeline from enquiries | ⚠️ | `VendorLeads.vue` exists, no real pipeline |
 | 31 | Team management API (`/api/vendor/team`) | ❌ | UI exists, no backend |
 | 32 | Promotions / deal publishing API | ❌ | UI exists, no backend |
@@ -85,12 +85,12 @@
 
 | # | Feature | Status | Notes |
 |---|---------|--------|-------|
-| 36 | Saved apps persistence in DB | ❌ | `BuyerSavedApps.vue` not wired |
+| 36 | Saved apps persistence in DB | ✅ | `GET /api/buyer/saved-apps` + metadata PATCH; `useBuyerData.ts` wired |
 | 37 | Recommendations engine (user-preference model) | ⚠️ | Static |
-| 38 | Enquiries thread API (`/api/enquiries`) | ❌ | UI exists, no backend |
+| 38 | Enquiries thread API (`/api/enquiries`) | ✅ | `POST /api/enquiries` + `GET/POST /api/enquiries/[id]/messages` fully implemented |
 | 39 | Compare state shared with marketplace compare | ❌ | Duplicate independent state |
 | 40 | Deals — vendor-side publishing | ❌ | Buyer UI shows static deals |
-| 41 | Weekly digest email scheduled job | ❌ | Preview UI only |
+| 41 | Weekly digest email scheduled job | ✅ | `server/tasks/digest-email.ts` scheduled every Monday 08:00 UTC; dedup via `digest_sends` table |
 | 42 | Buyer billing (Stripe for premium tier) | ❌ | |
 
 ---
@@ -99,12 +99,12 @@
 
 | # | Feature | Status | Notes |
 |---|---------|--------|-------|
-| 43 | Pending apps approval — notify vendor on approve/reject | ⚠️ | Button exists, no notification |
+| 43 | Pending apps approval — notify vendor on approve/reject | ✅ | `admin/listings/[id]/status.put.ts` calls `buildListingStatusEmail` |
 | 44 | User role change API | ✅ | `PUT /api/admin/users/[id]/role` + `GET /api/admin/users` list endpoint |
-| 45 | Revenue data from real DB | ❌ | Static charts |
+| 45 | Revenue data from real DB | ✅ | `AdminRevenue.vue` loads `loadLiveStats()` → `/api/admin/stats` (real MRR from plan pricing × user counts) |
 | 46 | Activity log — write events across app | ⚠️ | DB table exists, logging calls missing |
 | 47 | Admin badge management UI | ❌ | API exists, no UI |
-| 48 | Support ticket create + reply API | ❌ | UI exists, no backend |
+| 48 | Support ticket create + reply API | ✅ | `GET/POST /api/support/tickets` + `GET /api/support/tickets/[id]` + reply endpoint all exist |
 | 49 | Admin settings persist to DB | ✅ | `GET /api/admin/settings` + `PUT /api/admin/settings` with `admin_settings` KV table |
 
 ---
@@ -114,9 +114,9 @@
 | # | Feature | Status | Notes |
 |---|---------|--------|-------|
 | 50 | Stripe integration (checkout, subscriptions) | ✅ | `server/utils/stripe.ts` + `/api/billing/checkout`, `/api/billing/webhook`, `/api/billing/subscription`, `/api/billing/portal` |
-| 51 | Subscription plan enforcement server-side | ⚠️ | Webhook syncs `plan` field on users table; enforcement per-endpoint still needed |
+| 51 | Subscription plan enforcement server-side | ✅ | `requirePlan()` applied across 12 premium endpoints (AI review-reply, briefing, intent signals, intelligence, win-loss, etc.) |
 | 52 | Invoice generation / download (PDF) | ❌ | |
-| 53 | Self-serve refund request form + API | ❌ | `/refund` page is static |
+| 53 | Self-serve refund request form + API | ✅ | `POST /api/billing/refund` fully implemented with admin + user email notifications |
 | 54 | Tax handling — VAT/GST (EU, AU, IN) | ❌ | |
 | 55 | Multi-currency pricing display | ❌ | All USD only |
 
@@ -126,11 +126,11 @@
 
 | # | Feature | Status | Notes |
 |---|---------|--------|-------|
-| 56 | More locales — ZH, JA, AR, HI, KO | ❌ | Only EN/DE/ES/FR/PT |
-| 57 | RTL support (`dir="rtl"`) for AR, HE | ❌ | |
+| 56 | More locales — ZH, JA, AR, HI, KO | ✅ | All 10 locales registered in `nuxt.config.ts`; `locales/*.json` files present |
+| 57 | RTL support (`dir="rtl"`) for AR, HE | ✅ | `ar` has `dir: 'rtl'` in config; `RTL_LOCALES` set applied via `<html :dir>` in layout |
 | 58 | Locale-aware number/date formatting | ❌ | US-formatted everywhere |
 | 59 | Regional pricing / PPP for emerging markets | ❌ | |
-| 60 | GDPR consent banner / CMP wired up | ❌ | `/cookies` page is static |
+| 60 | GDPR consent banner / CMP wired up | ✅ | `GdprConsentBanner` in default layout; `POST /api/consent` persists to `consent_log` table |
 | 61 | CCPA opt-out mechanism | ❌ | `/privacy-choices` is static |
 
 ---
@@ -139,13 +139,13 @@
 
 | # | Feature | Status | Notes |
 |---|---------|--------|-------|
-| 62 | Welcome email on signup | ❌ | `sendEmail` infra exists, not called |
-| 63 | Password reset token email | ❌ | No endpoint |
-| 64 | Vendor listing approved / rejected notification | ❌ | |
-| 65 | New enquiry notification to vendor | ❌ | |
-| 66 | New lead notification to vendor | ❌ | |
-| 67 | Review published notification | ❌ | |
-| 68 | Weekly digest email job | ❌ | |
+| 62 | Welcome email on signup | ✅ | `register.post.ts` + `login.post.ts` call `buildWelcomeEmail` |
+| 63 | Password reset token email | ✅ | `forgot-password.post.ts` calls `buildPasswordResetEmail` |
+| 64 | Vendor listing approved / rejected notification | ✅ | `admin/listings/[id]/status.put.ts` calls `buildListingStatusEmail` |
+| 65 | New enquiry notification to vendor | ✅ | `enquiries/index.post.ts` calls `buildEnquiryNotificationEmail` |
+| 66 | New lead notification to vendor | ✅ | `buyer/intent-event.post.ts` calls `buildNewLeadAlertEmail` |
+| 67 | Review published notification | ✅ | `apps/[id]/reviews/index.post.ts` calls `buildReviewNotificationEmail` |
+| 68 | Weekly digest email job | ✅ | `server/tasks/digest-email.ts` scheduled Nitro task |
 | 69 | Deployment / SMTP env-var docs | ⚠️ | Dev logs to console |
 
 ---
@@ -158,7 +158,7 @@
 | 71 | JSON-LD structured data injected on all app pages | ⚠️ | Composable exists, not applied everywhere |
 | 72 | `robots.txt` blocks `/dashboard/**` | ⚠️ | Endpoint exists, rules incomplete |
 | 73 | Canonical URLs for paginated category pages | ❌ | |
-| 74 | `hreflang` tags for i18n routes | ❌ | i18n configured, tags not injected |
+| 74 | `hreflang` tags for i18n routes | ✅ | `useHreflang()` called in `layouts/default.vue` injects alternate link tags for all locales |
 | 75 | LLM-optimised meta injected consistently | ⚠️ | Many composables, inconsistent use |
 
 ---
@@ -172,10 +172,10 @@
 | 78 | Rate limiting on auth / contact / AI endpoints | ✅ | `server/utils/rateLimit.ts` applied to login, register, forgot-password, checkout |
 | 79 | CSRF protection (token on state-changing POSTs) | ✅ | Double-submit cookie pattern in `server/middleware/csrf.ts` + `plugins/csrf.client.ts` |
 | 80 | Content Security Policy (CSP) headers | ✅ | Full CSP + security headers in `nuxt.config.ts` routeRules |
-| 81 | Error boundary (`error.vue` global handler) | ❌ | |
-| 82 | Custom 404 page | ❌ | |
+| 81 | Error boundary (`error.vue` global handler) | ✅ | `error.vue` in root handles all error codes with proper UI |
+| 82 | Custom 404 page | ✅ | `error.vue` handles `statusCode === 404` |
 | 83 | Server-side caching for marketplace / category pages | ❌ | |
-| 84 | Background jobs (digest emails, session cleanup) | ❌ | |
+| 84 | Background jobs (digest emails, session cleanup) | ✅ | `session-cleanup.ts` (hourly) + `digest-email.ts` (weekly) + `renewal-reminders.ts` all scheduled |
 | 85 | `/api/health` health-check endpoint | ✅ | `server/api/health.get.ts` — checks DB, returns status/version |
 
 ---
@@ -199,9 +199,9 @@
 
 | # | Feature | Status | Notes |
 |---|---------|--------|-------|
-| 94 | Unit / integration test runner configured | ⚠️ | Test files exist, no `test` script in `package.json` |
-| 95 | E2E tests (Playwright / Cypress) | ❌ | |
-| 96 | CI/CD pipeline (GitHub Actions) | ❌ | |
+| 94 | Unit / integration test runner configured | ✅ | `"test": "vitest run"` + `"test:watch": "vitest"` added to `package.json` |
+| 95 | E2E tests (Playwright / Cypress) | ⚠️ | `playwright.config.ts` + `test:e2e` script exist; test files need writing |
+| 96 | CI/CD pipeline (GitHub Actions) | ✅ | `.github/workflows/ci.yml` — lint → typecheck → unit tests → build → E2E on main |
 | 97 | `.env.example` + deployment docs | ✅ | `.env.example` updated with all vars: SMTP, Stripe, AI, DB |
 
 ---
@@ -210,11 +210,11 @@
 
 | Priority | Area | Tasks | Done | Remaining |
 |----------|------|-------|------|-----------|
-| 1 | Payments | #50–55 | 2 | 4 |
-| 2 | Auth completeness | #1–3 | 0 | 3 |
-| 3 | Security hardening | #76, 78–80 | 3 | 1 |
-| 4 | i18n / GDPR | #56–60 | 0 | 5 |
-| 5 | Transactional emails | #62–69 | 0 | 8 |
-| 6 | Connect mock data | #10, 19, 36 | 0 | 3 |
-| 7 | Admin tools | #43–49 | 2 | 5 |
-| 8 | Tests + CI | #94–97 | 1 | 3 |
+| 1 | Payments | #50–55 | 4 | 2 (#52 invoice PDF, #54 VAT/GST) |
+| 2 | Auth completeness | #1–3 | 3 | 0 ✅ |
+| 3 | Security hardening | #76, 78–80 | 3 | 1 (#76 SQLite→Postgres) |
+| 4 | i18n / GDPR | #56–60 | 4 | 1 (#58 locale-aware formatting) |
+| 5 | Transactional emails | #62–69 | 7 | 1 (#69 SMTP docs only) |
+| 6 | Connect mock data | #10, 19, 36 | 3 | 0 ✅ |
+| 7 | Admin tools | #43–49 | 5 | 2 (#46 activity log writes, #47 badge UI) |
+| 8 | Tests + CI | #94–97 | 3 | 1 (#95 E2E test cases) |

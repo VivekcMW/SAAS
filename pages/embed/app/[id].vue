@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 
 definePageMeta({
   layout: false
@@ -38,7 +38,7 @@ const priceLabel = computed(() => {
 })
 
 const detailsUrl = computed(() => {
-  const base = (config.public?.siteUrl as string) || 'https://saasworld.app'
+  const base = (config.public?.siteUrl as string) || 'https://moonmart.ai'
   return `${base}/marketplace/app/${app.value?.slug || appId.value}`
 })
 
@@ -47,6 +47,21 @@ useHead({
   meta: [
     { name: 'robots', content: 'noindex, follow' }
   ]
+})
+
+// Send resize message to parent so embed.js can adjust iframe height
+onMounted(() => {
+  const slug = app.value?.slug || appId.value
+  const sendHeight = () => {
+    const h = document.body.scrollHeight
+    window.parent.postMessage(
+      JSON.stringify({ type: 'mm-embed-resize', slug, height: h }),
+      '*'
+    )
+  }
+  // Send after paint and again after a short delay (fonts/images)
+  requestAnimationFrame(sendHeight)
+  setTimeout(sendHeight, 600)
 })
 </script>
 

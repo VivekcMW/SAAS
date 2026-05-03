@@ -58,17 +58,18 @@ const priceLabel = computed(() => {
   return ''
 })
 
-// Fire-and-forget impression tracking (no-op stub; wire to analytics later)
-function trackImpression() {
+// Impression + click tracking — fire-and-forget, never blocks render
+function track(eventType: 'impression' | 'click') {
   if (!ad.value) return
   if (globalThis.window === undefined) return
-  // Example: globalThis.dataLayer?.push({ event: 'sponsored_impression', ad_id: ad.value.id, placement: props.placement })
+  $fetch('/api/ads/track', {
+    method: 'POST',
+    body: { appId: ad.value.id, placement: props.placement, eventType },
+  }).catch(() => { /* absorb silently */ })
 }
 
-function trackClick() {
-  if (!ad.value) return
-  // Example: globalThis.dataLayer?.push({ event: 'sponsored_click', ad_id: ad.value.id, placement: props.placement })
-}
+function trackImpression() { track('impression') }
+function trackClick() { track('click') }
 
 onMounted(trackImpression)
 </script>

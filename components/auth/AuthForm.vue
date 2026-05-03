@@ -810,24 +810,20 @@ const handleRegister = async () => {
 // Forgot password handler
 const handleForgotPassword = async () => {
   if (!validateForgotPasswordForm()) return;
-  
+
   try {
     isLoading.value = true;
-    
-    // Here you would typically make an API call to your password reset endpoint
-    // For now, we'll just simulate a successful request after a delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Show success message
-    forgotPasswordSuccess.value = true;
     forgotPasswordErrors.general = '';
-    
-    // Emit event
+
+    await $fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      body: { email: forgotPasswordForm.email }
+    });
+
+    forgotPasswordSuccess.value = true;
     emit('forgot-password', forgotPasswordForm.email);
-    
-  } catch (error) {
-    console.error('Forgot password error:', error);
-    forgotPasswordErrors.general = 'Failed to send reset link. Please try again.';
+  } catch (error: any) {
+    forgotPasswordErrors.general = error?.data?.statusMessage || 'Failed to send reset link. Please try again.';
   } finally {
     isLoading.value = false;
   }

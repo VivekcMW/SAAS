@@ -1,11 +1,14 @@
 import { createEmailVerificationToken, createSession, createUser, getSessionUser } from '~/server/utils/auth'
 import { buildWelcomeEmail, sendEmail } from '~/server/utils/email'
 import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
+import { logActivity } from '~/server/utils/database'
 
 export default defineEventHandler(async (event) => {
-  // 5 registrations per hour per IP
-  if (!checkRateLimit(getClientIp(event), { limit: 5, windowMs: 60 * 60 * 1000, prefix: 'register' })) {
-    throw createError({ statusCode: 429, statusMessage: 'Too many registration attempts. Please try again later.' })
+  // 5 registrations per hour per IP (bypassed in dev/test to allow full test suite runs)
+  if (process.env.NODE_ENV !== 'development' && process.env.NODE_ENV !== 'test') {
+    if (!checkRateLimit(getClientIp(event), { limit: 5, windowMs: 60 * 60 * 1000, prefix: 'register' })) {
+      throw createError({ statusCode: 429, statusMessage: 'Too many registration attempts. Please try again later.' })
+    }
   }
 
   const body = await readBody(event)
@@ -45,6 +48,15 @@ export default defineEventHandler(async (event) => {
   }
 
   await createSession(event, user.id, true)
+
+  logActivity({
+    actorId: user.id,
+    actorEmail: user.email,
+    action: 'user.register',
+    entityType: 'user',
+    entityId: user.id,
+    meta: { role: user.role, plan: user.plan }
+  })
 
   // Send welcome + email verification (fire-and-forget)
   try {

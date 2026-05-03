@@ -133,7 +133,7 @@ const kpis = computed(() => {
       openTickets: 0
     }
   }
-  return mockKpis
+  return mockKpis.value
 })
 
 onMounted(async () => {

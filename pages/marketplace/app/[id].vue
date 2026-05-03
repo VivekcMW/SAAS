@@ -62,7 +62,7 @@ const normalizedFeatures = computed(() => {
   if (typeof feats[0] === 'string') {
     return (feats as string[]).map(f => ({ name: f, included: true, group: 'Core Features' }))
   }
-  return feats as { name: string; group?: string; included?: boolean; description?: string; tier?: string }[]
+  return feats as { name: string; group?: string; included: boolean; description?: string; tier?: string }[]
 })
 
 const normalizedScreenshots = computed(() => {
@@ -759,7 +759,7 @@ function getCategoryLabel(cat?: string): string {
               placement="alternatives"
               variant="native-card"
               :category="app.category"
-              :exclude="[app.id, app.slug]"
+              :exclude="[app.id, app.slug].filter((s): s is string => !!s)"
               label="Sponsored alternative"
             />
           </div>

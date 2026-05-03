@@ -7,9 +7,10 @@
  * Max turns per session: 20
  */
 import { getDb, makeId } from '~/server/utils/database'
-import { getSessionUser, requireUser } from '~/server/utils/auth'
+import { getSessionUser } from '~/server/utils/auth'
 import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
 import { getMarketplaceApps } from '~/server/utils/apps'
+import { aiChat, activeProviderName } from '~/server/utils/aiProvider'
 
 interface CopilotRequest {
   sessionId?: string
@@ -87,40 +88,21 @@ ${catalogueSummary}`
 
   let reply = ''
   let suggestedApps: string[] = []
-  const openaiKey = process.env.OPENAI_API_KEY
 
-  if (openaiKey) {
-    try {
-      const res = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${openaiKey}`
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o',
-          messages: [
-            { role: 'system', content: systemPrompt },
-            ...messages.slice(-10) // keep last 10 messages for context
-          ],
-          max_tokens: 600,
-          temperature: 0.7
-        })
-      })
+  const { text: aiReply } = await aiChat({
+    system: systemPrompt,
+    messages: messages.slice(-10) as Array<{ role: 'user' | 'assistant'; content: string }>,
+    maxTokens: 600,
+    temperature: 0.7,
+    quality: 'smart'
+  })
 
-      if (res.ok) {
-        const data = await res.json() as { choices: Array<{ message: { content: string } }> }
-        reply = data.choices[0].message.content
-
-        // Extract app IDs mentioned by the AI
-        const appIdMatches = reply.match(/\[(app[-_][^\]]+)\]/g) || []
-        suggestedApps = [...new Set(appIdMatches.map(m => m.slice(1, -1)))]
-          .filter(id => apps.some(a => a.id === id))
-      }
-    }
-    catch (err) {
-      console.error('[ai/copilot] OpenAI failed:', err)
-    }
+  if (aiReply) {
+    reply = aiReply
+    // Extract app IDs mentioned by the AI
+    const appIdMatches = reply.match(/\[(app[-_][^\]]+)\]/g) || []
+    suggestedApps = [...new Set(appIdMatches.map(m => m.slice(1, -1)))]
+      .filter(id => apps.some(a => a.id === id))
   }
 
   // ── Heuristic fallback ────────────────────────────────────────────────────

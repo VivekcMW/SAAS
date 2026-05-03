@@ -12,7 +12,7 @@
  *
  * Fonts:
  *   Plus Jakarta Sans = UI / body (300–800)
- *   Instrument Serif  = display / editorial (400, italic)
+ *   Plus Jakarta Sans = display / editorial / UI (300–800)
  *   JetBrains Mono    = prices, code, mono (300–600)
  * ============================================================ */
 
@@ -59,7 +59,7 @@
   /* Text */
   --mm-pearl:     #F2F4F8;
   --mm-silver:    #A8B5CC;
-  --mm-slate:     #68788F;
+  --mm-slate:     #7E94AE;
 
   /* Surface aliases (shorthand) */
   --mm-s1:        #0F1220;
@@ -162,19 +162,18 @@
   --aw-text-subtle: #68788F;
 
   /* ── Typography ──────────────────────────────────────── */
-  /* Plus Jakarta Sans = UI / body (clean, geometric, variable weight) */
-  /* Instrument Serif  = display / editorial (elegant, italic-capable) */
-  /* JetBrains Mono    = prices, code, tabular data                    */
+  /* Plus Jakarta Sans = UI / body / headings (clean, geometric, variable weight) */
+  /* JetBrains Mono    = prices, code, tabular data                               */
   --f-ui:      'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --f-ser:     'Instrument Serif', Georgia, serif;  /* design-system name */
-  --f-display: 'Instrument Serif', Georgia, serif;  /* alias */
+  --f-ser:     var(--f-ui);  /* redirected: Plus Jakarta Sans replaces Instrument Serif */
+  --f-display: var(--f-ui);  /* alias */
   --f-mono:    'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
   --f-mon:     'JetBrains Mono', 'SF Mono', ui-monospace, monospace;  /* design-system short name */
 
   /* Legacy font aliases — point to new stack */
   --font-primary: var(--f-ui);
-  --font-heading: var(--f-ser);
-  --font-display: var(--f-ser);
+  --font-heading: var(--f-ui);
+  --font-display: var(--f-ui);
   --font-mono:    var(--f-mono);
 
   /* ── Type scale (px-based for precision) ────────────────

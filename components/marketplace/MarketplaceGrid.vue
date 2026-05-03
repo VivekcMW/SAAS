@@ -19,12 +19,12 @@
         <!-- Global Product Card - Horizontal Layout -->
         <div class="grid-item">
           <ProductCard 
-            :product="transformAppData(app)"
+            :product="(transformAppData(app) as any)"
             layout="vertical"
             :variant="getAppVariant(app)"
             @view-details="navigateToApp"
             @toggle-favorite="handleToggleFavorite"
-            @card-click="navigateToApp"
+            @card-click="(p) => navigateToApp(p.id)"
           />
         </div>
 

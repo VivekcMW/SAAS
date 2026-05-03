@@ -19,7 +19,7 @@
       <p class="news-card__excerpt">{{ post.excerpt }}</p>
 
       <footer class="news-card__footer">
-        <time class="news-card__date" :datetime="post.publishedAt">{{ formattedDate }}</time>
+        <time class="news-card__date" :datetime="post.publishedAt ?? undefined">{{ formattedDate }}</time>
         <span class="news-card__meta">
           <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M12 20.9l-7.7-8.1a5.5 5.5 0 0 1 7.7-7.8 5.5 5.5 0 0 1 7.7 7.8z" fill="currentColor"/></svg>
           {{ post.upvoteCount }}

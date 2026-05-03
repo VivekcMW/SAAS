@@ -100,7 +100,7 @@ async function generate() {
   const res = await ai.generateListingCopy({
     product: form.value.product,
     audience: form.value.audience,
-    integrations: form.value.integrations.split(',').map(s => s.trim()).filter(Boolean)
+    integrations: form.value.integrations.split(',').map(s => s.trim()).filter(Boolean).join(', ')
   })
   draft.value = res
   generating.value = false

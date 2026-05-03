@@ -22,6 +22,9 @@ export interface MarketplaceApp {
   trending: boolean
   sponsored: boolean
   status: 'draft' | 'submitted' | 'published'
+  shortDescription?: string
+  websiteUrl?: string
+  integrations?: string[]
 }
 
 function mapListing(app: DbAppListing): MarketplaceApp {

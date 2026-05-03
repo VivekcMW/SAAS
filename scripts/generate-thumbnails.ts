@@ -2,6 +2,7 @@
  * Bulk AI Thumbnail Generation Script
  * Run with: npm run generate-thumbnails
  */
+import { readFile } from 'node:fs/promises'
 
 import { writeFile, readdir } from 'fs/promises'
 import path from 'path'
@@ -158,7 +159,7 @@ const generateAllThumbnails = async () => {
         category: post.category,
         imageUrl: '',
         generated: false,
-        error: error.message
+        error: (error as any).message
       })
     }
   }

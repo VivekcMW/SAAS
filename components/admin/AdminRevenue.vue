@@ -55,10 +55,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-const { kpis, mrrTrend } = useAdminData()
+import { computed, onMounted } from 'vue'
+const { kpis, mrrTrend, loadLiveStats } = useAdminData()
 const maxMrr = computed(() => Math.max(...mrrTrend))
 const months = ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr']
+onMounted(() => loadLiveStats())
 </script>
 
 <style scoped>

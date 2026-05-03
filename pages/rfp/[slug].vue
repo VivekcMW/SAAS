@@ -83,7 +83,7 @@
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 
-const { data: rfpData, refresh } = await useAsyncData(`rfp-${slug.value}`, () => $fetch(`/api/rfp/${slug.value}`))
+const { data: rfpData, refresh } = await useAsyncData<{ rfp: { id: string; title: string; description?: string; status: string; deadline?: string; budget_min?: number; budget_max?: number; seats?: number; created_at: string; requirements?: string; tags?: string[]; category?: string; response_count?: number }; responses: { id: string; company_name: string; app_name: string; price_usd?: number; billing_period?: string; message?: string; created_at: string }[]; is_owner: boolean }>(`rfp-${slug.value}`, () => $fetch(`/api/rfp/${slug.value}`))
 useSeoMeta({ title: computed(() => rfpData.value ? `${(rfpData.value as any).rfp.title} — RFP` : 'RFP') })
 
 const responseForm = reactive({ message: '', price_usd: null as number | null, billing_period: '' })

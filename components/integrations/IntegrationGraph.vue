@@ -30,8 +30,8 @@
           :class="{ 'integration-card--verified': int.verified }"
         >
           <div class="integration-card__logo">
-            <img v-if="int.partner_logo" :src="int.partner_logo" :alt="int.partner_name" width="32" height="32" loading="lazy" />
-            <div v-else class="integration-card__logo-placeholder">{{ int.partner_name[0] }}</div>
+            <img v-if="int.partner_logo" :src="int.partner_logo" :alt="int.partner_name ?? ''" width="32" height="32" loading="lazy" />
+            <div v-else class="integration-card__logo-placeholder">{{ (int.partner_name ?? '?')[0] }}</div>
           </div>
           <div class="integration-card__body">
             <div class="integration-card__name">
@@ -47,7 +47,7 @@
           </div>
           <button class="vote-int-btn" :class="{ 'vote-int-btn--active': voted.has(int.id) }" @click="vote(int)" :title="voted.has(int.id) ? 'Remove vote' : 'This integration exists'">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
-            {{ int.vote_score + (localVotes[int.id] ?? 0) }}
+            {{ (int.vote_score ?? 0) + (localVotes[int.id] ?? 0) }}
           </button>
         </div>
       </div>
@@ -83,20 +83,30 @@
 <script setup lang="ts">
 const props = defineProps<{ appId: string }>()
 
-const { data, refresh } = await useAsyncData(
+interface IntegrationData {
+  total: number
+  integrations: Array<{
+    id: string; name: string; logo?: string; integration_type: string
+    description?: string; url?: string; verified?: boolean; direction?: string
+    vote_score?: number; partner_logo?: string; partner_name?: string
+    partner_app_id?: string; partner_app_slug?: string
+  }>
+}
+
+const { data, refresh } = await useAsyncData<IntegrationData>(
   `integrations-${props.appId}`,
-  () => $fetch(`/api/integrations/${props.appId}`)
+  () => $fetch<IntegrationData>(`/api/integrations/${props.appId}`)
 )
 
 const selectedType = ref('all')
 const types = computed(() => {
   const t = new Set<string>(['all'])
-  for (const int of (data.value as any)?.integrations ?? []) t.add(int.integration_type)
+  for (const int of data.value?.integrations ?? []) t.add(int.integration_type)
   return [...t]
 })
 const filtered = computed(() => {
-  const list = (data.value as any)?.integrations ?? []
-  return selectedType.value === 'all' ? list : list.filter((i: any) => i.integration_type === selectedType.value)
+  const list = data.value?.integrations ?? []
+  return selectedType.value === 'all' ? list : list.filter(i => i.integration_type === selectedType.value)
 })
 
 const voted = ref(new Set<string>())

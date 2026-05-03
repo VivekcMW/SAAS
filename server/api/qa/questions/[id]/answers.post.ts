@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
   const questionId = getRouterParam(event, 'id')
   const ip = getClientIp(event)
 
-  if (!checkRateLimit(ip, { prefix: 'qa_answer', limit: 10, windowMs: 60 * 60 * 1000 })) {
+  if (!checkRateLimit(ip, { prefix: 'qa_answer', limit: 10, windowMs: 60 * 60 * 1000 }).allowed) {
     throw createError({ statusCode: 429, statusMessage: 'Too many answers. Try again later.' })
   }
 
@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
     VALUES (?, ?, ?, ?, ?, ?, 0, 0, ?, ?)
   `).run(
     id, questionId, user?.id || null,
-    user ? `${user.first_name} ${user.last_name}`.trim() : (author_name?.trim() || 'Anonymous'),
+    user ? `${user.firstName} ${user.lastName}`.trim() : (author_name?.trim() || 'Anonymous'),
     user?.email || author_email?.trim() || null,
     answerBody.trim(), now, now
   )

@@ -629,7 +629,7 @@ const logKnowledgeAction = (integrationName: string, itemType: string) => {
 }
 
 .integration-title {
-  font-family: var(--f-ser);
+  font-family: var(--f-ui);
   font-size: var(--t-2xl);
   font-weight: 700;
   color: var(--mm-pearl);

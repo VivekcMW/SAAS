@@ -84,7 +84,7 @@ const normalizedFeatures = computed(() => {
   if (typeof feats[0] === 'string') {
     return (feats as string[]).map(f => ({ name: f, included: true, group: 'Core Features' }))
   }
-  return feats as { name: string; group?: string; included?: boolean; description?: string; tier?: string }[]
+  return feats as { name: string; group?: string; included: boolean; description?: string; tier?: string }[]
 })
 
 const normalizedScreenshots = computed(() => {
@@ -186,9 +186,9 @@ const alternatives = computed(() =>
 
 const companyInfo = computed(() => ({
   name: app.value?.provider || '—',
-  founded: null, headquarters: null, employees: null,
-  fundingTotal: null, latestRound: null, investors: [],
-  website: '#', linkedin: null, twitter: null
+  founded: undefined, headquarters: undefined, employees: undefined,
+  fundingTotal: undefined, latestRound: undefined, investors: [],
+  website: '#', linkedin: undefined, twitter: undefined
 }))
 
 const aboutQuickFacts = computed(() => {
@@ -336,6 +336,7 @@ function openEnquiry(section: string) {
 
 // ─── SEO ──────────────────────────────────────────────────────────────────────
 const canonicalUrl = computed(() => `https://moonmart.ai/marketplace/app/${appId.value}`)
+const { generateAppPageSchema } = useSchemaMarkup()
 
 useHead(() => ({
   title: app.value ? `${app.value.name} — Product Overview | moonmart.ai` : 'App Overview | moonmart.ai',
@@ -346,7 +347,25 @@ useHead(() => ({
     { property: 'og:image', content: `/api/og/app/${appId.value}` },
     { property: 'og:url', content: canonicalUrl.value }
   ],
-  link: [{ rel: 'canonical', href: canonicalUrl.value }]
+  link: [{ rel: 'canonical', href: canonicalUrl.value }],
+  script: app.value
+    ? [{
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify(generateAppPageSchema({
+          name: app.value.name,
+          slug: app.value.slug || appId.value,
+          description: app.value.description || '',
+          shortDescription: app.value.longDescription?.slice(0, 200) || app.value.description.slice(0, 200),
+          category: app.value.category || 'software',
+          rating: app.value.rating || 0,
+          reviewCount: app.value.reviewCount || 0,
+          pricingType: app.value.pricing?.type,
+          pricingValue: app.value.pricing?.value,
+          logo: app.value.logo,
+          features: app.value.features?.map((f: any) => typeof f === 'string' ? f : f.name).filter(Boolean)
+        }))
+      }]
+    : []
 }))
 
 // ─── Utilities ────────────────────────────────────────────────────────────────
@@ -812,7 +831,7 @@ function getCategoryLabel(cat?: string): string {
 
 .sc-section-head { margin-bottom: 28px; }
 .sc-section-title {
-  font-family: var(--f-ser);
+  font-family: var(--f-ui);
   font-size: var(--t-xl);
   font-weight: 700;
   color: var(--mm-pearl);
@@ -879,7 +898,7 @@ function getCategoryLabel(cat?: string): string {
   border: 0.5px solid var(--b1);
 }
 .sc-hero__name {
-  font-family: var(--f-ser);
+  font-family: var(--f-ui);
   font-size: var(--t-2xl);
   font-weight: 800;
   color: var(--mm-pearl);
@@ -1083,7 +1102,7 @@ function getCategoryLabel(cat?: string): string {
 
 .sc-final-cta { text-align: center; padding: 48px 0; }
 .sc-final-cta__title {
-  font-family: var(--f-ser);
+  font-family: var(--f-ui);
   font-size: var(--t-2xl);
   font-weight: 800;
   color: var(--mm-pearl);

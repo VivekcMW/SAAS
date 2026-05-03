@@ -226,11 +226,9 @@ const renewalsSoon = computed(() => {
   })
 })
 
-function fmt(n: number) { return Math.round(n).toLocaleString() }
-function fmtDate(iso: string) {
-  const d = new Date(iso)
-  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
-}
+const { fmtNumber, fmtDate: fmtDateIntl } = useFmt()
+function fmt(n: number) { return fmtNumber(Math.round(n)) }
+function fmtDate(iso: string) { return fmtDateIntl(iso, { month: 'short', day: 'numeric', year: 'numeric' }) }
 
 async function fetchStack() {
   loading.value = true

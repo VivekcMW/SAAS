@@ -5,7 +5,7 @@
 
 import { createError, defineEventHandler, readBody, getRouterParams } from 'h3'
 import type { Review, ReviewFormData } from '~/types/enhanced-app'
-import { getDb, makeId, type DbAppListing, type DbReview } from '~/server/utils/database'
+import { getDb, makeId, logActivity, type DbAppListing, type DbReview } from '~/server/utils/database'
 import { getSessionUser } from '~/server/utils/auth'
 import { buildReviewNotificationEmail, sendEmail, ADMIN_EMAIL } from '~/server/utils/email'
 
@@ -108,6 +108,15 @@ export default defineEventHandler(async (event) => {
       version: review.version || undefined
     }
   }
+
+  logActivity({
+    actorId: sessionUser?.id ?? null,
+    actorEmail: sessionUser?.email ?? null,
+    action: 'review.created',
+    entityType: 'review',
+    entityId: review.id,
+    meta: { appId, rating: review.rating }
+  })
 
   return {
     success: true,

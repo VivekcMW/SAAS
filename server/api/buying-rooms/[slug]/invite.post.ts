@@ -8,7 +8,7 @@ import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
 
 export default defineEventHandler(async (event) => {
   const ip = getClientIp(event)
-  if (!checkRateLimit(ip, { prefix: 'br_invite', limit: 20, windowMs: 60 * 60 * 1000 })) {
+  if (!checkRateLimit(ip, { prefix: 'br_invite', limit: 20, windowMs: 60 * 60 * 1000 }).allowed) {
     throw createError({ statusCode: 429, statusMessage: 'Too many invites.' })
   }
 

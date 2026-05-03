@@ -1,0 +1,224 @@
+<template>
+  <div class="aw">
+    <header class="bw-head">
+      <div>
+        <h1 class="bw-head__title">Badge management</h1>
+        <p class="bw-head__sub">Assign and revoke recognition badges on app listings.</p>
+      </div>
+      <div class="bw-head__actions">
+        <button class="bw-btn bw-btn--primary" @click="showAssignModal = true">Assign badge</button>
+      </div>
+    </header>
+
+    <p v-if="loading" style="padding: 24px; color: var(--bw-text-muted);">Loading badges…</p>
+
+    <AdminGridTable
+      v-else
+      :columns="columns"
+      :rows="badges"
+      row-key="id"
+      search-placeholder="Search apps, badge types…"
+      :selectable="false"
+      :exportable="true"
+      export-file-name="badges-export"
+    >
+      <template #cell-appName="{ row }">
+        <strong>{{ row.appName }}</strong>
+        <div style="font-size:0.78rem; color: var(--bw-text-muted);">{{ row.appId }}</div>
+      </template>
+
+      <template #cell-badgeType="{ row }">
+        <span class="bw-chip" :class="badgeChip(row.badgeType)">{{ badgeLabel(row.badgeType) }}</span>
+      </template>
+
+      <template #cell-createdAt="{ row }">
+        <span style="font-size:0.82rem; color: var(--bw-text-muted);">{{ fmtDate(row.createdAt) }}</span>
+      </template>
+
+      <template #cell-expiresAt="{ row }">
+        <span style="font-size:0.82rem; color: var(--bw-text-muted);">{{ row.expiresAt ? fmtDate(row.expiresAt) : '—' }}</span>
+      </template>
+
+      <template #cell-_actions="{ row }">
+        <button class="bw-btn bw-btn--ghost bw-btn--sm bw-btn--danger" @click="removeBadge(row as BadgeRow)">Remove</button>
+      </template>
+    </AdminGridTable>
+
+    <!-- Assign badge modal -->
+    <div v-if="showAssignModal" class="bw-modal-bg" @click.self="showAssignModal = false">
+      <div class="bw-modal">
+        <div class="bw-modal__head">
+          <h2 class="bw-modal__title">Assign badge</h2>
+          <button class="bw-modal__close" type="button" @click="showAssignModal = false">✕</button>
+        </div>
+        <div class="bw-modal__body">
+          <div class="bw-field">
+            <label class="bw-label">App ID</label>
+            <input v-model="form.appId" class="bw-input" placeholder="app_xxxx" />
+          </div>
+          <div class="bw-field">
+            <label class="bw-label">Badge type</label>
+            <select v-model="form.badgeType" class="bw-select">
+              <option value="">Select a badge</option>
+              <option v-for="b in BADGE_TYPES" :key="b.value" :value="b.value">{{ b.label }}</option>
+            </select>
+          </div>
+          <div class="bw-field">
+            <label class="bw-label">Reason (optional)</label>
+            <input v-model="form.reason" class="bw-input" placeholder="e.g. Editor's pick for Q2 2026" />
+          </div>
+          <div class="bw-field">
+            <label class="bw-label">Expires at (optional)</label>
+            <input v-model="form.expiresAt" type="date" class="bw-input" />
+          </div>
+          <p v-if="formError" class="bw-form-error">{{ formError }}</p>
+        </div>
+        <div class="bw-modal__foot">
+          <button class="bw-btn bw-btn--ghost" @click="showAssignModal = false">Cancel</button>
+          <button class="bw-btn bw-btn--primary" :disabled="saving" @click="assignBadge">
+            {{ saving ? 'Saving…' : 'Assign' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+
+interface BadgeRow {
+  id: string
+  appId: string
+  appName: string
+  badgeType: string
+  assignedBy: string
+  reason: string | null
+  expiresAt: string | null
+  createdAt: string
+}
+
+const BADGE_TYPES = [
+  { value: 'editor_choice', label: "Editor's Choice" },
+  { value: 'trending', label: 'Trending' },
+  { value: 'popular', label: 'Popular' },
+  { value: 'highly_rated', label: 'Highly Rated' },
+  { value: 'new', label: 'New' },
+  { value: 'featured', label: 'Featured' },
+  { value: 'verified', label: 'Verified' },
+  { value: 'top_rated', label: 'Top Rated' }
+]
+
+const badges = ref<BadgeRow[]>([])
+const loading = ref(false)
+const saving = ref(false)
+const showAssignModal = ref(false)
+const formError = ref('')
+const form = ref({ appId: '', badgeType: '', reason: '', expiresAt: '' })
+
+const columns = [
+  { key: 'appName',    label: 'App',        sortable: true,  hideable: false },
+  { key: 'badgeType',  label: 'Badge',      sortable: true,  hideable: false },
+  { key: 'assignedBy', label: 'Assigned by', sortable: false, hideable: true },
+  { key: 'reason',     label: 'Reason',     sortable: false, hideable: true },
+  { key: 'createdAt',  label: 'Assigned',   sortable: true,  hideable: true, width: '130px' },
+  { key: 'expiresAt',  label: 'Expires',    sortable: true,  hideable: true, width: '120px' },
+  { key: '_actions',   label: '',           sortable: false, hideable: false, width: '80px' }
+]
+
+function fmtDate(d: string) {
+  return new Date(d).toLocaleDateString()
+}
+
+function badgeLabel(type: string) {
+  return BADGE_TYPES.find(b => b.value === type)?.label ?? type
+}
+
+function badgeChip(type: string) {
+  const map: Record<string, string> = {
+    editor_choice: 'bw-chip--warning',
+    trending: 'bw-chip--danger',
+    popular: 'bw-chip--primary',
+    highly_rated: 'bw-chip--success',
+    new: 'bw-chip--neutral',
+    featured: 'bw-chip--warning',
+    verified: 'bw-chip--success',
+    top_rated: 'bw-chip--primary'
+  }
+  return map[type] ?? 'bw-chip--neutral'
+}
+
+async function loadBadges() {
+  loading.value = true
+  try {
+    const data = await $fetch<{ badges: BadgeRow[] }>('/api/admin/badges')
+    badges.value = data.badges
+  } catch (err) {
+    console.error('[AdminBadges] failed to load:', err)
+  } finally {
+    loading.value = false
+  }
+}
+
+async function assignBadge() {
+  formError.value = ''
+  if (!form.value.appId.trim() || !form.value.badgeType) {
+    formError.value = 'App ID and badge type are required.'
+    return
+  }
+  saving.value = true
+  try {
+    await $fetch('/api/admin/badges/assign', {
+      method: 'POST',
+      body: {
+        appId: form.value.appId.trim(),
+        badgeType: form.value.badgeType,
+        action: 'assign',
+        reason: form.value.reason || undefined,
+        expiresAt: form.value.expiresAt || undefined
+      }
+    })
+    showAssignModal.value = false
+    form.value = { appId: '', badgeType: '', reason: '', expiresAt: '' }
+    await loadBadges()
+  } catch (err: any) {
+    formError.value = err?.data?.message || err?.statusMessage || 'Failed to assign badge.'
+  } finally {
+    saving.value = false
+  }
+}
+
+async function removeBadge(row: BadgeRow) {
+  if (!confirm(`Remove "${badgeLabel(row.badgeType)}" badge from "${row.appName}"?`)) return
+  try {
+    await $fetch('/api/admin/badges/assign', {
+      method: 'POST',
+      body: { appId: row.appId, badgeType: row.badgeType, action: 'remove' }
+    })
+    await loadBadges()
+  } catch (err) {
+    console.error('[AdminBadges] remove failed:', err)
+  }
+}
+
+onMounted(loadBadges)
+</script>
+
+<style scoped>
+.bw-modal-bg {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+}
+.bw-modal {
+  background: var(--bw-surface); border-radius: 12px; width: 100%; max-width: 480px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18); overflow: hidden;
+}
+.bw-modal__head { padding: 16px 20px; border-bottom: 1px solid var(--bw-border); display: flex; justify-content: space-between; align-items: center; }
+.bw-modal__title { font-family: var(--f-ui); font-weight: 700; font-size: 1rem; margin: 0; }
+.bw-modal__close { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--bw-text-muted); }
+.bw-modal__body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.bw-modal__foot { padding: 14px 20px; border-top: 1px solid var(--bw-border); display: flex; justify-content: flex-end; gap: 8px; }
+.bw-field { display: flex; flex-direction: column; gap: 4px; }
+.bw-label { font-size: 0.83rem; font-weight: 600; color: var(--bw-text-muted); }
+.bw-form-error { font-size: 0.82rem; color: var(--bw-danger, #e53e3e); margin: 0; }
+</style>

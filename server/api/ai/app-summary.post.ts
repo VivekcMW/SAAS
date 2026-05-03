@@ -1,5 +1,6 @@
 import { getMarketplaceAppByIdOrSlug } from '~/server/utils/apps'
 import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
+import { aiChat, activeProviderName } from '~/server/utils/aiProvider'
 
 /**
  * POST /api/ai/app-summary
@@ -27,7 +28,62 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: 'App not found' })
   }
 
-  return buildSummary(app, body?.context || 'default')
+  // Try real AI generation first; fall back to deterministic stub
+  const context = body?.context || 'default'
+
+  if (process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY) {
+    try {
+      const contextAngle: Record<string, string> = {
+        sales: 'Focus on pipeline automation, ROI, and sales-ops value.',
+        engineering: 'Focus on API coverage, webhooks, audit trail, and developer experience.',
+        marketing: 'Focus on campaign tracking, attribution, and marketing ops value.',
+        default: 'Provide a balanced overview for a procurement decision-maker.'
+      }
+
+      const { text } = await aiChat({
+        system: `You are a SaaS product analyst writing concise AI summaries for a software marketplace.
+${contextAngle[context] || contextAngle.default}
+Return JSON with: { "pitch": string, "pros": string[], "cons": string[], "verdict": string, "idealFor": string[], "notIdealFor": string[], "contextNote": string }
+Keep pros/cons arrays to 4-5 items. Be specific and avoid generic filler.`,
+        messages: [{
+          role: 'user',
+          content: `App: ${app.name}
+Category: ${app.category}
+Rating: ${app.rating}/5 (${app.reviewCount} reviews)
+Pricing: ${app.pricing.type === 'free' ? 'Free' : app.pricing.value ? `From $${app.pricing.value}/mo` : 'Contact for pricing'}
+Description: ${app.description}
+Tags: ${app.tags?.slice(0, 8).join(', ') || 'N/A'}`
+        }],
+        maxTokens: 700,
+        temperature: 0.4,
+        quality: 'fast'
+      })
+
+      if (text) {
+        const jsonStr = text.replace(/^```(?:json)?\n?|\n?```$/g, '').trim()
+        const parsed = JSON.parse(jsonStr)
+        return {
+          appId: app.id,
+          context,
+          generatedAt: new Date().toISOString(),
+          pitch: parsed.pitch || '',
+          pros: Array.isArray(parsed.pros) ? parsed.pros : [],
+          cons: Array.isArray(parsed.cons) ? parsed.cons : [],
+          verdict: parsed.verdict || '',
+          idealFor: Array.isArray(parsed.idealFor) ? parsed.idealFor : [],
+          notIdealFor: Array.isArray(parsed.notIdealFor) ? parsed.notIdealFor : [],
+          contextNote: parsed.contextNote || '',
+          confidence: 0.92,
+          source: activeProviderName()
+        }
+      }
+    } catch (err) {
+      console.error('[ai/app-summary] AI call failed:', err)
+    }
+  }
+
+  // Deterministic fallback
+  return buildSummary(app, context)
 })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

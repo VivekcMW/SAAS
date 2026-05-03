@@ -6,6 +6,7 @@
 import { getDb } from '~/server/utils/database'
 import { requireVendor, getVendorProfileForUser, requirePlan } from '~/server/utils/auth'
 import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
+import { aiChat } from '~/server/utils/aiProvider'
 
 interface IntentRow {
   app_id: string
@@ -23,7 +24,7 @@ interface LossRow { app_id: string; app_name: string; date: string; company: str
 
 export default defineEventHandler(async (event) => {
   const user = await requireVendor(event)
-  requirePlan(user, 'professional')
+  requirePlan(event, 'professional')
 
   if (!checkRateLimit(getClientIp(event), { limit: 20, windowMs: 60 * 60 * 1000, prefix: 'vendor-winloss' })) {
     throw createError({ statusCode: 429, statusMessage: 'Rate limit reached. Try again later.' })
@@ -112,11 +113,10 @@ export default defineEventHandler(async (event) => {
     .sort((a, b) => b.rate - a.rate)
     .slice(0, 5)
 
-  // Derive insights with GPT-4o-mini (optional)
+  // Derive insights with AI (Anthropic or OpenAI)
   let insights: string[] = []
-  const openaiKey = process.env.OPENAI_API_KEY
 
-  if (openaiKey && totalComparisons >= 5) {
+  if ((process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY) && totalComparisons >= 5) {
     try {
       const prompt = `You are a SaaS sales analyst. Analyse these win/loss signals for a vendor:
 - Win rate: ${winRate}%
@@ -127,27 +127,22 @@ export default defineEventHandler(async (event) => {
 
 Generate 3-5 short, specific, actionable insights for the vendor. Each insight should be 1 sentence, plain text, no bullet symbols.`
 
-      const res = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${openaiKey}` },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [{ role: 'user', content: prompt }],
-          max_tokens: 300,
-          temperature: 0.5
-        })
+      const { text } = await aiChat({
+        messages: [{ role: 'user', content: prompt }],
+        maxTokens: 300,
+        temperature: 0.5,
+        quality: 'fast'
       })
 
-      if (res.ok) {
-        const data = await res.json() as { choices: Array<{ message: { content: string } }> }
-        insights = data.choices[0].message.content
+      if (text) {
+        insights = text
           .split('\n')
           .map(l => l.replace(/^\d+\.\s*/, '').replace(/^[-•]\s*/, '').trim())
           .filter(l => l.length > 20)
           .slice(0, 5)
       }
     } catch (err) {
-      console.error('[vendor/win-loss] OpenAI failed:', err)
+      console.error('[vendor/win-loss] AI call failed:', err)
     }
   }
 

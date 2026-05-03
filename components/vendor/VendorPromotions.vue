@@ -30,11 +30,13 @@
       </div>
       <div class="bw-kpi">
         <div class="bw-kpi__label">Click-through</div>
-        <div class="bw-kpi__value">{{ totalClicks.toLocaleString() }}</div>
+        <div class="bw-kpi__value">{{ fmtNumber(totalClicks) }}</div>
       </div>
     </div>
 
-    <ul class="promo-list">
+    <p v-if="promotionsLoading" style="padding: 24px; color: var(--vw-text-subtle);">Loading promotions…</p>
+
+    <ul v-else class="promo-list">
       <li v-for="p in promotions" :key="p.id" class="bw-card promo">
         <div class="promo-head">
           <div>
@@ -71,24 +73,33 @@
       <div class="new-modal__card bw-card">
         <h3 style="font-family: var(--f-ui); margin: 0 0 12px;">New promotion</h3>
         <p style="color: var(--vw-text-muted); font-size: 0.88rem; margin: 0 0 14px;">AI will suggest a discount % based on your conversion rate and competitor offers.</p>
-        <label class="bw-label">Listing</label>
-        <select class="bw-select" style="margin-bottom: 10px;">
-          <option>Acme CRM</option>
-          <option>Acme Inbox</option>
+        <label class="bw-label">App listing</label>
+        <select v-model="newForm.appId" class="bw-select" style="margin-bottom: 10px;">
+          <option value="">Select a listing…</option>
+          <option v-for="l in listings" :key="l.id" :value="l.id">{{ l.name }}</option>
         </select>
         <label class="bw-label">Type</label>
-        <select class="bw-select" style="margin-bottom: 10px;">
-          <option>Discount</option>
-          <option>Featured placement</option>
-          <option>Extended trial</option>
+        <select v-model="newForm.type" class="bw-select" style="margin-bottom: 10px;">
+          <option value="discount">Discount</option>
+          <option value="featured">Featured placement</option>
+          <option value="trial-extend">Extended trial</option>
         </select>
+        <label class="bw-label">Label / description</label>
+        <input v-model="newForm.label" class="bw-input" placeholder="e.g. 20% off annual plan" style="margin-bottom: 10px;" />
+        <label class="bw-label">Budget ($)</label>
+        <input v-model.number="newForm.budget" type="number" min="0" class="bw-input" placeholder="0" style="margin-bottom: 10px;" />
+        <label class="bw-label">Ends at (optional)</label>
+        <input v-model="newForm.endsAt" type="date" class="bw-input" style="margin-bottom: 14px;" />
         <div class="vw-ai-card" style="margin-bottom: 12px;">
           <div class="vw-ai-card__title"><span class="vw-ai-chip">AI</span> Recommendation</div>
           <p style="margin: 0; font-size: 0.85rem;">For a 30-day window, a <strong>22% discount</strong> maximises leads without eroding margin. Competitors are at 20–25%.</p>
         </div>
+        <p v-if="newFormError" style="font-size:0.82rem; color:var(--vw-danger,#e53e3e); margin:0 0 8px;">{{ newFormError }}</p>
         <div style="display: flex; gap: 8px; justify-content: flex-end;">
           <button class="bw-btn bw-btn--subtle" @click="openNew = false">Cancel</button>
-          <button class="bw-btn bw-btn--primary" @click="openNew = false">Schedule</button>
+          <button class="bw-btn bw-btn--primary" :disabled="saving" @click="scheduleNew">
+            {{ saving ? 'Saving…' : 'Schedule' }}
+          </button>
         </div>
       </div>
     </div>
@@ -96,10 +107,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-const { promotions } = useVendorData()
+import { ref, computed, onMounted } from 'vue'
+const { promotions, promotionsLoading, loadPromotions, createPromotion, listings } = useVendorData()
+const { fmtNumber } = useFmt()
+
+onMounted(loadPromotions)
 
 const openNew = ref(false)
+const saving = ref(false)
+const newFormError = ref('')
+const newForm = ref({ appId: '', type: 'discount' as 'discount' | 'featured' | 'trial-extend', label: '', budget: 0, endsAt: '' })
+
 const active = computed(() => promotions.value.filter(p => p.status === 'active'))
 const totalSpend = computed(() => promotions.value.reduce((s, p) => s + p.spend, 0))
 const totalBudget = computed(() => promotions.value.reduce((s, p) => s + p.budget, 0))
@@ -107,11 +125,35 @@ const totalClicks = computed(() => promotions.value.reduce((s, p) => s + p.click
 const totalLeads = computed(() => promotions.value.reduce((s, p) => s + p.leads, 0))
 const cpl = computed(() => totalLeads.value ? (totalSpend.value / totalLeads.value).toFixed(0) : '—')
 
-function fmt(n: number) { return n.toLocaleString() }
+function fmt(n: number) { return fmtNumber(n) }
 function statusChip(s: string) {
   if (s === 'active') return 'bw-chip--success'
   if (s === 'scheduled') return 'bw-chip--info'
   return 'bw-chip--neutral'
+}
+
+async function scheduleNew() {
+  newFormError.value = ''
+  if (!newForm.value.appId || !newForm.value.label.trim()) {
+    newFormError.value = 'Listing and label are required.'
+    return
+  }
+  saving.value = true
+  try {
+    await createPromotion({
+      appId: newForm.value.appId,
+      type: newForm.value.type,
+      label: newForm.value.label,
+      budget: newForm.value.budget || 0,
+      endsAt: newForm.value.endsAt || undefined
+    })
+    openNew.value = false
+    newForm.value = { appId: '', type: 'discount', label: '', budget: 0, endsAt: '' }
+  } catch (err: any) {
+    newFormError.value = err?.data?.message || err?.statusMessage || 'Failed to create promotion.'
+  } finally {
+    saving.value = false
+  }
 }
 </script>
 

@@ -28,7 +28,7 @@
             <h2 class="nf-hero__title">{{ featuredPost.title }}</h2>
             <p class="nf-hero__excerpt">{{ featuredPost.excerpt }}</p>
             <div class="nf-hero__footer">
-              <time :datetime="featuredPost.publishedAt">{{ fmtDate(featuredPost.publishedAt) }}</time>
+              <time :datetime="featuredPost.publishedAt ?? undefined">{{ fmtDate(featuredPost.publishedAt) }}</time>
               <span class="nf-hero__upvotes">
                 <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M12 20.9l-7.7-8.1a5.5 5.5 0 0 1 7.7-7.8 5.5 5.5 0 0 1 7.7 7.8z" fill="currentColor"/></svg>
                 {{ featuredPost.upvoteCount }}

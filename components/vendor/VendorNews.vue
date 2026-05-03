@@ -169,7 +169,7 @@ async function savePost() {
   saving.value = true
   try {
     if (editingPost.value) {
-      await $fetch(`/api/news/${editingPost.value.id}`, { method: 'PUT', body: { ...form.value } })
+      await $fetch(`/api/news/${editingPost.value.id}`, { method: 'PUT' as any, body: { ...form.value } })
     } else {
       await $fetch('/api/news', { method: 'POST', body: { ...form.value } })
     }
@@ -186,7 +186,7 @@ async function savePost() {
 async function submitPost(post: VendorPost) {
   if (!confirm(`Submit "${post.title}" for review? You cannot edit it while under review.`)) return
   try {
-    await $fetch(`/api/news/${post.id}`, { method: 'PUT', body: { submit: true } })
+    await $fetch(`/api/news/${post.id}`, { method: 'PUT' as any, body: { submit: true } })
     await refresh()
   } catch (e: unknown) {
     const err = e as { data?: { statusMessage?: string }; message?: string }
@@ -197,7 +197,7 @@ async function submitPost(post: VendorPost) {
 async function deletePost(post: VendorPost) {
   if (!confirm(`Delete "${post.title}"? This cannot be undone.`)) return
   try {
-    await $fetch(`/api/news/${post.id}`, { method: 'DELETE' })
+    await $fetch(`/api/news/${post.id}`, { method: 'DELETE' as any })
     await refresh()
   } catch (e: unknown) {
     const err = e as { data?: { statusMessage?: string }; message?: string }

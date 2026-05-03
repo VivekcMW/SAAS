@@ -26,7 +26,7 @@ export function getStripe(): Stripe {
       'Add it to your .env file to enable billing.'
     )
   }
-  _stripe = new Stripe(key, { apiVersion: '2025-03-31.basil' })
+  _stripe = new Stripe(key, { apiVersion: '2026-04-22.dahlia' })
   return _stripe
 }
 

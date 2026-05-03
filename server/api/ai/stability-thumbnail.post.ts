@@ -2,6 +2,7 @@
  * Stability AI Thumbnail Generation API
  * /api/ai/stability-thumbnail
  */
+import { writeFile } from 'node:fs/promises'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)

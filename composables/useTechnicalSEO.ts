@@ -179,7 +179,7 @@ Disallow: /`
   }) => {
     const baseStructure = {
       '@context': 'https://schema.org',
-      '@graph': []
+      '@graph': [] as Record<string, unknown>[]
     }
 
     // Organization markup

@@ -15,7 +15,6 @@ export default defineNuxtConfig({
     ['@nuxtjs/google-fonts', {
       families: {
         'Plus Jakarta Sans': [300, 400, 500, 600, 700, 800],
-        'Instrument Serif': [400],
         'JetBrains Mono': [300, 400, 500, 600]
       },
       display: 'swap',
@@ -36,7 +35,24 @@ export default defineNuxtConfig({
     prerender: {
       routes: ['/api/sitemap.xml', '/api/robots.txt']
     },
-    compressPublicAssets: true
+    compressPublicAssets: true,
+    experimental: {
+      tasks: true
+    },
+    scheduledTasks: {
+      // Run session cleanup every hour
+      '0 * * * *': ['session:cleanup'],
+      // Run renewal reminders every day at 08:00 UTC
+      '0 8 * * *': ['renewals:reminders'],
+      // Discovery agent — daily sources (Product Hunt + Hacker News + Reddit) at 3am UTC
+      '0 3 * * *': ['discovery:daily'],
+      // Discovery agent — weekly sources (YC + GitHub + IndieHackers + AppSumo + Zapier) every Sunday at 2am UTC
+      '0 2 * * 0': ['discovery:weekly'],
+      // Discovery enrichment — Proxycurl enrichment batch daily at 4am UTC (after crawlers)
+      '0 4 * * *': ['discovery:enrich'],
+      // Weekly digest emails — every Monday at 08:00 UTC
+      '0 8 * * 1': ['digest:weekly']
+    }
   },
 
   // Per-route headers — embed pages must be iframe-safe
@@ -114,6 +130,23 @@ export default defineNuxtConfig({
     '/api/ai/**': { headers: { 'Cache-Control': 'no-store' } },
     '/api/onboarding/**': { headers: { 'Cache-Control': 'no-store' } },
     '/api/rfp/*/respond': { headers: { 'Cache-Control': 'no-store' } },
+
+    // Content pages — blog, changelog, roadmap, guides, careers
+    '/blog': { headers: { 'Cache-Control': 'public, max-age=300, stale-while-revalidate=900' } },
+    '/blog/**': { headers: { 'Cache-Control': 'public, max-age=300, stale-while-revalidate=900' } },
+    '/changelog': { headers: { 'Cache-Control': 'public, max-age=300, stale-while-revalidate=900' } },
+    '/roadmap': { headers: { 'Cache-Control': 'public, max-age=60, stale-while-revalidate=300' } },
+    '/guides': { headers: { 'Cache-Control': 'public, max-age=300, stale-while-revalidate=900' } },
+    '/guides/**': { headers: { 'Cache-Control': 'public, max-age=300, stale-while-revalidate=900' } },
+    '/careers': { headers: { 'Cache-Control': 'public, max-age=600, stale-while-revalidate=1800' } },
+
+    // Content APIs
+    '/api/changelog': { headers: { 'Cache-Control': 'public, max-age=300, s-maxage=600' } },
+    '/api/roadmap': { headers: { 'Cache-Control': 'public, max-age=60, stale-while-revalidate=300' } },
+    '/api/guides': { headers: { 'Cache-Control': 'public, max-age=300, s-maxage=600' } },
+    '/api/guides/**': { headers: { 'Cache-Control': 'public, max-age=300, s-maxage=600' } },
+    '/api/careers/**': { headers: { 'Cache-Control': 'public, max-age=600, s-maxage=1800' } },
+    '/api/blog/**': { headers: { 'Cache-Control': 'public, max-age=300, s-maxage=600' } },
   },
 
   // Configure @nuxt/icon
@@ -140,7 +173,9 @@ export default defineNuxtConfig({
       { code: 'pt', name: 'Português', file: 'pt.json', flag: 'pt' },
       { code: 'zh', name: '中文', file: 'zh.json', flag: 'cn' },
       { code: 'ja', name: '日本語', file: 'ja.json', flag: 'jp' },
-      { code: 'ar', name: 'العربية', file: 'ar.json', flag: 'sa', dir: 'rtl' }
+      { code: 'ar', name: 'العربية', file: 'ar.json', flag: 'sa', dir: 'rtl' },
+      { code: 'hi', name: 'हिन्दी', file: 'hi.json', flag: 'in' },
+      { code: 'ko', name: '한국어', file: 'ko.json', flag: 'kr' }
     ],
     lazy: true,
     langDir: 'locales',

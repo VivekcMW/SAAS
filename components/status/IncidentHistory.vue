@@ -138,7 +138,7 @@ const {
   getServiceById
 } = useStatusData()
 
-const getAffectedServicesText = (serviceIds: string[]) => {
+const getAffectedServicesText = (serviceIds: readonly string[]) => {
   if (serviceIds.length === 0) return 'No services affected'
   if (serviceIds.length === 1) {
     const service = getServiceById(serviceIds[0])

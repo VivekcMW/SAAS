@@ -119,8 +119,8 @@
 
 <script setup lang="ts">
 const { kpis, todayActions, leads, listings, insights } = useVendorData()
-
-function fmt(n: number) { return n.toLocaleString() }
+const { fmtNumber } = useFmt()
+function fmt(n: number) { return fmtNumber(n) }
 function tempClass(t: string) {
   if (t === 'hot') return 'bw-chip--danger'
   if (t === 'warm') return 'bw-chip--warning'

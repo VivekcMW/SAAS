@@ -160,7 +160,7 @@ function formatCount(n: number): string {
     const v = n / 1_000
     return `${v >= 10 ? Math.floor(v) : v.toFixed(1).replace(/\.0$/, '')}k+`
   }
-  return n.toLocaleString('en-US')
+  return n.toLocaleString()
 }
 
 // Live stats from the database. Rendered server-side so the user sees the

@@ -2,7 +2,9 @@
  * POST /api/reviews
  * Submit a review for an app.
  * Optionally verified via a proof-of-use token (verified_purchase_token).
+ * Auto-verified when the reviewer's email matches the vendor's customer list.
  */
+import { createHash } from 'node:crypto'
 import { getDb, makeId } from '~/server/utils/database'
 import { getSessionUser } from '~/server/utils/auth'
 import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
@@ -10,7 +12,7 @@ import { computeReviewAuthenticity } from '~/server/utils/trustEngine'
 
 export default defineEventHandler(async (event) => {
   const ip = getClientIp(event)
-  if (!checkRateLimit(ip, { prefix: 'post_review', limit: 3, windowMs: 60 * 60 * 1000 })) {
+  if (!checkRateLimit(ip, { prefix: 'post_review', limit: 3, windowMs: 60 * 60 * 1000 }).allowed) {
     throw createError({ statusCode: 429, statusMessage: 'Too many review submissions. Try again later.' })
   }
 
@@ -40,6 +42,8 @@ export default defineEventHandler(async (event) => {
   // Check for verified purchase token
   let purchaseVerified = false
   let verifiedPurchaseId: string | null = null
+  let verificationMethod: string | null = null
+  let verificationSource: string | null = null
   if (verified_purchase_token) {
     const vp = db.prepare(`
       SELECT id FROM verified_purchases
@@ -48,7 +52,25 @@ export default defineEventHandler(async (event) => {
     if (vp) {
       purchaseVerified = true
       verifiedPurchaseId = vp.id
+      verificationMethod = 'token'
+      verificationSource = 'verified_purchase_token'
       db.prepare(`UPDATE verified_purchases SET used = 1 WHERE id = ?`).run(vp.id)
+    }
+  }
+
+  // Auto-verify via vendor customer list (email hash match)
+  if (!purchaseVerified) {
+    const reviewerEmail = user?.email || author_email?.trim() || null
+    if (reviewerEmail) {
+      const emailHash = createHash('sha256').update(reviewerEmail.trim().toLowerCase()).digest('hex')
+      const match = db.prepare(`
+        SELECT id FROM vendor_customer_lists WHERE app_id = ? AND email_hash = ?
+      `).get(app_id, emailHash)
+      if (match) {
+        purchaseVerified = true
+        verificationMethod = 'vendor_customer_list'
+        verificationSource = 'email_hash_match'
+      }
     }
   }
 
@@ -68,7 +90,7 @@ export default defineEventHandler(async (event) => {
 
   const id = makeId('rev')
   const displayName = user
-    ? `${user.first_name} ${user.last_name}`.trim()
+    ? `${user.firstName} ${user.lastName}`.trim()
     : (author_name?.trim() || 'Anonymous')
 
   db.prepare(`
@@ -76,10 +98,12 @@ export default defineEventHandler(async (event) => {
       id, app_id, user_id, user_name, user_email, rating, title, content,
       pros, cons, use_case, user_role, company_size, outcome_metric,
       purchase_verified, verified_purchase_id, authenticity_score,
+      verification_method, verification_source, verified_at,
       verified, helpful_votes, flag_count, status, created_at, updated_at
     ) VALUES (
       ?, ?, ?, ?, ?, ?, ?, ?,
       ?, ?, ?, ?, ?, ?,
+      ?, ?, ?,
       ?, ?, ?,
       0, 0, 0, 'pending', ?, ?
     )
@@ -90,7 +114,9 @@ export default defineEventHandler(async (event) => {
     use_case?.trim() || null, user_role?.trim() || null, company_size?.trim() || null,
     outcome_metric?.trim() || null,
     purchaseVerified ? 1 : 0, verifiedPurchaseId,
-    authenticityScore, now, now
+    authenticityScore,
+    verificationMethod, verificationSource, purchaseVerified ? now : null,
+    now, now
   )
 
   return {

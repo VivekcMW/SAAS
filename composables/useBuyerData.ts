@@ -1,6 +1,4 @@
-// Mock data + helpers for the Buyer workspace.
-// Replace with real API calls when backend is ready.
-import { computed, reactive, readonly } from 'vue'
+import { computed, reactive, readonly, ref } from 'vue'
 
 export type BuyerStatus = 'shortlisted' | 'evaluating' | 'demo-booked' | 'decided' | 'rejected'
 
@@ -9,9 +7,9 @@ export interface SavedApp {
   slug: string
   name: string
   category: string
-  logo: string // emoji-free: single letter
+  logo: string
   color: string
-  priceFrom: number // per seat / mo
+  priceFrom: number
   rating: number
   reviews: number
   status: BuyerStatus
@@ -65,14 +63,44 @@ export interface DigestItem {
   at: string
 }
 
+// ── Logo colour palette for apps without a logo ───────────────────────────
+const LOGO_COLORS = ['#4A154B', '#111111', '#FF7A59', '#5E6AD2', '#1F8DED', '#0052CC', '#00B37E', '#E44D26']
+function logoLetter(name: string) { return (name ?? '?')[0].toUpperCase() }
+function logoColor(id: string) {
+  let h = 0
+  for (let i = 0; i < id.length; i++) {
+    h = (id.codePointAt(i) ?? 0) + ((h << 5) - h)
+  }
+  return LOGO_COLORS[Math.abs(h) % LOGO_COLORS.length]
+}
+
+// ── API response shape from GET /api/buyer/saved-apps ──────────────────────
+interface SavedAppApiRow {
+  id: string
+  slug: string
+  name: string
+  provider: string
+  category: string
+  logo: string
+  description: string
+  pricing: { type: string; value?: number | null; period?: string | null }
+  rating: number
+  reviewCount: number
+  tags: string[]
+  integrations: string[]
+  features: string[]
+  certifications: string[]
+  status: string
+  note: string
+  savedAt: string
+}
+
+// ── Module-level reactive state ────────────────────────────────────────────
+const savedAppsLoaded = ref(false)
+const savedAppsLoading = ref(false)
+
 const state = reactive({
-  savedApps: [
-    { id: 'a1', slug: 'slack', name: 'Slack', category: 'Communication', logo: 'S', color: '#4A154B', priceFrom: 7.25, rating: 4.6, reviews: 32410, status: 'evaluating' as BuyerStatus, savedAt: '2026-04-10', note: 'Need SSO', integrations: ['Google Workspace', 'Jira', 'Notion'], trial: true, soc2: true },
-    { id: 'a2', slug: 'notion', name: 'Notion', category: 'Productivity', logo: 'N', color: '#111111', priceFrom: 10, rating: 4.7, reviews: 18920, status: 'shortlisted' as BuyerStatus, savedAt: '2026-04-14', integrations: ['Slack', 'Github'], trial: true, soc2: true },
-    { id: 'a3', slug: 'hubspot', name: 'HubSpot', category: 'CRM', logo: 'H', color: '#FF7A59', priceFrom: 45, rating: 4.4, reviews: 11230, status: 'demo-booked' as BuyerStatus, savedAt: '2026-04-05', note: 'Demo on 28 Apr', integrations: ['Gmail', 'Slack', 'Zapier'], trial: true, soc2: true },
-    { id: 'a4', slug: 'linear', name: 'Linear', category: 'Project mgmt', logo: 'L', color: '#5E6AD2', priceFrom: 8, rating: 4.8, reviews: 4800, status: 'shortlisted' as BuyerStatus, savedAt: '2026-04-18', integrations: ['Github', 'Slack', 'Figma'], trial: true, soc2: true },
-    { id: 'a5', slug: 'intercom', name: 'Intercom', category: 'Support', logo: 'I', color: '#1F8DED', priceFrom: 74, rating: 4.3, reviews: 2900, status: 'rejected' as BuyerStatus, savedAt: '2026-03-30', note: 'Too pricey', integrations: ['Slack', 'Salesforce'], trial: false, soc2: true }
-  ] as SavedApp[],
+  savedApps: [] as SavedApp[],
   enquiries: [
     { id: 'e1', product: 'Slack', productSlug: 'slack', vendor: 'Slack Technologies', lastMessage: 'Your trial has been extended by 14 days.', lastMessageAt: '3 hours ago', status: 'open', unread: 1 },
     { id: 'e2', product: 'HubSpot', productSlug: 'hubspot', vendor: 'HubSpot Inc.', lastMessage: 'Demo scheduled for Apr 28, 3:00 PM.', lastMessageAt: '1 day ago', status: 'awaiting-reply', unread: 0 },
@@ -97,6 +125,46 @@ const state = reactive({
   ] as DigestItem[]
 })
 
+function mapApiRow(r: SavedAppApiRow): SavedApp {
+  return {
+    id: r.id,
+    slug: r.slug,
+    name: r.name,
+    category: r.category,
+    logo: logoLetter(r.name),
+    color: logoColor(r.id),
+    priceFrom: r.pricing?.value ?? 0,
+    rating: r.rating,
+    reviews: r.reviewCount,
+    status: (r.status as BuyerStatus) || 'shortlisted',
+    savedAt: r.savedAt ? r.savedAt.slice(0, 10) : '',
+    note: r.note || '',
+    integrations: Array.isArray(r.integrations) ? r.integrations : [],
+    trial: r.pricing?.type === 'trial' || r.pricing?.type === 'free',
+    soc2: Array.isArray(r.certifications) && r.certifications.some(c => /soc\s*2/i.test(c))
+  }
+}
+
+async function loadSavedApps() {
+  if (savedAppsLoaded.value || savedAppsLoading.value) return
+  savedAppsLoading.value = true
+  try {
+    const data = await $fetch<{ savedApps: SavedAppApiRow[] }>('/api/buyer/saved-apps')
+    state.savedApps = (data.savedApps || []).map(mapApiRow)
+    savedAppsLoaded.value = true
+  } catch {
+    // Not authenticated or network error — leave empty
+  } finally {
+    savedAppsLoading.value = false
+  }
+}
+
+function resetSavedApps() {
+  state.savedApps = []
+  savedAppsLoaded.value = false
+  savedAppsLoading.value = false
+}
+
 export const statusLabel: Record<BuyerStatus, string> = {
   shortlisted: 'Shortlisted',
   evaluating: 'Evaluating',
@@ -113,6 +181,9 @@ export const statusTone: Record<BuyerStatus, string> = {
 }
 
 export const useBuyerData = () => {
+  // Load saved apps from API on first call
+  loadSavedApps()
+
   const kpis = computed(() => ({
     saved: state.savedApps.length,
     evaluating: state.savedApps.filter(a => a.status === 'evaluating' || a.status === 'shortlisted' || a.status === 'demo-booked').length,
@@ -120,15 +191,44 @@ export const useBuyerData = () => {
     reviews: state.reviews.length
   }))
 
-  const updateStatus = (id: string, status: BuyerStatus) => {
-    const a = state.savedApps.find(x => x.id === id); if (a) a.status = status
+  const updateStatus = async (id: string, status: BuyerStatus) => {
+    const a = state.savedApps.find(x => x.id === id)
+    if (a) {
+      const prev = a.status
+      a.status = status
+      try {
+        await $fetch(`/api/buyer/saved-apps/${id}`, { method: 'PATCH', body: { status } })
+      } catch {
+        a.status = prev
+      }
+    }
   }
-  const removeApp = (id: string) => {
-    const i = state.savedApps.findIndex(x => x.id === id); if (i >= 0) state.savedApps.splice(i, 1)
+
+  const removeApp = async (id: string) => {
+    const i = state.savedApps.findIndex(x => x.id === id)
+    if (i >= 0) {
+      const removed = state.savedApps.splice(i, 1)[0]
+      try {
+        await $fetch('/api/user/favorites', { method: 'DELETE', body: { appId: id } })
+      } catch {
+        state.savedApps.splice(i, 0, removed)
+      }
+    }
   }
-  const setNote = (id: string, note: string) => {
-    const a = state.savedApps.find(x => x.id === id); if (a) a.note = note
+
+  const setNote = async (id: string, note: string) => {
+    const a = state.savedApps.find(x => x.id === id)
+    if (a) {
+      const prev = a.note
+      a.note = note
+      try {
+        await $fetch(`/api/buyer/saved-apps/${id}`, { method: 'PATCH', body: { note } })
+      } catch {
+        a.note = prev
+      }
+    }
   }
+
   const closeEnquiry = (id: string) => {
     const e = state.enquiries.find(x => x.id === id); if (e) e.status = 'closed'
   }
@@ -136,6 +236,7 @@ export const useBuyerData = () => {
   return {
     state: readonly(state),
     savedApps: computed(() => state.savedApps),
+    savedAppsLoading,
     enquiries: computed(() => state.enquiries),
     reviews: computed(() => state.reviews),
     deals: computed(() => state.deals),
@@ -144,6 +245,8 @@ export const useBuyerData = () => {
     updateStatus,
     removeApp,
     setNote,
-    closeEnquiry
+    closeEnquiry,
+    loadSavedApps,
+    resetSavedApps
   }
 }

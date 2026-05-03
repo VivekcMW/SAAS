@@ -2,6 +2,7 @@
  * DALL-E Thumbnail Generation API
  * /api/ai/dalle-thumbnail
  */
+import { writeFile } from 'node:fs/promises'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
@@ -17,7 +18,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Use OpenAI API
-    const response = await $fetch('https://api.openai.com/v1/images/generations', {
+    const response = await $fetch<{ data: { url: string }[] }>('https://api.openai.com/v1/images/generations', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,

@@ -325,7 +325,7 @@ onBeforeUnmount(() => {
 .bp-hero__inner { max-width: 820px; margin: 0 auto; }
 .bp-hero__cat { display: inline-block; margin-bottom: 1rem; }
 .bp-hero__title {
-  font-family: var(--font-heading, 'Syne', system-ui, sans-serif);
+  font-family: var(--font-heading, 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif);
   font-size: clamp(1.75rem, 4vw, 2.75rem);
   line-height: 1.2;
   font-weight: 800;
@@ -433,7 +433,7 @@ onBeforeUnmount(() => {
   gap: 0.15rem;
 }
 .bp-cover__stats strong {
-  font-family: var(--font-heading, 'Syne', system-ui, sans-serif);
+  font-family: var(--font-heading, 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif);
   font-size: 1.4rem;
   color: #1e1e1e;
   line-height: 1;
@@ -464,7 +464,7 @@ onBeforeUnmount(() => {
 /* Body */
 .bp-body { max-width: 760px; font-size: 1.02rem; line-height: 1.75; color: #3f3f46; }
 .bp-body :deep(h2) {
-  font-family: var(--font-heading, 'Syne', system-ui, sans-serif);
+  font-family: var(--font-heading, 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif);
   font-size: 1.55rem;
   font-weight: 700;
   color: #1e1e1e;
@@ -473,7 +473,7 @@ onBeforeUnmount(() => {
   line-height: 1.3;
 }
 .bp-body :deep(h3) {
-  font-family: var(--font-heading, 'Syne', system-ui, sans-serif);
+  font-family: var(--font-heading, 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif);
   font-size: 1.2rem;
   font-weight: 700;
   color: #1e1e1e;
@@ -573,7 +573,7 @@ onBeforeUnmount(() => {
 @media (max-width: 960px) { .bp-side { position: static; } }
 .bp-side__card { background: #fff; border: 1px solid #f0efec; border-radius: 14px; padding: 1.25rem 1.4rem; }
 .bp-side__title {
-  font-family: var(--font-heading, 'Syne', system-ui, sans-serif);
+  font-family: var(--font-heading, 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif);
   font-size: 0.82rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -682,7 +682,7 @@ onBeforeUnmount(() => {
   color: var(--sw-primary, #ff8838);
 }
 .bp-related__title {
-  font-family: var(--font-heading, 'Syne', system-ui, sans-serif);
+  font-family: var(--font-heading, 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif);
   font-size: 1rem;
   font-weight: 700;
   color: #1e1e1e;
@@ -694,7 +694,7 @@ onBeforeUnmount(() => {
 /* Missing state */
 .bp-missing { text-align: center; padding: 2.5rem 1rem; }
 .bp-missing__title {
-  font-family: var(--font-heading, 'Syne', system-ui, sans-serif);
+  font-family: var(--font-heading, 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif);
   font-size: 1.75rem;
   font-weight: 700;
   color: #1e1e1e;

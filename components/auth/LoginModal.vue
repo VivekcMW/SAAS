@@ -179,33 +179,35 @@ const handleForgotPassword = (email: string | undefined) => {
 // Handle password reset submission (legacy)
 const handleResetPasswordSubmit = async () => {
   resetEmailError.value = '';
-  
+
   if (!resetEmail.value) {
     resetEmailError.value = 'Email is required';
     return;
   }
-  
+
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(resetEmail.value)) {
     resetEmailError.value = 'Please enter a valid email address';
     return;
   }
-  
+
   try {
     isResetLoading.value = true;
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
+    await $fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      body: { email: resetEmail.value }
+    });
+
     resetSuccess.value = true;
     emit('forgot-password', resetEmail.value);
-    
+
     setTimeout(() => {
       showForgotPassword.value = false;
       resetEmail.value = '';
       resetSuccess.value = false;
     }, 3000);
-    
-  } catch (error) {
-    console.error('Password reset error:', error);
-    resetEmailError.value = 'Failed to send reset link. Please try again.';
+  } catch (error: any) {
+    resetEmailError.value = error?.data?.statusMessage || 'Failed to send reset link. Please try again.';
   } finally {
     isResetLoading.value = false;
   }

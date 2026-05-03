@@ -177,6 +177,7 @@ const adminGroups: NavGroup[] = [
     title: 'Operations',
     items: [
       { to: '/dashboard/pending-apps', label: 'Pending approvals', icon: ICONS.file },
+      { to: '/dashboard/badges', label: 'Badges', icon: ICONS.star },
       { to: '/dashboard/news', label: 'News moderation', icon: ICONS.file },
       { to: '/dashboard/support', label: 'Support', icon: ICONS.inbox }
     ]

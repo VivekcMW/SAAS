@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
   `).run(
     id, threadId,
     user?.id || null,
-    user ? `${user.first_name} ${user.last_name}`.trim() : (author_name?.trim() || 'Anonymous'),
+    user ? `${user.firstName} ${user.lastName}`.trim() : (author_name?.trim() || 'Anonymous'),
     user?.email || (author_email?.trim() || null),
     replyBody.trim(),
     now

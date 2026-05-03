@@ -55,6 +55,20 @@ export default defineEventHandler(async (event) => {
     success_url: `${baseUrl}/dashboard?billing=success&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${baseUrl}/pricing?billing=cancelled`,
     allow_promotion_codes: true,
+    // Automatic tax collection — Stripe Tax must be enabled in the dashboard.
+    // Stripe will determine the correct VAT/GST rate based on the customer's
+    // billing address collected during checkout.
+    automatic_tax: { enabled: true },
+    // Let the customer enter their billing address so tax can be calculated.
+    billing_address_collection: 'required',
+    // Allow customers to enter a tax ID (VAT number for B2B EU sales, GST for AU/NZ, etc.)
+    tax_id_collection: { enabled: true },
+    customer_update: {
+      // Persist the billing address back to the Stripe Customer record so
+      // future checkouts pre-fill it and tax is consistent.
+      address: 'auto',
+      name: 'auto',
+    },
     metadata: {
       moonmart_user_id: user.id,
       moonmart_plan: body.planId,

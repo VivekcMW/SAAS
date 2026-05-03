@@ -178,7 +178,7 @@ export interface OnboardingSubmission {
 }
 
 // Import the OnboardingFormData type from our transformation composable
-export type { OnboardingFormData } from '../composables/useProductTransformation';
+export type { OnboardingFormData } from '../utils/productTransformation';
 
 // Database table creation SQL (for reference - adapt to your database system)
 export const SQL_SCHEMA = `

@@ -7,7 +7,9 @@
       </div>
     </header>
 
+    <p v-if="activityLoading" style="padding: 24px; color: var(--bw-text-muted);">Loading activity…</p>
     <AdminGridTable
+      v-else
       :columns="columns"
       :rows="activity"
       row-key="id"
@@ -46,7 +48,10 @@
 </template>
 
 <script setup lang="ts">
-const { activity } = useAdminData()
+import { onMounted } from 'vue'
+const { activity, activityLoading, loadActivity } = useAdminData()
+
+onMounted(() => loadActivity())
 
 const columns = [
   { key: 'at',     label: 'When',   sortable: false, hideable: true,  width: '140px' },

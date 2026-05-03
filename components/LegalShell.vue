@@ -136,7 +136,7 @@ onBeforeUnmount(() => {
   margin-bottom: 1rem;
 }
 .legal__title {
-  font-family: var(--f-ser);
+  font-family: var(--f-ui);
   font-size: clamp(2.25rem, 5vw, 3.25rem);
   font-weight: 700;
   line-height: 1.05;
@@ -251,7 +251,7 @@ onBeforeUnmount(() => {
   display: none;
 }
 .legal__article :deep(h2) {
-  font-family: var(--f-ser);
+  font-family: var(--f-ui);
   font-size: clamp(1.375rem, 2.2vw, 1.75rem);
   font-weight: 700;
   line-height: 1.25;

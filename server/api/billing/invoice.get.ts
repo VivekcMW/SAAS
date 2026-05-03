@@ -1,5 +1,6 @@
 import { requireUser } from '~/server/utils/auth'
 import { getDb } from '~/server/utils/database'
+import { getStripe } from '~/server/utils/stripe'
 
 const PLAN_PRICES: Record<string, { name: string; monthly: number }> = {
   starter: { name: 'Starter', monthly: 49 },
@@ -23,11 +24,47 @@ export default defineEventHandler(async (event) => {
   if (!sub) throw createError({ statusCode: 404, statusMessage: 'No active subscription found' })
 
   const plan = PLAN_PRICES[sub.plan] || { name: sub.plan, monthly: 0 }
-  const periodEnd = sub.current_period_end ? new Date(sub.current_period_end).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A'
-  const periodStart = sub.current_period_start ? new Date(sub.current_period_start).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A'
+  const fmtDate = (iso: string | null) => iso
+    ? new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })
+    : 'N/A'
+  const periodEnd = fmtDate(sub.current_period_end)
+  const periodStart = fmtDate(sub.current_period_start)
   const invoiceNum = `INV-${sub.stripe_subscription_id?.slice(-8)?.toUpperCase() ?? sub.id.slice(-8).toUpperCase()}`
   const total = plan.monthly
-  const tax = Math.round(total * 0.00) // VAT/tax if applicable — 0% for now
+
+  // Attempt to pull real tax amounts from Stripe
+  let taxAmount = 0
+  let taxPercent = 0
+  let taxLabel = 'Tax'
+  try {
+    const stripe = getStripe()
+    // Fetch the latest invoice for this subscription from Stripe
+    if (sub.stripe_subscription_id) {
+      const invoices = await stripe.invoices.list({
+        subscription: sub.stripe_subscription_id,
+        limit: 1,
+        status: 'paid',
+      })
+      const stripeInv = invoices.data[0] as any
+      if (stripeInv) {
+        // Use actual Stripe amounts (in cents)
+        const subtotalCents = stripeInv.subtotal ?? 0
+        const taxCents = stripeInv.tax ?? 0
+        taxAmount = taxCents / 100
+        if (subtotalCents > 0 && taxCents > 0) {
+          taxPercent = Math.round((taxCents / subtotalCents) * 100)
+        }
+        // Build tax label from first tax rate if present
+        const firstTaxRate = stripeInv.total_tax_amounts?.[0]
+        if (firstTaxRate && typeof firstTaxRate.tax_rate === 'object') {
+          const tr = firstTaxRate.tax_rate as any
+          taxLabel = tr.display_name ?? (tr.jurisdiction ? `Tax (${tr.jurisdiction})` : 'Tax')
+        }
+      }
+    }
+  } catch {
+    // Stripe unavailable — use 0% tax, invoice still renders
+  }
 
   setResponseHeader(event, 'Content-Type', 'text/html; charset=utf-8')
   setResponseHeader(event, 'Content-Disposition', `inline; filename="${invoiceNum}.html"`)
@@ -122,8 +159,8 @@ export default defineEventHandler(async (event) => {
 
   <div class="totals">
     <div class="totals-row"><span>Subtotal</span><span>$${total.toFixed(2)}</span></div>
-    <div class="totals-row"><span>Tax (0%)</span><span>$${tax.toFixed(2)}</span></div>
-    <div class="totals-row total"><span>Total</span><span>$${(total + tax).toFixed(2)} USD</span></div>
+    <div class="totals-row"><span>${taxLabel}${taxPercent > 0 ? ` (${taxPercent}%)` : ''}</span><span>$${taxAmount.toFixed(2)}</span></div>
+    <div class="totals-row total"><span>Total</span><span>$${(total + taxAmount).toFixed(2)} USD</span></div>
   </div>
 
   <div class="footer">

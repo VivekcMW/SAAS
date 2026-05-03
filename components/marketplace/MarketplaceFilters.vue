@@ -62,7 +62,7 @@
     <div class="filters-panel" :class="{ active: showFiltersPanel }">
       <div class="filters-panel-header">
         <h3>Advanced Filters</h3>
-        <button @click="toggleFiltersPanel" class="close-filters">
+        <button @click="toggleFiltersPanel" class="close-filters" aria-label="Close filters">
           <UIcon name="i-heroicons-x-mark" dynamic  />
         </button>
       </div>

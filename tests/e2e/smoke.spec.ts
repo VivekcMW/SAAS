@@ -5,15 +5,17 @@ test.describe('Smoke tests', () => {
     await page.goto('/')
     await expect(page).toHaveTitle(/moonmart/i)
     // Navbar should be visible
-    await expect(page.locator('nav')).toBeVisible()
+    await expect(page.locator('.navbar')).toBeVisible()
   })
 
   test('marketplace page loads with product cards or empty state', async ({ page }) => {
     await page.goto('/marketplace')
     await expect(page).toHaveURL(/marketplace/)
+    // Wait for the async grid to finish loading
+    await page.waitForLoadState('networkidle')
     // Either product cards or an empty-state message should be visible
-    const cards = page.locator('[class*="product-card"], [class*="ProductCard"]')
-    const empty = page.locator('text=/no applications|no results/i')
+    const cards = page.locator('.product-card')
+    const empty = page.locator('.no-results')
     const hasCards = await cards.count()
     const hasEmpty = await empty.count()
     expect(hasCards + hasEmpty).toBeGreaterThan(0)

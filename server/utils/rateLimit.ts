@@ -34,19 +34,21 @@ export interface RateLimitOptions {
  * Returns true if the request is allowed, false if it should be blocked.
  * Mutates the store — call only once per request.
  */
-export function checkRateLimit(ip: string, opts: RateLimitOptions): boolean {
+export function checkRateLimit(ip: string, opts: RateLimitOptions): { allowed: boolean; resetAt: number; remaining: number } {
   const key = `${opts.prefix || 'rl'}:${ip}`
   const now = Date.now()
   const entry = store.get(key)
 
   if (!entry || now - entry.windowStart > opts.windowMs) {
     store.set(key, { count: 1, windowStart: now })
-    return true
+    return { allowed: true, resetAt: now + opts.windowMs, remaining: opts.limit - 1 }
   }
 
   entry.count++
-  if (entry.count > opts.limit) return false
-  return true
+  const remaining = Math.max(0, opts.limit - entry.count)
+  const resetAt = entry.windowStart + opts.windowMs
+  if (entry.count > opts.limit) return { allowed: false, resetAt, remaining: 0 }
+  return { allowed: true, resetAt, remaining }
 }
 
 /** Extract the real client IP from the H3 event, respecting common proxy headers. */

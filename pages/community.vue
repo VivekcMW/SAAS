@@ -98,7 +98,8 @@ const page = ref(1)
 const showForm = ref(false)
 const submitting = ref(false)
 const formError = ref('')
-const isLoggedIn = ref(false) // TODO: replace with useAuth check
+const { currentUser } = useAuth()
+const isLoggedIn = computed(() => !!currentUser.value)
 
 const form = reactive({
   title: '',

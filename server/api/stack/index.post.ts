@@ -8,7 +8,7 @@ import { getUserKey } from './index.get'
 
 export default defineEventHandler(async (event) => {
   const ip = getClientIp(event)
-  if (!checkRateLimit(ip, { prefix: 'stack_add', limit: 60, windowMs: 60 * 60 * 1000 })) {
+  if (!checkRateLimit(ip, { prefix: 'stack_add', limit: 60, windowMs: 60 * 60 * 1000 }).allowed) {
     throw createError({ statusCode: 429, statusMessage: 'Too many requests.' })
   }
 

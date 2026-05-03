@@ -157,11 +157,18 @@ useHead({
   ]
 })
 
-const { isAuthenticated, login, isLoading: authLoading } = useAuth()
+const { isAuthenticated, login, isLoading: authLoading, refreshAuth } = useAuth()
 
 watchEffect(() => {
   if (!authLoading.value && isAuthenticated.value) {
     navigateTo('/dashboard')
+  }
+})
+
+// Client-side fallback: if SSR missed the session (e.g. under load), re-check auth on mount
+onMounted(async () => {
+  if (!isAuthenticated.value && !authLoading.value) {
+    await refreshAuth()
   }
 })
 

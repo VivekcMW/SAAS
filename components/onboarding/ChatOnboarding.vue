@@ -65,7 +65,7 @@
 
         <!-- Free-text inputs (name, tagline, provider, custom) -->
         <form
-          v-else-if="textSteps.includes(step)"
+          v-else-if="(textSteps as readonly string[]).includes(step)"
           class="composer"
           @submit.prevent="submitText"
         >

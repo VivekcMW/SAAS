@@ -105,7 +105,7 @@ import VoteWidget from '~/components/qa/VoteWidget.vue'
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 
-const { data, pending } = await useAsyncData(
+const { data, pending } = await useAsyncData<{ question: { id: string; title: string; body: string; author_name: string; created_at: string; view_count: number; vote_score: number; tags?: string[] }; answers: any[]; related?: { id: string; slug: string; title: string }[] }>(
   `qa-question-${slug.value}`,
   () => $fetch(`/api/qa/questions/${slug.value}`)
 )

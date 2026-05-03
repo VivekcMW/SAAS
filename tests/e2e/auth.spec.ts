@@ -9,7 +9,7 @@ test.describe('Auth forms', () => {
   })
 
   test('register page renders sign-up form', async ({ page }) => {
-    await page.goto('/register')
+    await page.goto('/signup')
     await expect(page.locator('input[type="email"]')).toBeVisible()
     await expect(page.locator('input[type="password"]')).toBeVisible()
   })

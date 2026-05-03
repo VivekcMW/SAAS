@@ -70,7 +70,7 @@ export default defineEventHandler(async (event) => {
     // Log error for debugging
     console.error('Quick Listing Submission Error:', error);
     
-    if (error.statusCode) {
+    if ((error as any).statusCode) {
       throw error;
     }
     

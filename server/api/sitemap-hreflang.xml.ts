@@ -1,6 +1,6 @@
 import { getDb } from '../utils/database'
 
-const LANGS = ['en', 'es', 'fr', 'de', 'pt']
+const LANGS = ['en', 'es', 'fr', 'de', 'pt', 'zh', 'ja', 'ar', 'hi', 'ko']
 const STATIC_PAGES = [
   '', 'marketplace', 'compare', 'alternatives', 'about', 'methodology', 'press',
   'contact', 'pricing', 'blog', 'features', 'free-tools', 'open-source-alternatives', 'tools-under-50'
@@ -26,24 +26,27 @@ export default defineEventHandler(async (event) => {
   // Static pages with hreflang
   for (const page of STATIC_PAGES) {
     const pagePath = page ? `/${page}` : '/'
-    const links = LANGS.map((lang) => {
+    const langLinks = LANGS.map((lang) => {
       const locPath = lang === 'en' ? pagePath : `/${lang}${pagePath}`
       return `      <xhtml:link rel="alternate" hreflang="${lang}" href="${base}${locPath}"/>`
-    }).join('\n')
+    })
+    // x-default points to English canonical
+    langLinks.push(`      <xhtml:link rel="alternate" hreflang="x-default" href="${base}${pagePath}"/>`)
     urls.push(
-      `  <url>\n    <loc>${base}${pagePath}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.9</priority>\n${links}\n  </url>`
+      `  <url>\n    <loc>${base}${pagePath}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.9</priority>\n${langLinks.join('\n')}\n  </url>`
     )
   }
 
   // App pages
   for (const app of apps) {
     const path = `/marketplace/app/${app.slug}`
-    const links = LANGS.map((lang) => {
+    const langLinks = LANGS.map((lang) => {
       const locPath = lang === 'en' ? path : `/${lang}${path}`
       return `      <xhtml:link rel="alternate" hreflang="${lang}" href="${base}${locPath}"/>`
-    }).join('\n')
+    })
+    langLinks.push(`      <xhtml:link rel="alternate" hreflang="x-default" href="${base}${path}"/>`)
     urls.push(
-      `  <url>\n    <loc>${base}${path}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n${links}\n  </url>`
+      `  <url>\n    <loc>${base}${path}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n${langLinks.join('\n')}\n  </url>`
     )
   }
 

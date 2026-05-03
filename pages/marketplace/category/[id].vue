@@ -112,6 +112,8 @@ const getCategoryIcon = (categoryId: string): string => {
 };
 
 // SEO Optimization
+const hasPageParam = computed(() => !!(route.query.page || route.query.filter || route.query.sort))
+
 useHead(() => ({
   title: `${getCategoryName(categoryId.value)} Applications - Moonmart Marketplace`,
   meta: [
@@ -126,7 +128,7 @@ useHead(() => ({
     },
     { property: 'og:type', content: 'website' },
     { property: 'og:url', content: `https://moonmart.ai/marketplace/category/${categoryId.value}` },
-    { name: 'robots', content: 'index, follow' }
+    { name: 'robots', content: hasPageParam.value ? 'noindex, follow' : 'index, follow' }
   ],
   link: [{ rel: 'canonical', href: `https://moonmart.ai/marketplace/category/${categoryId.value}` }],
   script: [

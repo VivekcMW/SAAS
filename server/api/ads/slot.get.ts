@@ -63,7 +63,7 @@ export default defineEventHandler((event) => {
     `
     const fallback = db.prepare(fallbackSql).get(...fallbackParams)
 
-    if (fallback) return { ad: mapAd(fallback), placement }
+    if (fallback) return { ad: mapAd(fallback as DbAppListing), placement }
 
     // Fallback 2: tiny catalog edge case — allow showing a sponsored app already on the page
     // rather than leaving inventory empty. UI still labels it "Sponsored" so it's transparent.
@@ -75,10 +75,10 @@ export default defineEventHandler((event) => {
     `).get()
 
     if (!lastResort) return { ad: null, placement }
-    return { ad: mapAd(lastResort), placement }
+    return { ad: mapAd(lastResort as DbAppListing), placement }
   }
 
-  return { ad: mapAd(row), placement }
+  return { ad: mapAd(row as DbAppListing), placement }
 })
 
 function mapAd(app: DbAppListing) {

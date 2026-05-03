@@ -132,14 +132,20 @@ export interface DbNewsPost {
 
 export interface DbDiscoveryItem {
   id: string
-  source: 'github_awesome' | 'product_hunt' | 'manual' | 'suggest'
+  source: string
   source_url: string | null
   website_url: string
   extracted_data: string  // JSON string of ExtractedListing
   confidence_score: number
-  status: 'pending' | 'auto_submitted' | 'review' | 'approved' | 'rejected' | 'discarded'
+  status: 'pending' | 'needs_review' | 'auto_approved' | 'approved' | 'rejected' | 'outreached' | 'claimed' | 'live'
   listing_id: string | null
   reject_reason: string | null
+  claim_email_sent: number
+  founder_email: string | null
+  founder_name: string | null
+  claim_token: string | null
+  claim_token_exp: string | null
+  outreach_count: number
   processed_at: string | null
   created_at: string
 }
@@ -397,6 +403,10 @@ function createSchema(db: Database.Database) {
     `ALTER TABLE reviews ADD COLUMN purchase_verified INTEGER NOT NULL DEFAULT 0`,
     `ALTER TABLE reviews ADD COLUMN verified_purchase_id TEXT`,
     `ALTER TABLE reviews ADD COLUMN flag_count INTEGER NOT NULL DEFAULT 0`,
+    // reviews — verification detail columns (Pillar 1.1)
+    `ALTER TABLE reviews ADD COLUMN verification_method TEXT`,
+    `ALTER TABLE reviews ADD COLUMN verified_at TEXT`,
+    `ALTER TABLE reviews ADD COLUMN verification_source TEXT`,
     // discovery_queue
     `ALTER TABLE discovery_queue ADD COLUMN claim_email_sent INTEGER NOT NULL DEFAULT 0`
   ]
@@ -782,6 +792,20 @@ function createSchema(db: Database.Database) {
       FOREIGN KEY (affiliate_id) REFERENCES affiliate_accounts(id)
     );
 
+    -- ── Buyer Saved App Metadata ──────────────────────────────────────────────
+    -- Stores per-user evaluation state (status, notes) for favorited apps.
+    -- No FK constraint on app_id so it works with both DB-seeded and external apps.
+    CREATE TABLE IF NOT EXISTS buyer_saved_app_metadata (
+      user_id TEXT NOT NULL,
+      app_id TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'shortlisted',
+      note TEXT NOT NULL DEFAULT '',
+      updated_at TEXT NOT NULL,
+      PRIMARY KEY (user_id, app_id),
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_bsam_user ON buyer_saved_app_metadata(user_id);
+
     -- ── Trust Engine ─────────────────────────────────────────────────────────
 
     CREATE TABLE IF NOT EXISTS verified_purchases (
@@ -978,6 +1002,17 @@ function createSchema(db: Database.Database) {
     CREATE INDEX IF NOT EXISTS idx_overlaps_a ON stack_overlaps(app_id_a, co_occurrence DESC);
     CREATE INDEX IF NOT EXISTS idx_overlaps_b ON stack_overlaps(app_id_b, co_occurrence DESC);
 
+    CREATE TABLE IF NOT EXISTS price_alerts (
+      id TEXT PRIMARY KEY,
+      app_id TEXT NOT NULL REFERENCES app_listings(id) ON DELETE CASCADE,
+      email TEXT NOT NULL,
+      threshold TEXT NOT NULL DEFAULT 'any',
+      created_at TEXT NOT NULL,
+      UNIQUE (app_id, email)
+    );
+    CREATE INDEX IF NOT EXISTS idx_price_alerts_app ON price_alerts(app_id);
+    CREATE INDEX IF NOT EXISTS idx_price_alerts_email ON price_alerts(email);
+
     CREATE TABLE IF NOT EXISTS renewal_reminders (
       id TEXT PRIMARY KEY,
       user_key TEXT NOT NULL,
@@ -1091,6 +1126,42 @@ function createSchema(db: Database.Database) {
     );
     CREATE INDEX IF NOT EXISTS idx_contracts_user ON contracts(user_id, end_date);
 
+    -- ─────────────────────────────────────────────────────────────────
+    -- PHASE 5: Trust Engine — Vendor Customer Lists
+    -- ─────────────────────────────────────────────────────────────────
+    -- Vendors upload their customer email list (hashed) so that review
+    -- submissions from matching emails receive the "Verified Buyer" badge.
+    CREATE TABLE IF NOT EXISTS vendor_customer_lists (
+      id TEXT PRIMARY KEY,
+      vendor_id TEXT NOT NULL REFERENCES vendor_profiles(id) ON DELETE CASCADE,
+      app_id TEXT NOT NULL REFERENCES app_listings(id) ON DELETE CASCADE,
+      email_hash TEXT NOT NULL,   -- SHA-256 of lowercase(email) — never store raw
+      created_at TEXT NOT NULL,
+      UNIQUE (app_id, email_hash)
+    );
+    CREATE INDEX IF NOT EXISTS idx_vcl_app ON vendor_customer_lists(app_id);
+    CREATE INDEX IF NOT EXISTS idx_vcl_vendor ON vendor_customer_lists(vendor_id);
+
+    -- ─────────────────────────────────────────────────────────────────
+    -- PHASE 5: Developer API Keys
+    -- ─────────────────────────────────────────────────────────────────
+    CREATE TABLE IF NOT EXISTS api_keys (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      key_hash TEXT NOT NULL UNIQUE,   -- SHA-256 of the raw key
+      key_prefix TEXT NOT NULL,         -- first 8 chars — shown in UI
+      name TEXT NOT NULL,
+      tier TEXT NOT NULL DEFAULT 'free',   -- free | developer | business
+      requests_today INTEGER NOT NULL DEFAULT 0,
+      requests_total INTEGER NOT NULL DEFAULT 0,
+      window_reset_at TEXT NOT NULL,
+      last_used_at TEXT,
+      status TEXT NOT NULL DEFAULT 'active',
+      created_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_apikeys_user ON api_keys(user_id);
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_apikeys_hash ON api_keys(key_hash);
+
     CREATE TABLE IF NOT EXISTS vendor_compliance_badges (
       id TEXT PRIMARY KEY,
       app_id TEXT NOT NULL REFERENCES app_listings(id) ON DELETE CASCADE,
@@ -1104,6 +1175,244 @@ function createSchema(db: Database.Database) {
     CREATE INDEX IF NOT EXISTS idx_vcb_app ON vendor_compliance_badges(app_id);
     CREATE INDEX IF NOT EXISTS idx_vcb_region ON vendor_compliance_badges(region);
     CREATE UNIQUE INDEX IF NOT EXISTS idx_vcb_app_badge ON vendor_compliance_badges(app_id, badge_type, region);
+
+    -- Support tickets (user-submitted; admin replies)
+    CREATE TABLE IF NOT EXISTS support_tickets (
+      id TEXT PRIMARY KEY,
+      user_id TEXT REFERENCES users(id) ON DELETE SET NULL,
+      user_email TEXT NOT NULL,
+      user_name TEXT NOT NULL,
+      subject TEXT NOT NULL,
+      body TEXT NOT NULL,
+      category TEXT NOT NULL DEFAULT 'general',
+      status TEXT NOT NULL DEFAULT 'open',
+      priority TEXT NOT NULL DEFAULT 'normal',
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_st_user ON support_tickets(user_id);
+    CREATE INDEX IF NOT EXISTS idx_st_status ON support_tickets(status, created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS support_ticket_replies (
+      id TEXT PRIMARY KEY,
+      ticket_id TEXT NOT NULL REFERENCES support_tickets(id) ON DELETE CASCADE,
+      sender_id TEXT REFERENCES users(id) ON DELETE SET NULL,
+      sender_email TEXT NOT NULL,
+      sender_name TEXT NOT NULL,
+      is_staff INTEGER NOT NULL DEFAULT 0,
+      body TEXT NOT NULL,
+      created_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_str_ticket ON support_ticket_replies(ticket_id, created_at);
+
+    -- ─────────────────────────────────────────────────────────────────
+    -- PHASE 5: Content — Changelog, Roadmap, Guides, Job Listings
+    -- ─────────────────────────────────────────────────────────────────
+
+    CREATE TABLE IF NOT EXISTS changelog_entries (
+      id TEXT PRIMARY KEY,
+      version TEXT NOT NULL,
+      title TEXT NOT NULL,
+      summary TEXT NOT NULL,
+      body_markdown TEXT NOT NULL DEFAULT '',
+      type TEXT NOT NULL DEFAULT 'feature',   -- feature | fix | improvement | security | breaking
+      published_at TEXT NOT NULL,
+      created_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_changelog_pub ON changelog_entries(published_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_changelog_type ON changelog_entries(type);
+
+    CREATE TABLE IF NOT EXISTS roadmap_items (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      description TEXT NOT NULL,
+      category TEXT NOT NULL DEFAULT 'product',   -- product | infrastructure | community | api
+      status TEXT NOT NULL DEFAULT 'planned',      -- planned | in-progress | done | cancelled
+      quarter TEXT NOT NULL,                        -- e.g. 'Q2 2026'
+      votes INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_roadmap_status ON roadmap_items(status, quarter);
+    CREATE INDEX IF NOT EXISTS idx_roadmap_votes ON roadmap_items(votes DESC);
+
+    CREATE TABLE IF NOT EXISTS roadmap_votes (
+      item_id TEXT NOT NULL REFERENCES roadmap_items(id) ON DELETE CASCADE,
+      voter_key TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      PRIMARY KEY (item_id, voter_key)
+    );
+
+    CREATE TABLE IF NOT EXISTS guide_articles (
+      id TEXT PRIMARY KEY,
+      slug TEXT NOT NULL UNIQUE,
+      title TEXT NOT NULL,
+      excerpt TEXT NOT NULL,
+      category TEXT NOT NULL DEFAULT 'buyer-tips',  -- buyer-tips | vendor-guide | api-docs | getting-started | negotiation
+      difficulty TEXT NOT NULL DEFAULT 'beginner',  -- beginner | intermediate | advanced
+      read_minutes INTEGER NOT NULL DEFAULT 5,
+      author TEXT NOT NULL DEFAULT 'Moonmart Editorial',
+      tags TEXT NOT NULL DEFAULT '[]',
+      body_markdown TEXT NOT NULL DEFAULT '',
+      related_app_ids TEXT NOT NULL DEFAULT '[]',
+      status TEXT NOT NULL DEFAULT 'published',
+      published_at TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_guides_slug ON guide_articles(slug);
+    CREATE INDEX IF NOT EXISTS idx_guides_cat ON guide_articles(category, status);
+    CREATE INDEX IF NOT EXISTS idx_guides_pub ON guide_articles(published_at DESC);
+
+    CREATE TABLE IF NOT EXISTS job_listings (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      department TEXT NOT NULL,    -- engineering | product | marketing | sales | operations | design
+      location TEXT NOT NULL,
+      type TEXT NOT NULL DEFAULT 'full-time',   -- full-time | part-time | contract | internship
+      remote TEXT NOT NULL DEFAULT 'remote',    -- remote | hybrid | on-site
+      description TEXT NOT NULL,
+      requirements TEXT NOT NULL DEFAULT '[]',  -- JSON array of bullet points
+      nice_to_have TEXT NOT NULL DEFAULT '[]',
+      salary_min INTEGER,
+      salary_max INTEGER,
+      salary_currency TEXT NOT NULL DEFAULT 'USD',
+      apply_url TEXT,
+      status TEXT NOT NULL DEFAULT 'active',    -- active | filled | paused
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_jobs_dept ON job_listings(department, status);
+    CREATE INDEX IF NOT EXISTS idx_jobs_status ON job_listings(status, created_at DESC);
+
+    -- ─────────────────────────────────────────────────────────────────
+    -- DISCOVERY AGENT: Agent runs log
+    -- ─────────────────────────────────────────────────────────────────
+    CREATE TABLE IF NOT EXISTS agent_runs (
+      id TEXT PRIMARY KEY,
+      source TEXT NOT NULL,
+      started_at TEXT NOT NULL,
+      finished_at TEXT,
+      urls_found INTEGER NOT NULL DEFAULT 0,
+      urls_new INTEGER NOT NULL DEFAULT 0,
+      urls_failed INTEGER NOT NULL DEFAULT 0,
+      status TEXT NOT NULL DEFAULT 'running'   -- running | done | error
+    );
+    CREATE INDEX IF NOT EXISTS idx_ar_source  ON agent_runs(source, started_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_ar_status  ON agent_runs(status);
+
+    -- ─────────────────────────────────────────────────────────────────
+    -- DISCOVERY AGENT: Outreach email log
+    -- ─────────────────────────────────────────────────────────────────
+    CREATE TABLE IF NOT EXISTS outreach_emails (
+      id TEXT PRIMARY KEY,
+      queue_item_id TEXT NOT NULL REFERENCES discovery_queue(id) ON DELETE CASCADE,
+      to_email TEXT NOT NULL,
+      subject TEXT NOT NULL,
+      sent_at TEXT,
+      opened_at TEXT,
+      clicked_at TEXT,
+      status TEXT NOT NULL DEFAULT 'sent'   -- sent | opened | clicked | bounced | failed
+    );
+    CREATE INDEX IF NOT EXISTS idx_oe_queue ON outreach_emails(queue_item_id);
+    CREATE INDEX IF NOT EXISTS idx_oe_email ON outreach_emails(to_email);
+  `)
+
+  // Discovery-agent column migrations (idempotent)
+  const discoveryAlterations = [
+    `ALTER TABLE discovery_queue ADD COLUMN founder_email TEXT`,
+    `ALTER TABLE discovery_queue ADD COLUMN founder_name TEXT`,
+    `ALTER TABLE discovery_queue ADD COLUMN claim_token TEXT`,
+    `ALTER TABLE discovery_queue ADD COLUMN claim_token_exp TEXT`,
+    `ALTER TABLE discovery_queue ADD COLUMN outreach_count INTEGER NOT NULL DEFAULT 0`
+  ]
+  for (const sql of discoveryAlterations) {
+    try { db.exec(sql) } catch { /* column already exists */ }
+  }
+
+  // Digest opt-out column (idempotent)
+  try {
+    db.exec(`ALTER TABLE users ADD COLUMN digest_opt_out INTEGER NOT NULL DEFAULT 0`)
+  } catch { /* column already exists */ }
+
+  // Weekly digest deduplication table (idempotent)
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS digest_sends (
+      user_id TEXT NOT NULL,
+      week_number INTEGER NOT NULL,
+      sent_at TEXT NOT NULL,
+      PRIMARY KEY (user_id, week_number),
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_digest_user ON digest_sends(user_id);
+  `)
+
+  // Activity log table (idempotent)
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS activity_log (
+      id TEXT PRIMARY KEY,
+      actor_id TEXT,
+      actor_email TEXT,
+      action TEXT NOT NULL,
+      entity_type TEXT,
+      entity_id TEXT,
+      meta TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+    CREATE INDEX IF NOT EXISTS idx_activity_created ON activity_log(created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_activity_actor ON activity_log(actor_id);
+  `)
+
+  // App badges table (idempotent)
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS app_badges (
+      id TEXT PRIMARY KEY,
+      app_id TEXT NOT NULL,
+      badge_type TEXT NOT NULL,
+      assigned_by TEXT NOT NULL,
+      reason TEXT,
+      expires_at TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (app_id) REFERENCES app_listings(id) ON DELETE CASCADE,
+      UNIQUE(app_id, badge_type)
+    );
+    CREATE INDEX IF NOT EXISTS idx_app_badges_app ON app_badges(app_id);
+  `)
+
+  // Vendor promotions table (idempotent)
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS vendor_promotions (
+      id TEXT PRIMARY KEY,
+      vendor_id TEXT NOT NULL,
+      app_id TEXT NOT NULL,
+      type TEXT NOT NULL CHECK(type IN ('discount', 'featured', 'trial-extend')),
+      label TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'scheduled' CHECK(status IN ('active', 'scheduled', 'ended')),
+      budget REAL NOT NULL DEFAULT 0,
+      spend REAL NOT NULL DEFAULT 0,
+      clicks INTEGER NOT NULL DEFAULT 0,
+      leads INTEGER NOT NULL DEFAULT 0,
+      starts_at TEXT,
+      ends_at TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (vendor_id) REFERENCES vendor_profiles(id) ON DELETE CASCADE,
+      FOREIGN KEY (app_id) REFERENCES app_listings(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_promo_vendor ON vendor_promotions(vendor_id);
+  `)
+
+  // Ad events (impressions + clicks) — lightweight append-only table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS ad_events (
+      id         TEXT PRIMARY KEY,
+      app_id     TEXT NOT NULL,
+      placement  TEXT NOT NULL,
+      event_type TEXT NOT NULL CHECK(event_type IN ('impression','click')),
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+    CREATE INDEX IF NOT EXISTS idx_adev_app ON ad_events(app_id);
+    CREATE INDEX IF NOT EXISTS idx_adev_created ON ad_events(created_at);
   `)
 }
 
@@ -1173,6 +1482,7 @@ function seedDatabase(db: Database.Database) {
       phone_number: '+1-555-0100',
       role: 'vendor',
       plan: 'Professional',
+      email_verified: 1,
       created_at: now,
       updated_at: now
     },
@@ -1188,6 +1498,7 @@ function seedDatabase(db: Database.Database) {
       job_title: 'Platform Admin',
       phone_number: '+1-555-0101',
       role: 'admin',
+      email_verified: 1,
       plan: 'Enterprise',
       created_at: now,
       updated_at: now
@@ -1311,4 +1622,31 @@ export function makeSlug(value: string) {
 
 export function makeId(prefix: string) {
   return createId(prefix)
+}
+
+export function logActivity(opts: {
+  actorId?: string | null
+  actorEmail?: string | null
+  action: string
+  entityType?: string
+  entityId?: string
+  meta?: Record<string, unknown>
+}) {
+  try {
+    const db = getDb()
+    db.prepare(`
+      INSERT INTO activity_log (id, actor_id, actor_email, action, entity_type, entity_id, meta, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))
+    `).run(
+      createId('alog'),
+      opts.actorId ?? null,
+      opts.actorEmail ?? null,
+      opts.action,
+      opts.entityType ?? null,
+      opts.entityId ?? null,
+      opts.meta ? JSON.stringify(opts.meta) : null
+    )
+  } catch (err) {
+    console.error('[logActivity] failed:', err)
+  }
 }

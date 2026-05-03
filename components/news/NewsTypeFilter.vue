@@ -2,7 +2,7 @@
   <div class="type-filter" aria-label="Filter by post type">
     <button
       v-for="item in items"
-      :key="item.value"
+      :key="item.value ?? 'all'"
       class="type-filter__pill"
       :class="{ 'type-filter__pill--active': active === item.value }"
       :data-type="item.value || 'all'"

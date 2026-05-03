@@ -71,7 +71,7 @@
         <div class="tco__grid">
           <div v-for="a in selectedApps" :key="a.id" class="tco__card">
             <div class="tco__app">{{ a.name }}</div>
-            <div class="tco__amount">${{ (a.priceFrom * seats * 12).toLocaleString() }}<span>/year</span></div>
+            <div class="tco__amount">{{ fmtCurrency(a.priceFrom * seats * 12) }}<span>/year</span></div>
             <div class="tco__detail">${{ a.priceFrom }} × {{ seats }} seats × 12</div>
           </div>
         </div>
@@ -100,6 +100,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useBuyerData, type SavedApp } from '~/composables/useBuyerData'
+const { fmtCurrency, fmtNumber } = useFmt()
 
 const { savedApps } = useBuyerData()
 const picks = ref<string[]>(savedApps.value.slice(0, 2).map(a => a.id))
@@ -112,7 +113,7 @@ type Row = { key: string; label: string; render: (a: SavedApp) => string | boole
 const rows: Row[] = [
   { key: 'price', label: 'Starting price', render: a => `$${a.priceFrom} / seat / mo` },
   { key: 'trial', label: 'Free trial', render: a => a.trial },
-  { key: 'rating', label: 'Rating', render: a => `★ ${a.rating} (${a.reviews.toLocaleString()})` },
+  { key: 'rating', label: 'Rating', render: a => `★ ${a.rating} (${fmtNumber(a.reviews)})` },
   { key: 'soc2', label: 'SOC 2 compliant', render: a => a.soc2 },
   { key: 'integrations', label: 'Key integrations', render: a => a.integrations.slice(0, 3).join(', ') },
   { key: 'status', label: 'Your stage', render: a => a.status.replace('-', ' ') }

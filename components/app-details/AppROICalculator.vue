@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+const { fmtCurrency } = useFmt()
 
 interface Props {
   appName: string
@@ -45,7 +46,7 @@ function formatMoney(value: number): string {
   if (Math.abs(value) >= 1000) {
     return `$${(value / 1000).toFixed(1)}k`
   }
-  return `$${Math.round(value).toLocaleString()}`
+  return fmtCurrency(Math.round(value))
 }
 
 function paybackLabel(): string {

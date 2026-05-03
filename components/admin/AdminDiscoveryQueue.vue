@@ -17,6 +17,21 @@
       </button>
     </header>
 
+    <!-- Crawler source buttons -->
+    <div class="dq-sources">
+      <span class="dq-sources__label">Run crawler:</span>
+      <button
+        v-for="src in SOURCES"
+        :key="src.key"
+        class="bw-btn bw-btn--sm bw-btn--outline"
+        :disabled="!!runningSource"
+        @click="runCrawler(src.key)"
+      >
+        <span v-if="runningSource === src.key" class="dq-spinner" aria-hidden="true" />
+        {{ src.label }}
+      </button>
+    </div>
+
     <!-- Filter bar -->
     <div class="dq-filters">
       <button
@@ -52,7 +67,7 @@
             @click="selectedId = item.id"
           >
             <div class="dq-score" :class="scoreClass(item.confidenceScore)">
-              {{ Math.round(item.confidenceScore * 100) }}%
+              {{ Math.round(item.confidenceScore) }}%
             </div>
             <div class="pq-item__body">
               <div class="pq-name">{{ item.extractedData?.name || item.websiteUrl }}</div>
@@ -79,7 +94,7 @@
             <a :href="selected.websiteUrl" target="_blank" rel="noopener noreferrer" class="dq-url">{{ selected.websiteUrl }}</a>
             <p class="pq-detail-sub">
               Source: {{ selected.source }} ·
-              Confidence: {{ Math.round(selected.confidenceScore * 100) }}% ·
+              Confidence: {{ Math.round(selected.confidenceScore) }}% ·
               {{ formatDate(selected.createdAt) }}
             </p>
           </div>
@@ -109,16 +124,32 @@
           <p class="pq-desc-text">{{ selected.extractedData.description }}</p>
         </div>
 
-        <div v-if="selected.status === 'pending'" class="pq-actions">
-          <button class="bw-btn bw-btn--primary" :disabled="actioning" @click="approve(selected.id)">
+        <div v-if="['pending', 'needs_review', 'auto_approved'].includes(selected.status)" class="pq-actions">
+          <button class="bw-btn bw-btn--primary" :disabled="!!actioning" @click="approve(selected.id)">
             {{ actioning === 'approve' ? 'Approving…' : 'Approve & Publish' }}
           </button>
           <button class="bw-btn bw-btn--ghost" :disabled="!!actioning" @click="reject(selected.id)">
             {{ actioning === 'reject' ? 'Rejecting…' : 'Reject' }}
           </button>
+          <button class="bw-btn bw-btn--outline" @click="openOutreach(selected)">Send Outreach</button>
         </div>
         <div v-else class="dq-action-done">
           Status: <span class="dq-badge" :class="`dq-badge--${selected.status}`">{{ selected.status }}</span>
+          <button v-if="['outreached', 'approved'].includes(selected.status)" class="bw-btn bw-btn--sm bw-btn--outline" @click="openOutreach(selected)">Re-send Outreach</button>
+        </div>
+
+        <!-- Outreach inline form -->
+        <div v-if="outreachItemId === selected.id" class="dq-outreach-form">
+          <p class="pq-label" style="margin-bottom:6px">Outreach email</p>
+          <div class="dq-outreach-row">
+            <input v-model="outreachEmail" type="email" class="dq-textarea" style="padding:8px 12px;resize:none;height:auto" placeholder="founder@company.com" />
+            <input v-model="outreachName" class="dq-textarea" style="padding:8px 12px;resize:none;height:auto" placeholder="Name (optional)" />
+            <button class="bw-btn bw-btn--primary" :disabled="outreachingId === selected.id" @click="sendOutreach(selected)">
+              {{ outreachingId === selected.id ? 'Sending…' : 'Send' }}
+            </button>
+            <button class="bw-btn bw-btn--ghost" @click="outreachItemId = null">Cancel</button>
+          </div>
+          <p v-if="outreachError" class="dq-trigger-error">{{ outreachError }}</p>
         </div>
       </section>
     </div>
@@ -174,9 +205,24 @@ interface Pagination { page: number; pages: number; total: number; limit: number
 const statuses = [
   { value: '', label: 'All' },
   { value: 'pending', label: 'Pending' },
+  { value: 'needs_review', label: 'Needs Review' },
+  { value: 'auto_approved', label: 'Auto-Approved' },
   { value: 'approved', label: 'Approved' },
-  { value: 'rejected', label: 'Rejected' },
-  { value: 'needs_review', label: 'Needs review' }
+  { value: 'outreached', label: 'Outreached' },
+  { value: 'claimed', label: 'Claimed' },
+  { value: 'rejected', label: 'Rejected' }
+]
+
+const SOURCES = [
+  { key: 'yc', label: 'YC' },
+  { key: 'producthunt', label: 'Product Hunt' },
+  { key: 'github', label: 'GitHub' },
+  { key: 'hackernews', label: 'HN' },
+  { key: 'indiehackers', label: 'IndieHackers' },
+  { key: 'reddit', label: 'Reddit' },
+  { key: 'appsumo', label: 'AppSumo' },
+  { key: 'zapier', label: 'Zapier' },
+  { key: 'enrich', label: 'Enrich (Proxycurl)', variant: 'enrichment' }
 ]
 
 const queue = ref<QueueItem[]>([])
@@ -194,6 +240,12 @@ const triggerUrls = ref('')
 const triggerLoading = ref(false)
 const triggerError = ref('')
 const triggerSuccess = ref('')
+const runningSource = ref<string | null>(null)
+const outreachItemId = ref<string | null>(null)
+const outreachEmail = ref('')
+const outreachName = ref('')
+const outreachError = ref('')
+const outreachingId = ref<string | null>(null)
 
 async function load() {
   loading.value = true
@@ -201,15 +253,15 @@ async function load() {
     const params = new URLSearchParams({ page: String(page.value), limit: '20' })
     if (filterStatus.value) params.set('status', filterStatus.value)
     const data = await $fetch<{
-      queue: QueueItem[]
-      statusCounts: Record<string, number>
+      items: QueueItem[]
+      counts: Record<string, number>
       pagination: Pagination
     }>(`/api/admin/discovery/queue?${params}`)
-    queue.value = data.queue
-    statusCounts.value = data.statusCounts
+    queue.value = data.items
+    statusCounts.value = data.counts
     pagination.value = data.pagination
-    if (!selectedId.value && data.queue.length) {
-      selectedId.value = data.queue[0].id
+    if (!selectedId.value && data.items.length) {
+      selectedId.value = data.items[0].id
     }
   } catch (err) {
     console.error('[discovery] load error', err)
@@ -260,6 +312,45 @@ function closeTriggerModal() {
   showTriggerModal.value = false
 }
 
+async function runCrawler(source: string) {
+  runningSource.value = source
+  try {
+    await $fetch('/api/admin/discovery/run', { method: 'POST', body: { source, limit: 100 } })
+    setTimeout(() => load(), 3000)
+  }
+  catch (e: unknown) {
+    const err = e as { data?: { statusMessage?: string } }
+    alert(err?.data?.statusMessage ?? 'Failed to start crawler')
+  }
+  finally { runningSource.value = null }
+}
+
+function openOutreach(item: QueueItem) {
+  outreachItemId.value = item.id
+  outreachEmail.value = ''
+  outreachName.value = item.extractedData?.name ?? ''
+  outreachError.value = ''
+}
+
+async function sendOutreach(item: QueueItem) {
+  if (!outreachEmail.value) { outreachError.value = 'Email is required'; return }
+  outreachingId.value = item.id
+  outreachError.value = ''
+  try {
+    await $fetch('/api/admin/discovery/outreach', {
+      method: 'POST',
+      body: { queue_item_id: item.id, email: outreachEmail.value, name: outreachName.value || undefined }
+    })
+    outreachItemId.value = null
+    await load()
+  }
+  catch (e: unknown) {
+    const err = e as { data?: { statusMessage?: string } }
+    outreachError.value = err?.data?.statusMessage ?? 'Failed to send'
+  }
+  finally { outreachingId.value = null }
+}
+
 async function triggerDiscovery() {
   triggerError.value = ''
   triggerSuccess.value = ''
@@ -296,8 +387,8 @@ async function triggerDiscovery() {
 }
 
 function scoreClass(score: number) {
-  if (score >= 0.75) return 'dq-score--high'
-  if (score >= 0.45) return 'dq-score--mid'
+  if (score >= 80) return 'dq-score--high'
+  if (score >= 50) return 'dq-score--mid'
   return 'dq-score--low'
 }
 
@@ -353,5 +444,18 @@ onMounted(load)
 .pq-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--aw-text-muted); margin-bottom: 2px; font-weight: 600; }
 .pq-desc { margin-bottom: 16px; }
 .pq-desc-text { font-size: 0.88rem; color: var(--aw-text-muted); line-height: 1.6; margin-top: 4px; }
-.pq-actions { display: flex; gap: 12px; margin-top: 20px; }
+.pq-actions { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+.dq-sources { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.dq-sources__label { font-size: 0.82rem; color: var(--aw-text-muted); font-weight: 500; }
+.bw-btn--sm { padding: 4px 12px; font-size: 0.8rem; }
+.bw-btn--outline { background: transparent; border: 1.5px solid var(--aw-border); color: var(--aw-text); }
+.bw-btn--outline:hover { border-color: var(--aw-accent); color: var(--aw-accent); }
+.dq-spinner { display: inline-block; width: 10px; height: 10px; border: 1.5px solid currentColor; border-top-color: transparent; border-radius: 50%; animation: spin 0.6s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.dq-outreach-form { margin-top: 16px; padding: 14px 16px; background: var(--aw-surface-2); border-radius: 10px; }
+.dq-outreach-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.dq-outreach-row input { flex: 1; min-width: 180px; }
+.dq-badge--outreached { background: #f3e8ff; color: #7c3aed; }
+.dq-badge--claimed    { background: #ccfbf1; color: #0f766e; }
+.dq-badge--auto_approved { background: #dcfce7; color: #15803d; }
 </style>

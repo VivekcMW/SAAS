@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
   const reviewId = getRouterParam(event, 'id')
   const ip = getClientIp(event)
 
-  if (!checkRateLimit(ip, { prefix: 'flag_review', limit: 10, windowMs: 60 * 60 * 1000 })) {
+  if (!checkRateLimit(ip, { prefix: 'flag_review', limit: 10, windowMs: 60 * 60 * 1000 }).allowed) {
     throw createError({ statusCode: 429, statusMessage: 'Too many flag requests.' })
   }
 

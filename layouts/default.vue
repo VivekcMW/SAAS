@@ -22,8 +22,11 @@
 
 <script setup lang="ts">
 const { locale } = useI18n()
-const RTL_LOCALES = ['ar']
-const isRTL = computed(() => RTL_LOCALES.includes(locale.value))
+const RTL_LOCALES = new Set(['ar'])
+const isRTL = computed(() => RTL_LOCALES.has(locale.value))
+
+// Inject hreflang alternate link tags for all locales on every page
+useHreflang()
 
 useHead({
   htmlAttrs: {

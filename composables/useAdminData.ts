@@ -78,30 +78,78 @@ const tickets = ref<SupportTicket[]>([
   { id: 't5', kind: 'report', subject: 'Listing accuracy — QuickBill', from: 'Priya Shah', openedAt: '2 days ago', status: 'resolved', description: 'Screenshots in the listing do not match the actual product.' }
 ])
 
-const activity = ref<ActivityEvent[]>([
-  { id: 'e1', at: '12m ago', actor: 'Admin User', actorRole: 'admin', action: 'approved', target: 'Nebula Analytics' },
-  { id: 'e2', at: '1h ago', actor: 'System', actorRole: 'system', action: 'auto-suspended', target: 'BillCorp' },
-  { id: 'e3', at: '2h ago', actor: 'Acme Technologies', actorRole: 'vendor', action: 'updated listing', target: 'Acme CRM' },
-  { id: 'e4', at: '3h ago', actor: 'Admin User', actorRole: 'admin', action: 'resolved dispute', target: 'Truenorth vs Acme' },
-  { id: 'e5', at: '5h ago', actor: 'Priya Shah', actorRole: 'buyer', action: 'submitted report', target: 'QuickBill' },
-  { id: 'e6', at: '1d ago', actor: 'Admin User', actorRole: 'admin', action: 'updated settings', target: 'Platform fee' }
-])
+const activity = ref<ActivityEvent[]>([])
+const activityLoaded = ref(false)
+const activityLoading = ref(false)
+
+async function loadActivity(opts?: { action?: string; entityType?: string; limit?: number }) {
+  if (activityLoading.value) return
+  activityLoading.value = true
+  try {
+    const data = await $fetch<{ activities: Array<{
+      id: string; actorEmail: string | null; action: string;
+      entityType: string | null; entityId: string | null;
+      meta: Record<string, unknown> | null; createdAt: string
+    }> }>('/api/admin/activity', { query: opts })
+    activity.value = (data.activities || []).map(e => ({
+      id: e.id,
+      at: new Date(e.createdAt).toLocaleString(),
+      actor: e.actorEmail || 'System',
+      actorRole: e.actorEmail ? (e.action.startsWith('user.') ? 'admin' : 'vendor') : 'system',
+      action: e.action,
+      target: (e.meta?.name as string) || e.entityId || ''
+    }))
+    activityLoaded.value = true
+  } catch (err) {
+    console.error('[useAdminData] activity fetch failed:', err)
+  } finally {
+    activityLoading.value = false
+  }
+}
 
 const mrrTrend = [42100, 43800, 44900, 46200, 47800, 49600, 51200, 53900, 55400, 57600, 59200, 61400]
 const signupsByDay = [8, 12, 15, 10, 18, 22, 19]
 
+// Live stats from /api/admin/stats — loaded on demand
+interface LiveAdminStats {
+  mrr: number
+  totalUsers: number
+  totalVendors: number
+  totalBuyers: number
+  totalListings: number
+  pendingListings: number
+  publishedListings: number
+  totalReviews: number
+  activeSubscriptions: number
+}
+const liveStats = ref<LiveAdminStats | null>(null)
+const liveStatsLoading = ref(false)
+
+async function loadLiveStats() {
+  if (liveStatsLoading.value) return
+  liveStatsLoading.value = true
+  try {
+    liveStats.value = await $fetch<LiveAdminStats>('/api/admin/stats')
+  } catch (err) {
+    console.error('[useAdminData] stats fetch failed:', err)
+  } finally {
+    liveStatsLoading.value = false
+  }
+}
+
 const kpis = computed(() => {
-  const totalBuyers = users.value.filter(u => u.role === 'buyer').length
-  const totalVendors = users.value.filter(u => u.role === 'vendor').length
+  const totalBuyers = liveStats.value?.totalBuyers ?? users.value.filter(u => u.role === 'buyer').length
+  const totalVendors = liveStats.value?.totalVendors ?? users.value.filter(u => u.role === 'vendor').length
+  const totalUsers = liveStats.value?.totalUsers ?? users.value.length
   const activeUsers = users.value.filter(u => u.status === 'active').length
-  const pendingApps = apps.value.filter(a => a.status === 'pending').length
-  const liveApps = apps.value.filter(a => a.status === 'approved').length
+  const pendingApps = liveStats.value?.pendingListings ?? apps.value.filter(a => a.status === 'pending').length
+  const liveApps = liveStats.value?.publishedListings ?? apps.value.filter(a => a.status === 'approved').length
   const openTickets = tickets.value.filter(t => t.status === 'open').length
-  const mrr = mrrTrend.at(-1) || 0
+  const mrr = liveStats.value?.mrr ?? mrrTrend.at(-1) ?? 0
   const firstMrr = mrrTrend[0] || 1
   const mrrGrowth = Number(((mrr - firstMrr) / firstMrr * 100).toFixed(1))
   return {
-    totalUsers: users.value.length,
+    totalUsers,
     totalBuyers,
     totalVendors,
     activeUsers,
@@ -159,9 +207,14 @@ export function useAdminData() {
     users,
     tickets,
     activity,
+    activityLoading,
+    loadActivity,
     mrrTrend,
     signupsByDay,
     kpis,
+    liveStats,
+    liveStatsLoading,
+    loadLiveStats,
     decideApp,
     updateUserStatus,
     resolveTicket

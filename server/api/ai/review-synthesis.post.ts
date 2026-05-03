@@ -7,6 +7,7 @@
  */
 import { getDb, makeId } from '~/server/utils/database'
 import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
+import { aiChat } from '~/server/utils/aiProvider'
 
 interface SynthesisResponse {
   appId: string
@@ -112,44 +113,30 @@ export default defineEventHandler(async (event) => {
     worstFor: [] as string[]
   }
 
-  const openaiKey = process.env.OPENAI_API_KEY
-  if (openaiKey && reviews.length >= 3) {
-    // ── Real OpenAI synthesis ──────────────────────────────────────────────
+  if ((process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY) && reviews.length >= 3) {
+    // ── AI synthesis (Anthropic or OpenAI) ────────────────────────────────
     const corpus = reviews.slice(0, 200)
       .map(r => `Rating ${r.rating}/5 — ${r.title}: ${r.content.slice(0, 300)}`)
       .join('\n\n')
 
     try {
-      const res = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${openaiKey}`
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [
-            {
-              role: 'system',
-              content: `You are a SaaS review analyst. Synthesize the reviews below for "${app.name}" into a structured JSON object with:
+      const { text } = await aiChat({
+        system: `You are a SaaS review analyst. Synthesize the reviews below for "${app.name}" into a structured JSON object with:
 - consensus: 2–3 sentence overall assessment (what most users agree on)
 - power_user_view: what advanced/power users specifically say
 - deal_breakers: array of 2–4 recurring complaints or limitations
 - best_for: array of 3–5 ideal use cases or user types
 - worst_for: array of 2–3 situations where this tool underperforms
-Return ONLY valid JSON.`
-            },
-            { role: 'user', content: corpus }
-          ],
-          response_format: { type: 'json_object' },
-          max_tokens: 800,
-          temperature: 0.2
-        })
+Return ONLY valid JSON.`,
+        messages: [{ role: 'user', content: corpus }],
+        maxTokens: 800,
+        temperature: 0.2,
+        quality: 'fast'
       })
 
-      if (res.ok) {
-        const data = await res.json() as { choices: Array<{ message: { content: string } }> }
-        const parsed = JSON.parse(data.choices[0].message.content)
+      if (text) {
+        const jsonStr = text.replace(/^```(?:json)?\n?|\n?```$/g, '').trim()
+        const parsed = JSON.parse(jsonStr)
         synthesis = {
           consensus: parsed.consensus || '',
           powerUserView: parsed.power_user_view || '',
@@ -160,7 +147,7 @@ Return ONLY valid JSON.`
       }
     }
     catch (err) {
-      console.error('[ai/review-synthesis] OpenAI failed:', err)
+      console.error('[ai/review-synthesis] AI call failed:', err)
     }
   }
 

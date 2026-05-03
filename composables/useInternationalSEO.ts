@@ -252,7 +252,7 @@ export const useInternationalSEO = () => {
     return {
       title: adaptedContent.split('\n')[0] || '',
       description: adaptedContent.split('\n')[1] || '',
-      keywords: localKeywordMappings['business software'][market.language] || [],
+      keywords: (localKeywordMappings['business software'] as Record<string, string[]>)[market.language] || [],
       content: adaptedContent,
       culturalAdaptations: adaptations,
       localReferences
@@ -415,7 +415,7 @@ export const useInternationalSEO = () => {
         }
       }
 
-      const localizedPath = localizedPaths[contentType as keyof typeof localizedPaths]?.[market.language.split('-')[0]]
+      const localizedPath = (localizedPaths[contentType as keyof typeof localizedPaths] as Record<string, string>)?.[market.language.split('-')[0]]
       if (localizedPath) {
         internationalPath = internationalPath.replace(`/${contentType}`, localizedPath)
       }

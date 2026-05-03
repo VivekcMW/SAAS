@@ -31,7 +31,16 @@ const show = ref(false)
 onMounted(() => {
   try {
     const stored = localStorage.getItem(CONSENT_KEY)
-    if (!stored) show.value = true
+    if (stored) return // already made a choice
+
+    // Respect Global Privacy Control (GPC) signal automatically
+    // https://globalprivacycontrol.org/
+    if (typeof navigator !== 'undefined' && (navigator as Navigator & { globalPrivacyControl?: boolean }).globalPrivacyControl === true) {
+      saveConsent(false) // honour GPC — essential cookies only, no analytics
+      return
+    }
+
+    show.value = true
   } catch {
     // localStorage unavailable (SSR or privacy mode)
   }
@@ -105,7 +114,7 @@ function acceptEssential() { saveConsent(false) }
 }
 .gdpr-link {
   color: var(--mm-gold);
-  text-decoration: none;
+  text-decoration: underline;
 }
 .gdpr-link:hover { text-decoration: underline; }
 .gdpr-actions {

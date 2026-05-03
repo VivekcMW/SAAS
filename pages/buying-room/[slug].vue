@@ -110,7 +110,7 @@
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 
-const { data: roomData, refresh } = await useAsyncData(`br-${slug.value}`, () => $fetch(`/api/buying-rooms/${slug.value}`))
+const { data: roomData, refresh } = await useAsyncData<{ room: { title: string; description?: string; status: string }; apps: any[]; comments: any[]; members: any[]; is_owner: boolean }>(`br-${slug.value}`, () => $fetch(`/api/buying-rooms/${slug.value}`))
 useSeoMeta({ title: computed(() => roomData.value ? `${(roomData.value as any).room.title} — Buying Room` : 'Buying Room') })
 
 function fmtDate(d: string) {

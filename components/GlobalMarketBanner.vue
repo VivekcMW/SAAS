@@ -6,7 +6,7 @@
         <span>{{ bannerMessage }}</span>
       </div>
       <div class="banner-actions">
-        <button @click="dismissBanner" class="dismiss-btn">
+        <button @click="dismissBanner" class="dismiss-btn" aria-label="Dismiss banner">
           <UIcon dynamic name="i-heroicons-x-mark" />
         </button>
       </div>
@@ -88,7 +88,7 @@ onMounted(() => {
 
 <style scoped>
 .global-market-banner {
-  background: var(--sw-text);
+  background: var(--mm-s3, #1F2742);
   color: white;
   padding: 0.5rem 1rem;
   position: fixed;

@@ -111,18 +111,23 @@ const isOpen = ref(false);
 
 // Available locales from the i18n config
 const availableLocales = computed(() => {
-  return locales.value.filter(l => typeof l !== 'string');
+  return locales.value.filter((l: any) => typeof l !== 'string');
 });
 
 // Current locale object
 const currentLocale = computed(() => {
-  return availableLocales.value.find(l => l.code === locale.value);
+  return availableLocales.value.find((l: any) => l.code === locale.value);
 });
 
 // Current currency display
 const currentCurrency = computed(() => {
   return currentRegion.value.currency;
 });
+
+const getLocaleName = (code: string) => {
+  const found = availableLocales.value.find((l: any) => l.code === code);
+  return found?.name || code;
+};
 
 // Current tax rate
 const currentTaxRate = computed(() => {
@@ -157,7 +162,7 @@ const switchLocale = async (newLocale: string) => {
     }
     
     // Update document direction for RTL languages
-    const selectedLocale = availableLocales.value.find(l => l.code === newLocale);
+    const selectedLocale = availableLocales.value.find((l: any) => l.code === newLocale);
     if (selectedLocale?.dir === 'rtl') {
       document.documentElement.dir = 'rtl';
       document.documentElement.lang = newLocale;
@@ -178,7 +183,7 @@ const switchLocale = async (newLocale: string) => {
 
 // Handle outside clicks
 const handleOutsideClick = (event: Event) => {
-  if (isOpen.value && !event.target?.closest?.('.language-region-switcher')) {
+  if (isOpen.value && !(event.target as Element)?.closest?.('.language-region-switcher')) {
     closeDropdown();
   }
 };

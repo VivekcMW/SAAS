@@ -27,7 +27,7 @@ export async function getEnhancedAppData(appId: string): Promise<EnhancedAppData
   if (!baseApp) return null;
 
   // Add missing fields structure - focusing on key analytics and engagement data
-  const enhancedApp: Partial<EnhancedAppData> = {
+  const enhancedApp = {
     ...baseApp,
     // Core missing fields for data collection
     reviews: [
@@ -58,48 +58,19 @@ export async function getEnhancedAppData(appId: string): Promise<EnhancedAppData
       }
     ],
     usageAnalytics: {
-      views: appId === 'app-001' ? 15420 : 8350,
-      uniqueVisitors: appId === 'app-001' ? 8945 : 4200,
-      downloads: appId === 'app-001' ? 3250 : 1890,
-      clickThroughRate: 0.18,
-      conversionRate: 0.08,
-      averageSessionDuration: 245,
-      bounceRate: 0.32,
-      traffic: {
-        organic: 0.45,
-        paid: 0.25,
-        direct: 0.20,
-        referral: 0.10
-      },
-      retention: {
-        day1: 0.85,
-        day7: 0.72,
-        day30: 0.68,
-        day90: 0.45
-      },
+      views: { total: appId === 'app-001' ? 15420 : 8350, unique: appId === 'app-001' ? 8945 : 4200, timeSeriesData: [] },
+      downloads: { total: appId === 'app-001' ? 3250 : 1890, byPlatform: {}, timeSeriesData: [] },
       engagement: {
-        timeOnPage: 185,
-        pagesPerSession: 4.2,
-        returnVisitorRate: 0.35
+        averageSessionTime: 185,
+        bounceRate: 0.32,
+        clickThroughRate: 0.18
       },
-      demographics: {
-        countries: [
-          { name: 'United States', percentage: 35 },
-          { name: 'United Kingdom', percentage: 15 }
-        ],
-        industries: [
-          { name: 'Technology', percentage: 28 },
-          { name: 'Finance', percentage: 22 }
-        ],
-        companySize: {
-          'small': 25,
-          'medium': 45,
-          'large': 30
-        }
-      },
-      trends: {
-        weekly: [120, 135, 145, 160, 155, 170, 180],
-        monthly: [3200, 3450, 3800, 4100]
+      sources: {
+        direct: 0.20,
+        search: 0.45,
+        social: 0.15,
+        referral: 0.10,
+        other: 0.10
       }
     },
     performance: {
@@ -200,5 +171,5 @@ export async function getEnhancedAppData(appId: string): Promise<EnhancedAppData
     }
   };
 
-  return enhancedApp as EnhancedAppData;
+  return enhancedApp as unknown as EnhancedAppData;
 }

@@ -9,6 +9,7 @@ import { getDb, makeId } from '~/server/utils/database'
 import { getSessionUser } from '~/server/utils/auth'
 import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
 import { getMarketplaceApps } from '~/server/utils/apps'
+import { aiChat, activeProviderName } from '~/server/utils/aiProvider'
 
 interface MatchRequest {
   companySize?: string
@@ -44,7 +45,7 @@ export default defineEventHandler(async (event) => {
 
   // Anonymous: 3 req/hour. Authenticated: 30 req/hour.
   const limit = user ? 30 : 3
-  if (!checkRateLimit(ip, { limit, windowMs: 60 * 60 * 1000, prefix: 'ai-match' })) {
+  if (!checkRateLimit(ip, { limit, windowMs: 60 * 60 * 1000, prefix: 'ai-match' }).allowed) {
     throw createError({ statusCode: 429, statusMessage: 'AI match rate limit reached. Sign in for unlimited access.' })
   }
 
@@ -83,8 +84,8 @@ export default defineEventHandler(async (event) => {
   const openaiKey = process.env.OPENAI_API_KEY
   let matches: MatchResult[] = []
 
-  if (openaiKey) {
-    // ── Real OpenAI call ────────────────────────────────────────────────────
+  if (openaiKey || process.env.ANTHROPIC_API_KEY) {
+    // ── AI call (Anthropic or OpenAI) ────────────────────────────────────────
     const systemPrompt = `You are a SaaS procurement advisor on Moonmart, an AI-powered software discovery platform.
 
 Given a buyer's context and a catalogue of software tools, return the top 5 ranked matches as JSON.
@@ -112,27 +113,18 @@ App catalogue (${catalogue.length} tools):
 ${JSON.stringify(catalogue, null, 2)}`
 
     try {
-      const res = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${openaiKey}`
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o',
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userMessage }
-          ],
-          response_format: { type: 'json_object' },
-          max_tokens: 1500,
-          temperature: 0.3
-        })
+      const { text } = await aiChat({
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userMessage }],
+        maxTokens: 1500,
+        temperature: 0.3,
+        quality: 'smart'
       })
 
-      if (res.ok) {
-        const data = await res.json() as { choices: Array<{ message: { content: string } }> }
-        const parsed = JSON.parse(data.choices[0].message.content) as {
+      if (text) {
+        // Strip markdown code fences if present
+        const jsonStr = text.replace(/^```(?:json)?\n?|\n?```$/g, '').trim()
+        const parsed = JSON.parse(jsonStr) as {
           matches: Array<{ appId: string; score: number; reasoning: string; tradeoff: string }>
         }
 
@@ -162,7 +154,7 @@ ${JSON.stringify(catalogue, null, 2)}`
       }
     }
     catch (err) {
-      console.error('[ai/match] OpenAI call failed:', err)
+      console.error('[ai/match] AI call failed:', err)
       // fall through to heuristic fallback
     }
   }
@@ -229,6 +221,6 @@ ${JSON.stringify(catalogue, null, 2)}`
     sessionId,
     matches,
     generatedAt: now,
-    powered_by: openaiKey ? 'gpt-4o' : 'heuristic'
+    powered_by: activeProviderName()
   }
 })

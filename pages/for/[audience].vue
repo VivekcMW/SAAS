@@ -104,6 +104,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+const { formatPrice: currencyFormatPrice } = useCurrency()
 
 interface App {
   id: string; slug: string; name: string; description: string; logo?: string
@@ -241,7 +242,7 @@ const filteredApps = computed(() => {
 function formatPrice(a: App): string {
   if (a.pricing.type === 'free') return 'Free'
   if (a.pricing.type === 'contact') return 'Custom'
-  if (a.pricing.value) return `From $${a.pricing.value}/mo`
+  if (a.pricing.value) return `From ${currencyFormatPrice(a.pricing.value, { period: 'mo' })}`
   return 'Paid'
 }
 

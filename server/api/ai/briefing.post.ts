@@ -8,6 +8,7 @@ import { requirePlan } from '~/server/utils/auth'
 import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
 import { getMarketplaceAppByIdOrSlug } from '~/server/utils/apps'
 import { randomBytes } from 'node:crypto'
+import { aiChat } from '~/server/utils/aiProvider'
 
 interface BriefingRequest {
   appIds: string[]
@@ -52,7 +53,7 @@ export default defineEventHandler(async (event) => {
   const title = `Software Evaluation: ${apps.map(a => a!.name).join(' vs ')} for ${companyName}`
 
   const openaiKey = process.env.OPENAI_API_KEY
-  if (openaiKey) {
+  if (openaiKey || process.env.ANTHROPIC_API_KEY) {
     const appContexts = apps.map(a => {
       let pricing = 'Contact for pricing'
       if (a!.pricing.type === 'free') pricing = 'Free'
@@ -64,25 +65,13 @@ export default defineEventHandler(async (event) => {
 - Tags: ${a!.tags.slice(0, 6).join(', ')}`
     }).join('\n\n')
 
-    try {
-      const res = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${openaiKey}`
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o',
-          messages: [
-            {
-              role: 'system',
-              content: `Generate a professional software evaluation brief in Markdown.
+    const { text } = await aiChat({
+      system: `Generate a professional software evaluation brief in Markdown.
 Structure: # Executive Summary → ## Feature Comparison → ## Pricing & TCO → ## Risk Assessment → ## Recommendation → ## Appendix
-Be specific, concise, and actionable. Write for a procurement decision-maker.`
-            },
-            {
-              role: 'user',
-              content: `Company: ${companyName}
+Be specific, concise, and actionable. Write for a procurement decision-maker.`,
+      messages: [{
+        role: 'user',
+        content: `Company: ${companyName}
 Team size: ${teamSize ?? 'unknown'}
 Budget: ${budget ? `$${budget}/month` : 'not specified'}
 Decision date: ${body.context?.decisionDate ?? 'not set'}
@@ -91,21 +80,12 @@ Tools to evaluate:
 ${appContexts}
 
 Generate the evaluation brief.`
-            }
-          ],
-          max_tokens: 2000,
-          temperature: 0.4
-        })
-      })
-
-      if (res.ok) {
-        const data = await res.json() as { choices: Array<{ message: { content: string } }> }
-        contentMd = data.choices[0].message.content
-      }
-    }
-    catch (err) {
-      console.error('[ai/briefing] OpenAI failed:', err)
-    }
+      }],
+      maxTokens: 2000,
+      temperature: 0.4,
+      quality: 'smart'
+    })
+    if (text) contentMd = text
   }
 
   // ── Fallback template ─────────────────────────────────────────────────────

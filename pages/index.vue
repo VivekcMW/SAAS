@@ -506,7 +506,7 @@ const integrationLogos = [
 .home-proof__inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; justify-content: center; }
 .home-proof__label { color: var(--mm-slate); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
 .home-proof__logos { display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center; }
-.home-proof__brand { color: var(--mm-slate); font-family: var(--f-ui); font-weight: 700; font-size: 1rem; letter-spacing: 0.02em; opacity: 0.85; }
+.home-proof__brand { color: var(--mm-slate); font-family: var(--f-ui); font-weight: 700; font-size: 1rem; letter-spacing: 0.02em; }
 
 /* Section head */
 .home-section-head { text-align: center; max-width: 680px; margin: 0 auto 2.5rem; }
@@ -585,7 +585,7 @@ const integrationLogos = [
 .app-card__cat { color: var(--mm-slate); font-size: 0.8rem; }
 
 .app-card__tag {
-  color: #52525b;
+  color: var(--mm-slate);
   font-size: 0.92rem;
   line-height: 1.5;
   margin: 0;
@@ -632,7 +632,7 @@ const integrationLogos = [
 .home-quote { max-width: 760px; margin: 0 auto; text-align: center; padding: 0 1rem; }
 .home-quote__mark { color: var(--mm-gold); opacity: 0.3; margin-bottom: 0.5rem; }
 .home-quote p {
-  font-family: var(--f-ser);
+  font-family: var(--f-ui);
   font-size: clamp(1.25rem, 2.4vw, 1.65rem);
   font-weight: 400;
   font-style: italic;

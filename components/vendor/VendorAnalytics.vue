@@ -110,7 +110,8 @@ const suggestions = [
   'What hour gets the most leads?'
 ]
 
-function fmt(n: number) { return n.toLocaleString() }
+const { fmtNumber } = useFmt()
+function fmt(n: number) { return fmtNumber(n) }
 function barWidth(s: { value: number }, top: { value: number }) {
   return Math.max(15, (s.value / top.value) * 100) + '%'
 }

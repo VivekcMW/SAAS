@@ -1,10 +1,10 @@
 <template>
-  <article class="review-card" :class="{ 'review-card--flagged': review.flag_count >= 3 }">
+  <article class="review-card" :class="{ 'review-card--flagged': (review.flag_count ?? 0) >= 3 }">
     <header class="review-card__header">
       <div class="review-card__meta">
         <StarRating :rating="review.rating" />
         <AuthenticityBadge
-          :level="review.authenticity_label || 'unverified'"
+          :level="(review.authenticity_label || 'unverified') as 'highly-verified' | 'verified' | 'basic' | 'unverified'"
           :score="review.authenticity_score"
         />
       </div>

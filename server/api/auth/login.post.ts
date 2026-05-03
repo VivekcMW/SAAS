@@ -1,7 +1,7 @@
 import { authenticateUser, createEmailVerificationToken, createSession } from '~/server/utils/auth'
 import { buildWelcomeEmail, sendEmail } from '~/server/utils/email'
 import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
-import { getDb } from '~/server/utils/database'
+import { getDb, logActivity } from '~/server/utils/database'
 
 export default defineEventHandler(async (event) => {
   // 10 attempts per 15 minutes per IP
@@ -54,6 +54,8 @@ export default defineEventHandler(async (event) => {
   }
 
   await createSession(event, user.id, body.rememberMe !== false)
+
+  logActivity({ actorId: user.id, actorEmail: user.email, action: 'user.login', entityType: 'user', entityId: user.id })
 
   return {
     success: true,

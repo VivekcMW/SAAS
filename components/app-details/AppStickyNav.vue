@@ -36,7 +36,7 @@ const itemRefs = ref<HTMLButtonElement[]>([])
 let observer: IntersectionObserver | null = null
 let stickyObserver: IntersectionObserver | null = null
 let resizeObserver: ResizeObserver | null = null
-let hashSyncTimer: number | undefined
+let hashSyncTimer: ReturnType<typeof setTimeout> | undefined
 
 const effectiveHeader = computed(() => props.headerHeight || measuredHeader.value)
 const totalTopOffset = computed(() => effectiveHeader.value + navHeight.value + props.offset)

@@ -23,7 +23,8 @@
     <div class="vw-thread">
       <!-- List -->
       <div class="vw-thread__list">
-        <div v-if="list.length === 0" class="bw-empty" style="padding: 32px 16px; border: none;">No leads here.</div>
+        <div v-if="leadsLoading" class="bw-empty" style="padding: 32px 16px; border: none;">Loading leads…</div>
+        <div v-else-if="list.length === 0" class="bw-empty" style="padding: 32px 16px; border: none;">No leads here.</div>
         <div
           v-for="l in list"
           :key="l.id"
@@ -114,13 +115,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 
-const { leads, replyLead } = useVendorData()
+const { leads, replyLead, loadLeads, loadLeadMessages, leadsLoading } = useVendorData()
 const ai = useAICopilot()
 
+onMounted(async () => {
+  await loadLeads()
+  if (leads.value[0]) activeId.value = leads.value[0].id
+})
+
 const filter = ref<'all' | 'new' | 'awaiting' | 'closed'>('all')
-const activeId = ref<string | null>(leads.value[0]?.id || null)
+const activeId = ref<string | null>(null)
 const reply = ref('')
 
 const tabs = [
@@ -133,10 +139,15 @@ const tabs = [
 const list = computed(() => filter.value === 'all' ? leads.value : leads.value.filter(l => l.status === filter.value))
 const active = computed(() => leads.value.find(l => l.id === activeId.value) || null)
 
+// Load messages when active thread changes
+watch(activeId, async (id) => {
+  if (id) await loadLeadMessages(id)
+})
+
 const summary = computed(() => {
   if (!active.value) return ''
   const l = active.value
-  return `${l.buyerName} from ${l.buyerCompany} (${l.buyerSize}) is asking about ${l.listingName}. Intent looks ${l.temperature} based on ${l.messages.length} message(s) and questions around ${l.subject.toLowerCase()}.`
+  return `${l.buyerName}${l.buyerCompany ? ' from ' + l.buyerCompany : ''} is asking about ${l.listingName}. Intent looks ${l.temperature} based on ${l.messages.length} message(s) about ${l.subject.toLowerCase()}.`
 })
 
 function select(id: string) {

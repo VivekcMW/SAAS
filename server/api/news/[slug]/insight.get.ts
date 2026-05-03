@@ -6,6 +6,7 @@
  */
 import { getDb } from '~/server/utils/database'
 import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
+import { aiChat } from '~/server/utils/aiProvider'
 
 interface AdminSettingRow { value: string }
 interface NewsRow { id: string; title: string; body_markdown: string; published_at: string }
@@ -47,42 +48,28 @@ export default defineEventHandler(async (event) => {
   let summary = ''
   let implications: string[] = []
 
-  const openaiKey = process.env.OPENAI_API_KEY
-  if (openaiKey) {
+  if (process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY) {
     try {
-      const res = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${openaiKey}` },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [
-            {
-              role: 'system',
-              content: `You are a SaaS industry analyst helping software buyers understand news. 
+      const { text } = await aiChat({
+        system: `You are a SaaS industry analyst helping software buyers understand news. 
 Given a news article, produce:
 1. A 2-sentence plain-text summary titled "summary" — what changed and why it matters to buyers
 2. A JSON array of 2-4 brief implication strings titled "implications" — practical takeaways for a software buyer
-Respond ONLY with valid JSON: { "summary": "...", "implications": ["...", "..."] }`
-            },
-            {
-              role: 'user',
-              content: `Title: ${post.title}\n\n${bodySnippet}`
-            }
-          ],
-          max_tokens: 400,
-          temperature: 0.4,
-          response_format: { type: 'json_object' }
-        })
+Respond ONLY with valid JSON: { "summary": "...", "implications": ["...", "..."] }`,
+        messages: [{ role: 'user', content: `Title: ${post.title}\n\n${bodySnippet}` }],
+        maxTokens: 400,
+        temperature: 0.4,
+        quality: 'fast'
       })
 
-      if (res.ok) {
-        const data = await res.json() as { choices: Array<{ message: { content: string } }> }
-        const parsed = JSON.parse(data.choices[0].message.content) as { summary?: string; implications?: string[] }
+      if (text) {
+        const jsonStr = text.replace(/^```(?:json)?\n?|\n?```$/g, '').trim()
+        const parsed = JSON.parse(jsonStr) as { summary?: string; implications?: string[] }
         summary = parsed.summary ?? ''
         implications = parsed.implications ?? []
       }
     } catch (err) {
-      console.error('[news/insight] OpenAI failed:', err)
+      console.error('[news/insight] AI call failed:', err)
     }
   }
 

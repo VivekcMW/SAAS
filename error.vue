@@ -17,7 +17,7 @@
         <NuxtLink to="/marketplace" class="err-btn err-btn--ghost">Browse marketplace</NuxtLink>
       </div>
 
-      <p v-if="isDev && error.stack" class="err-stack">{{ error.stack }}</p>
+      <p v-if="isDev && error.stack" class="err-stack" tabindex="0">{{ error.stack }}</p>
     </div>
   </div>
 </template>
@@ -71,8 +71,8 @@ function handleError() {
 .err-card {
   width: 100%;
   max-width: 480px;
-  background: #fff;
-  border: 1px solid var(--bw-border, #ECEAE3);
+  background: var(--bw-surface, #0F1220);
+  border: 1px solid var(--bw-border-strong, rgba(168, 180, 204, 0.22));
   border-radius: var(--bw-radius, 12px);
   padding: 44px 40px;
   text-align: center;
@@ -99,7 +99,7 @@ function handleError() {
   font-size: 5rem;
   font-weight: 800;
   line-height: 1;
-  color: var(--bw-border, #ECEAE3);
+  color: var(--bw-text-subtle, #7A8FA8);
   margin-bottom: 8px;
   letter-spacing: -2px;
 }
@@ -148,21 +148,21 @@ function handleError() {
 .err-btn--primary:hover { background: #e8702a; border-color: #e8702a; }
 .err-btn--ghost {
   background: transparent;
-  color: var(--bw-text, #1E1E1E);
-  border-color: var(--bw-border, #ECEAE3);
+  color: var(--bw-text, #F2F4F8);
+  border-color: var(--bw-border-strong, rgba(168, 180, 204, 0.22));
 }
-.err-btn--ghost:hover { background: var(--bw-surface-2, #F6F4EF); }
+.err-btn--ghost:hover { background: var(--bw-surface-2, #161B2E); }
 
 .err-stack {
   margin-top: 24px;
   text-align: left;
-  background: #f8f7f5;
-  border: 1px solid var(--bw-border, #ECEAE3);
+  background: var(--bw-surface-2, #161B2E);
+  border: 1px solid var(--bw-border-strong, rgba(168, 180, 204, 0.22));
   border-radius: 6px;
   padding: 12px;
   font-size: 0.72rem;
   font-family: 'JetBrains Mono', monospace;
-  color: #6b6b6b;
+  color: var(--bw-text-muted, #A8B5CC);
   white-space: pre-wrap;
   word-break: break-word;
   max-height: 200px;

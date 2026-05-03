@@ -18,6 +18,8 @@ Allow: /
 Disallow: /admin/
 Disallow: /api/private/
 Disallow: /dashboard/
+Disallow: /vendor/
+Disallow: /buyer/
 Disallow: /_nuxt/
 Disallow: /.*$
 
@@ -55,6 +57,11 @@ Allow: /es/
 Allow: /fr/
 Allow: /de/
 Allow: /pt/
+Allow: /zh/
+Allow: /ja/
+Allow: /ar/
+Allow: /hi/
+Allow: /ko/
 
 # General crawl rate optimization (1 second delay)
 Crawl-delay: 1

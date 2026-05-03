@@ -1,4 +1,4 @@
-import { getDb, makeId } from '~/server/utils/database'
+import { getDb, makeId, logActivity } from '~/server/utils/database'
 import { getSessionUser } from '~/server/utils/auth'
 import { buildEnquiryNotificationEmail, sendEmail } from '~/server/utils/email'
 
@@ -47,6 +47,8 @@ export default defineEventHandler(async (event) => {
       message: body.message
     })).catch(err => console.error('[enquiries] vendor notification failed:', err))
   }
+
+  logActivity({ actorId: user?.id ?? null, actorEmail: buyerEmail, action: 'enquiry.created', entityType: 'enquiry', entityId: enquiryId, meta: { appId: body.appId } })
 
   return { success: true, enquiryId }
 })

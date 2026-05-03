@@ -3,12 +3,13 @@
  * Returns negotiation intelligence for a specific SaaS tool.
  */
 import { getDb, makeId } from '~/server/utils/database'
-import { requireUser } from '~/server/utils/auth'
+import { requirePlan } from '~/server/utils/auth'
 import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
 import { getMarketplaceAppByIdOrSlug } from '~/server/utils/apps'
+import { aiChat } from '~/server/utils/aiProvider'
 
 export default defineEventHandler(async (event) => {
-  const user = await requireUser(event)
+  const user = await requirePlan(event, 'Professional')
 
   if (!checkRateLimit(getClientIp(event), { limit: 20, windowMs: 24 * 60 * 60 * 1000, prefix: 'ai-neg' })) {
     throw createError({ statusCode: 429, statusMessage: 'Rate limit reached.' })
@@ -52,44 +53,30 @@ export default defineEventHandler(async (event) => {
   let typicalDiscountPct = 15
   let bestQuarter = 'Q4'
 
-  const openaiKey = process.env.OPENAI_API_KEY
-  if (openaiKey) {
+  if (process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY) {
     try {
-      const res = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${openaiKey}`
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [
-            {
-              role: 'system',
-              content: `You are a SaaS procurement negotiation expert. Provide negotiation intelligence as JSON with:
+      const { text } = await aiChat({
+        system: `You are a SaaS procurement negotiation expert. Provide negotiation intelligence as JSON with:
 - typical_discount_pct: number (realistic % discount achievable)
 - best_quarter: "Q1"|"Q2"|"Q3"|"Q4" (when vendors are most likely to offer discounts)
 - tips: string[] (5 actionable negotiation tips specific to this tool/category)
-- brief_content: string (2-3 paragraph negotiation guide in plain text)`
-            },
-            {
-              role: 'user',
-              content: `Tool: ${app.name}
+- brief_content: string (2-3 paragraph negotiation guide in plain text)`,
+        messages: [{
+          role: 'user',
+          content: `Tool: ${app.name}
 Category: ${app.category}
 Published price: ${listPrice ? `$${listPrice}/month` : 'not listed'}
 Rating: ${app.rating}/5 (${app.reviewCount} reviews)
 Description: ${app.description}`
-            }
-          ],
-          response_format: { type: 'json_object' },
-          max_tokens: 600,
-          temperature: 0.3
-        })
+        }],
+        maxTokens: 600,
+        temperature: 0.3,
+        quality: 'fast'
       })
 
-      if (res.ok) {
-        const data = await res.json() as { choices: Array<{ message: { content: string } }> }
-        const parsed = JSON.parse(data.choices[0].message.content)
+      if (text) {
+        const jsonStr = text.replace(/^```(?:json)?\n?|\n?```$/g, '').trim()
+        const parsed = JSON.parse(jsonStr)
         tips = Array.isArray(parsed.tips) ? parsed.tips : []
         briefContent = parsed.brief_content || ''
         typicalDiscountPct = Number(parsed.typical_discount_pct) || 15
@@ -97,7 +84,7 @@ Description: ${app.description}`
       }
     }
     catch (err) {
-      console.error('[ai/negotiation] OpenAI failed:', err)
+      console.error('[ai/negotiation] AI call failed:', err)
     }
   }
 

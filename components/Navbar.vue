@@ -103,7 +103,7 @@
         <h2 class="modal-title">
           {{ isForgotPasswordMode ? 'Forgot Password' : (isLoginMode ? 'Welcome Back' : 'Create Your Account') }}
         </h2>
-        <button @click="closeSignUpModal" class="modal-close">
+        <button @click="closeSignUpModal" class="modal-close" aria-label="Close">
           <UIcon dynamic name="i-heroicons-x-mark" />
         </button>
       </div>
@@ -696,20 +696,17 @@ const handleSendResetEmail = async () => {
   }
 
   isSendingResetEmail.value = true;
-  
+
   try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Show success message
-    alert(`Password reset link has been sent to ${forgotPasswordForm.value.email}`);
-    
-    // Go back to login
+    await $fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      body: { email: forgotPasswordForm.value.email }
+    });
+
+    alert(`If an account exists for ${forgotPasswordForm.value.email}, a reset link has been sent.`);
     backToLogin();
-    
-  } catch (error) {
-    console.error('Reset email error:', error);
-    alert('Failed to send reset email. Please try again.');
+  } catch (error: any) {
+    alert(error?.data?.statusMessage || 'Failed to send reset email. Please try again.');
   } finally {
     isSendingResetEmail.value = false;
   }
@@ -933,7 +930,7 @@ watch(() => route.path, () => {
   gap: 8px;
   text-decoration: none;
   color: var(--sw-text);
-  font-family: var(--font-display);
+  font-family: var(--f-ui);
   font-weight: 700;
   font-size: 1.25rem;
   letter-spacing: -0.02em;

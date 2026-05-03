@@ -133,7 +133,8 @@ const filtered = computed(() => listings.value.filter(l => {
   return true
 }))
 
-function fmt(n: number) { return n.toLocaleString() }
+const { fmtNumber } = useFmt()
+function fmt(n: number) { return fmtNumber(n) }
 function statusChip(s: string) {
   if (s === 'live') return 'bw-chip--success'
   if (s === 'draft') return 'bw-chip--neutral'

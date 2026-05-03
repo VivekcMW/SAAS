@@ -28,7 +28,7 @@
               variant="sponsored"
               @view-details="navigateToApp"
               @toggle-favorite="handleToggleFavorite"
-              @card-click="navigateToApp"
+              @card-click="(p) => navigateToApp(p.id)"
             />
           </div>
         </div>
@@ -48,7 +48,7 @@
               variant="trending"
               @view-details="navigateToApp"
               @toggle-favorite="handleToggleFavorite"
-              @card-click="navigateToApp"
+              @card-click="(p) => navigateToApp(p.id)"
             />
           </div>
         </div>
@@ -68,7 +68,7 @@
               variant="regular"
               @view-details="navigateToApp"
               @toggle-favorite="handleToggleFavorite"
-              @card-click="navigateToApp"
+              @card-click="(p) => navigateToApp(p.id)"
             />
           </div>
         </div>

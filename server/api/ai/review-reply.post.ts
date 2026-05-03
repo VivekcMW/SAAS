@@ -4,14 +4,15 @@
  * Requires vendor auth. Rate limit 50/hr.
  */
 import { getDb } from '~/server/utils/database'
-import { requireVendor, getVendorProfileForUser } from '~/server/utils/auth'
+import { getVendorProfileForUser, requirePlan } from '~/server/utils/auth'
 import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
+import { aiChat } from '~/server/utils/aiProvider'
 
 const TONES = ['professional', 'friendly', 'empathetic'] as const
 type Tone = typeof TONES[number]
 
 export default defineEventHandler(async (event) => {
-  const user = await requireVendor(event)
+  const user = await requirePlan(event, 'Starter')
 
   if (!checkRateLimit(getClientIp(event), { limit: 50, windowMs: 60 * 60 * 1000, prefix: 'ai-rvreply' })) {
     throw createError({ statusCode: 429, statusMessage: 'Rate limit reached. Try again in an hour.' })
@@ -54,21 +55,10 @@ export default defineEventHandler(async (event) => {
 
   let draft = ''
 
-  const openaiKey = process.env.OPENAI_API_KEY
-  if (openaiKey) {
+  if (process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY) {
     try {
-      const res = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${openaiKey}`
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [
-            {
-              role: 'system',
-              content: `You are a customer success expert writing vendor replies to SaaS product reviews.
+      const { text } = await aiChat({
+        system: `You are a customer success expert writing vendor replies to SaaS product reviews.
 Tone: ${toneGuide[tone]}.
 Rules:
 - 100–200 words maximum
@@ -76,11 +66,10 @@ Rules:
 - Thank them genuinely, acknowledge negatives honestly, mention concrete next steps if relevant
 - Never be defensive or dismiss criticism
 - Do NOT start with "Dear" or end with "Best regards"
-- Write as the vendor team, not as a bot`
-            },
-            {
-              role: 'user',
-              content: `Product: ${review.app_name} (${review.category})
+- Write as the vendor team, not as a bot`,
+        messages: [{
+          role: 'user',
+          content: `Product: ${review.app_name} (${review.category})
 Reviewer: ${review.user_role ?? 'unknown role'} at a ${review.company_size ?? 'company'}
 Rating: ${review.rating}/5
 Title: ${review.title}
@@ -89,19 +78,14 @@ ${review.pros ? `Pros: ${review.pros}` : ''}
 ${review.cons ? `Cons: ${review.cons}` : ''}
 
 Write a vendor reply.`
-            }
-          ],
-          max_tokens: 350,
-          temperature: 0.65
-        })
+        }],
+        maxTokens: 350,
+        temperature: 0.65,
+        quality: 'fast'
       })
-
-      if (res.ok) {
-        const data = await res.json() as { choices: Array<{ message: { content: string } }> }
-        draft = data.choices[0].message.content.trim()
-      }
+      if (text) draft = text.trim()
     } catch (err) {
-      console.error('[ai/review-reply] OpenAI failed:', err)
+      console.error('[ai/review-reply] AI call failed:', err)
     }
   }
 

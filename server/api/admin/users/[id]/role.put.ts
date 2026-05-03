@@ -6,7 +6,7 @@
  * Returns: { success: true, user: { id, email, role } }
  */
 import { requireUser } from '~/server/utils/auth'
-import { getDb } from '~/server/utils/database'
+import { getDb, logActivity } from '~/server/utils/database'
 
 const VALID_ROLES = new Set(['buyer', 'vendor', 'admin'])
 
@@ -42,6 +42,15 @@ export default defineEventHandler(async (event) => {
 
   const now = new Date().toISOString()
   db.prepare('UPDATE users SET role = ?, updated_at = ? WHERE id = ?').run(body.role, now, targetId)
+
+  logActivity({
+    actorId: admin.id,
+    actorEmail: admin.email,
+    action: 'user.role.change',
+    entityType: 'user',
+    entityId: targetId,
+    meta: { previousRole: user.role, newRole: body.role, targetEmail: user.email }
+  })
 
   return {
     success: true,

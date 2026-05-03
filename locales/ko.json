@@ -1,0 +1,95 @@
+{
+  "nav": {
+    "home": "홈",
+    "about": "소개",
+    "features": "기능",
+    "marketplace": "마켓플레이스",
+    "integrations": "통합",
+    "blog": "블로그",
+    "contact": "문의",
+    "listProduct": "제품 / 서비스 등록",
+    "login": "로그인",
+    "signup": "회원가입"
+  },
+  "hero": {
+    "title": "{platform} 플랫폼으로 비즈니스를 강화하세요",
+    "subtitle": "{platform}은 사용자의 필요에 따라 검색할 수 있는 다양한 앱을 제공하는 웹 애플리케이션 디지털 마켓플레이스로, 다양한 역할과 규모의 중소기업이 더 나은 의사결정을 내릴 수 있도록 돕습니다.",
+    "searchPlaceholder": "애플리케이션 검색...",
+    "trending": "인기:"
+  },
+  "features": {
+    "title": "강력한 기능",
+    "subtitle": "비즈니스 성장과 고객 만족을 위한 모든 것을 제공합니다."
+  },
+  "integrations": {
+    "title": "즐겨 사용하는 도구와 원활하게 연동",
+    "subtitle": "이미 사용 중인 100개 이상의 앱 및 서비스와 Moonmart를 연결하세요.",
+    "viewAll": "모든 통합 보기"
+  },
+  "cta": {
+    "title": "비즈니스 혁신을 시작할 준비가 되셨나요?",
+    "subtitle": "Moonmart를 활용해 운영을 확장하는 수천 개의 기업에 합류하세요.",
+    "startTrial": "무료 체험 시작",
+    "contactSales": "영업팀 문의"
+  },
+  "marketplace": {
+    "title": "Moonmart 마켓플레이스",
+    "subtitle": "최고의 애플리케이션 및 서비스 발견",
+    "categories": "카테고리",
+    "filters": "필터",
+    "price": "가격",
+    "rating": "평점",
+    "free": "무료",
+    "freemium": "프리미엄",
+    "paid": "유료",
+    "enterprise": "엔터프라이즈",
+    "featured": "추천",
+    "trending": "인기",
+    "new": "신규",
+    "viewDetails": "상세 보기",
+    "noResults": "애플리케이션을 찾을 수 없습니다",
+    "noResultsDesc": "필터 또는 검색 조건을 조정해 보세요",
+    "resetFilters": "필터 초기화"
+  },
+  "pricing": {
+    "currency": "KRW",
+    "symbol": "₩",
+    "free": "무료",
+    "trial": "무료 체험",
+    "month": "월",
+    "year": "년",
+    "perMonth": "월 기준",
+    "perYear": "년 기준",
+    "billedMonthly": "월간 청구",
+    "billedAnnually": "연간 청구"
+  },
+  "common": {
+    "loading": "불러오는 중...",
+    "search": "검색",
+    "filter": "필터",
+    "sort": "정렬",
+    "page": "페이지",
+    "of": "/",
+    "results": "결과",
+    "showMore": "더 보기",
+    "showLess": "접기",
+    "learnMore": "자세히 알아보기",
+    "getStarted": "시작하기",
+    "subscribe": "구독",
+    "save": "저장",
+    "cancel": "취소",
+    "close": "닫기",
+    "back": "뒤로",
+    "next": "다음",
+    "previous": "이전",
+    "yes": "예",
+    "no": "아니오"
+  },
+  "footer": {
+    "copyright": "모든 권리 보유",
+    "privacy": "개인정보 처리방침",
+    "terms": "서비스 이용약관",
+    "support": "고객 지원",
+    "language": "언어"
+  }
+}

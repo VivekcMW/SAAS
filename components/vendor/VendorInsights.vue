@@ -44,10 +44,10 @@
       <li v-for="i in insights" :key="i.id" class="bw-card in-card" :class="`in-card--${i.tone}`">
         <div class="in-card__head">
           <span class="in-card__tone-chip" :class="`in-tone-${i.tone}`">{{ toneLabel(i.tone) }}</span>
-          <h3 class="in-card__title">{{ i.title }}</h3>
+          <h3 class="in-card__title">{{ i.headline }}</h3>
         </div>
-        <p class="in-card__body">{{ i.body }}</p>
-        <NuxtLink v-if="i.cta" :to="i.cta.href" class="bw-btn bw-btn--ghost bw-btn--sm">{{ i.cta.label }}</NuxtLink>
+        <p class="in-card__body">{{ i.narrative }}</p>
+        <span v-if="i.delta" class="bw-btn bw-btn--ghost bw-btn--sm">{{ i.delta }}</span>
       </li>
     </ul>
 

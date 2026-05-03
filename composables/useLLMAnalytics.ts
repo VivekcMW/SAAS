@@ -463,7 +463,7 @@ export const useLLMAnalytics = () => {
       
       return {
         llmType: llmType as LLMType,
-        status: usage ? (recentAlerts.length > 0 ? 'error' : 'active') : 'inactive',
+        status: (usage ? (recentAlerts.length > 0 ? 'error' : 'active') : 'inactive') as 'error' | 'active' | 'inactive',
         lastOptimization: usage?.lastUsed || new Date(0),
         averageScore: Math.round(usage?.averageScore || 0),
         issues: recentAlerts.length

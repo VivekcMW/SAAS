@@ -2,14 +2,14 @@
  * PUT /api/admin/listings/[id]/status
  * Approve, reject, or archive a listing.
  */
-import { getDb } from '~/server/utils/database'
+import { getDb, logActivity } from '~/server/utils/database'
 import { requireAdmin } from '~/server/utils/auth'
 import { buildListingStatusEmail, sendEmail } from '~/server/utils/email'
 
 const VALID_STATUSES = ['published', 'draft', 'submitted', 'archived']
 
 export default defineEventHandler(async (event) => {
-  await requireAdmin(event)
+  const admin = await requireAdmin(event)
 
   const id = getRouterParam(event, 'id')
   if (!id) throw createError({ statusCode: 400, statusMessage: 'id is required' })
@@ -48,6 +48,15 @@ export default defineEventHandler(async (event) => {
       adminNotes: body.adminNote
     })).catch(err => console.error('[admin/listings/status] email failed:', err))
   }
+
+  logActivity({
+    actorId: admin.id ?? null,
+    actorEmail: admin.email ?? null,
+    action: `listing.status.${body.status}`,
+    entityType: 'listing',
+    entityId: id,
+    meta: { name: existing.name, adminNote: body.adminNote }
+  })
 
   return { success: true, status: body.status }
 })

@@ -156,7 +156,7 @@
 <script setup lang="ts">
 useSeoMeta({ title: 'Contracts — SaasWorld', description: 'Track your SaaS contracts, renewal dates, and total annual spend.' })
 
-const { data, pending, refresh } = await useAsyncData('contracts', () => $fetch('/api/contracts'))
+const { data, pending, refresh } = await useAsyncData<{ contracts: any[]; total_annual_usd?: number; renewing_soon?: number }>('contracts', () => $fetch('/api/contracts'))
 
 const renewingSoon = computed(() => {
   const cutoff = new Date()

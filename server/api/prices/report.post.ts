@@ -8,7 +8,7 @@ import { createHash } from 'node:crypto'
 
 export default defineEventHandler(async (event) => {
   const ip = getClientIp(event)
-  if (!checkRateLimit(ip, { prefix: 'price_report', limit: 5, windowMs: 60 * 60 * 1000 })) {
+  if (!checkRateLimit(ip, { prefix: 'price_report', limit: 5, windowMs: 60 * 60 * 1000 }).allowed) {
     throw createError({ statusCode: 429, statusMessage: 'Too many price reports. Try again later.' })
   }
 

@@ -177,82 +177,83 @@ const listings = ref<VendorListing[]>([
   }
 ])
 
-const leads = ref<Lead[]>([
-  {
-    id: 'ld1',
-    buyerName: 'Priya Shah',
-    buyerCompany: 'Nimbus Retail',
-    buyerSize: '51–200',
-    listingId: 'l1',
-    listingName: 'Acme CRM',
-    subject: 'Demo request for 80-seat team',
-    preview: 'Hi — we\'re comparing Acme CRM vs HubSpot. Can we get a demo this week?',
-    temperature: 'hot',
-    status: 'new',
-    updatedAt: '2h ago',
-    unread: 2,
-    messages: [
-      { id: 'm1', from: 'buyer', body: 'Hi — we\'re comparing Acme CRM vs HubSpot. Can we get a demo this week? We\'re 80 seats, mid-market retail.', at: '2h ago' },
-      { id: 'm2', from: 'buyer', body: 'Also — do you have SOC 2 Type II?', at: '2h ago' }
-    ],
-    aiDraft: 'Hi Priya,\n\nThanks for considering Acme CRM. I\'d love to set up a demo this week — would Thursday 2pm or Friday 10am work for your team?\n\nOn compliance: yes, we\'re SOC 2 Type II certified. I\'ll attach our report with the demo invite.\n\nLooking forward to it,\nSales Team'
-  },
-  {
-    id: 'ld2',
-    buyerName: 'Marcus Reid',
-    buyerCompany: 'Forge Labs',
-    buyerSize: '11–50',
-    listingId: 'l1',
-    listingName: 'Acme CRM',
-    subject: 'Pricing for non-profit',
-    preview: 'Do you offer non-profit discount?',
-    temperature: 'warm',
-    status: 'awaiting',
-    updatedAt: '1d ago',
-    unread: 0,
-    messages: [
-      { id: 'm3', from: 'buyer', body: 'Do you offer non-profit discount?', at: '2d ago' },
-      { id: 'm4', from: 'vendor', body: 'Yes, 30% off with 501(c)(3) verification. Can you share your EIN?', at: '1d ago' }
-    ]
-  },
-  {
-    id: 'ld3',
-    buyerName: 'Yuki Tanaka',
-    buyerCompany: 'Solace Health',
-    buyerSize: '201–1000',
-    listingId: 'l2',
-    listingName: 'Acme Inbox',
-    subject: 'HIPAA compliance?',
-    preview: 'Can we use Acme Inbox in a HIPAA context?',
-    temperature: 'hot',
-    status: 'new',
-    updatedAt: '4h ago',
-    unread: 1,
-    messages: [
-      { id: 'm5', from: 'buyer', body: 'Can we use Acme Inbox in a HIPAA context? We need BAA.', at: '4h ago' }
-    ],
-    aiDraft: 'Hi Yuki,\n\nThanks for reaching out. Acme Inbox supports HIPAA on our Business plan — we sign a BAA as part of onboarding.\n\nHappy to walk through the security model on a 20-min call. What works this week?\n\nBest,\nSales Team'
-  },
-  {
-    id: 'ld4',
-    buyerName: 'Aarav Patel',
-    buyerCompany: 'Quickbuild',
-    buyerSize: '1–10',
-    listingId: 'l1',
-    listingName: 'Acme CRM',
-    subject: 'Free tier?',
-    preview: 'Thanks for the info — we\'ll circle back next quarter.',
-    temperature: 'cold',
-    status: 'closed',
-    updatedAt: '1w ago',
-    unread: 0,
-    messages: [
-      { id: 'm6', from: 'buyer', body: 'Is there a free tier?', at: '2w ago' },
-      { id: 'm7', from: 'vendor', body: 'We have a 14-day trial, no free tier.', at: '2w ago' },
-      { id: 'm8', from: 'buyer', body: 'Thanks for the info — we\'ll circle back next quarter.', at: '1w ago' }
-    ]
+// ── Leads (enquiries from buyers) ─────────────────────────────────────────────
+interface EnquiryApiRow {
+  id: string
+  subject: string
+  buyer_email: string
+  buyer_name: string
+  status: string
+  created_at: string
+  updated_at: string
+  app_name: string
+  last_message: string | null
+  message_count: number
+}
+
+function mapEnquiryToLead(e: EnquiryApiRow): Lead {
+  const statusMap: Record<string, LeadStatus> = {
+    open: 'new',
+    awaiting: 'awaiting',
+    replied: 'replied',
+    closed: 'closed'
   }
-])
+  // Rough temperature heuristic: if opened within last 24h → hot, 7d → warm, else cold
+  const ageMs = Date.now() - new Date(e.updated_at).getTime()
+  const temperature: LeadTemperature =
+    ageMs < 24 * 60 * 60 * 1000 ? 'hot' : ageMs < 7 * 24 * 60 * 60 * 1000 ? 'warm' : 'cold'
+  return {
+    id: e.id,
+    buyerName: e.buyer_name,
+    buyerCompany: e.buyer_email.split('@')[1]?.replace(/\.[^.]+$/, '') || '',
+    buyerSize: '',
+    listingId: '',
+    listingName: e.app_name,
+    subject: e.subject,
+    preview: e.last_message || '(no messages yet)',
+    temperature,
+    status: statusMap[e.status] ?? 'new',
+    updatedAt: new Date(e.updated_at).toLocaleDateString(),
+    unread: e.status === 'open' ? 1 : 0,
+    messages: []
+  }
+}
+
+const leads = ref<Lead[]>([])
+const leadsLoaded = ref(false)
+const leadsLoading = ref(false)
+
+async function loadLeads() {
+  if (leadsLoaded.value || leadsLoading.value) return
+  leadsLoading.value = true
+  try {
+    const data = await $fetch<{ enquiries: EnquiryApiRow[] }>('/api/vendor/enquiries')
+    leads.value = (data.enquiries || []).map(mapEnquiryToLead)
+    leadsLoaded.value = true
+  } catch (err) {
+    console.error('[useVendorData] leads fetch failed:', err)
+  } finally {
+    leadsLoading.value = false
+  }
+}
+
+async function loadLeadMessages(enquiryId: string) {
+  try {
+    const data = await $fetch<{ messages: Array<{ id: string; sender_email: string; body: string; created_at: string }> }>(
+      `/api/enquiries/${enquiryId}/messages`
+    )
+    const lead = leads.value.find(l => l.id === enquiryId)
+    if (!lead) return
+    lead.messages = data.messages.map(m => ({
+      id: m.id,
+      from: m.sender_email === lead.buyerName ? 'buyer' : 'vendor' as 'buyer' | 'vendor',
+      body: m.body,
+      at: new Date(m.created_at).toLocaleString()
+    }))
+  } catch (err) {
+    console.error('[useVendorData] messages fetch failed:', err)
+  }
+}
 
 const reviews = ref<VendorReview[]>([
   {
@@ -296,47 +297,32 @@ const reviews = ref<VendorReview[]>([
   }
 ])
 
-const promotions = ref<Promotion[]>([
-  {
-    id: 'p1',
-    listingName: 'Acme CRM',
-    type: 'discount',
-    label: '20% off annual plan',
-    status: 'active',
-    spend: 180,
-    budget: 400,
-    clicks: 1240,
-    leads: 38,
-    endsAt: 'May 31',
-    aiSuggestion: 'Competitors are at 25%. Consider bumping to 25% for the last 10 days to close the gap.'
-  },
-  {
-    id: 'p2',
-    listingName: 'Acme CRM',
-    type: 'featured',
-    label: 'Featured in CRM category',
-    status: 'active',
-    spend: 520,
-    budget: 800,
-    clicks: 3200,
-    leads: 22,
-    endsAt: 'May 15',
-    aiSuggestion: 'CPL is $23 — on par. No action needed.'
-  },
-  {
-    id: 'p3',
-    listingName: 'Acme Inbox',
-    type: 'trial-extend',
-    label: '30-day trial (vs 14)',
-    status: 'scheduled',
-    spend: 0,
-    budget: 200,
-    clicks: 0,
-    leads: 0,
-    endsAt: 'Starts May 1',
-    aiSuggestion: 'Based on your current 14-day trial → paid conversion (8%), extending to 30 days typically lifts conversion by 20–30%.'
+// ── Promotions ────────────────────────────────────────────────────────────────
+const promotions = ref<Promotion[]>([])
+const promotionsLoaded = ref(false)
+const promotionsLoading = ref(false)
+
+async function loadPromotions() {
+  if (promotionsLoaded.value || promotionsLoading.value) return
+  promotionsLoading.value = true
+  try {
+    const data = await $fetch<{ promotions: Promotion[] }>('/api/vendor/promotions')
+    promotions.value = data.promotions || []
+    promotionsLoaded.value = true
+  } catch (err) {
+    console.error('[useVendorData] promotions fetch failed:', err)
+  } finally {
+    promotionsLoading.value = false
   }
-])
+}
+
+async function createPromotion(payload: {
+  appId: string; type: Promotion['type']; label: string; budget?: number; startsAt?: string; endsAt?: string
+}) {
+  await $fetch('/api/vendor/promotions', { method: 'POST', body: payload })
+  promotionsLoaded.value = false
+  await loadPromotions()
+}
 
 const similarVendors = ref<SimilarVendor[]>([
   {
@@ -526,6 +512,8 @@ export function useVendorData() {
     ld.status = 'replied'
     ld.unread = 0
     ld.aiDraft = undefined
+    // Persist via API (fire-and-forget)
+    $fetch(`/api/enquiries/${id}/messages`, { method: 'POST', body: { message: body } }).catch(console.error)
   }
 
   function markReviewReplied(id: string) {
@@ -538,6 +526,9 @@ export function useVendorData() {
     leads,
     reviews,
     promotions,
+    promotionsLoading,
+    loadPromotions,
+    createPromotion,
     similarVendors,
     funnel,
     todayActions,
@@ -549,6 +540,9 @@ export function useVendorData() {
     loadAnalytics,
     updateListingStatus,
     replyLead,
+    loadLeads,
+    loadLeadMessages,
+    leadsLoading,
     markReviewReplied
   }
 }

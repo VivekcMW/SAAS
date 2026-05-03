@@ -42,7 +42,7 @@
               {{ post.vendor.name }}
             </NuxtLink>
             <span class="na-sep" aria-hidden="true">·</span>
-            <time :datetime="post.publishedAt">{{ fmtDate(post.publishedAt) }}</time>
+            <time :datetime="post.publishedAt ?? undefined">{{ fmtDate(post.publishedAt) }}</time>
             <span class="na-sep" aria-hidden="true">·</span>
             <span>{{ readTime }} min read</span>
             <span class="na-sep" aria-hidden="true">·</span>
@@ -308,7 +308,7 @@ async function react() {
 .na-body__content :deep(h2),
 .na-body__content :deep(h3),
 .na-body__content :deep(h4) {
-  font-family: var(--f-ser);
+  font-family: var(--f-ui);
   color: var(--mm-pearl);
   margin: 1.8em 0 0.6em;
   line-height: 1.3;
