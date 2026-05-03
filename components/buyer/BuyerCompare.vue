@@ -6,8 +6,8 @@
         <p class="bw-head__sub">Pick up to 4 apps from your saved list to see them side-by-side.</p>
       </div>
       <div class="bw-head__actions">
-        <button class="bw-btn bw-btn--ghost" :disabled="picks.length === 0" @click="picks = []">Clear</button>
-        <button class="bw-btn bw-btn--primary" :disabled="picks.length < 2" @click="showBriefing = true">
+        <button class="bw-btn bw-btn--ghost" :disabled="picks.length === 0" @click="clearCompare()">Clear</button>
+        <button class="bw-btn bw-btn--primary" :disabled="!canCompare" @click="showBriefing = true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>
           Generate AI Brief
         </button>
@@ -100,14 +100,29 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useBuyerData, type SavedApp } from '~/composables/useBuyerData'
+import { useCompare } from '~/composables/useCompare'
 const { fmtCurrency, fmtNumber } = useFmt()
 
 const { savedApps } = useBuyerData()
-const picks = ref<string[]>(savedApps.value.slice(0, 2).map(a => a.id))
+const { compareIds, clearCompare, toggleCompare, canCompare } = useCompare()
+
+// picks is a writable computed that reads from the shared compareIds
+// For v-model on checkboxes we need a settable array — proxy through toggle
+const picks = computed({
+  get: () => compareIds.value,
+  set: (newVal: string[]) => {
+    // Sync: add newly checked items, remove unchecked
+    const added = newVal.filter(id => !compareIds.value.includes(id))
+    const removed = compareIds.value.filter(id => !newVal.includes(id))
+    added.forEach(toggleCompare)
+    removed.forEach(toggleCompare)
+  }
+})
+
 const seats = ref(10)
 const showBriefing = ref(false)
 
-const selectedApps = computed(() => savedApps.value.filter(a => picks.value.includes(a.id)))
+const selectedApps = computed(() => savedApps.value.filter(a => compareIds.value.includes(a.id)))
 
 type Row = { key: string; label: string; render: (a: SavedApp) => string | boolean | number }
 const rows: Row[] = [

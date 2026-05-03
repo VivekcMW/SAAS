@@ -2,6 +2,7 @@ import { authenticateUser, createEmailVerificationToken, createSession } from '~
 import { buildWelcomeEmail, sendEmail } from '~/server/utils/email'
 import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
 import { getDb, logActivity } from '~/server/utils/database'
+import { signTwoFactorToken } from '~/server/utils/totp'
 
 export default defineEventHandler(async (event) => {
   // 10 attempts per 15 minutes per IP
@@ -23,7 +24,7 @@ export default defineEventHandler(async (event) => {
   // Gate: email must be verified before login is allowed.
   // In dev (no SMTP configured), auto-verify so developers aren't locked out.
   const db = getDb()
-  const dbUser = db.prepare('SELECT email_verified FROM users WHERE id = ?').get(user.id) as { email_verified: number } | undefined
+  const dbUser = db.prepare('SELECT email_verified, totp_enabled FROM users WHERE id = ?').get(user.id) as { email_verified: number; totp_enabled: number } | undefined
   const smtpConfigured = !!(process.env.SMTP_HOST || process.env.MAIL_DRIVER === 'smtp')
 
   if (dbUser && !dbUser.email_verified) {
@@ -51,6 +52,12 @@ export default defineEventHandler(async (event) => {
         statusMessage: 'Please verify your email address before logging in. A new verification link has been sent to your inbox.'
       })
     }
+  }
+
+  // 2FA check: if enabled, issue a temp token and require step 2
+  if (dbUser?.totp_enabled) {
+    const twoFactorToken = signTwoFactorToken(user.id)
+    return { twoFactorRequired: true, twoFactorToken }
   }
 
   await createSession(event, user.id, body.rememberMe !== false)

@@ -98,6 +98,8 @@ interface SavedAppApiRow {
 // ── Module-level reactive state ────────────────────────────────────────────
 const savedAppsLoaded = ref(false)
 const savedAppsLoading = ref(false)
+const dealsLoaded = ref(false)
+const dealsLoading = ref(false)
 
 const state = reactive({
   savedApps: [] as SavedApp[],
@@ -111,12 +113,7 @@ const state = reactive({
     { id: 'r1', product: 'Slack', productSlug: 'slack', rating: 5, title: 'Still the gold standard for team chat', body: 'Channels + threads + Slack Connect cover every use case we have across 3 orgs.', createdAt: '2026-04-12', helpful: 24, vendorReplied: true },
     { id: 'r2', product: 'Notion', productSlug: 'notion', rating: 4, title: 'Great docs, needs better offline', body: 'Love the flexibility, but the offline experience on mobile is still shaky.', createdAt: '2026-03-28', helpful: 11, vendorReplied: false }
   ] as BuyerReview[],
-  deals: [
-    { id: 'd1', product: 'Linear', productSlug: 'linear', title: '20% off annual plan', percentOff: 20, code: 'SAAS20LIN', expiresAt: '2026-05-31', category: 'Project mgmt' },
-    { id: 'd2', product: 'Intercom', productSlug: 'intercom', title: '3 months free for startups', percentOff: 25, code: 'STARTUP3', expiresAt: '2026-06-30', category: 'Support' },
-    { id: 'd3', product: 'Notion', productSlug: 'notion', title: '50% off team plan (6 mo)', percentOff: 50, code: 'TEAM50', expiresAt: '2026-05-15', category: 'Productivity' },
-    { id: 'd4', product: 'HubSpot', productSlug: 'hubspot', title: 'Free onboarding ($2k value)', percentOff: 15, code: 'HSONBOARD', expiresAt: '2026-07-01', category: 'CRM' }
-  ] as Deal[],
+  deals: [] as Deal[],
   digest: [
     { id: 'g1', kind: 'price-drop', title: 'Linear dropped its Standard plan price', description: '$8 → $7 per seat / month. Applies to new and existing customers.', product: 'Linear', at: 'Today' },
     { id: 'g2', kind: 'new-feature', title: 'Slack rolled out AI message summaries', description: 'Auto-summarise unread channels. Now available on Business+ plans.', product: 'Slack', at: 'Yesterday' },
@@ -159,6 +156,20 @@ async function loadSavedApps() {
   }
 }
 
+async function loadDeals() {
+  if (dealsLoaded.value || dealsLoading.value) return
+  dealsLoading.value = true
+  try {
+    const data = await $fetch<{ deals: Deal[] }>('/api/buyer/deals')
+    state.deals = data.deals || []
+    dealsLoaded.value = true
+  } catch {
+    // API unavailable — deals remain empty
+  } finally {
+    dealsLoading.value = false
+  }
+}
+
 function resetSavedApps() {
   state.savedApps = []
   savedAppsLoaded.value = false
@@ -183,6 +194,8 @@ export const statusTone: Record<BuyerStatus, string> = {
 export const useBuyerData = () => {
   // Load saved apps from API on first call
   loadSavedApps()
+  // Load deals from real API
+  loadDeals()
 
   const kpis = computed(() => ({
     saved: state.savedApps.length,

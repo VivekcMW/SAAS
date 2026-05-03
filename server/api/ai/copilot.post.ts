@@ -7,7 +7,7 @@
  * Max turns per session: 20
  */
 import { getDb, makeId } from '~/server/utils/database'
-import { getSessionUser } from '~/server/utils/auth'
+import { getSessionUser, requirePlan } from '~/server/utils/auth'
 import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
 import { getMarketplaceApps } from '~/server/utils/apps'
 import { aiChat, activeProviderName } from '~/server/utils/aiProvider'
@@ -28,6 +28,9 @@ export default defineEventHandler(async (event) => {
   if (!user) {
     throw createError({ statusCode: 401, statusMessage: 'Sign in required to use AI Copilot.' })
   }
+
+  // Require at least Starter plan for AI Copilot access
+  await requirePlan(event, 'Starter')
 
   if (!checkRateLimit(getClientIp(event), { limit: 60, windowMs: 60 * 60 * 1000, prefix: 'ai-copilot' })) {
     throw createError({ statusCode: 429, statusMessage: 'Copilot rate limit reached. Please try again later.' })

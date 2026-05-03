@@ -408,7 +408,14 @@ function createSchema(db: Database.Database) {
     `ALTER TABLE reviews ADD COLUMN verified_at TEXT`,
     `ALTER TABLE reviews ADD COLUMN verification_source TEXT`,
     // discovery_queue
-    `ALTER TABLE discovery_queue ADD COLUMN claim_email_sent INTEGER NOT NULL DEFAULT 0`
+    `ALTER TABLE discovery_queue ADD COLUMN claim_email_sent INTEGER NOT NULL DEFAULT 0`,
+    // users — 2FA (TOTP)
+    `ALTER TABLE users ADD COLUMN totp_secret TEXT`,
+    `ALTER TABLE users ADD COLUMN totp_enabled INTEGER NOT NULL DEFAULT 0`,
+    `ALTER TABLE users ADD COLUMN totp_backup_codes TEXT`,
+    // vendor_promotions — buyer-facing fields
+    `ALTER TABLE vendor_promotions ADD COLUMN promo_code TEXT`,
+    `ALTER TABLE vendor_promotions ADD COLUMN percent_off INTEGER`
   ]
   for (const sql of alterations) {
     try { db.exec(sql) } catch { /* column already exists */ }
@@ -1413,6 +1420,24 @@ function createSchema(db: Database.Database) {
     );
     CREATE INDEX IF NOT EXISTS idx_adev_app ON ad_events(app_id);
     CREATE INDEX IF NOT EXISTS idx_adev_created ON ad_events(created_at);
+  `)
+
+  // Vendor role upgrade requests (buyer → vendor)
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS vendor_role_requests (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+      company_name TEXT NOT NULL,
+      website_url TEXT,
+      reason TEXT,
+      status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending', 'approved', 'rejected')),
+      admin_note TEXT,
+      reviewed_by TEXT,
+      reviewed_at TEXT,
+      created_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_vrr_status ON vendor_role_requests(status);
+    CREATE INDEX IF NOT EXISTS idx_vrr_user ON vendor_role_requests(user_id);
   `)
 }
 

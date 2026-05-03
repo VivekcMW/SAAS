@@ -36,7 +36,9 @@
             </div>
             <div style="margin-left: auto; display: flex; gap: 8px;">
               <button class="bw-btn bw-btn--ghost">Update card</button>
-              <button class="bw-btn bw-btn--primary">Upgrade</button>
+              <button class="bw-btn bw-btn--primary" @click="startCheckout('buyer-pro')" :disabled="checkoutLoading !== null">
+                {{ checkoutLoading === 'buyer-pro' ? 'Redirecting...' : 'Upgrade' }}
+              </button>
             </div>
           </div>
         </section>
@@ -55,7 +57,10 @@
                 <td>{{ inv.description }}</td>
                 <td>${{ inv.amount }}</td>
                 <td><span class="bw-chip bw-chip--success">Paid</span></td>
-                <td><a href="#" class="bw-card__link">Download</a></td>
+                <td>
+                  <a v-if="inv.invoiceUrl" :href="inv.invoiceUrl" target="_blank" rel="noopener" class="bw-card__link">Download</a>
+                  <span v-else class="bw-card__link" style="opacity:0.4;">—</span>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -71,9 +76,16 @@
               <div class="plan-opt__name">{{ p.name }}</div>
               <div class="plan-opt__price">{{ p.price }} <span>/ mo</span></div>
             </div>
-            <button v-if="p.name !== plan.name" class="bw-btn bw-btn--ghost bw-btn--sm">Switch</button>
-            <span v-else class="bw-chip bw-chip--primary">Current</span>
+            <button
+              v-if="p.name !== plan.name && p.planId"
+              class="bw-btn bw-btn--ghost bw-btn--sm"
+              :disabled="checkoutLoading === p.planId"
+              @click="startCheckout(p.planId)"
+            >{{ checkoutLoading === p.planId ? '...' : 'Switch' }}</button>
+            <span v-else-if="p.name === plan.name" class="bw-chip bw-chip--primary">Current</span>
+            <span v-else class="bw-chip bw-chip--neutral">Free</span>
           </div>
+          <p v-if="checkoutError" style="color: var(--bw-danger); font-size:0.82rem; margin:8px 0 0;">{{ checkoutError }}</p>
         </section>
         <section class="bw-card" style="margin-top: 16px;">
           <h3 style="font-family: var(--f-ui); font-weight: 700; font-size: 1rem; margin: 0 0 8px; color: var(--bw-primary);">Need help?</h3>
@@ -86,29 +98,63 @@
 </template>
 
 <script setup lang="ts">
-const plan = {
-  name: 'Buyer Pro',
-  price: '$19',
-  nextPayment: 'May 24, 2026',
-  features: [
-    'Unlimited saved apps & comparisons',
-    'AI recommendations',
-    'Collaborative shortlists (up to 5 teammates)',
-    'Priority vendor replies',
-    'Export comparisons to PDF'
-  ]
+import { ref, computed } from 'vue'
+
+const { currentUser } = useAuth()
+
+// ── Real subscription data ───────────────────────────────────────────────
+const { data: subData } = await useFetch<{
+  planName: string
+  planPrice: string
+  status: string
+  currentPeriodEnd: string | null
+  cancelAtPeriodEnd: boolean
+  invoices: Array<{ id: string; date: string; description: string; amount: number; invoiceUrl: string | null }>
+}>('/api/billing/subscription', { default: () => null })
+
+const plan = computed(() => ({
+  name: subData.value?.planName || 'Buyer Free',
+  price: subData.value?.planPrice || '$0',
+  nextPayment: subData.value?.currentPeriodEnd
+    ? new Date(subData.value.currentPeriodEnd).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    : '—',
+  features: subData.value?.planName?.includes('Pro')
+    ? [
+        'Unlimited saved apps & comparisons',
+        'AI recommendations',
+        'Collaborative shortlists (up to 5 teammates)',
+        'Priority vendor replies',
+        'Export comparisons to PDF',
+      ]
+    : ['Up to 20 saved apps', 'Basic recommendations', 'Community access'],
+}))
+
+const invoices = computed(() => subData.value?.invoices || [])
+
+// ── Upgrade / switch plan ────────────────────────────────────────────────
+const checkoutLoading = ref<string | null>(null)
+const checkoutError = ref<string | null>(null)
+
+async function startCheckout(planId: string) {
+  checkoutLoading.value = planId
+  checkoutError.value = null
+  try {
+    const res = await $fetch<{ url: string }>('/api/billing/checkout', {
+      method: 'POST',
+      body: { planId, cycle: 'monthly' },
+    })
+    if (res.url) window.location.href = res.url
+  } catch (e: unknown) {
+    const msg = (e as { data?: { statusMessage?: string } })?.data?.statusMessage
+    checkoutError.value = msg || 'Could not start checkout. Please try again.'
+  } finally {
+    checkoutLoading.value = null
+  }
 }
 
 const allPlans = [
-  { name: 'Buyer Free', price: '$0' },
-  { name: 'Buyer Pro', price: '$19' },
-  { name: 'Buyer Team', price: '$49' }
-]
-
-const invoices = [
-  { id: 1, date: 'Apr 24, 2026', description: 'Buyer Pro — monthly', amount: 19 },
-  { id: 2, date: 'Mar 24, 2026', description: 'Buyer Pro — monthly', amount: 19 },
-  { id: 3, date: 'Feb 24, 2026', description: 'Buyer Pro — monthly', amount: 19 }
+  { name: 'Buyer Free', planId: '', price: '$0' },
+  { name: 'Buyer Pro', planId: 'buyer-pro', price: '$19' },
 ]
 </script>
 
