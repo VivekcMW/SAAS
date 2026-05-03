@@ -4,7 +4,7 @@
  * Returns the updated helpful_votes count.
  */
 import { createError, defineEventHandler, getRouterParams } from 'h3'
-import { getDb } from '~/server/utils/database'
+import { getDb, logActivity } from '~/server/utils/database'
 import { getSessionUser } from '~/server/utils/auth'
 import { createHash } from 'node:crypto'
 
@@ -46,9 +46,9 @@ export default defineEventHandler(async (event) => {
   let helpfulVotes = review.helpful_votes
 
   if (insertResult.changes > 0) {
-    // New vote — increment counter
     db.prepare('UPDATE reviews SET helpful_votes = helpful_votes + 1, updated_at = ? WHERE id = ?').run(now, reviewId)
     helpfulVotes += 1
+    if (user) logActivity({ actorId: user.id, actorEmail: user.email, action: 'review.voted', entityType: 'review', entityId: reviewId })
   }
 
   const alreadyVoted = insertResult.changes === 0

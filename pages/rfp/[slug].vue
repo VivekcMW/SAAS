@@ -110,7 +110,7 @@ async function submitResponse() {
 }
 
 function fmtDate(d: string) {
-  return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  return useFmt().fmtDate(d, { month: 'short', day: 'numeric', year: 'numeric' })
 }
 </script>
 

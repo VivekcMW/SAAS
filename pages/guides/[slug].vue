@@ -64,7 +64,7 @@ const slug = route.params.slug as string
 const { data: guide, pending, error } = await useFetch<GuideDetail>(`/api/guides/${slug}`)
 
 function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+  return useFmt().fmtDate(iso, { month: 'long', day: 'numeric', year: 'numeric' })
 }
 
 useHead({

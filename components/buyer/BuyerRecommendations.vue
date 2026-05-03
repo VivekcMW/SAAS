@@ -52,7 +52,10 @@
       <div class="wizard__nav">
         <button class="bw-btn bw-btn--ghost" :disabled="stepIdx === 0" @click="stepIdx--">Back</button>
         <button v-if="stepIdx < steps.length - 1" class="bw-btn bw-btn--primary" :disabled="!canNext" @click="stepIdx++">Next</button>
-        <button v-else class="bw-btn bw-btn--primary" @click="generate">Get my shortlist</button>
+        <button v-else class="bw-btn bw-btn--primary" :disabled="loading" @click="generate">
+          {{ loading ? 'Finding your match…' : 'Get my shortlist' }}
+        </button>
+        <p v-if="error" style="font-size:0.82rem;color:var(--bw-danger,#e53e3e);margin:8px 0 0;">{{ error }}</p>
       </div>
     </section>
 
@@ -75,11 +78,14 @@
           </div>
           <p class="rec__rationale">{{ r.rationale }}</p>
           <div class="rec__meta">
-            <span>From ${{ r.price }}/seat</span>
-            <span>★ {{ r.rating }}</span>
+            <span v-if="r.pricingType === 'free'">Free</span>
+            <span v-else-if="r.price">From ${{ r.price }}/seat</span>
+            <span v-else>Contact for pricing</span>
+            <span v-if="r.rating">★ {{ r.rating }}</span>
           </div>
           <div class="rec__actions">
-            <button class="bw-btn bw-btn--ghost bw-btn--sm">Save</button>
+            <NuxtLink v-if="r.slug" :to="`/app/${r.slug}`" class="bw-btn bw-btn--ghost bw-btn--sm">View</NuxtLink>
+            <button v-else class="bw-btn bw-btn--ghost bw-btn--sm">Save</button>
             <button class="bw-btn bw-btn--primary bw-btn--sm">Enquire</button>
           </div>
         </article>
@@ -119,16 +125,35 @@ const toggle = (i: string) => {
   else form.integrations.push(i)
 }
 
-interface Rec { name: string; logo: string; color: string; price: number; rating: number; rationale: string }
+interface Rec {
+  name: string; logo: string; color: string
+  price: number | null; pricingType: string
+  rating: number | null; rationale: string; slug: string | null
+}
 const results = ref<Rec[] | null>(null)
+const loading = ref(false)
+const error = ref<string | null>(null)
 
-const generate = () => {
-  // Static demo results — replace with useLLMOrchestrator call
-  results.value = [
-    { name: 'Pipedrive', logo: 'P', color: '#1A1A1A', price: 14, rating: 4.5, rationale: `Best price-to-value pick for ${form.teamSize} teams with a ${form.category} focus. Integrates with ${form.integrations.slice(0, 2).join(' & ') || 'most tools'}.` },
-    { name: 'HubSpot', logo: 'H', color: '#FF7A59', price: 45, rating: 4.4, rationale: 'Most complete feature set if you plan to layer on marketing and service modules later. Popular choice above your budget but worth considering.' },
-    { name: 'Attio', logo: 'A', color: '#4338CA', price: 29, rating: 4.7, rationale: 'Modern, flexible data model, great if your team loves Notion-style UX. Fast adoption reported by teams under 100.' }
-  ]
+async function generate() {
+  loading.value = true
+  error.value = null
+  try {
+    const data = await $fetch<{ recommendations: Rec[] }>('/api/buyer/recommendations', {
+      method: 'POST',
+      body: {
+        category: form.category,
+        teamSize: form.teamSize,
+        integrations: form.integrations,
+        budget: form.budget,
+      },
+    })
+    results.value = data.recommendations || []
+  } catch (e: unknown) {
+    const msg = (e as { data?: { statusMessage?: string } })?.data?.statusMessage
+    error.value = msg || 'Could not generate recommendations. Please try again.'
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 

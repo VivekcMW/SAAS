@@ -51,7 +51,9 @@ export default defineNuxtConfig({
       // Discovery enrichment — Proxycurl enrichment batch daily at 4am UTC (after crawlers)
       '0 4 * * *': ['discovery:enrich'],
       // Weekly digest emails — every Monday at 08:00 UTC
-      '0 8 * * 1': ['digest:weekly']
+      '0 8 * * 1': ['digest:weekly'],
+      // Price-drop alerts — daily at 09:00 UTC (after renewals run at 08:00)
+      '0 9 * * *': ['price-alerts:daily']
     }
   },
 

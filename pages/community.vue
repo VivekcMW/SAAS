@@ -150,7 +150,7 @@ async function submitThread() {
 
 function formatDate(iso: string) {
   if (!iso) return ''
-  return new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+  return useFmt().fmtDate(iso, { year: 'numeric', month: 'short', day: 'numeric' })
 }
 </script>
 

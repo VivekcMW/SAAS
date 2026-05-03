@@ -105,6 +105,19 @@
             </select>
           </label>
           <label v-if="editForm.pricingType === 'paid'">Price (USD/mo)<input v-model.number="editForm.pricingValue" type="number" min="0" /></label>
+          <div class="vl-form__group">
+            <label class="vl-form__label">Screenshots</label>
+            <div v-if="editForm.screenshots.length" class="vl-screenshots">
+              <div v-for="(url, idx) in editForm.screenshots" :key="url" class="vl-screenshot-item">
+                <img :src="url" :alt="`Screenshot ${idx + 1}`" />
+                <button type="button" class="vl-screenshot-remove" @click="removeScreenshot(idx)">&times;</button>
+              </div>
+            </div>
+            <label class="bw-btn bw-btn--ghost bw-btn--sm" style="cursor:pointer;display:inline-block;margin-top:6px;">
+              {{ screenshotUploading ? 'Uploading…' : '+ Add screenshots' }}
+              <input type="file" multiple accept="image/*" style="display:none" :disabled="screenshotUploading" @change="handleScreenshotUpload" />
+            </label>
+          </div>
           <div class="vl-modal__actions">
             <button type="button" class="bw-btn bw-btn--ghost bw-btn--sm" @click="editTarget = null">Cancel</button>
             <button type="submit" class="bw-btn bw-btn--primary bw-btn--sm" :disabled="saving">{{ saving ? 'Saving…' : 'Save changes' }}</button>
@@ -125,7 +138,8 @@ const toast = ref('')
 
 const editTarget = ref<string | null>(null)
 const saving = ref(false)
-const editForm = reactive({ name: '', description: '', category: '', pricingType: 'contact', pricingValue: null as number | null })
+const screenshotUploading = ref(false)
+const editForm = reactive({ name: '', description: '', category: '', pricingType: 'contact', pricingValue: null as number | null, screenshots: [] as string[] })
 
 const filtered = computed(() => listings.value.filter(l => {
   if (filter.value !== 'all' && l.status !== filter.value) return false
@@ -169,6 +183,31 @@ function startEdit(l: any) {
   editForm.category = l.category || ''
   editForm.pricingType = l.pricing?.type || 'contact'
   editForm.pricingValue = l.pricing?.value ?? null
+  editForm.screenshots = Array.isArray(l.screenshots) ? [...l.screenshots] : []
+}
+
+async function handleScreenshotUpload(event: Event) {
+  const input = event.target as HTMLInputElement
+  if (!input.files?.length) return
+  screenshotUploading.value = true
+  try {
+    for (const file of Array.from(input.files)) {
+      const formData = new FormData()
+      formData.append('file', file)
+      const res = await $fetch<{ url: string }>('/api/vendor/upload', { method: 'POST', body: formData })
+      if (res.url) editForm.screenshots.push(res.url)
+    }
+  } catch {
+    toast.value = 'Screenshot upload failed'
+    setTimeout(() => (toast.value = ''), 2500)
+  } finally {
+    screenshotUploading.value = false
+    input.value = ''
+  }
+}
+
+function removeScreenshot(idx: number) {
+  editForm.screenshots.splice(idx, 1)
 }
 
 async function saveEdit() {
@@ -182,7 +221,8 @@ async function saveEdit() {
         description: editForm.description,
         category: editForm.category,
         pricingType: editForm.pricingType,
-        pricingValue: editForm.pricingValue
+        pricingValue: editForm.pricingValue,
+        screenshots: editForm.screenshots,
       }
     })
     toast.value = 'Listing updated'

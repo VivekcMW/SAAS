@@ -209,14 +209,12 @@ if (post.value) {
   })
 }
 
+const { fmtDate } = useFmt()
+
 const formattedDate = computed(() => {
   if (!post.value) return ''
   const d = (post.value as any).published_at || post.value.date
-  return new Date(d).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
+  return fmtDate(d, { year: 'numeric', month: 'long', day: 'numeric' })
 })
 
 const authorInitials = computed(() => {

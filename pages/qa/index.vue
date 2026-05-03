@@ -142,7 +142,7 @@ function relDate(iso: string) {
   if (days === 0) return 'today'
   if (days === 1) return 'yesterday'
   if (days < 30) return `${days}d ago`
-  return d.toLocaleDateString(undefined, { month: 'short', year: 'numeric' })
+  return useFmt().fmtDate(d, { month: 'short', year: 'numeric' })
 }
 </script>
 

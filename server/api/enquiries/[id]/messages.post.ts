@@ -1,4 +1,4 @@
-import { getDb, makeId } from '~/server/utils/database'
+import { getDb, makeId, logActivity } from '~/server/utils/database'
 import { getSessionUser } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
@@ -27,5 +27,6 @@ export default defineEventHandler(async (event) => {
 
   db.prepare(`UPDATE enquiries SET updated_at = datetime('now') WHERE id = ?`).run(enquiryId)
 
+  if (user) logActivity({ actorId: user.id, actorEmail: user.email, action: 'enquiry.message_sent', entityType: 'enquiry', entityId: enquiryId })
   return { success: true, id: msgId }
 })

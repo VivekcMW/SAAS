@@ -132,9 +132,8 @@ const tab = ref<'upcoming' | 'past'>('upcoming')
 const activeList = computed(() => tab.value === 'upcoming' ? (data.value?.upcoming ?? []) : (data.value?.past ?? []))
 
 function fmtDate(iso: string) {
-  return new Date(iso).toLocaleDateString('en-US', {
-    weekday: 'short', month: 'short', day: 'numeric', year: 'numeric',
-  })
+  const { fmtDate: fmt } = useFmt()
+  return fmt(iso, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })
 }
 </script>
 

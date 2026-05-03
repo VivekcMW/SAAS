@@ -7,7 +7,9 @@
       </div>
     </header>
 
-    <div class="bw-card">
+    <p v-if="similarVendorsLoading" style="padding:24px;color:var(--vw-text-subtle)">Loading competitors…</p>
+    <p v-else-if="similarVendors.length === 0" style="padding:24px;color:var(--vw-text-subtle)">No competitor data yet — publish a listing to see comparisons.</p>
+    <div v-else class="bw-card">
       <table class="bw-table sv-table">
         <thead>
           <tr>
@@ -65,7 +67,10 @@
 </template>
 
 <script setup lang="ts">
-const { similarVendors } = useVendorData()
+import { onMounted } from 'vue'
+const { similarVendors, similarVendorsLoading, loadSimilarVendors } = useVendorData()
+
+onMounted(loadSimilarVendors)
 
 function rankChip(r: string) {
   if (r === 'above') return 'bw-chip--success'

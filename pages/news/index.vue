@@ -150,7 +150,7 @@ function typeLabel(t: string) { return TYPE_LABELS[t] || t }
 
 function fmtDate(iso: string | null) {
   if (!iso) return ''
-  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  return useFmt().fmtDate(iso, { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
 function setPage(p: number) {

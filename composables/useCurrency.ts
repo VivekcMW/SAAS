@@ -26,6 +26,18 @@ const LOCALE_CURRENCY: Record<string, string> = {
   'de': 'EUR', 'fr': 'EUR', 'es': 'EUR', 'pt': 'BRL', 'ja': 'JPY', 'zh': 'CNY', 'ar': 'SAR',
 }
 
+/**
+ * Purchasing-power parity adjustment factors (relative to USD).
+ * Applied on top of exchange rate conversion to reflect local affordability.
+ * e.g. a $100 product in India becomes $100 * 0.30 = $30 before INR conversion.
+ */
+const PPP_FACTORS: Record<string, number> = {
+  INR: 0.30, BRL: 0.35, MXN: 0.40, TRY: 0.25, IDR: 0.25,
+  PLN: 0.45, CZK: 0.45, HUF: 0.40, ZAR: 0.35, THB: 0.40,
+  PHP: 0.35, MYR: 0.40, VND: 0.25, PKR: 0.20, EGP: 0.25,
+  NGN: 0.20, KES: 0.25, ARS: 0.25,
+}
+
 // Module-level reactive state — shared across all component instances
 const _liveRates = ref<Record<string, number>>(STATIC_RATES)
 const _ratesLoaded = ref(false)
@@ -94,6 +106,22 @@ export function useCurrency() {
     return formatPrice(amount / (_liveRates.value['USD'] ?? 1))
   }
 
-  return { currency, rate, formatPrice, formatAmount, RATES: _liveRates, SYMBOLS }
+  /**
+   * Returns the USD amount adjusted for purchasing-power parity for the active currency.
+   * For high-income currencies (USD, EUR, GBP, etc.) the factor is 1.0 — no change.
+   */
+  function pppAdjustedPrice(usdAmount: number): number {
+    const factor = PPP_FACTORS[currency.value] ?? 1
+    return usdAmount * factor
+  }
+
+  /**
+   * Formats a USD price with both exchange-rate conversion AND PPP adjustment.
+   */
+  function formatPppPrice(usdAmount: number, opts?: { period?: string }): string {
+    return formatPrice(pppAdjustedPrice(usdAmount), opts)
+  }
+
+  return { currency, rate, formatPrice, formatAmount, pppAdjustedPrice, formatPppPrice, RATES: _liveRates, SYMBOLS }
 }
 

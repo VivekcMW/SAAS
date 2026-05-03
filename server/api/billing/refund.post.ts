@@ -4,7 +4,7 @@
  * Body: { reason: string; orderId?: string; message?: string }
  */
 import { requireUser } from '~/server/utils/auth'
-import { getDb, makeId } from '~/server/utils/database'
+import { getDb, makeId, logActivity } from '~/server/utils/database'
 import { ADMIN_EMAIL, sendEmail } from '~/server/utils/email'
 import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
 
@@ -88,6 +88,7 @@ If you have questions, reply to this email or contact billing@moonmart.ai.
 `
   }).catch(err => console.error('[refund] user confirmation email failed:', err))
 
+  logActivity({ actorId: user.id, actorEmail: user.email, action: 'billing.refund_requested', entityType: 'refund', entityId: requestId })
   return {
     success: true,
     requestId,

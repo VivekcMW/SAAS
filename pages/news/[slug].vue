@@ -157,7 +157,7 @@ const TYPE_LABELS: Record<string, string> = {
 function typeLabel(t: string) { return TYPE_LABELS[t] || t }
 function fmtDate(iso: string | null) {
   if (!iso) return ''
-  return new Date(iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+  return useFmt().fmtDate(iso, { month: 'long', day: 'numeric', year: 'numeric' })
 }
 
 const bodyHtml = computed(() => {

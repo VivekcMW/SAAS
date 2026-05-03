@@ -347,19 +347,20 @@ const hasActiveFilters = computed(() => {
   return Object.keys(activeFilters.value).length > 0 || selectedCategory.value;
 });
 
-// Mock filtered apps count based on active filters
-// In a real app, this would be calculated based on the actual filtered data
-const filteredAppsCount = computed(() => {
-  // In a real app, this would be the actual count of apps after filters are applied
-  const baseCount = 150;
-  let count = baseCount;
-  
-  // Simulate fewer results as filters are applied
-  if (selectedCategory.value) count = Math.floor(count * 0.7);
-  count -= Object.keys(activeFilters.value).length * 15;
-  
-  return Math.max(count, 0);
-});
+// Real app count fetched from API, updates when filters change
+const filteredAppsCount = ref(0)
+
+async function fetchAppsCount() {
+  try {
+    const query: Record<string, string> = {}
+    if (selectedCategory.value) query.category = selectedCategory.value
+    Object.entries(activeFilters.value).forEach(([k, v]) => { query[k] = v })
+    const res = await $fetch<{ total: number }>('/api/apps', { query })
+    filteredAppsCount.value = res.total ?? 0
+  } catch { /* keep previous count */ }
+}
+
+watch([selectedCategory, activeFilters], fetchAppsCount, { deep: true, immediate: true })
 
 // Toggle filters panel
 const toggleFiltersPanel = () => {

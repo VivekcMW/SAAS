@@ -59,12 +59,32 @@ const hasFilterParams = computed(() => {
   return !!(q.sort || q.filter || q.category || q.page || q.pricing || q.tag || q.search)
 })
 
+// Dynamic canonical and pagination links
+const BASE_URL = 'https://moonmart.ai'
+const currentPage = computed(() => Number(route.query.page) || 1)
+const canonicalHref = computed(() => {
+  const base = `${BASE_URL}/marketplace`
+  return currentPage.value > 1 ? `${base}?page=${currentPage.value}` : base
+})
+
+const paginationLinks = computed(() => {
+  const links: Array<{ rel: string; href: string }> = [
+    { rel: 'canonical', href: canonicalHref.value }
+  ]
+  if (currentPage.value > 1) {
+    const prevHref = currentPage.value === 2 ? `${BASE_URL}/marketplace` : `${BASE_URL}/marketplace?page=${currentPage.value - 1}`
+    links.push({ rel: 'prev', href: prevHref })
+  }
+  if (totalApplications.value > currentPage.value * 24) {
+    links.push({ rel: 'next', href: `${BASE_URL}/marketplace?page=${currentPage.value + 1}` })
+  }
+  return links
+})
+
 // Apply comprehensive SEO with VC focus
 useHead({
   ...vcMetaConfig,
-  link: [
-    { rel: 'canonical', href: 'https://moonmart.ai/marketplace' }
-  ],
+  link: paginationLinks,
   meta: [
     ...(vcMetaConfig.meta || []),
     { name: 'robots', content: hasFilterParams.value ? 'noindex, follow' : 'index, follow' }

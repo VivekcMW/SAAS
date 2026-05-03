@@ -2,7 +2,7 @@
  * PUT /api/vendor/profile
  * Update the authenticated vendor's profile.
  */
-import { getDb } from '~/server/utils/database'
+import { getDb, logActivity } from '~/server/utils/database'
 import { requireVendor } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
@@ -50,5 +50,6 @@ export default defineEventHandler(async (event) => {
     ...Object.values(updates), profile.id
   )
 
+  logActivity({ actorId: user.id, actorEmail: user.email, action: 'vendor.profile_updated', entityType: 'vendor_profile', entityId: profile.id as string })
   return { success: true }
 })

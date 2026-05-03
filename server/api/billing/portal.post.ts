@@ -7,6 +7,7 @@
  */
 import { getOrCreateStripeCustomer, getStripe } from '~/server/utils/stripe'
 import { requireUser } from '~/server/utils/auth'
+import { logActivity } from '~/server/utils/database'
 
 export default defineEventHandler(async (event) => {
   const user = await requireUser(event)
@@ -25,5 +26,6 @@ export default defineEventHandler(async (event) => {
     return_url: `${baseUrl}/dashboard?section=billing`
   })
 
+  logActivity({ actorId: user.id, actorEmail: user.email, action: 'billing.portal_accessed', entityType: 'user', entityId: user.id })
   return { url: session.url }
 })

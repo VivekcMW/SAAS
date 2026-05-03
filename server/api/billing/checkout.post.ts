@@ -8,6 +8,7 @@
 import { getOrCreateStripeCustomer, getStripe, PLANS } from '~/server/utils/stripe'
 import { requireUser } from '~/server/utils/auth'
 import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
+import { logActivity } from '~/server/utils/database'
 
 export default defineEventHandler(async (event) => {
   // 10 checkout attempts per hour per IP
@@ -76,5 +77,6 @@ export default defineEventHandler(async (event) => {
     }
   })
 
+  logActivity({ actorId: user.id, actorEmail: user.email, action: 'billing.checkout_started', entityType: 'plan', entityId: body.planId })
   return { url: session.url }
 })

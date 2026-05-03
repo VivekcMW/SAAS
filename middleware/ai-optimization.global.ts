@@ -70,6 +70,10 @@ function getContentType(path: string): string {
   if (path.includes('/marketplace/app/')) return 'software-review'
   if (path.includes('/marketplace/category/')) return 'software-category'
   if (path.includes('/marketplace')) return 'marketplace-listing'
+  if (path.match(/^\/app\/[^/]+/)) return 'software-review'
+  if (path.includes('/events')) return 'event-listing'
+  if (path.includes('/news/')) return 'news-article'
+  if (path.includes('/rfp/')) return 'rfp-listing'
   if (path.includes('/blog/')) return 'article'
   if (path.includes('/guides/')) return 'tutorial'
   if (path.includes('/documentation/')) return 'documentation'
@@ -114,8 +118,12 @@ function getContentCategory(path: string): string {
  */
 function getEntityType(path: string): string {
   if (path.includes('/marketplace/app/')) return 'SoftwareApplication'
+  if (path.match(/^\/app\/[^/]+/)) return 'SoftwareApplication'
   if (path.includes('/marketplace/category/')) return 'CategoryPage'
   if (path.includes('/marketplace')) return 'Marketplace'
+  if (path.includes('/events')) return 'Event'
+  if (path.includes('/news/')) return 'NewsArticle'
+  if (path.includes('/rfp/')) return 'JobPosting'
   if (path.includes('/blog/')) return 'Article'
   if (path.includes('/guides/')) return 'HowTo'
   if (path.includes('/company/') || path.includes('/about')) return 'Organization'

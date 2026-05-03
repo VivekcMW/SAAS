@@ -324,60 +324,23 @@ async function createPromotion(payload: {
   await loadPromotions()
 }
 
-const similarVendors = ref<SimilarVendor[]>([
-  {
-    id: 's1',
-    name: 'HubSpot',
-    logo: 'H',
-    color: '#ff7a59',
-    category: 'CRM',
-    rating: 4.5,
-    reviews: 8920,
-    priceFrom: 45,
-    yourRank: 'below',
-    gap: 'Marketplace with 1,000+ integrations',
-    overlap: 42
-  },
-  {
-    id: 's2',
-    name: 'Pipedrive',
-    logo: 'P',
-    color: '#1a1a1a',
-    category: 'CRM',
-    rating: 4.4,
-    reviews: 3140,
-    priceFrom: 24,
-    yourRank: 'tied',
-    gap: 'Visual pipeline drag-and-drop',
-    overlap: 28
-  },
-  {
-    id: 's3',
-    name: 'Freshsales',
-    logo: 'F',
-    color: '#29bcaf',
-    category: 'CRM',
-    rating: 4.3,
-    reviews: 2080,
-    priceFrom: 19,
-    yourRank: 'above',
-    gap: '—',
-    overlap: 18
-  },
-  {
-    id: 's4',
-    name: 'Close',
-    logo: 'C',
-    color: '#0a253c',
-    category: 'CRM',
-    rating: 4.6,
-    reviews: 690,
-    priceFrom: 99,
-    yourRank: 'below',
-    gap: 'Built-in power dialer',
-    overlap: 9
+const similarVendors = ref<SimilarVendor[]>([])
+const similarVendorsLoaded = ref(false)
+const similarVendorsLoading = ref(false)
+
+async function loadSimilarVendors() {
+  if (similarVendorsLoaded.value || similarVendorsLoading.value) return
+  similarVendorsLoading.value = true
+  try {
+    const data = await $fetch<{ competitors: SimilarVendor[] }>('/api/vendor/similar-vendors')
+    similarVendors.value = data.competitors || []
+    similarVendorsLoaded.value = true
+  } catch {
+    // Not authenticated or no listings yet — keep empty
+  } finally {
+    similarVendorsLoading.value = false
   }
-])
+}
 
 // funnel is now a computed property inside useVendorData(), backed by real analytics API
 
@@ -530,6 +493,8 @@ export function useVendorData() {
     loadPromotions,
     createPromotion,
     similarVendors,
+    similarVendorsLoading,
+    loadSimilarVendors,
     funnel,
     todayActions,
     insights,

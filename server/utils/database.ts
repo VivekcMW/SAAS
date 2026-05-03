@@ -1,3 +1,26 @@
+/**
+ * database.ts — SQLite persistence layer (better-sqlite3)
+ *
+ * Database location:
+ *   Set SAASWORLD_DB_PATH env var to an absolute path for the SQLite file.
+ *   Default: <project-root>/data/saasworld.db
+ *
+ * PRODUCTION NOTE:
+ *   SQLite works great for single-instance deployments (VPS, Fly.io single machine, etc.).
+ *   For multi-instance / horizontally-scaled deployments you should migrate to a
+ *   network-accessible database.  Drop-in replacement options:
+ *
+ *   • PostgreSQL  — install `pg` and swap `better-sqlite3` calls for `pg` queries.
+ *   • PlanetScale / Turso — install `@libsql/client` for edge-compatible SQLite-as-a-service.
+ *   • Neon / Supabase — managed Postgres with Prisma or Drizzle ORM.
+ *
+ *   For Turso specifically, change the db initialisation to:
+ *     import { createClient } from '@libsql/client'
+ *     const db = createClient({ url: process.env.TURSO_URL, authToken: process.env.TURSO_TOKEN })
+ *
+ *   The rest of this file's API surface (getDb, makeId, logActivity, …) remains the same
+ *   as long as you provide an adapter with synchronous `.prepare().run()` semantics.
+ */
 import Database from 'better-sqlite3'
 import { existsSync, mkdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
