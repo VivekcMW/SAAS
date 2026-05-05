@@ -162,38 +162,74 @@ ${JSON.stringify(catalogue, null, 2)}`
   // ── Heuristic fallback (no API key or OpenAI failure) ──────────────────────
   if (matches.length === 0) {
     const budget = body.budget ?? Infinity
+
+    // Tokenise the pain point into keywords for relevance scoring
+    const stopWords = new Set(['a', 'an', 'the', 'for', 'to', 'of', 'in', 'on', 'with', 'and', 'or', 'is', 'are', 'my', 'our', 'that', 'i', 'we', 'us', 'me'])
+    const queryTokens = (body.painPoint || '')
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, ' ')
+      .split(/\s+/)
+      .filter(t => t.length > 2 && !stopWords.has(t))
+
     const scored = apps.map(app => {
-      let score = app.rating / 5 * 0.5 + Math.min(app.reviewCount, 500) / 500 * 0.3
+      // Base quality score (50%)
+      let score = app.rating / 5 * 0.5 + Math.min(app.reviewCount, 500) / 500 * 0.2
 
-      // Budget alignment
+      // Budget alignment (10%)
       const price = app.pricing.value ?? 0
-      if (price === 0 || app.pricing.type === 'free') score += 0.15
-      else if (price <= budget) score += 0.1
+      if (price === 0 || app.pricing.type === 'free') score += 0.1
+      else if (price <= budget) score += 0.07
 
-      // Category match
+      // Category match (10%)
       if (body.category && app.category.toLowerCase() === body.category.toLowerCase()) score += 0.1
+
+      // Keyword relevance against name, category, description, tags (30%)
+      if (queryTokens.length > 0) {
+        const haystack = [
+          app.name,
+          app.category,
+          app.description || '',
+          app.tags.join(' ')
+        ].join(' ').toLowerCase()
+
+        let hits = 0
+        for (const token of queryTokens) {
+          if (haystack.includes(token)) hits++
+        }
+        score += (hits / queryTokens.length) * 0.3
+      }
 
       return { app, score }
     })
     .sort((a, b) => b.score - a.score)
     .slice(0, 5)
 
-    matches = scored.map(({ app, score }, i) => ({
-      app: {
-        id: app.id,
-        name: app.name,
-        logo: app.logo,
-        rating: app.rating,
-        pricingType: app.pricing.type,
-        pricingValue: app.pricing.value ?? null,
-        category: app.category,
-        slug: app.slug
-      },
-      score: Math.round(score * 100) / 100,
-      reasoning: `${app.name} is a highly-rated ${app.category} tool with ${app.reviewCount} reviews and a ${app.rating}/5 rating — a strong fit for teams looking to ${body.painPoint || 'improve productivity'}.`,
-      tradeoff: 'Evaluate pricing and integration requirements against your specific stack.',
-      rank: i + 1
-    }))
+    // Build a concise, natural description of the use-case
+    const useCase = body.painPoint?.trim() || 'improve productivity'
+
+    matches = scored.map(({ app, score }, i) => {
+      const pricingNote = app.pricing.type === 'free'
+        ? 'free to start'
+        : app.pricing.value
+          ? `starting at $${app.pricing.value}/${app.pricing.period || 'mo'}`
+          : 'contact for pricing'
+      return {
+        app: {
+          id: app.id,
+          name: app.name,
+          logo: app.logo,
+          rating: app.rating,
+          pricingType: app.pricing.type,
+          pricingValue: app.pricing.value ?? null,
+          category: app.category,
+          slug: app.slug
+        },
+        score: Math.round(score * 100) / 100,
+        reasoning: `${app.name} is a ${app.category} tool rated ${app.rating}/5 by ${app.reviewCount.toLocaleString()} users — well-suited for "${useCase}". It is ${pricingNote} and is widely adopted by teams with similar needs.`,
+        tradeoff: 'Review pricing tiers and integration compatibility with your current stack before committing.',
+        rank: i + 1
+      }
+    })
   }
 
   // ── Persist session ────────────────────────────────────────────────────────

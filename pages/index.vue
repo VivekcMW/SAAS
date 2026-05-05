@@ -55,18 +55,38 @@
         </div>
 
         <div v-if="aiResults.length" class="home-results">
-          <h3>Top picks for you</h3>
+          <div class="home-results__header">
+            <span class="home-results__eyebrow">
+              <svg viewBox="0 0 24 24" width="13" height="13" aria-hidden="true"><path d="M12 2l2.6 6.4L21 10l-4.9 4.3L17.8 21 12 17.6 6.2 21l1.7-6.7L3 10l6.4-1.6z" fill="currentColor"/></svg>
+              Top picks for you
+            </span>
+          </div>
           <ul class="home-results__list">
-            <li v-for="r in aiResults" :key="r.app.id" class="home-results__item">
-              <NuxtLink :to="`/apps/${r.app.slug}`" class="home-results__link">
-                <strong class="home-results__name">{{ r.app.name }}</strong>
-                <span class="home-results__score">{{ Math.round(r.score) }}% match</span>
-              </NuxtLink>
-              <p class="home-results__reason">{{ r.reasoning }}</p>
-              <p v-if="r.tradeoff" class="home-results__tradeoff">Trade-off: {{ r.tradeoff }}</p>
+            <li v-for="(r, idx) in aiResults" :key="r.app.id" class="home-results__card">
+              <div class="home-results__rank">{{ idx + 1 }}</div>
+              <div class="home-results__body">
+                <div class="home-results__top">
+                  <NuxtLink :to="`/apps/${r.app.slug}`" class="home-results__name">{{ r.app.name }}</NuxtLink>
+                  <span class="home-results__score">
+                    <svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true"><path d="M12 2l2.6 6.4L21 10l-4.9 4.3L17.8 21 12 17.6 6.2 21l1.7-6.7L3 10l6.4-1.6z" fill="currentColor"/></svg>
+                    {{ Math.round(r.score * 100) }}% match
+                  </span>
+                </div>
+                <div class="home-results__bar-wrap">
+                  <div class="home-results__bar" :style="{ width: Math.round(r.score * 100) + '%' }" />
+                </div>
+                <p class="home-results__reason">{{ r.reasoning }}</p>
+                <p v-if="r.tradeoff" class="home-results__tradeoff">
+                  <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  {{ r.tradeoff }}
+                </p>
+              </div>
             </li>
           </ul>
-          <NuxtLink to="/marketplace" class="home-results__more">Browse all matches in marketplace &rarr;</NuxtLink>
+          <NuxtLink to="/marketplace" class="home-results__more">
+            Browse all matches in marketplace
+            <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </NuxtLink>
         </div>
 
         <div class="home-trust">
@@ -475,27 +495,138 @@ const integrationLogos = [
 .home-chip:hover { border-color: var(--mm-gold); color: var(--mm-goldl); background: var(--mm-gold-soft); }
 
 .home-results {
-  background: var(--mm-s2);
-  border: .5px solid var(--b2);
-  border-radius: var(--r-lg);
-  padding: 1.25rem 1.5rem;
-  max-width: 600px;
+  max-width: 640px;
   margin: 0 auto 1.5rem;
   text-align: left;
+  animation: fadeSlideUp 0.35s ease both;
 }
-.home-results h3 {
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.home-results__header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.85rem;
+}
+.home-results__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   font-family: var(--f-ui);
-  font-size: 0.86rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--mm-gold);
-  margin: 0 0 0.75rem;
 }
-.home-results ul { list-style: none; padding: 0; margin: 0 0 0.5rem; display: flex; flex-direction: column; gap: 0.35rem; }
-.home-results li { color: var(--mm-silver); font-size: 0.94rem; }
-.home-results li strong { color: var(--mm-pearl); }
-.home-results small { color: var(--mm-slate); font-size: 0.78rem; }
+.home-results__list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.home-results__card {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-lg);
+  padding: 1rem 1.15rem;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+.home-results__card:hover {
+  border-color: var(--mm-gold);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px -20px rgba(212,168,67,.18);
+}
+.home-results__rank {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--mm-gold-soft);
+  color: var(--mm-gold);
+  font-family: var(--f-mon);
+  font-size: 0.72rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+.home-results__body { flex: 1; min-width: 0; }
+.home-results__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+.home-results__name {
+  font-family: var(--f-ui);
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--mm-pearl);
+  text-decoration: none;
+}
+.home-results__name:hover { color: var(--mm-gold); }
+.home-results__score {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-shrink: 0;
+  font-family: var(--f-mon);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--mm-gold);
+  background: var(--mm-gold-soft);
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+}
+.home-results__bar-wrap {
+  height: 3px;
+  background: var(--b1);
+  border-radius: 999px;
+  margin-bottom: 0.55rem;
+  overflow: hidden;
+}
+.home-results__bar {
+  height: 100%;
+  background: var(--mm-gold);
+  border-radius: 999px;
+  transition: width 0.6s cubic-bezier(.4,0,.2,1);
+}
+.home-results__reason {
+  font-size: 0.86rem;
+  color: var(--mm-silver);
+  line-height: 1.55;
+  margin: 0 0 0.4rem;
+}
+.home-results__tradeoff {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--mm-slate);
+  margin: 0;
+}
+.home-results__tradeoff svg { flex-shrink: 0; margin-top: 1px; opacity: 0.7; }
+.home-results__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--f-ui);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--mm-gold);
+  text-decoration: none;
+  transition: gap 0.15s ease;
+}
+.home-results__more:hover { gap: 0.65rem; }
 
 .home-trust { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.65rem; color: var(--mm-slate); font-size: 0.9rem; }
 .home-trust strong { color: var(--mm-silver); }
