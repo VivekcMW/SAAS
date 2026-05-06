@@ -59,6 +59,24 @@ const { data: similarData } = await useFetch<{ similar: any[] }>(
   { key: `showcase-similar-${appId.value}` }
 )
 
+// ── Enrichment data (non-blocking — graceful fallback to null if not yet enriched) ──
+const { data: enrichmentData } = await useFetch<{
+  app_id: string
+  team: { founders: any[]; executives: any[]; team_size_min: number | null; team_size_max: number | null; work_style: string | null; enriched_at: string } | null
+  funding: { total_raised_usd: number | null; last_round: any; all_rounds: any[]; valuation_usd: number | null; funding_status: string | null; enriched_at: string } | null
+  market: { monthly_visits: number | null; global_rank: number | null; g2_rating: number | null; g2_reviews: number | null; g2_categories: string[]; producthunt_votes: number | null; domain_authority: number | null; tam_estimate: number | null } | null
+  jobs: { open_jobs: number; ats_platform: string | null; roles: any[]; hiring_velocity: number | null } | null
+  social: { twitter: { handle: string; followers: number | null } | null; github: { org: string; stars: number | null; repos: number | null } | null; linkedin: { followers: number | null; employees: number | null } | null } | null
+  tech_stack: { frontend: string[]; backend: string[]; databases: string[]; infrastructure: string[]; analytics: string[]; payments: string[] } | null
+  press: { article_count_30d: number; article_count_90d: number; awards: string[]; sentiment_positive: number; latest_headline: string | null } | null
+  regulatory: { legal_name: string | null; incorporation_date: string | null; registered_country: string | null; status: string } | null
+} | null>(
+  `/api/apps/${appId.value}/enrichment`,
+  { key: `showcase-enrich-${appId.value}`, default: () => null }
+)
+
+const enrich = computed(() => enrichmentData.value)
+
 const app = computed(() => data.value as AppData | null)
 
 // Track page view
@@ -184,12 +202,37 @@ const alternatives = computed(() =>
   }))
 )
 
-const companyInfo = computed(() => ({
-  name: app.value?.provider || '—',
-  founded: undefined, headquarters: undefined, employees: undefined,
-  fundingTotal: undefined, latestRound: undefined, investors: [],
-  website: '#', linkedin: undefined, twitter: undefined
-}))
+const companyInfo = computed(() => {
+  const e = enrich.value
+  const teamSizeLabel = e?.team
+    ? e.team.team_size_min != null && e.team.team_size_max != null
+      ? `${e.team.team_size_min}–${e.team.team_size_max}`
+      : e.team.team_size_min != null ? `${e.team.team_size_min}+` : undefined
+    : undefined
+  const investors = e?.funding?.last_round?.investors ?? []
+
+  return {
+    name: app.value?.provider || '—',
+    // Real data from regulatory / team enrichment
+    founded: e?.regulatory?.incorporation_date
+      ? new Date(e.regulatory.incorporation_date).getFullYear()
+      : undefined,
+    headquarters: e?.regulatory?.registered_country ?? undefined,
+    employees: teamSizeLabel,
+    // Funding data
+    fundingTotal: e?.funding?.total_raised_usd
+      ? `$${(e.funding.total_raised_usd / 1_000_000).toFixed(1)}M`
+      : undefined,
+    latestRound: e?.funding?.last_round
+      ? `${e.funding.last_round.stage ?? ''} (${e.funding.last_round.date ?? ''})`.trim()
+      : undefined,
+    investors: Array.isArray(investors) ? investors : [],
+    // Links
+    website: app.value ? `https://${app.value.provider?.toLowerCase().replace(/\s+/g, '')}.com` : '#',
+    linkedin: e?.social?.linkedin ? `https://linkedin.com/company/${e.social.linkedin.employees}` : undefined,
+    twitter: e?.social?.twitter?.handle ? `https://twitter.com/${e.social.twitter.handle}` : undefined
+  }
+})
 
 const aboutQuickFacts = computed(() => {
   const p = app.value?.pricing
@@ -267,6 +310,9 @@ const navSections = [
   { id: 'integrations', icon: 'heroicons:puzzle-piece', label: 'Integrations' },
   { id: 'reviews', icon: 'heroicons:star', label: 'Reviews' },
   { id: 'about', icon: 'heroicons:information-circle', label: 'About' },
+  { id: 'tech-stack', icon: 'heroicons:cpu-chip', label: 'Tech Stack' },
+  { id: 'jobs', icon: 'heroicons:briefcase', label: 'Jobs' },
+  { id: 'press', icon: 'heroicons:newspaper', label: 'Press' },
   { id: 'faq', icon: 'heroicons:question-mark-circle', label: 'FAQ' },
   { id: 'similar', icon: 'heroicons:squares-2x2', label: 'Similar' }
 ]
@@ -629,6 +675,102 @@ function getCategoryLabel(cat?: string): string {
               <AppCompanyCard :info="companyInfo" />
             </div>
           </section>
+
+          <!-- Tech Stack (enrichment-backed, hidden until data arrives) -->
+          <section v-if="enrich?.tech_stack" id="tech-stack" class="sc-section">
+            <div class="sc-container">
+              <header class="sc-section-head">
+                <h2 class="sc-section-title">Technology Stack</h2>
+                <p class="sc-section-sub">Detected technologies powering this product</p>
+              </header>
+              <div class="enrich-grid">
+                <div v-for="(techs, category) in {
+                  Frontend: enrich.tech_stack.frontend,
+                  Backend: enrich.tech_stack.backend,
+                  Databases: enrich.tech_stack.databases,
+                  Infrastructure: enrich.tech_stack.infrastructure,
+                  Analytics: enrich.tech_stack.analytics,
+                  Payments: enrich.tech_stack.payments
+                }" :key="String(category)" class="enrich-cell">
+                  <div v-if="(techs as string[]).length" class="enrich-cell__body">
+                    <span class="enrich-cell__label">{{ category }}</span>
+                    <div class="enrich-tags">
+                      <span v-for="t in (techs as string[])" :key="t" class="enrich-tag">{{ t }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Jobs & Hiring (enrichment-backed) -->
+          <section v-if="enrich?.jobs && (enrich.jobs.open_jobs > 0 || enrich.jobs.roles.length > 0)" id="jobs" class="sc-section">
+            <div class="sc-container">
+              <header class="sc-section-head">
+                <h2 class="sc-section-title">Open Roles</h2>
+                <p class="sc-section-sub">
+                  {{ enrich.jobs.open_jobs }} open position{{ enrich.jobs.open_jobs !== 1 ? 's' : '' }}
+                  <span v-if="enrich.jobs.ats_platform"> · Hiring via {{ enrich.jobs.ats_platform }}</span>
+                  <span v-if="enrich.jobs.hiring_velocity && enrich.jobs.hiring_velocity > 0" class="enrich-trend-up"> ↑ {{ enrich.jobs.hiring_velocity }} new since last month</span>
+                  <span v-else-if="enrich.jobs.hiring_velocity && enrich.jobs.hiring_velocity < 0" class="enrich-trend-down"> ↓ {{ Math.abs(enrich.jobs.hiring_velocity) }} fewer than last month</span>
+                </p>
+              </header>
+              <div class="enrich-job-list">
+                <div v-for="role in enrich.jobs.roles.slice(0, 10)" :key="role.title ?? role" class="enrich-job-row">
+                  <span class="enrich-job-title">{{ role.title ?? role }}</span>
+                  <span v-if="role.department" class="enrich-job-dept">{{ role.department }}</span>
+                  <span v-if="role.location" class="enrich-job-loc">{{ role.location }}</span>
+                  <a v-if="role.url" :href="role.url" target="_blank" rel="noopener noreferrer" class="enrich-job-link">Apply →</a>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Press & Awards (enrichment-backed) -->
+          <section v-if="enrich?.press && (enrich.press.article_count_90d > 0 || enrich.press.awards.length > 0)" id="press" class="sc-section">
+            <div class="sc-container">
+              <header class="sc-section-head">
+                <h2 class="sc-section-title">Press & Recognition</h2>
+              </header>
+              <div class="enrich-press-stats">
+                <div v-if="enrich.press.article_count_30d" class="enrich-stat-pill">
+                  <span class="enrich-stat-num">{{ enrich.press.article_count_30d }}</span>
+                  <span class="enrich-stat-label">articles last 30 days</span>
+                </div>
+                <div v-if="enrich.press.article_count_90d" class="enrich-stat-pill">
+                  <span class="enrich-stat-num">{{ enrich.press.article_count_90d }}</span>
+                  <span class="enrich-stat-label">articles last 90 days</span>
+                </div>
+                <div v-if="enrich.press.podcast_count" class="enrich-stat-pill">
+                  <span class="enrich-stat-num">{{ enrich.press.podcast_count }}</span>
+                  <span class="enrich-stat-label">podcast mentions</span>
+                </div>
+              </div>
+              <div v-if="enrich.press.latest_headline" class="enrich-latest-headline">
+                <span class="enrich-label-small">Latest coverage</span>
+                <p>{{ enrich.press.latest_headline }}</p>
+              </div>
+              <div v-if="enrich.press.awards.length" class="enrich-awards">
+                <span v-for="award in enrich.press.awards" :key="String(award)" class="enrich-award-badge">🏆 {{ award }}</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Social Proof Bar (enrichment-backed) -->
+          <div v-if="enrich?.social" class="enrich-social-bar">
+            <div v-if="enrich.social.twitter?.followers" class="enrich-social-item">
+              <span class="enrich-social-num">{{ (enrich.social.twitter.followers / 1000).toFixed(1) }}K</span>
+              <span class="enrich-social-lbl">Twitter followers</span>
+            </div>
+            <div v-if="enrich.social.github?.stars" class="enrich-social-item">
+              <span class="enrich-social-num">{{ (enrich.social.github.stars / 1000).toFixed(1) }}K</span>
+              <span class="enrich-social-lbl">GitHub stars</span>
+            </div>
+            <div v-if="enrich.social.linkedin?.employees" class="enrich-social-item">
+              <span class="enrich-social-num">{{ enrich.social.linkedin.employees }}</span>
+              <span class="enrich-social-lbl">LinkedIn employees</span>
+            </div>
+          </div>
 
           <!-- FAQ -->
           <section id="faq" class="sc-section">
@@ -1206,4 +1348,41 @@ function getCategoryLabel(cat?: string): string {
 .sc-textarea { resize: vertical; min-height: 72px; }
 .sc-enq-error { font-size: 12px; color: var(--color-error); margin: 0; }
 .sc-enq-success { font-size: 12px; color: var(--color-success); margin: 0; }
+
+/* ── Enrichment UI ─────────────────────────────────────────────────────────── */
+
+/* Tech stack grid */
+.enrich-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.enrich-cell { background: var(--mm-surface-2); border: 0.5px solid var(--b1); border-radius: 10px; padding: 14px 16px; }
+.enrich-cell__label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--mm-silver); margin-bottom: 8px; }
+.enrich-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.enrich-tag { background: var(--mm-bg); border: 0.5px solid var(--b2); border-radius: 6px; padding: 3px 9px; font-size: 12px; color: var(--mm-pearl); }
+
+/* Jobs list */
+.enrich-job-list { display: flex; flex-direction: column; gap: 8px; }
+.enrich-job-row { display: flex; align-items: center; gap: 12px; background: var(--mm-surface-2); border: 0.5px solid var(--b1); border-radius: 8px; padding: 12px 16px; flex-wrap: wrap; }
+.enrich-job-title { font-size: 14px; font-weight: 500; color: var(--mm-pearl); flex: 1 1 180px; }
+.enrich-job-dept { font-size: 12px; color: var(--mm-silver); background: var(--mm-bg); padding: 2px 8px; border-radius: 999px; border: 0.5px solid var(--b1); }
+.enrich-job-loc { font-size: 12px; color: var(--mm-silver); }
+.enrich-job-link { font-size: 12px; color: var(--mm-gold); text-decoration: none; margin-left: auto; white-space: nowrap; }
+.enrich-job-link:hover { text-decoration: underline; }
+.enrich-trend-up { color: #4ade80; font-size: 13px; }
+.enrich-trend-down { color: #f87171; font-size: 13px; }
+
+/* Press stats */
+.enrich-press-stats { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+.enrich-stat-pill { background: var(--mm-surface-2); border: 0.5px solid var(--b1); border-radius: 10px; padding: 12px 18px; text-align: center; min-width: 120px; }
+.enrich-stat-num { display: block; font-size: 22px; font-weight: 700; color: var(--mm-pearl); }
+.enrich-stat-label { font-size: 11px; color: var(--mm-silver); text-transform: uppercase; letter-spacing: 0.05em; }
+.enrich-latest-headline { background: var(--mm-surface-2); border-left: 3px solid var(--mm-gold); border-radius: 0 8px 8px 0; padding: 12px 16px; margin-bottom: 16px; }
+.enrich-latest-headline p { margin: 4px 0 0; font-size: 14px; color: var(--mm-pearl); line-height: 1.5; }
+.enrich-label-small { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--mm-silver); }
+.enrich-awards { display: flex; flex-wrap: wrap; gap: 8px; }
+.enrich-award-badge { background: rgba(212, 168, 67, 0.1); border: 0.5px solid rgba(212, 168, 67, 0.3); border-radius: 8px; padding: 6px 12px; font-size: 13px; color: var(--mm-gold); }
+
+/* Social proof bar */
+.enrich-social-bar { display: flex; justify-content: center; gap: 32px; padding: 20px; background: var(--mm-surface); border-top: 0.5px solid var(--b1); border-bottom: 0.5px solid var(--b1); margin: 8px 0; flex-wrap: wrap; }
+.enrich-social-item { text-align: center; }
+.enrich-social-num { display: block; font-size: 20px; font-weight: 700; color: var(--mm-pearl); }
+.enrich-social-lbl { font-size: 11px; color: var(--mm-silver); text-transform: uppercase; letter-spacing: 0.05em; }
 </style>

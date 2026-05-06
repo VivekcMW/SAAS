@@ -374,6 +374,7 @@ export async function runVCPortfolioCrawler(
   try {
     const allEntries: VCPortfolioEntry[] = []
 
+    // ── Step 1: Crawl the hardcoded Tier 1 list ─────────────────────────────
     for (const vc of VC_SOURCES) {
       try {
         console.log(`[vcportfolios] Fetching ${vc.name} portfolio...`)
@@ -387,6 +388,47 @@ export async function runVCPortfolioCrawler(
       catch (err) {
         console.error(`[vcportfolios] Failed to fetch ${vc.name}:`, err)
       }
+    }
+
+    // ── Step 2: Self-healing — also crawl VCs discovered by vc-dynamic.ts ──
+    // vc_sources is populated by the dynamic crawler with newly-found portfolio URLs.
+    // This makes vcportfolios.ts adaptive: any VC vc-dynamic.ts discovers is
+    // automatically crawled the next time this task runs, no code change needed.
+    try {
+      const dynamicVCs = db.prepare(`
+        SELECT name, portfolio_url, domain
+        FROM vc_sources
+        WHERE portfolio_url IS NOT NULL
+          AND active = 1
+          AND (last_crawled_at IS NULL OR last_crawled_at < datetime('now', '-7 days'))
+        ORDER BY last_crawled_at ASC
+        LIMIT 100
+      `).all() as Array<{ name: string; portfolio_url: string; domain: string }>
+
+      console.log(`[vcportfolios] Loading ${dynamicVCs.length} dynamic VCs from vc_sources table`)
+
+      for (const vc of dynamicVCs) {
+        try {
+          console.log(`[vcportfolios] Dynamic: fetching ${vc.name} (${vc.portfolio_url})`)
+          const html = await fetchPortfolioPage(vc.portfolio_url)
+          const entries = extractCompanyLinks(html, vc.name, vc.domain)
+          console.log(`[vcportfolios] Dynamic ${vc.name}: found ${entries.length} companies`)
+          allEntries.push(...entries)
+
+          // Mark as crawled so we don't re-crawl until next week
+          db.prepare(`UPDATE vc_sources SET last_crawled_at = ? WHERE portfolio_url = ?`)
+            .run(new Date().toISOString(), vc.portfolio_url)
+
+          await new Promise(r => setTimeout(r, 2000))
+        }
+        catch (err) {
+          console.error(`[vcportfolios] Dynamic VC failed (${vc.name}):`, err)
+        }
+      }
+    }
+    catch (err) {
+      // vc_sources table may not exist yet if vc-dynamic hasn't run
+      console.warn('[vcportfolios] Could not load dynamic VCs (vc_sources not ready):', (err as Error).message)
     }
 
     const deduped = dedupeByDomain(allEntries)

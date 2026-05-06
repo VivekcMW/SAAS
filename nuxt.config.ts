@@ -91,6 +91,10 @@ export default defineNuxtConfig({
       '0 4 * * 3': ['enrich:tech-stack'],
       // Press & media coverage (Google News RSS, PH, awards, podcasts) — Monday 4am UTC
       '0 4 * * 1': ['enrich:press'],
+      // Software directories + app marketplaces (G2, Capterra, AWS, Slack, TAAFT, StackShare) — Thursday 5am UTC
+      '0 5 * * 4': ['discovery:directories'],
+      // Technical health (PageSpeed, SSL, security headers, domain age, patents, green hosting) — Sunday 4am UTC
+      '0 4 * * 0': ['enrich:tech-health'],
       // Weekly digest emails — every Monday at 08:00 UTC
       '0 8 * * 1': ['digest:weekly'],
       // Price-drop alerts — daily at 09:00 UTC (after renewals run at 08:00)

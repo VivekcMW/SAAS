@@ -48,6 +48,9 @@ import { runAngelNetworkCrawler } from '~/server/utils/discovery/crawlers/angel-
 // ── Dynamic worldwide mining (no hardcoded URLs) ─────────────────────────────
 import { runDynamicVCCrawler } from '~/server/utils/discovery/crawlers/vc-dynamic'
 
+// ── Software Directories + App Marketplaces Crawler ──────────────────────────
+import { runDirectoryCrawler } from '~/server/utils/discovery/crawlers/directories'
+
 // ── 8 New Enrichment Agents ───────────────────────────────────────────────────
 import { runTeamEnrichmentBatch } from '~/server/utils/discovery/enrichment/enrich-team'
 import { runFundingEnrichmentBatch } from '~/server/utils/discovery/enrichment/enrich-funding'
@@ -607,6 +610,39 @@ export const enrichPressTask = defineTask({
     console.log('[enrich:press] Starting press enrichment batch...')
     const result = await runPressEnrichmentBatch(100)
     console.log('[enrich:press] Complete:', result)
+    return { result: 'ok', ...result }
+  }
+})
+
+// ── Directories & Marketplaces Crawler (Thursday 5am UTC) ────────────────────
+
+export const directoriesTask = defineTask({
+  meta: {
+    name: 'discovery:directories',
+    description: 'Crawl software directories and app marketplaces: G2 (25 categories), Capterra (18 categories), AWS Marketplace, Slack App Directory, theresanaiforthat.com, StackShare, Open Collective'
+  },
+  async run() {
+    if (process.env.DISCOVERY_AGENT_ENABLED === 'false') return { result: 'disabled' }
+    console.log('[discovery:directories] Starting directory crawl...')
+    const result = await runDirectoryCrawler(500)
+    console.log('[discovery:directories] Complete:', result)
+    return { result: 'ok', ...result }
+  }
+})
+
+// ── Enrichment: Technical Health (Sunday 4am UTC) ─────────────────────────────
+
+export const enrichTechHealthTask = defineTask({
+  meta: {
+    name: 'enrich:tech-health',
+    description: 'Enrich apps with PageSpeed scores, SSL validity, security headers grade, domain age via Wayback CDX, WHOIS registrar, patent count, email provider (MX), and green hosting flag'
+  },
+  async run() {
+    if (process.env.DISCOVERY_AGENT_ENABLED === 'false') return { result: 'disabled' }
+    console.log('[enrich:tech-health] Starting tech health enrichment batch...')
+    const { runTechHealthEnrichmentBatch } = await import('~/server/utils/discovery/enrichment/enrich-tech-health')
+    const result = await runTechHealthEnrichmentBatch(100)
+    console.log('[enrich:tech-health] Complete:', result)
     return { result: 'ok', ...result }
   }
 })
