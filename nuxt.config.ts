@@ -50,6 +50,20 @@ export default defineNuxtConfig({
       '0 2 * * 0': ['discovery:weekly'],
       // Discovery enrichment — Proxycurl enrichment batch daily at 4am UTC (after crawlers)
       '0 4 * * *': ['discovery:enrich'],
+      // Cat 1 — Extended discovery (AwesomeLists + VC Portfolios + BetaList + AlternativeTo) Saturday 1am UTC
+      '0 1 * * 6': ['discovery:extended'],
+      // Cat 1 — Crunchbase discovery crawler Sunday 3am UTC (after dedup runs at 1am)
+      '0 3 * * 0': ['discovery:crunchbase'],
+      // Cat 2 — Screenshot capture daily 5am UTC (after enrichment at 4am)
+      '0 5 * * *': ['discovery:screenshots'],
+      // Cat 2 — Pricing monitor Wednesday 3am UTC
+      '0 3 * * 3': ['discovery:pricing'],
+      // Cat 2 — Review sync Thursday 2am UTC
+      '0 2 * * 4': ['discovery:reviews'],
+      // Cat 2 — Crunchbase enrichment Friday 2am UTC
+      '0 2 * * 5': ['discovery:cb-enrich'],
+      // Cat 3 — Duplicate merger Sunday 1am UTC (before weekly crawlers at 2am)
+      '0 1 * * 0': ['discovery:dedup'],
       // Weekly digest emails — every Monday at 08:00 UTC
       '0 8 * * 1': ['digest:weekly'],
       // Price-drop alerts — daily at 09:00 UTC (after renewals run at 08:00)
