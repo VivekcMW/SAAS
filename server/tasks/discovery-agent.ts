@@ -5,8 +5,12 @@
  *   '0 3 * * *'    → discovery:daily        (Product Hunt + Hacker News + Reddit)
  *   '0 2 * * 0'    → discovery:weekly       (YC + GitHub + IndieHackers + AppSumo + Zapier)
  *   '0 4 * * *'    → discovery:enrich       (Proxycurl enrichment batch)
- *   '0 1 * * 6'    → discovery:extended     (Cat 1: AwesomeLists + VC + BetaList + AlternativeTo)
+ *   '0 1 * * 6'    → discovery:extended     (Cat 1: AwesomeLists + VC Tier1 + BetaList + AlternativeTo)
  *   '0 3 * * 0'    → discovery:crunchbase   (Cat 1: Crunchbase discovery)
+ *   '0 2 * * 6'    → discovery:vc-t2        (VC Tier 2 — 150 mid-size VCs)
+ *   '0 4 * * 6'    → discovery:corporate-vc (Corporate VC arms — 30 firms)
+ *   '0 5 * * 6'    → discovery:vc-agg       (VC Aggregators — Wellfound/F6S/Signal/SaaSHub)
+ *   '0 4 * * 0'    → discovery:angels       (Angel networks — Republic/Wefunder/Seedrs/etc)
  *   '0 5 * * *'    → discovery:screenshots  (Cat 2: Screenshot capture)
  *   '0 3 * * 3'    → discovery:pricing      (Cat 2: Pricing monitor)
  *   '0 2 * * 4'    → discovery:reviews      (Cat 2: Review sync)
@@ -28,12 +32,18 @@ import { runRedditCrawler } from '~/server/utils/discovery/crawlers/reddit'
 import { runAppSumoCrawler } from '~/server/utils/discovery/crawlers/appsumo'
 import { runZapierCrawler } from '~/server/utils/discovery/crawlers/zapier'
 
-// ── Category 1 — New discovery crawlers ──────────────────────────────────────
+// ── Category 1 — Original new crawlers ───────────────────────────────────────
 import { runAwesomeListsCrawler } from '~/server/utils/discovery/crawlers/awesomelists'
 import { runVCPortfolioCrawler } from '~/server/utils/discovery/crawlers/vcportfolios'
 import { runBetaListCrawler } from '~/server/utils/discovery/crawlers/betalist'
 import { runAlternativeToCrawler } from '~/server/utils/discovery/crawlers/alternativeto'
 import { runCrunchbaseCrawler } from '~/server/utils/discovery/crawlers/crunchbase'
+
+// ── VC Expansion — Tier 2, Corporate, Aggregators, Angel Networks ─────────────
+import { runVCTier2Crawler } from '~/server/utils/discovery/crawlers/vcportfolios-tier2'
+import { runCorporateVCCrawler } from '~/server/utils/discovery/crawlers/corporate-vc'
+import { runVCAggregatorCrawler } from '~/server/utils/discovery/crawlers/vc-aggregators'
+import { runAngelNetworkCrawler } from '~/server/utils/discovery/crawlers/angel-networks'
 
 // ── Category 2 — Enrichment agents ───────────────────────────────────────────
 import { runProxycurlEnrichmentBatch } from '~/server/utils/discovery/enrichment/proxycurl'
@@ -366,6 +376,78 @@ export const dedupTask = defineTask({
     console.log('[discovery:dedup] Starting duplicate merger...')
     const result = await runDuplicateMerger()
     console.log('[discovery:dedup] Complete:', result)
+    return { result: 'ok', ...result }
+  }
+})
+
+// ── VC Tier 2 — 150 mid-size VCs (Saturday 3am UTC) ──────────────────────────
+
+export const vcTier2Task = defineTask({
+  meta: {
+    name: 'discovery:vc-t2',
+    description: 'VC Tier 2: 150 mid-size, sector-specialist, APAC & LatAm VCs'
+  },
+  async run() {
+    if (process.env.DISCOVERY_AGENT_ENABLED === 'false') {
+      return { result: 'disabled' }
+    }
+    console.log('[discovery:vc-t2] Starting VC Tier 2 crawl...')
+    const result = await runVCTier2Crawler(400)
+    console.log('[discovery:vc-t2] Complete:', result)
+    return { result: 'ok', ...result }
+  }
+})
+
+// ── Corporate VC — 30 corporate venture arms (Saturday 6am UTC) ──────────────
+
+export const corporateVCTask = defineTask({
+  meta: {
+    name: 'discovery:corporate-vc',
+    description: 'Corporate VC: Salesforce Ventures, M12, Intel Capital, SAP.iO and 27 more'
+  },
+  async run() {
+    if (process.env.DISCOVERY_AGENT_ENABLED === 'false') {
+      return { result: 'disabled' }
+    }
+    console.log('[discovery:corporate-vc] Starting corporate VC crawl...')
+    const result = await runCorporateVCCrawler(300)
+    console.log('[discovery:corporate-vc] Complete:', result)
+    return { result: 'ok', ...result }
+  }
+})
+
+// ── VC Aggregators — Wellfound/F6S/Signal/SaaSHub (Saturday 5am UTC) ─────────
+
+export const vcAggregatorTask = defineTask({
+  meta: {
+    name: 'discovery:vc-agg',
+    description: 'VC Aggregators: Wellfound, F6S, Signal by NFX, SaaSHub, Landscape.vc'
+  },
+  async run() {
+    if (process.env.DISCOVERY_AGENT_ENABLED === 'false') {
+      return { result: 'disabled' }
+    }
+    console.log('[discovery:vc-agg] Starting VC aggregator crawl...')
+    const result = await runVCAggregatorCrawler(500)
+    console.log('[discovery:vc-agg] Complete:', result)
+    return { result: 'ok', ...result }
+  }
+})
+
+// ── Angel Networks — Republic/Wefunder/Seedrs/AngelList (Sunday 4am UTC) ─────
+
+export const angelNetworksTask = defineTask({
+  meta: {
+    name: 'discovery:angels',
+    description: 'Angel networks: Republic, Wefunder, StartEngine, Seedrs, Crowdcube, AngelList, OurCrowd'
+  },
+  async run() {
+    if (process.env.DISCOVERY_AGENT_ENABLED === 'false') {
+      return { result: 'disabled' }
+    }
+    console.log('[discovery:angels] Starting angel network crawl...')
+    const result = await runAngelNetworkCrawler(300)
+    console.log('[discovery:angels] Complete:', result)
     return { result: 'ok', ...result }
   }
 })

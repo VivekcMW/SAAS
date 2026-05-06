@@ -52,6 +52,14 @@ export default defineNuxtConfig({
       '0 4 * * *': ['discovery:enrich'],
       // Cat 1 — Extended discovery (AwesomeLists + VC Portfolios + BetaList + AlternativeTo) Saturday 1am UTC
       '0 1 * * 6': ['discovery:extended'],
+      // VC expansion — Tier 2 (150 mid-size VCs) Saturday 3am UTC
+      '0 3 * * 6': ['discovery:vc-t2'],
+      // VC expansion — Aggregators (Wellfound/F6S/Signal/SaaSHub) Saturday 5am UTC
+      '0 5 * * 6': ['discovery:vc-agg'],
+      // VC expansion — Corporate VCs (Salesforce/M12/Intel etc) Saturday 6am UTC
+      '0 6 * * 6': ['discovery:corporate-vc'],
+      // Angel networks (Republic/Wefunder/Seedrs/AngelList) Sunday 4am UTC
+      '0 4 * * 0': ['discovery:angels'],
       // Cat 1 — Crunchbase discovery crawler Sunday 3am UTC (after dedup runs at 1am)
       '0 3 * * 0': ['discovery:crunchbase'],
       // Cat 2 — Screenshot capture daily 5am UTC (after enrichment at 4am)
