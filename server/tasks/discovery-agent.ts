@@ -48,6 +48,16 @@ import { runAngelNetworkCrawler } from '~/server/utils/discovery/crawlers/angel-
 // ── Dynamic worldwide mining (no hardcoded URLs) ─────────────────────────────
 import { runDynamicVCCrawler } from '~/server/utils/discovery/crawlers/vc-dynamic'
 
+// ── 8 New Enrichment Agents ───────────────────────────────────────────────────
+import { runTeamEnrichmentBatch } from '~/server/utils/discovery/enrichment/enrich-team'
+import { runFundingEnrichmentBatch } from '~/server/utils/discovery/enrichment/enrich-funding'
+import { runMarketEnrichmentBatch } from '~/server/utils/discovery/enrichment/enrich-market'
+import { runJobsEnrichmentBatch } from '~/server/utils/discovery/enrichment/enrich-jobs'
+import { runRegulatoryEnrichmentBatch } from '~/server/utils/discovery/enrichment/enrich-regulatory'
+import { runSocialEnrichmentBatch } from '~/server/utils/discovery/enrichment/enrich-social'
+import { runTechStackEnrichmentBatch } from '~/server/utils/discovery/enrichment/enrich-tech-stack'
+import { runPressEnrichmentBatch } from '~/server/utils/discovery/enrichment/enrich-press'
+
 // ── Category 2 — Enrichment agents ───────────────────────────────────────────
 import { runProxycurlEnrichmentBatch } from '~/server/utils/discovery/enrichment/proxycurl'
 import { runScreenshotEnrichmentBatch } from '~/server/utils/discovery/enrichment/screenshot'
@@ -469,6 +479,134 @@ export const vcDynamicTask = defineTask({
     console.log('[discovery:vc-dynamic] Starting worldwide dynamic VC mining...')
     const result = await runDynamicVCCrawler(400)
     console.log('[discovery:vc-dynamic] Complete:', result)
+    return { result: 'ok', ...result }
+  }
+})
+
+// ── Enrichment: Team (Tuesday 3am UTC) ───────────────────────────────────────
+
+export const enrichTeamTask = defineTask({
+  meta: {
+    name: 'enrich:team',
+    description: 'Enrich listings with founders, executives, team size, work style — About/Team page NLP + LinkedIn + Hunter.io + Crunchbase'
+  },
+  async run() {
+    if (process.env.DISCOVERY_AGENT_ENABLED === 'false') return { result: 'disabled' }
+    console.log('[enrich:team] Starting team enrichment batch...')
+    const result = await runTeamEnrichmentBatch(80)
+    console.log('[enrich:team] Complete:', result)
+    return { result: 'ok', ...result }
+  }
+})
+
+// ── Enrichment: Funding (Wednesday 2am UTC) ───────────────────────────────────
+
+export const enrichFundingTask = defineTask({
+  meta: {
+    name: 'enrich:funding',
+    description: 'Enrich listings with funding rounds, investors, stage, total raised — Crunchbase + SEC EDGAR + Companies House + RSS funding news'
+  },
+  async run() {
+    if (process.env.DISCOVERY_AGENT_ENABLED === 'false') return { result: 'disabled' }
+    console.log('[enrich:funding] Starting funding enrichment batch...')
+    const result = await runFundingEnrichmentBatch(100)
+    console.log('[enrich:funding] Complete:', result)
+    return { result: 'ok', ...result }
+  }
+})
+
+// ── Enrichment: Market Signals (Thursday 3am UTC) ────────────────────────────
+
+export const enrichMarketTask = defineTask({
+  meta: {
+    name: 'enrich:market',
+    description: 'Enrich listings with traffic, G2/Capterra ratings, Product Hunt rank, App Store/Play Store data, domain authority, TAM estimate'
+  },
+  async run() {
+    if (process.env.DISCOVERY_AGENT_ENABLED === 'false') return { result: 'disabled' }
+    console.log('[enrich:market] Starting market signals enrichment batch...')
+    const result = await runMarketEnrichmentBatch(80)
+    console.log('[enrich:market] Complete:', result)
+    return { result: 'ok', ...result }
+  }
+})
+
+// ── Enrichment: Jobs & Hiring Signals (Friday 3am UTC) ───────────────────────
+
+export const enrichJobsTask = defineTask({
+  meta: {
+    name: 'enrich:jobs',
+    description: 'Enrich listings with job counts, ATS platform, tech-from-JDs, hiring policy (Greenhouse + Lever + Ashby + careers page)'
+  },
+  async run() {
+    if (process.env.DISCOVERY_AGENT_ENABLED === 'false') return { result: 'disabled' }
+    console.log('[enrich:jobs] Starting jobs enrichment batch...')
+    const result = await runJobsEnrichmentBatch(100)
+    console.log('[enrich:jobs] Complete:', result)
+    return { result: 'ok', ...result }
+  }
+})
+
+// ── Enrichment: Regulatory Filings (Saturday 7am UTC) ────────────────────────
+
+export const enrichRegulatoryTask = defineTask({
+  meta: {
+    name: 'enrich:regulatory',
+    description: 'Enrich listings with company registration data — OpenCorporates (160+ jurisdictions) + Companies House (UK) + SEC EDGAR + Pappers.fr + ABR Australia'
+  },
+  async run() {
+    if (process.env.DISCOVERY_AGENT_ENABLED === 'false') return { result: 'disabled' }
+    console.log('[enrich:regulatory] Starting regulatory enrichment batch...')
+    const result = await runRegulatoryEnrichmentBatch(150)
+    console.log('[enrich:regulatory] Complete:', result)
+    return { result: 'ok', ...result }
+  }
+})
+
+// ── Enrichment: Social Proof (Monday 3am UTC) ─────────────────────────────────
+
+export const enrichSocialTask = defineTask({
+  meta: {
+    name: 'enrich:social',
+    description: 'Enrich listings with Twitter followers, LinkedIn employees, GitHub stars/forks, YouTube subscribers, Reddit community size'
+  },
+  async run() {
+    if (process.env.DISCOVERY_AGENT_ENABLED === 'false') return { result: 'disabled' }
+    console.log('[enrich:social] Starting social proof enrichment batch...')
+    const result = await runSocialEnrichmentBatch(100)
+    console.log('[enrich:social] Complete:', result)
+    return { result: 'ok', ...result }
+  }
+})
+
+// ── Enrichment: Tech Stack (Wednesday 4am UTC) ────────────────────────────────
+
+export const enrichTechStackTask = defineTask({
+  meta: {
+    name: 'enrich:tech-stack',
+    description: 'Fingerprint tech stack from HTTP headers, HTML scripts, cookies, BuiltWith API, and job description NLP'
+  },
+  async run() {
+    if (process.env.DISCOVERY_AGENT_ENABLED === 'false') return { result: 'disabled' }
+    console.log('[enrich:tech-stack] Starting tech stack enrichment batch...')
+    const result = await runTechStackEnrichmentBatch(100)
+    console.log('[enrich:tech-stack] Complete:', result)
+    return { result: 'ok', ...result }
+  }
+})
+
+// ── Enrichment: Press & Media (Monday 4am UTC) ────────────────────────────────
+
+export const enrichPressTask = defineTask({
+  meta: {
+    name: 'enrich:press',
+    description: 'Enrich listings with news article count, top outlets, podcast appearances, press releases, awards — Google News RSS + PR Newswire + BusinessWire + Listen Notes'
+  },
+  async run() {
+    if (process.env.DISCOVERY_AGENT_ENABLED === 'false') return { result: 'disabled' }
+    console.log('[enrich:press] Starting press enrichment batch...')
+    const result = await runPressEnrichmentBatch(100)
+    console.log('[enrich:press] Complete:', result)
     return { result: 'ok', ...result }
   }
 })

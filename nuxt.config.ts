@@ -74,6 +74,23 @@ export default defineNuxtConfig({
       '0 2 * * 5': ['discovery:cb-enrich'],
       // Cat 3 — Duplicate merger Sunday 1am UTC (before weekly crawlers at 2am)
       '0 1 * * 0': ['discovery:dedup'],
+      // ── 8 New Enrichment Agents ────────────────────────────────────────────
+      // Team enrichment (founders, executives, team size) — Tuesday 3am UTC
+      '0 3 * * 2': ['enrich:team'],
+      // Funding enrichment (rounds, investors, stage, total raised) — Wednesday 2am UTC
+      '0 2 * * 3': ['enrich:funding'],
+      // Market signals (traffic, G2, Capterra, PH rank, app stores, DA, TAM) — Thursday 3am UTC
+      '0 3 * * 4': ['enrich:market'],
+      // Jobs & hiring signals (ATS, roles, tech-from-JDs, velocity) — Friday 3am UTC
+      '0 3 * * 5': ['enrich:jobs'],
+      // Regulatory filings (OpenCorporates + Companies House + EDGAR + Pappers) — Saturday 7am UTC
+      '0 7 * * 6': ['enrich:regulatory'],
+      // Social proof (Twitter, LinkedIn, GitHub, YouTube, Reddit) — Monday 3am UTC
+      '0 3 * * 1': ['enrich:social'],
+      // Tech stack fingerprint (headers + HTML + BuiltWith + JD NLP) — Wednesday 4am UTC
+      '0 4 * * 3': ['enrich:tech-stack'],
+      // Press & media coverage (Google News RSS, PH, awards, podcasts) — Monday 4am UTC
+      '0 4 * * 1': ['enrich:press'],
       // Weekly digest emails — every Monday at 08:00 UTC
       '0 8 * * 1': ['digest:weekly'],
       // Price-drop alerts — daily at 09:00 UTC (after renewals run at 08:00)
