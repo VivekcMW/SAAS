@@ -60,6 +60,8 @@ export default defineNuxtConfig({
       '0 6 * * 6': ['discovery:corporate-vc'],
       // Angel networks (Republic/Wefunder/Seedrs/AngelList) Sunday 4am UTC
       '0 4 * * 0': ['discovery:angels'],
+      // Dynamic worldwide mining (RSS NLP + EDGAR + trade dirs + GitHub awesome + self-learning) Sunday 6am UTC
+      '0 6 * * 0': ['discovery:vc-dynamic'],
       // Cat 1 — Crunchbase discovery crawler Sunday 3am UTC (after dedup runs at 1am)
       '0 3 * * 0': ['discovery:crunchbase'],
       // Cat 2 — Screenshot capture daily 5am UTC (after enrichment at 4am)

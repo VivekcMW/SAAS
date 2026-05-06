@@ -45,6 +45,9 @@ import { runCorporateVCCrawler } from '~/server/utils/discovery/crawlers/corpora
 import { runVCAggregatorCrawler } from '~/server/utils/discovery/crawlers/vc-aggregators'
 import { runAngelNetworkCrawler } from '~/server/utils/discovery/crawlers/angel-networks'
 
+// ── Dynamic worldwide mining (no hardcoded URLs) ─────────────────────────────
+import { runDynamicVCCrawler } from '~/server/utils/discovery/crawlers/vc-dynamic'
+
 // ── Category 2 — Enrichment agents ───────────────────────────────────────────
 import { runProxycurlEnrichmentBatch } from '~/server/utils/discovery/enrichment/proxycurl'
 import { runScreenshotEnrichmentBatch } from '~/server/utils/discovery/enrichment/screenshot'
@@ -448,6 +451,24 @@ export const angelNetworksTask = defineTask({
     console.log('[discovery:angels] Starting angel network crawl...')
     const result = await runAngelNetworkCrawler(300)
     console.log('[discovery:angels] Complete:', result)
+    return { result: 'ok', ...result }
+  }
+})
+
+// ── Dynamic Worldwide Mining — RSS NLP + EDGAR + Trade Dirs + GitHub (Sunday 6am UTC) ──
+
+export const vcDynamicTask = defineTask({
+  meta: {
+    name: 'discovery:vc-dynamic',
+    description: 'Worldwide dynamic VC mining: RSS funding NLP (17 feeds, 10 regions) + SEC EDGAR Form D + 12 trade association directories + GitHub awesome-vc lists + self-learning vc_sources portfolio crawls'
+  },
+  async run() {
+    if (process.env.DISCOVERY_AGENT_ENABLED === 'false') {
+      return { result: 'disabled' }
+    }
+    console.log('[discovery:vc-dynamic] Starting worldwide dynamic VC mining...')
+    const result = await runDynamicVCCrawler(400)
+    console.log('[discovery:vc-dynamic] Complete:', result)
     return { result: 'ok', ...result }
   }
 })
