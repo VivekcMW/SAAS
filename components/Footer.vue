@@ -231,8 +231,8 @@ const currentLanguage = ref('en');
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--mm-sea, #2A9D8F);
-  background: var(--mm-sea-soft, rgba(42,157,143,.12));
+  color: var(--mm-gold, #D4A843);
+  background: rgba(212, 168, 67, 0.12);
   border-radius: 4px;
   line-height: 1.4;
 }

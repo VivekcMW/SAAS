@@ -10,11 +10,28 @@
 
 import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
 import { computeMoonmartScore, getMoonmartScoreLabel } from '~/utils/moonmartScore'
+import { useCompare } from '~/composables/useCompare'
+import { useFavorites } from '~/composables/useFavorites'
 
 definePageMeta({ layout: false })
 
 const route = useRoute()
 const appId = computed(() => route.params.id as string)
+
+// ─── Compare + Save ───────────────────────────────────────────────────────────
+const { toggleCompare, isInCompare, canAddMore } = useCompare()
+const { toggle: toggleFavorite, isSaved } = useFavorites()
+
+const inCompare = computed(() => isInCompare(appId.value))
+const inStack   = computed(() => isSaved(appId.value).value)
+
+function handleCompareToggle() {
+  if (!inCompare.value && !canAddMore.value) return
+  toggleCompare(appId.value)
+}
+function handleSaveToggle() {
+  toggleFavorite(appId.value)
+}
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface Pricing {
@@ -110,7 +127,7 @@ const normalizedScreenshots = computed(() => {
   if (s.length === 0) {
     return Array.from({ length: 3 }, (_, i) => ({
       type: 'image' as const,
-      url: `https://placehold.co/1280x800/D4A843/0A0700?text=${encodeURIComponent(app.value?.name || 'App')}+Screen+${i + 1}`,
+      url: `https://placehold.co/1280x800/1F2742/A8B5CC?text=${encodeURIComponent(app.value?.name || 'App')}+Screen+${i + 1}`,
       caption: `${app.value?.name} — screen ${i + 1}`
     }))
   }
@@ -201,6 +218,42 @@ const alternatives = computed(() =>
     logo: a.logo
   }))
 )
+
+// "You might also need" — derived from integrations, with curated fallbacks
+const complementaryApps = computed(() => {
+  const integrations = app.value?.integrations || []
+  const integrationsNamed: { id: string; name: string; logo?: string; why: string }[] = []
+  const fallbackMap: Record<string, { id: string; name: string; why: string }[]> = {
+    crm: [
+      { id: 'slack', name: 'Slack', why: 'Team communication & deal alerts' },
+      { id: 'zapier', name: 'Zapier', why: 'Automate workflows between tools' },
+      { id: 'hubspot', name: 'HubSpot', why: 'Marketing automation' },
+    ],
+    project: [
+      { id: 'slack', name: 'Slack', why: 'Team updates & notifications' },
+      { id: 'figma', name: 'Figma', why: 'Design handoff' },
+      { id: 'github', name: 'GitHub', why: 'Code + project sync' },
+    ],
+    default: [
+      { id: 'slack', name: 'Slack', why: 'Team communication layer' },
+      { id: 'zapier', name: 'Zapier', why: 'Connect to 5,000+ apps' },
+      { id: 'notion', name: 'Notion', why: 'Documentation & wikis' },
+      { id: 'google-workspace', name: 'Google Workspace', why: 'Email, Docs & Drive' },
+    ]
+  }
+  // Prefer integration data if available
+  if (integrations.length > 0) {
+    return integrations.slice(0, 4).map((name: string) => ({
+      id: name.toLowerCase().replace(/\s+/g, '-'),
+      name,
+      why: 'Native integration available',
+      logo: undefined
+    }))
+  }
+  const cat = (app.value?.category || '').toLowerCase()
+  const key = Object.keys(fallbackMap).find(k => cat.includes(k)) || 'default'
+  return fallbackMap[key]
+})
 
 const companyInfo = computed(() => {
   const e = enrich.value
@@ -417,6 +470,14 @@ useHead(() => ({
 // ─── Utilities ────────────────────────────────────────────────────────────────
 function getCategoryLabel(cat?: string): string {
   if (!cat) return 'SaaS'
+  const acronyms: Record<string, string> = {
+    'crm': 'CRM', 'erp': 'ERP', 'ai': 'AI', 'bi': 'BI', 'hr': 'HR',
+    'api': 'API', 'cms': 'CMS', 'sms': 'SMS', 'iot': 'IoT', 'ui': 'UI',
+    'ux': 'UX', 'saas': 'SaaS', 'b2b': 'B2B', 'b2c': 'B2C',
+    'crm-and-sales': 'CRM & Sales', 'hr-and-people': 'HR & People',
+  }
+  const lower = cat.toLowerCase()
+  if (acronyms[lower]) return acronyms[lower]
   return cat.charAt(0).toUpperCase() + cat.slice(1).replaceAll('-', ' ')
 }
 </script>
@@ -528,8 +589,33 @@ function getCategoryLabel(cat?: string): string {
                   </div>
 
                   <div class="sc-hero__ctas">
-                    <button class="sc-btn sc-btn--primary" @click="openEnquiry('overview')">Request a Demo</button>
-                    <NuxtLink :to="`/marketplace/app/${app.slug || app.id}`" class="sc-btn sc-btn--ghost">Full Details</NuxtLink>
+                    <button class="sc-btn sc-btn--primary" @click="openEnquiry('overview')">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.82V18a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h11" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      Request a Demo
+                    </button>
+                    <a v-if="app.websiteUrl || true" :href="app.websiteUrl || '#'" target="_blank" rel="noopener noreferrer" class="sc-btn sc-btn--ghost">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+                      Visit site
+                    </a>
+                    <button
+                      class="sc-btn sc-btn--icon"
+                      :class="{ active: inCompare }"
+                      :title="inCompare ? 'Remove from compare' : (canAddMore ? 'Add to compare' : 'Compare full (4/4)')"
+                      :disabled="!inCompare && !canAddMore"
+                      @click="handleCompareToggle"
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="18" rx="1"/></svg>
+                      {{ inCompare ? 'In Compare' : '+ Compare' }}
+                    </button>
+                    <button
+                      class="sc-btn sc-btn--icon"
+                      :class="{ active: inStack }"
+                      :title="inStack ? 'Remove from My Stack' : 'Save to My Stack'"
+                      @click="handleSaveToggle"
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" :fill="inStack ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                      {{ inStack ? 'Saved' : 'Save' }}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -786,6 +872,22 @@ function getCategoryLabel(cat?: string): string {
           </section>
 
           <!-- Similar apps -->
+          <!-- Claim your listing banner (unclaimed listings) -->
+          <div v-if="!app.featured && !app.provider?.includes(' ')" class="sc-claim-banner">
+            <div class="sc-container">
+              <div class="sc-claim">
+                <div class="sc-claim__icon">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <div class="sc-claim__body">
+                  <strong>Are you the maker of {{ app.name }}?</strong>
+                  <span>Claim this listing to update your info, respond to reviews, and get buyer leads.</span>
+                </div>
+                <NuxtLink to="/list-product" class="sc-claim__cta">Claim listing →</NuxtLink>
+              </div>
+            </div>
+          </div>
+
           <section v-if="alternatives.length" id="similar" class="sc-section">
             <div class="sc-container">
               <header class="sc-section-head">
@@ -793,6 +895,34 @@ function getCategoryLabel(cat?: string): string {
                 <p class="sc-section-sub">Compare with other tools in this category</p>
               </header>
               <AppAlternativesCarousel :items="alternatives" />
+            </div>
+          </section>
+
+          <!-- You might also need (complementary apps cross-sell) -->
+          <section class="sc-section sc-section--also-need">
+            <div class="sc-container">
+              <header class="sc-section-head">
+                <h2 class="sc-section-title">You might also need</h2>
+                <p class="sc-section-sub">Teams using {{ app.name }} commonly pair it with these tools</p>
+              </header>
+              <div class="sc-also-grid">
+                <NuxtLink
+                  v-for="rec in complementaryApps"
+                  :key="rec.id"
+                  :to="`/app/${rec.id}`"
+                  class="sc-also-card"
+                >
+                  <div class="sc-also-card__logo">
+                    <img v-if="rec.logo" :src="rec.logo" :alt="rec.name" />
+                    <span v-else>{{ rec.name.charAt(0) }}</span>
+                  </div>
+                  <div class="sc-also-card__body">
+                    <span class="sc-also-card__name">{{ rec.name }}</span>
+                    <span class="sc-also-card__why">{{ rec.why }}</span>
+                  </div>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </NuxtLink>
+              </div>
             </div>
           </section>
 
@@ -956,6 +1086,7 @@ function getCategoryLabel(cat?: string): string {
   z-index: 100;
 }
 .sc-nav-btn:hover .sc-nav-tooltip { opacity: 1; transform: translateX(0); }
+.sc-nav-btn.is-active .sc-nav-tooltip { opacity: 1; transform: translateX(0); }
 
 .showcase-content { flex: 1; min-width: 0; overflow-x: hidden; }
 
@@ -1096,7 +1227,98 @@ function getCategoryLabel(cat?: string): string {
   color: var(--mm-silver);
 }
 
-.sc-hero__ctas { display: flex; gap: 10px; flex-wrap: wrap; }
+.sc-hero__ctas { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+/* Compare / Save icon buttons */
+.sc-btn--icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 14px;
+  background: rgba(168, 180, 204, 0.06);
+  border: 1px solid rgba(168, 180, 204, 0.15);
+  border-radius: 8px;
+  color: var(--mm-silver, #A8B5CC);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.sc-btn--icon:hover { background: rgba(168,180,204,.12); color: var(--mm-pearl); border-color: rgba(168,180,204,.3); }
+.sc-btn--icon.active { background: rgba(212, 168, 67, 0.12); border-color: rgba(212,168,67,.35); color: var(--mm-gold, #D4A843); }
+.sc-btn--icon:disabled { opacity: .4; cursor: not-allowed; }
+
+/* Claim listing banner */
+.sc-claim-banner {
+  background: rgba(212, 168, 67, 0.05);
+  border-top: 1px solid rgba(212, 168, 67, 0.15);
+  border-bottom: 1px solid rgba(212, 168, 67, 0.15);
+  padding: 12px 0;
+}
+.sc-claim {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.sc-claim__icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: rgba(212, 168, 67, 0.12);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--mm-gold, #D4A843);
+  flex-shrink: 0;
+}
+.sc-claim__body {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.85rem;
+  color: var(--mm-silver, #A8B5CC);
+}
+.sc-claim__body strong { color: var(--mm-pearl, #E2E8F0); }
+.sc-claim__cta {
+  color: var(--mm-gold, #D4A843);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.sc-claim__cta:hover { text-decoration: underline; }
+
+/* You might also need */
+.sc-section--also-need { background: var(--mm-s1, #141921); }
+.sc-also-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+}
+.sc-also-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--mm-s2, #1F2742);
+  border: 1px solid rgba(168,180,204,.08);
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--mm-pearl, #E2E8F0);
+  transition: border-color .15s, background .15s;
+}
+.sc-also-card:hover { border-color: rgba(212,168,67,.3); background: rgba(212,168,67,.04); }
+.sc-also-card__logo {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: var(--mm-bg); overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.9rem; color: var(--mm-gold);
+  flex-shrink: 0;
+}
+.sc-also-card__logo img { width: 100%; height: 100%; object-fit: contain; }
+.sc-also-card__body { flex: 1; min-width: 0; }
+.sc-also-card__name { display: block; font-weight: 600; font-size: 0.875rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sc-also-card__why { display: block; font-size: 0.75rem; color: var(--mm-silver); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .sc-trust {
   display: flex;

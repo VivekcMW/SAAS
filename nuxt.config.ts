@@ -35,71 +35,7 @@ export default defineNuxtConfig({
     prerender: {
       routes: ['/api/sitemap.xml', '/api/robots.txt']
     },
-    compressPublicAssets: true,
-    experimental: {
-      tasks: true
-    },
-    scheduledTasks: {
-      // Run session cleanup every hour
-      '0 * * * *': ['session:cleanup'],
-      // Run renewal reminders every day at 08:00 UTC
-      '0 8 * * *': ['renewals:reminders'],
-      // Discovery agent — daily sources (Product Hunt + Hacker News + Reddit) at 3am UTC
-      '0 3 * * *': ['discovery:daily'],
-      // Discovery agent — weekly sources (YC + GitHub + IndieHackers + AppSumo + Zapier) every Sunday at 2am UTC
-      '0 2 * * 0': ['discovery:weekly'],
-      // Discovery enrichment — Proxycurl enrichment batch daily at 4am UTC (after crawlers)
-      '0 4 * * *': ['discovery:enrich'],
-      // Cat 1 — Extended discovery (AwesomeLists + VC Portfolios + BetaList + AlternativeTo) Saturday 1am UTC
-      '0 1 * * 6': ['discovery:extended'],
-      // VC expansion — Tier 2 (150 mid-size VCs) Saturday 3am UTC
-      '0 3 * * 6': ['discovery:vc-t2'],
-      // VC expansion — Aggregators (Wellfound/F6S/Signal/SaaSHub) Saturday 5am UTC
-      '0 5 * * 6': ['discovery:vc-agg'],
-      // VC expansion — Corporate VCs (Salesforce/M12/Intel etc) Saturday 6am UTC
-      '0 6 * * 6': ['discovery:corporate-vc'],
-      // Angel networks (Republic/Wefunder/Seedrs/AngelList) Sunday 4am UTC
-      '0 4 * * 0': ['discovery:angels'],
-      // Dynamic worldwide mining (RSS NLP + EDGAR + trade dirs + GitHub awesome + self-learning) Sunday 6am UTC
-      '0 6 * * 0': ['discovery:vc-dynamic'],
-      // Cat 1 — Crunchbase discovery crawler Sunday 3am UTC (after dedup runs at 1am)
-      '0 3 * * 0': ['discovery:crunchbase'],
-      // Cat 2 — Screenshot capture daily 5am UTC (after enrichment at 4am)
-      '0 5 * * *': ['discovery:screenshots'],
-      // Cat 2 — Pricing monitor Wednesday 3am UTC
-      '0 3 * * 3': ['discovery:pricing'],
-      // Cat 2 — Review sync Thursday 2am UTC
-      '0 2 * * 4': ['discovery:reviews'],
-      // Cat 2 — Crunchbase enrichment Friday 2am UTC
-      '0 2 * * 5': ['discovery:cb-enrich'],
-      // Cat 3 — Duplicate merger Sunday 1am UTC (before weekly crawlers at 2am)
-      '0 1 * * 0': ['discovery:dedup'],
-      // ── 8 New Enrichment Agents ────────────────────────────────────────────
-      // Team enrichment (founders, executives, team size) — Tuesday 3am UTC
-      '0 3 * * 2': ['enrich:team'],
-      // Funding enrichment (rounds, investors, stage, total raised) — Wednesday 2am UTC
-      '0 2 * * 3': ['enrich:funding'],
-      // Market signals (traffic, G2, Capterra, PH rank, app stores, DA, TAM) — Thursday 3am UTC
-      '0 3 * * 4': ['enrich:market'],
-      // Jobs & hiring signals (ATS, roles, tech-from-JDs, velocity) — Friday 3am UTC
-      '0 3 * * 5': ['enrich:jobs'],
-      // Regulatory filings (OpenCorporates + Companies House + EDGAR + Pappers) — Saturday 7am UTC
-      '0 7 * * 6': ['enrich:regulatory'],
-      // Social proof (Twitter, LinkedIn, GitHub, YouTube, Reddit) — Monday 3am UTC
-      '0 3 * * 1': ['enrich:social'],
-      // Tech stack fingerprint (headers + HTML + BuiltWith + JD NLP) — Wednesday 4am UTC
-      '0 4 * * 3': ['enrich:tech-stack'],
-      // Press & media coverage (Google News RSS, PH, awards, podcasts) — Monday 4am UTC
-      '0 4 * * 1': ['enrich:press'],
-      // Software directories + app marketplaces (G2, Capterra, AWS, Slack, TAAFT, StackShare) — Thursday 5am UTC
-      '0 5 * * 4': ['discovery:directories'],
-      // Technical health (PageSpeed, SSL, security headers, domain age, patents, green hosting) — Sunday 4am UTC
-      '0 4 * * 0': ['enrich:tech-health'],
-      // Weekly digest emails — every Monday at 08:00 UTC
-      '0 8 * * 1': ['digest:weekly'],
-      // Price-drop alerts — daily at 09:00 UTC (after renewals run at 08:00)
-      '0 9 * * *': ['price-alerts:daily']
-    }
+    compressPublicAssets: true
   },
 
   // Per-route headers — embed pages must be iframe-safe

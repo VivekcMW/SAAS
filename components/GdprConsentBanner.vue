@@ -121,6 +121,7 @@ function acceptEssential() { saveConsent(false) }
   display: flex;
   gap: 8px;
   flex-shrink: 0;
+  min-width: max-content;
 }
 .gdpr-btn {
   height: 36px;

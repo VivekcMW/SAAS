@@ -17,6 +17,14 @@
     <ClientOnly>
       <GdprConsentBanner />
     </ClientOnly>
+    <!-- Floating compare tray -->
+    <ClientOnly>
+      <CompareBar />
+    </ClientOnly>
+    <!-- Mobile bottom navigation -->
+    <ClientOnly>
+      <MobileBottomNav />
+    </ClientOnly>
   </div>
 </template>
 
@@ -54,6 +62,7 @@ useHead({
   .site-main {
     margin-top: 64px; /* Match mobile navbar height */
     min-height: calc(100vh - 64px);
+    padding-bottom: 64px; /* Space for mobile bottom nav */
   }
 }
 </style>

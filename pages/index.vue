@@ -208,6 +208,112 @@
       </div>
     </section>
 
+    <!-- 5b. App of the day -->
+    <section class="mk-section mk-section--soft home-aotd-section">
+      <div class="mk-section__inner">
+        <div class="home-aotd">
+          <div class="home-aotd__badge">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2l2.6 6.4L21 10l-4.9 4.3L17.8 21 12 17.6 6.2 21l1.7-6.7L3 10l6.4-1.6z"/></svg>
+            App of the day
+          </div>
+          <div class="home-aotd__card">
+            <div class="home-aotd__left">
+              <div class="home-aotd__logo">
+                <img :src="appOfDay.image" :alt="appOfDay.name" @error="onLogoError" />
+              </div>
+              <div class="home-aotd__info">
+                <h3 class="home-aotd__name">{{ appOfDay.name }}</h3>
+                <span class="home-aotd__cat">{{ appOfDay.category }}</span>
+                <div class="home-aotd__rating">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M12 2l2.6 6.4L21 10l-4.9 4.3L17.8 21 12 17.6 6.2 21l1.7-6.7L3 10l6.4-1.6z"/></svg>
+                  {{ appOfDay.rating }} · {{ appOfDay.reviewCount }} reviews
+                </div>
+              </div>
+            </div>
+            <div class="home-aotd__body">
+              <p class="home-aotd__tagline">{{ appOfDay.tagline }}</p>
+              <p class="home-aotd__editorial">{{ appOfDay.editorial }}</p>
+            </div>
+            <div class="home-aotd__actions">
+              <NuxtLink :to="`/marketplace/app/${appOfDay.id}`" class="mk-btn mk-btn--primary home-aotd__cta">See full profile</NuxtLink>
+              <span class="home-aotd__price">{{ formatPrice(appOfDay) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5c. New this week -->
+    <section class="mk-section home-new-section">
+      <div class="mk-section__inner">
+        <div class="home-section-head">
+          <div class="home-section-head__row">
+            <div>
+              <span class="mk-eyebrow">New this week</span>
+              <h2 class="mk-section__title">Just launched on Moonmart</h2>
+            </div>
+            <NuxtLink to="/marketplace?sort=newest" class="home-see-all">
+              See all new
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </NuxtLink>
+          </div>
+        </div>
+        <div class="home-new-list">
+          <NuxtLink
+            v-for="app in newThisWeek"
+            :key="app.id"
+            :to="`/marketplace/app/${app.id}`"
+            class="home-new-item"
+          >
+            <div class="home-new-item__logo">
+              <img :src="app.image" :alt="app.name" @error="onLogoError" />
+            </div>
+            <div class="home-new-item__body">
+              <span class="home-new-item__name">{{ app.name }}</span>
+              <span class="home-new-item__cat">{{ app.category }}</span>
+            </div>
+            <span class="home-new-item__badge">New</span>
+            <span class="home-new-item__price">{{ formatPrice(app) }}</span>
+          </NuxtLink>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5d. Continue exploring (personalized — client only) -->
+    <ClientOnly>
+      <section v-if="recentlyViewed.length > 0" class="mk-section mk-section--soft home-continue-section">
+        <div class="mk-section__inner">
+          <div class="home-section-head">
+            <span class="mk-eyebrow">Continue exploring</span>
+            <h2 class="mk-section__title">Pick up where you left off</h2>
+          </div>
+          <div class="home-apps">
+            <NuxtLink
+              v-for="item in recentlyViewed"
+              :key="item.id"
+              :to="`/app/${item.id}`"
+              class="app-card"
+            >
+              <div class="app-card__head">
+                <div class="app-card__logo">
+                  <span>{{ item.name.charAt(0) }}</span>
+                </div>
+                <div class="app-card__title">
+                  <h3 class="app-card__name">{{ item.name }}</h3>
+                  <span class="app-card__cat">{{ item.category }}</span>
+                </div>
+              </div>
+              <p class="app-card__tag">{{ item.tagline }}</p>
+              <span class="app-card__cta">
+                Continue reading
+                <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </NuxtLink>
+          </div>
+        </div>
+      </section>
+    </ClientOnly>
+
     <!-- 6. Why -->
     <section class="mk-section mk-section--soft">
       <div class="mk-section__inner">
@@ -229,7 +335,7 @@
     <section class="mk-section home-quote-section">
       <div class="mk-section__inner">
         <blockquote class="home-quote">
-          <svg class="home-quote__mark" viewBox="0 0 24 24" width="40" height="40" aria-hidden="true"><path d="M7.17 6.17C4.87 7.28 3 9.55 3 13v5h5v-5H5.5c.17-1.92 1.33-3.33 3-4L7.17 6.17zm10 0C14.87 7.28 13 9.55 13 13v5h5v-5h-2.5c.17-1.92 1.33-3.33 3-4l-1.33-2.83z" fill="currentColor"/></svg>
+          <svg class="home-quote__mark" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M7.17 6.17C4.87 7.28 3 9.55 3 13v5h5v-5H5.5c.17-1.92 1.33-3.33 3-4L7.17 6.17zm10 0C14.87 7.28 13 9.55 13 13v5h5v-5h-2.5c.17-1.92 1.33-3.33 3-4l-1.33-2.83z" fill="currentColor"/></svg>
           <p>
             We shortlisted our new CRM in 20 minutes instead of 6 weeks. The framework and
             unbiased tagging were the real unlocks — not another spec sheet.
@@ -302,7 +408,7 @@ const aiLoading = ref(false)
 const aiResults = ref<Array<{ app: { id: string; name: string; slug: string }; score: number; reasoning: string; tradeoff: string }>>([])
 const aiError = ref('')
 const searchPlaceholder =
-  'Describe what you need — e.g. "CRM for a 10-person remote sales team under $20/user"'
+  'Describe what you need — e.g. "CRM for a 10-person sales team"'
 
 const examples = [
   'CRM for a 10-person sales team',
@@ -377,6 +483,32 @@ const topProducts: HomeApp[] = [
   { id: 'salesforce', name: 'Salesforce', category: 'CRM & Sales', tagline: 'The enterprise CRM standard — deeply customizable revenue platform.', image: '/assets/images/integrations/salesforce.svg', rating: '4.5', reviewCount: '71.2K', price: 'From $25', pricePeriod: '/user/mo' },
   { id: 'canva', name: 'Canva', category: 'Design', tagline: 'Drag-and-drop design for teams that need beautiful output fast.', image: '/assets/images/integrations/canva.svg', rating: '4.8', reviewCount: '12.1K', price: 'From $12.99', pricePeriod: '/user/mo' }
 ]
+
+// App of the day (editorial pick — rotates daily by date seed)
+const dayIndex = new Date().getDate() % topProducts.length
+const appOfDay = {
+  ...topProducts[dayIndex],
+  editorial: 'Our editorial team picked this app for its exceptional onboarding experience, transparent pricing, and best-in-class integrations — making it an instant upgrade for teams of any size.'
+}
+
+// New this week (simulated — in production pull from /api/apps?sort=newest&limit=5)
+const newThisWeek: HomeApp[] = [
+  { id: 'linear', name: 'Linear', category: 'Project Management', tagline: 'Built for high-performance engineering teams.', image: '/assets/images/integrations/notion.svg', rating: '4.9', reviewCount: '6.2K', price: 'From $8', pricePeriod: '/user/mo' },
+  { id: 'loom', name: 'Loom', category: 'Async Video', tagline: 'Record and share async video messages instantly.', image: '/assets/images/integrations/zoom.svg', rating: '4.7', reviewCount: '9.1K', price: 'Free', pricePeriod: '' },
+  { id: 'figma', name: 'Figma', category: 'Design', tagline: 'Collaborative interface design for modern teams.', image: '/assets/images/integrations/canva.svg', rating: '4.8', reviewCount: '22.5K', price: 'Free tier', pricePeriod: '' },
+  { id: 'stripe', name: 'Stripe', category: 'Payments', tagline: 'Payments infrastructure for the internet.', image: '/assets/images/integrations/salesforce.svg', rating: '4.8', reviewCount: '14.3K', price: '2.9% + 30¢', pricePeriod: '/txn' },
+  { id: 'intercom', name: 'Intercom', category: 'Customer Support', tagline: 'AI-first customer service across all channels.', image: '/assets/images/integrations/hubspot.svg', rating: '4.5', reviewCount: '11.7K', price: 'From $39', pricePeriod: '/mo' },
+]
+
+// Recently viewed (client-side localStorage)
+interface RecentItem { id: string; name: string; category: string; tagline: string }
+const recentlyViewed = ref<RecentItem[]>([])
+if (import.meta.client) {
+  try {
+    const stored = localStorage.getItem('mm_recently_viewed')
+    if (stored) recentlyViewed.value = JSON.parse(stored).slice(0, 4)
+  } catch { /* ignore */ }
+}
 
 function formatPrice(a: HomeApp) {
   if (!a.pricePeriod) return a.price
@@ -761,7 +893,7 @@ const integrationLogos = [
 /* Quote */
 .home-quote-section { background: var(--mm-s1); }
 .home-quote { max-width: 760px; margin: 0 auto; text-align: center; padding: 0 1rem; }
-.home-quote__mark { color: var(--mm-gold); opacity: 0.3; margin-bottom: 0.5rem; }
+.home-quote__mark { color: var(--mm-gold); opacity: 0.3; margin-bottom: 0; }
 .home-quote p {
   font-family: var(--f-ui);
   font-size: clamp(1.25rem, 2.4vw, 1.65rem);
@@ -815,4 +947,77 @@ const integrationLogos = [
 }
 .home-final__lede { color: var(--mm-silver); font-size: 1rem; margin: 0 auto 1.75rem; max-width: 520px; }
 .home-final__actions { display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
+
+/* ── App of the Day ─────────────────────────────────────────────────────────── */
+.home-aotd-section { border-top: 1px solid rgba(212,168,67,.1); border-bottom: 1px solid rgba(212,168,67,.1); }
+.home-aotd__badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--mm-gold, #D4A843); margin-bottom: 16px;
+}
+.home-aotd__card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 24px; align-items: center;
+  background: var(--mm-s2, #1F2742);
+  border: 1px solid rgba(212,168,67,.15);
+  border-radius: 16px;
+  padding: 24px 28px;
+}
+.home-aotd__left { display: flex; align-items: center; gap: 16px; }
+.home-aotd__logo {
+  width: 56px; height: 56px; border-radius: 14px;
+  background: var(--mm-bg); overflow: hidden; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.home-aotd__logo img { width: 100%; height: 100%; object-fit: contain; }
+.home-aotd__info { min-width: 120px; }
+.home-aotd__name { font-weight: 700; font-size: 1rem; margin: 0 0 4px; color: var(--mm-pearl); }
+.home-aotd__cat { font-size: .75rem; color: var(--mm-slate); }
+.home-aotd__rating { display: flex; align-items: center; gap: 4px; font-size: .8rem; font-weight: 600; color: var(--mm-gold); margin-top: 6px; }
+.home-aotd__body { border-left: 1px solid rgba(168,180,204,.08); padding-left: 24px; }
+.home-aotd__tagline { font-weight: 600; font-size: .95rem; color: var(--mm-pearl); margin: 0 0 8px; }
+.home-aotd__editorial { font-size: .85rem; color: var(--mm-silver); line-height: 1.6; margin: 0; }
+.home-aotd__actions { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.home-aotd__cta { white-space: nowrap; }
+.home-aotd__price { font-size: .8rem; color: var(--mm-slate); }
+@media (max-width: 760px) {
+  .home-aotd__card { grid-template-columns: 1fr; }
+  .home-aotd__body { border-left: none; padding-left: 0; border-top: 1px solid rgba(168,180,204,.08); padding-top: 16px; }
+  .home-aotd__actions { flex-direction: row; align-items: center; justify-content: space-between; }
+}
+
+/* ── New this week ──────────────────────────────────────────────────────────── */
+.home-section-head__row { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.home-see-all {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: .82rem; font-weight: 600; color: var(--mm-gold, #D4A843);
+  text-decoration: none; white-space: nowrap; margin-top: 4px;
+}
+.home-see-all:hover { text-decoration: underline; }
+.home-new-list { display: flex; flex-direction: column; gap: 2px; margin-top: 20px; }
+.home-new-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 16px; border-radius: 10px;
+  text-decoration: none; color: var(--mm-pearl);
+  background: transparent;
+  transition: background .15s;
+}
+.home-new-item:hover { background: var(--mm-s2, #1F2742); }
+.home-new-item__logo {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: var(--mm-s2); overflow: hidden; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.home-new-item__logo img { width: 100%; height: 100%; object-fit: contain; }
+.home-new-item__body { flex: 1; min-width: 0; }
+.home-new-item__name { display: block; font-weight: 600; font-size: .875rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.home-new-item__cat { font-size: .75rem; color: var(--mm-slate); }
+.home-new-item__badge {
+  font-size: .65rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 4px;
+  background: rgba(74,222,128,.12); color: #4ade80; border: 1px solid rgba(74,222,128,.2);
+  white-space: nowrap;
+}
+.home-new-item__price { font-size: .8rem; color: var(--mm-silver); min-width: 80px; text-align: right; }
 </style>

@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, useNuxtApp } from '#imports';
-import { useRuntimeConfig } from '#app';
+import { useRuntimeConfig, useRoute } from '#app';
 
 // Create safe fallback values in case the plugin isn't loaded yet
 const defaultSettings = {
@@ -76,6 +76,9 @@ const dismissBanner = () => {
 
 onMounted(() => {
   if (process.client) {
+    const route = useRoute();
+    // Don't show on homepage — the hero already welcomes users
+    if (route.path === '/') return;
     const dismissed = localStorage.getItem('global-banner-dismissed');
     if (!dismissed) {
       setTimeout(() => {

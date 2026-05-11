@@ -54,6 +54,26 @@
             </select>
             <UIcon name="i-heroicons-chevron-down" dynamic  class="select-icon" />
           </div>
+          <div class="view-toggle">
+            <button
+              class="view-toggle-btn"
+              :class="{ active: (viewMode || 'grid') === 'grid' }"
+              title="Grid view"
+              aria-label="Grid view"
+              @click="emit('update:viewMode', 'grid')"
+            >
+              <UIcon name="i-heroicons-squares-2x2" dynamic />
+            </button>
+            <button
+              class="view-toggle-btn"
+              :class="{ active: viewMode === 'list' }"
+              title="List view"
+              aria-label="List view"
+              @click="emit('update:viewMode', 'list')"
+            >
+              <UIcon name="i-heroicons-list-bullet" dynamic />
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -296,8 +316,29 @@
             </label>
           </div>
         </div>
+
+        <!-- Region / Market filter -->
+        <div class="filter-group">
+          <h3 class="filter-group-title">Region / Market</h3>
+          <div class="filter-options">
+            <label
+              v-for="region in regionOptions"
+              :key="region.value"
+              class="filter-option"
+            >
+              <input
+                type="radio"
+                name="region"
+                :value="region.value"
+                :checked="activeFilters.region === region.value"
+                @change="toggleFilter('region', region.value)"
+              />
+              <span>{{ region.label }}</span>
+            </label>
+          </div>
+        </div>
       </div>
-      
+
       <div class="filters-panel-footer">
         <button @click="clearAllFilters" class="clear-filters-button">
           Clear All Filters
@@ -321,6 +362,9 @@
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
+const props = defineProps<{ viewMode?: 'grid' | 'list' }>();
+const emit = defineEmits<{ 'update:viewMode': [value: 'grid' | 'list'] }>();
+
 const route = useRoute();
 const router = useRouter();
 const showFiltersPanel = ref(false);
@@ -335,9 +379,19 @@ const activeFilters = computed(() => {
   if (query.price) filters.price = query.price as string;
   if (query.integrations) filters.integrations = query.integrations as string;
   if (query.businessSize) filters.businessSize = query.businessSize as string;
+  if (query.region) filters.region = query.region as string;
   
   return filters;
 });
+
+const regionOptions = [
+  { value: 'global', label: 'Global' },
+  { value: 'north-america', label: 'North America' },
+  { value: 'europe', label: 'Europe' },
+  { value: 'asia-pacific', label: 'Asia Pacific' },
+  { value: 'latin-america', label: 'Latin America' },
+  { value: 'middle-east-africa', label: 'Middle East & Africa' },
+]
 
 // Selected category from URL query parameters
 const selectedCategory = computed(() => route.query.category as string || '');
@@ -580,6 +634,26 @@ onBeforeUnmount(() => {
   border-color: var(--mm-gold);
   color: var(--mm-goldl);
 }
+
+.view-toggle {
+  display: flex;
+  gap: 4px;
+}
+.view-toggle-btn {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
+  color: var(--mm-slate);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.view-toggle-btn:hover { border-color: var(--mm-gold); color: var(--mm-gold); }
+.view-toggle-btn.active { background: var(--mm-gold-soft); border-color: var(--mm-gold); color: var(--mm-gold); }
 
 .sort-dropdown {
   display: flex;

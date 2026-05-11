@@ -164,32 +164,26 @@
       <div class="social-login">
         <p>Or login with</p>
         <div class="social-buttons">
-          <!-- First Row -->
-          <div class="social-row">
-            <button type="button" class="social-button google" @click="socialLogin('google')">
-              <UIcon dynamic name="i-logos-google-icon" />
-              <span>Google</span>
-            </button>
-            <button type="button" class="social-button facebook" @click="socialLogin('facebook')">
-              <UIcon dynamic name="i-logos-facebook" />
-              <span>Facebook</span>
-            </button>
-            <button type="button" class="social-button linkedin" @click="socialLogin('linkedin')">
-              <UIcon dynamic name="i-logos-linkedin-icon" />
-              <span>LinkedIn</span>
-            </button>
-          </div>
-          <!-- Second Row -->
-          <div class="social-row">
-            <button type="button" class="social-button github" @click="socialLogin('github')">
-              <UIcon dynamic name="i-mdi-github" />
-              <span>GitHub</span>
-            </button>
-            <button type="button" class="social-button x-twitter" @click="socialLogin('x')">
-              <UIcon dynamic name="i-simple-icons-x" />
-              <span>X</span>
-            </button>
-          </div>
+          <button type="button" class="social-button google" @click="socialLogin('google')">
+            <UIcon dynamic name="i-logos-google-icon" />
+            <span>Google</span>
+          </button>
+          <button type="button" class="social-button facebook" @click="socialLogin('facebook')">
+            <UIcon dynamic name="i-logos-facebook" />
+            <span>Facebook</span>
+          </button>
+          <button type="button" class="social-button linkedin" @click="socialLogin('linkedin')">
+            <UIcon dynamic name="i-logos-linkedin-icon" />
+            <span>LinkedIn</span>
+          </button>
+          <button type="button" class="social-button github" @click="socialLogin('github')">
+            <UIcon dynamic name="i-mdi-github" />
+            <span>GitHub</span>
+          </button>
+          <button type="button" class="social-button x-twitter" @click="socialLogin('x')">
+            <UIcon dynamic name="i-simple-icons-x" />
+            <span>X</span>
+          </button>
         </div>
       </div>
     </form>
@@ -362,32 +356,26 @@
       <div class="social-login">
         <p>Or register with</p>
         <div class="social-buttons">
-          <!-- First Row -->
-          <div class="social-row">
-            <button type="button" class="social-button google" @click="socialLogin('google')">
-              <UIcon dynamic name="i-logos-google-icon" />
-              <span>Google</span>
-            </button>
-            <button type="button" class="social-button facebook" @click="socialLogin('facebook')">
-              <UIcon dynamic name="i-logos-facebook" />
-              <span>Facebook</span>
-            </button>
-            <button type="button" class="social-button linkedin" @click="socialLogin('linkedin')">
-              <UIcon dynamic name="i-logos-linkedin-icon" />
-              <span>LinkedIn</span>
-            </button>
-          </div>
-          <!-- Second Row -->
-          <div class="social-row">
-            <button type="button" class="social-button github" @click="socialLogin('github')">
-              <UIcon dynamic name="i-mdi-github" />
-              <span>GitHub</span>
-            </button>
-            <button type="button" class="social-button x-twitter" @click="socialLogin('x')">
-              <UIcon dynamic name="i-simple-icons-x" />
-              <span>X</span>
-            </button>
-          </div>
+          <button type="button" class="social-button google" @click="socialLogin('google')">
+            <UIcon dynamic name="i-logos-google-icon" />
+            <span>Google</span>
+          </button>
+          <button type="button" class="social-button facebook" @click="socialLogin('facebook')">
+            <UIcon dynamic name="i-logos-facebook" />
+            <span>Facebook</span>
+          </button>
+          <button type="button" class="social-button linkedin" @click="socialLogin('linkedin')">
+            <UIcon dynamic name="i-logos-linkedin-icon" />
+            <span>LinkedIn</span>
+          </button>
+          <button type="button" class="social-button github" @click="socialLogin('github')">
+            <UIcon dynamic name="i-mdi-github" />
+            <span>GitHub</span>
+          </button>
+          <button type="button" class="social-button x-twitter" @click="socialLogin('x')">
+            <UIcon dynamic name="i-simple-icons-x" />
+            <span>X</span>
+          </button>
         </div>
       </div>
       
@@ -1428,8 +1416,8 @@ input.error {
 }
 
 .social-buttons {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--spacing-sm);
 }
 
@@ -1452,9 +1440,7 @@ input.error {
   font-size: var(--fs-sm);
   cursor: pointer;
   transition: all 0.2s ease;
-  min-width: 120px;
-  flex: 1;
-  max-width: 140px;
+  width: 100%;
 }
 
 .social-button.google:hover {

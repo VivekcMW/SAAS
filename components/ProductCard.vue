@@ -249,7 +249,7 @@ const formattedPrice = computed(() => {
   const pricing = props.product.pricing
   if (pricing.type === 'free') return 'Free'
   if (pricing.value !== undefined) {
-    return `From ${formatPrice(pricing.value, { period: pricing.period })}`
+    return `From ${formatPrice(pricing.value)}`
   }
   return pricing.type === 'paid' ? 'Paid' : 'Contact us'
 })

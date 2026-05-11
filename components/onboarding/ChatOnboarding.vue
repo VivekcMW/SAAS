@@ -218,12 +218,9 @@
             <button type="button" class="ghost-btn" :disabled="busy" @click="restartFromName">
               <Icon name="heroicons:pencil-square" /> Edit
             </button>
-            <button type="button" class="ghost-btn" :disabled="busy" @click="submitListing(false)">
-              Save draft
-            </button>
-            <button type="button" class="send-btn inline" :disabled="busy" @click="submitListing(true)">
-              <Icon v-if="busy" name="heroicons:arrow-path" class="spin" />
-              <span>Publish listing</span>
+            <button type="button" class="send-btn inline" @click="goToEditor">
+              <Icon name="heroicons:eye" />
+              <span>Preview &amp; Publish</span>
             </button>
           </div>
         </div>
@@ -244,6 +241,7 @@
 
 <script setup lang="ts">
 import { ref, computed, nextTick, onMounted } from 'vue'
+import { useListingEditor } from '~/composables/useListingEditor'
 
 interface ScrapeResponse {
   ok: boolean
@@ -599,6 +597,24 @@ const restartFromName = async () => {
   textDraft.value = form.value.name
   await botSay('Sure — let\'s walk through it again. Update the name or press send to keep it.')
   focusActiveInput()
+}
+
+const editor = useListingEditor()
+
+function goToEditor() {
+  editor.seedFromChat({
+    url: form.value.url,
+    name: form.value.name,
+    provider: form.value.provider,
+    tagline: form.value.tagline,
+    categories: form.value.categories,
+    pricingType: form.value.pricingType,
+    pricingValue: form.value.pricingValue,
+    contactEmail: form.value.contactEmail,
+    logo: form.value.logo,
+    keywords: form.value.keywords,
+  })
+  navigateTo('/vendor/listing-editor')
 }
 
 const submitListing = async (publish: boolean) => {

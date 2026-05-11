@@ -14,13 +14,13 @@
       <button class="btn btn-primary" @click="resetFilters">Reset Filters</button>
     </div>
     
-    <div v-else class="grid-container">
+    <div v-else class="grid-container" :class="{ 'grid-container--list': props.viewMode === 'list' }">
       <template v-for="(app, index) in applications" :key="app.id">
         <!-- Global Product Card - Horizontal Layout -->
         <div class="grid-item">
           <ProductCard 
             :product="(transformAppData(app) as any)"
-            layout="vertical"
+            :layout="props.viewMode === 'list' ? 'horizontal' : 'vertical'"
             :variant="getAppVariant(app)"
             @view-details="navigateToApp"
             @toggle-favorite="handleToggleFavorite"
@@ -76,6 +76,7 @@ const favorites = ref<string[]>([])
 const route = useRoute()
 const router = useRouter()
 
+const props = defineProps<{ viewMode?: 'grid' | 'list' }>()
 const emit = defineEmits<{ (e: 'total-loaded', total: number): void }>()
 
 // Used to exclude apps already on the page from the sponsored slot rotation
@@ -196,6 +197,14 @@ onMounted(async () => {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1rem;
   margin-top: 1rem;
+}
+
+.grid-container--list {
+  grid-template-columns: 1fr;
+}
+
+.grid-container--list .grid-item {
+  height: auto;
 }
 
 .grid-item {

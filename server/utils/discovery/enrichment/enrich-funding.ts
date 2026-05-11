@@ -333,7 +333,7 @@ export async function runFundingEnrichmentBatch(
         if (news && !allRounds.some(r => r.source === 'news_rss')) allRounds.push(news)
 
         const lastRound = allRounds.sort((a, b) => (b.date ?? '').localeCompare(a.date ?? ''))[0] ?? null
-        const totalRaised = cb?.total_raised_usd ?? allRounds.reduce((s, r) => s + (r.amount_usd ?? 0), 0) || null
+        const totalRaised = (cb?.total_raised_usd ?? allRounds.reduce((s, r) => s + (r.amount_usd ?? 0), 0)) || null
         const status = cb?.funding_status ?? guessStage(lastRound?.amount_usd ?? null, lastRound?.stage ?? '')
         const now = new Date().toISOString()
 

@@ -321,7 +321,7 @@ onUnmounted(() => {
 /* Collapsed State - Floating Button */
 .global-search-button {
   position: fixed;
-  bottom: 24px;
+  bottom: 90px;
   right: 24px;
   width: 56px;
   height: 56px;

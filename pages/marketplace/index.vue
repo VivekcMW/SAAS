@@ -11,9 +11,9 @@
           <SponsoredSlot placement="banner" variant="banner" label="Featured partner" />
         </div>
 
-        <MarketplaceFilters />
+        <MarketplaceFilters :view-mode="viewMode" @update:view-mode="viewMode = $event" />
         <div class="applications-grid-container">
-          <MarketplaceGrid @total-loaded="totalApplications = $event" />
+          <MarketplaceGrid :view-mode="viewMode" @total-loaded="totalApplications = $event" />
           <MarketplacePagination :totalItems="totalApplications" />
         </div>
       </div>
@@ -32,6 +32,7 @@ import MarketplacePagination from '~/components/marketplace/MarketplacePaginatio
 
 // State for total items (for pagination)
 const totalApplications = ref(0);
+const viewMode = ref<'grid' | 'list'>('grid');
 
 // VC-focused SEO implementation
 const { generateVCMeta, generateInvestmentSchema, trackVCEngagement } = useVCSEO();

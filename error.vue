@@ -2,7 +2,7 @@
   <div class="err-page">
     <div class="err-card">
       <NuxtLink to="/" class="err-logo">
-        <span class="err-logo__mark">S</span>
+        <span class="err-logo__mark">M</span>
         <span class="err-logo__name">Moonmart</span>
       </NuxtLink>
 
@@ -41,7 +41,16 @@ const title = computed(() => {
 })
 
 const message = computed(() => {
-  if (props.error.statusMessage) return props.error.statusMessage
+  // Only use statusMessage when it looks like a clean, user-facing string
+  const sm = props.error.statusMessage
+  const isTechnical = sm && (
+    sm.includes(' at ') ||
+    sm.includes('\n') ||
+    sm.includes('createError') ||
+    sm.includes('node_modules') ||
+    /\/[a-z]+\/[a-z]/.test(sm)
+  )
+  if (sm && !isTechnical) return sm
   switch (props.error.statusCode) {
     case 404: return "The page you're looking for doesn't exist or has been moved."
     case 401: return 'You need to be signed in to view this page.'

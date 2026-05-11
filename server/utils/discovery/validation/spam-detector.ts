@@ -11,7 +11,7 @@
  *   1. Rule-based fast-path (cheap, no AI call needed for obvious cases)
  *   2. LLM verification for borderline cases (requires AI key)
  */
-import { aiChat } from '~/server/utils/ai-extractor'
+import { aiChat } from '~/server/utils/aiProvider'
 import type { ExtractedListing } from '~/server/utils/ai-extractor'
 
 export interface SpamDetectionResult {
@@ -121,10 +121,11 @@ Respond with a JSON object only, no explanation:
 }`
 
   try {
-    const response = await aiChat([
-      { role: 'user', content: prompt }
-    ])
+    const { text: response } = await aiChat({
+      messages: [{ role: 'user', content: prompt }]
+    })
 
+    if (!response) throw new Error('No AI response')
     const jsonMatch = response.match(/\{[\s\S]*\}/)
     if (!jsonMatch) throw new Error('No JSON in AI response')
 

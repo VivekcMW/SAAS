@@ -14,18 +14,17 @@
         <div class="nav-links" :class="{ 'show': isMobileMenuOpen }">
           <ul>
             <li class="nav-item-categories">
-              <CategoriesLauncher trigger-label="Categories" />
+              <CategoriesLauncher trigger-label="Browse" />
             </li>
             <li v-for="item in navItems" :key="item.label">
               <NuxtLink :to="item.path" :class="['nav-item', { active: currentPath === item.path }]">
                 {{ item.label }}
               </NuxtLink>
             </li>
+            <!-- Buyer / Seller separator -->
+            <li class="nav-sep" aria-hidden="true"></li>
             <li>
-              <NuxtLink to="/list-product" class="nav-item">For Vendors</NuxtLink>
-            </li>
-            <li>
-              <NuxtLink to="/pricing" class="nav-item">Pricing</NuxtLink>
+              <NuxtLink to="/list-product" class="nav-item nav-item--pill">Get Listed</NuxtLink>
             </li>
           </ul>
         </div>
@@ -42,12 +41,37 @@
             <UIcon dynamic name="i-heroicons-magnifying-glass" />
           </button>
 
+          <!-- Language switcher (compact globe) -->
+          <div class="nav-lang-wrap" ref="langWrapRef">
+            <button
+              type="button"
+              class="nav-utility-btn nav-lang-btn"
+              aria-label="Switch language"
+              @click="langOpen = !langOpen"
+            >
+              <UIcon dynamic name="i-heroicons-globe-alt" />
+              <span class="nav-lang-code">{{ locale.toUpperCase() }}</span>
+            </button>
+            <div v-if="langOpen" class="nav-lang-dropdown">
+              <button
+                v-for="loc in availableLocales"
+                :key="loc.code"
+                class="nav-lang-option"
+                :class="{ active: loc.code === locale }"
+                @click="setLocale(loc.code); langOpen = false"
+              >
+                <span class="nav-lang-flag">{{ loc.flag }}</span>
+                <span>{{ loc.name }}</span>
+              </button>
+            </div>
+          </div>
+
           <template v-if="!isAuthenticated">
             <!-- Divider -->
             <span class="nav-divider" aria-hidden="true"></span>
             <button @click="openSignInModal" class="btn-signin">Sign in</button>
             <button @click="openSignUpModal" class="btn-signup">
-              Get started
+              Start free
               <UIcon dynamic name="i-heroicons-arrow-right" class="btn-icon" />
             </button>
           </template>
@@ -68,6 +92,10 @@
                   <UIcon dynamic name="i-heroicons-squares-2x2" class="dropdown-item-icon" />
                   <span>Dashboard</span>
                 </NuxtLink>
+                <NuxtLink to="/my-stack" class="dropdown-item">
+                  <UIcon dynamic name="i-heroicons-rectangle-stack" class="dropdown-item-icon" />
+                  <span>My Stack</span>
+                </NuxtLink>
                 <NuxtLink to="/settings" class="dropdown-item">
                   <UIcon dynamic name="i-heroicons-cog-6-tooth" class="dropdown-item-icon" />
                   <span>Settings</span>
@@ -81,6 +109,11 @@
             </div>
           </template>
         </div>
+
+        <!-- Mobile search button -->
+        <button class="mobile-search-button" @click="triggerGlobalSearch" aria-label="Search">
+          <UIcon dynamic name="i-heroicons-magnifying-glass" />
+        </button>
 
         <!-- Mobile menu button -->
         <button class="mobile-menu-button" @click="toggleMobileMenu" aria-label="Menu">
@@ -382,11 +415,30 @@ import { allCategories, categoryGroups, getCategoriesByGroup } from '~/utils/cat
 
 const route = useRoute();
 
+// ── Language switcher ─────────────────────────────────────────────────────────
+const { locale, setLocale } = useI18n()
+const langOpen = ref(false)
+const langWrapRef = ref<HTMLElement | null>(null)
+const availableLocales = [
+  { code: 'en', name: 'English', flag: '🇺🇸' },
+  { code: 'fr', name: 'Français', flag: '🇫🇷' },
+  { code: 'es', name: 'Español', flag: '🇪🇸' },
+  { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+  { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' },
+  { code: 'ko', name: '한국어', flag: '🇰🇷' },
+]
+// Close lang dropdown on outside click
+const closeLangOnOutside = (e: MouseEvent) => {
+  if (langWrapRef.value && !langWrapRef.value.contains(e.target as Node)) {
+    langOpen.value = false
+  }
+}
+
 // Navigation items
 const navItems = [
   { label: 'Marketplace', path: '/marketplace' },
-  { label: 'News', path: '/news' },
-  // { label: 'Contact', path: '/contact' }
+  { label: 'Compare', path: '/compare' },
+  { label: 'Blog', path: '/blog' },
 ];
 
 // Categories drawer state - using global composable
@@ -860,19 +912,13 @@ const handleClickOutside = (event: Event) => {
 onMounted(() => {
   window.addEventListener('scroll', handleScroll);
   document.addEventListener('click', handleClickOutside);
-  
-  // Check if user is already authenticated (from localStorage, session, etc.)
-  // This is where you'd check for existing auth tokens
-  // const token = localStorage.getItem('authToken');
-  // if (token) {
-  //   // Validate token and set user state
-  //   validateAndSetUser(token);
-  // }
+  document.addEventListener('click', closeLangOnOutside);
 });
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll);
   document.removeEventListener('click', handleClickOutside);
+  document.removeEventListener('click', closeLangOnOutside);
 });
 
 // Close mobile menu and categories drawer when route changes
@@ -892,14 +938,19 @@ watch(() => route.path, () => {
   left: 0;
   right: 0;
   z-index: 1000;
-  background: var(--mm-bg, #07090F);
+  background: rgba(7, 9, 15, 0.92);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
   border-bottom: .5px solid var(--b1);
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease, backdrop-filter 0.3s ease, background 0.3s ease;
 }
 
 .navbar-scrolled {
-  border-bottom-color: rgba(168, 180, 204, 0.15);
-  box-shadow: 0 1px 3px rgba(17, 24, 39, 0.04), 0 4px 12px -6px rgba(17, 24, 39, 0.08);
+  background: rgba(7, 9, 15, 0.78);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-bottom-color: rgba(168, 180, 204, 0.12);
+  box-shadow: 0 1px 0 rgba(168, 180, 204, 0.06), 0 8px 24px -8px rgba(0, 0, 0, 0.4);
 }
 
 .container {
@@ -1001,6 +1052,85 @@ watch(() => route.path, () => {
   color: var(--mm-pearl);
   background: rgba(242, 244, 248, 0.07);
   font-weight: 600;
+}
+
+/* Buyer / Seller separator */
+.nav-sep {
+  width: 1px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0 4px;
+  align-self: center;
+  list-style: none;
+}
+
+/* Get Listed — accent pill */
+.nav-item--pill {
+  color: var(--mm-gold, #D4A843) !important;
+  border: 1px solid rgba(212, 168, 67, 0.35);
+  background: rgba(212, 168, 67, 0.06);
+  font-weight: 600;
+}
+.nav-item--pill:hover {
+  background: rgba(212, 168, 67, 0.14) !important;
+  border-color: rgba(212, 168, 67, 0.6);
+  color: var(--mm-gold, #D4A843) !important;
+}
+
+/* ── Language switcher ─────────────────────────────────────── */
+.nav-lang-wrap {
+  position: relative;
+}
+.nav-lang-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.nav-lang-code {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--mm-silver, #A8B5CC);
+  line-height: 1;
+}
+.nav-lang-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--mm-s1, #141921);
+  border: 1px solid rgba(168, 180, 204, 0.12);
+  border-radius: 10px;
+  padding: 6px;
+  min-width: 160px;
+  z-index: 200;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+.nav-lang-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: 7px;
+  background: none;
+  border: none;
+  color: var(--mm-silver, #A8B5CC);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  text-align: left;
+}
+.nav-lang-option:hover {
+  background: rgba(168, 180, 204, 0.08);
+  color: var(--mm-pearl, #E2E8F0);
+}
+.nav-lang-option.active {
+  color: var(--mm-gold, #D4A843);
+  background: rgba(212, 168, 67, 0.08);
+}
+.nav-lang-flag {
+  font-size: 1.1rem;
+  line-height: 1;
 }
 
 .nav-icon {
@@ -1283,6 +1413,26 @@ watch(() => route.path, () => {
   height: .5px;
   background: var(--b1);
   margin: 0.5rem 0;
+}
+
+/* Mobile search button */
+.mobile-search-button {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: var(--mm-silver);
+  border-radius: var(--r-md);
+  transition: all 0.2s ease;
+  min-width: 44px;
+  min-height: 44px;
+  justify-content: center;
+  align-items: center;
+}
+.mobile-search-button:hover {
+  background-color: var(--mm-s2);
+  color: var(--mm-pearl);
 }
 
 /* Mobile menu button */
@@ -1856,6 +2006,15 @@ watch(() => route.path, () => {
   .nav-links button:hover {
     background-color: var(--mm-s2);
     border-color: var(--b1);
+  }
+
+  .mobile-search-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
   }
 
   .mobile-menu-button {
