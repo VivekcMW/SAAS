@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { computeMoonmartScore, getMoonmartScoreLabel } from '~/utils/moonmartScore'
+import { useCompare } from '~/composables/useCompare'
+import { useFavorites } from '~/composables/useFavorites'
+import { useGlobalAuth } from '~/composables/useGlobalAuth'
+import { useAuth } from '~/composables/useAuth'
 
 const route = useRoute()
 const router = useRouter()
@@ -387,11 +391,26 @@ const aboutResources = computed(() => [
   { icon: 'heroicons:lifebuoy', label: 'Contact support', href: '#' }
 ])
 
+// --- Compare + Save ---
+const { toggleCompare, isInCompare, canAddMore } = useCompare()
+const { toggle: toggleFavorite, isSaved } = useFavorites()
+const { openLogin } = useGlobalAuth()
+const { isAuthenticated } = useAuth()
+
+const inCompare = computed(() => isInCompare(appId.value))
+const inFavorite = computed(() => isSaved(appId.value).value)
+
 // --- Handlers ---
 const handleTrial = () => { /* Phase 2: route to vendor site or onboarding flow */ }
 const handleDemo = () => { /* Phase 2: open video demo modal */ }
-const handleSave = () => { /* Phase 2: add to user shortlist */ }
-const handleCompare = () => { /* removed: compare feature lives in dashboard */ }
+const handleSave = () => {
+  if (!isAuthenticated.value) { openLogin(); return }
+  toggleFavorite(appId.value)
+}
+const handleCompare = () => {
+  if (!inCompare.value && !canAddMore.value) return
+  toggleCompare(appId.value)
+}
 const handleShareScroll = () => { /* handled by <AppDetailsShareMenu> */ }
 const handlePrint = () => {
   if (globalThis.window === undefined) return
@@ -530,9 +549,13 @@ function getCategoryLabel(cat?: string): string {
           :app="app"
           :verdict="verdict"
           :moonmart-score="moonmartScore"
+          :in-saved="inFavorite"
+          :in-compare="inCompare"
+          :can-add-more="canAddMore"
           @trial="handleTrial"
           @demo="handleDemo"
           @save="handleSave"
+          @compare="handleCompare"
           @share="handleShareScroll"
         >
           <template #share>
@@ -554,7 +577,9 @@ function getCategoryLabel(cat?: string): string {
         <!-- Overview / Stats -->
         <section id="overview" class="section">
           <div class="overview-toolbar">
-            <AppVoiceOverview :text="`${app.name}. ${app.longDescription || app.description || ''}`" :app-name="app.name" />
+            <ClientOnly>
+              <AppVoiceOverview :text="`${app.name}. ${app.longDescription || app.description || ''}`" :app-name="app.name" />
+            </ClientOnly>
             <div class="toolbar-right">
               <button class="print-btn no-print" type="button" @click="handlePrint" title="Print or save as PDF">
                 <Icon name="heroicons:printer" />

@@ -32,9 +32,16 @@ interface App {
 interface Props {
   app: App
   verdict?: string
+  inSaved?: boolean
+  inCompare?: boolean
+  canAddMore?: boolean
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  inSaved: false,
+  inCompare: false,
+  canAddMore: true
+})
 
 defineEmits<{
   trial: []
@@ -167,13 +174,20 @@ const valueProps = computed(() => {
 
         <!-- Quick actions row -->
         <div class="quick-actions">
-          <button type="button" class="qa-btn" @click="$emit('save')">
-            <Icon name="heroicons:heart" />
-            Save
+          <button type="button" class="qa-btn" :class="{ 'qa-btn--active': props.inSaved }" @click="$emit('save')">
+            <Icon :name="props.inSaved ? 'heroicons:heart-solid' : 'heroicons:heart'" />
+            {{ props.inSaved ? 'Saved' : 'Save' }}
           </button>
-          <button type="button" class="qa-btn" @click="$emit('compare')">
-            <Icon name="heroicons:scale" />
-            Compare
+          <button
+            type="button"
+            class="qa-btn"
+            :class="{ 'qa-btn--active': props.inCompare }"
+            :disabled="!props.inCompare && !props.canAddMore"
+            :title="props.inCompare ? 'Remove from compare' : (!props.canAddMore ? 'Compare list full (4/4)' : 'Add to compare')"
+            @click="$emit('compare')"
+          >
+            <Icon :name="props.inCompare ? 'heroicons:scale-solid' : 'heroicons:scale'" />
+            {{ props.inCompare ? 'In Compare' : 'Compare' }}
           </button>
           <slot name="share">
             <button type="button" class="qa-btn" @click="$emit('share')">
@@ -400,6 +414,8 @@ const valueProps = computed(() => {
   transition: background var(--transition-fast), color var(--transition-fast);
 }
 .qa-btn:hover { background: var(--mm-s3); color: var(--mm-gold); }
+.qa-btn--active { background: rgba(212,168,67,.1) !important; color: var(--mm-gold) !important; border-color: rgba(212,168,67,.3) !important; }
+.qa-btn:disabled { opacity: .4; cursor: not-allowed; }
 .qa-btn :deep(svg) { width: 14px; height: 14px; }
 
 /* Right column: preview card */

@@ -994,6 +994,14 @@ function getCategoryLabel(cat?: string): string {
 
     </template>
   </div>
+
+  <!-- Compare tray & mobile nav — included here because this page uses layout: false -->
+  <ClientOnly>
+    <CompareBar />
+  </ClientOnly>
+  <ClientOnly>
+    <MobileBottomNav />
+  </ClientOnly>
 </template>
 
 <style scoped>

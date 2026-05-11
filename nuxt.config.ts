@@ -4,6 +4,12 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
+  // Bind to all interfaces so Chrome (and any browser) can reach localhost:3000
+  devServer: {
+    host: '0.0.0.0',
+    port: 3000
+  },
+
   modules: [
     '@nuxt/content',
     '@nuxt/eslint',
@@ -55,7 +61,7 @@ export default defineNuxtConfig({
           "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
           "font-src 'self' https://fonts.gstatic.com",
           "img-src 'self' data: blob: https:",
-          "connect-src 'self' https://api.openai.com https://api.stability.ai",
+          "connect-src 'self' https://api.openai.com https://api.stability.ai https://api.iconify.design ws://localhost:* wss://localhost:*",
           "frame-ancestors 'self'",
           "base-uri 'self'",
           "form-action 'self'"
