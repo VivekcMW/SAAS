@@ -28,14 +28,16 @@
             </div>
 
             <!-- Empty placeholders up to 4 -->
-            <div
+            <NuxtLink
               v-for="i in emptySlots"
               :key="`empty-${i}`"
+              to="/marketplace"
               class="cbar__slot cbar__slot--empty"
+              title="Browse marketplace to add an app"
             >
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".4"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
               <span>Add app</span>
-            </div>
+            </NuxtLink>
           </div>
 
           <div class="cbar__actions">
@@ -128,6 +130,14 @@ watch(compareIds, async (ids) => {
   border: 1px dashed rgba(168, 180, 204, 0.15);
   color: var(--mm-slate, #68788F);
   gap: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.cbar__slot--empty:hover {
+  background: rgba(212, 168, 67, 0.08);
+  border-color: rgba(212, 168, 67, 0.3);
+  color: var(--mm-gold, #D4A843);
 }
 .cbar__slot-app {
   display: flex;
