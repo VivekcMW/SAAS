@@ -126,16 +126,7 @@
               <span class="demo-btn__role">{{ d.label }}</span>
               <span class="demo-btn__badge">{{ d.desc }}</span>
             </div>
-            <div class="demo-btn__creds">
-              <span class="demo-btn__cred">
-                <Icon name="heroicons:envelope" />
-                <code>{{ d.email }}</code>
-              </span>
-              <span class="demo-btn__cred">
-                <Icon name="heroicons:key" />
-                <code>{{ d.password }}</code>
-              </span>
-            </div>
+            <div class="demo-btn__cta">Click to sign in instantly</div>
           </button>
         </div>
       </div>
@@ -221,7 +212,7 @@ const handleLogin = async () => {
 
 const handleSocial = (provider: 'google' | 'github') => {
   // Redirect to server-side OAuth handler
-  window.location.href = `/api/auth/oauth/${provider}`
+  globalThis.location.href = `/api/auth/oauth/${provider}`
 }
 
 interface DemoAccount {

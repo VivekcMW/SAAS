@@ -86,11 +86,14 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 const ai = useAICopilot()
+const { listings } = useVendorData()
 
-const form = ref({ product: 'Acme Inbox — a shared inbox for support teams', audience: '5–50 person support teams', integrations: 'Slack, Zendesk, Jira', tone: 'professional' })
+const form = ref({ product: '', audience: '', integrations: '', tone: 'professional' })
 const draft = ref<{ title: string; description: string; bullets: string[] } | null>(null)
 const generating = ref(false)
+const saving = ref(false)
 const toast = ref('')
+const targetListingId = ref('')
 
 const canGen = computed(() => form.value.product.trim().length > 5)
 
@@ -115,9 +118,25 @@ function copy() {
   toast.value = 'Copied to clipboard'
   setTimeout(() => toast.value = '', 1800)
 }
-function useIt() {
-  toast.value = 'Saved — open Listings to publish.'
-  setTimeout(() => toast.value = '', 2400)
+async function useIt() {
+  if (!draft.value || !targetListingId.value) return
+  saving.value = true
+  try {
+    await $fetch(`/api/vendor/apps/${targetListingId.value}`, {
+      method: 'PUT',
+      body: {
+        name: draft.value.title,
+        description: draft.value.description,
+      }
+    })
+    toast.value = 'Saved to listing — open Listings to review and publish.'
+    targetListingId.value = ''
+  } catch {
+    toast.value = 'Save failed — please try again.'
+  } finally {
+    saving.value = false
+    setTimeout(() => (toast.value = ''), 2800)
+  }
 }
 </script>
 
@@ -145,9 +164,12 @@ function useIt() {
 .ca-bullets { margin: 0; padding-left: 20px; font-size: 0.9rem; }
 .ca-bullets li { margin-bottom: 4px; }
 
+.ca-save-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 14px; }
+.ca-save-select { flex: 1; min-width: 180px; }
+
 .bw-toast-fixed {
   position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-  background: #111827; color: white; padding: 10px 16px; border-radius: 10px;
+  background: var(--vw-surface-2); border: 1px solid var(--vw-border-strong); color: var(--vw-text); padding: 10px 16px; border-radius: 10px;
   font-size: 0.88rem; z-index: 1000;
 }
 </style>

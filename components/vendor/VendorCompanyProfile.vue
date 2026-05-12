@@ -6,7 +6,7 @@
         <p class="bw-head__sub">Public company info shown on all your listings.</p>
       </div>
       <div class="bw-head__actions">
-        <button class="bw-btn bw-btn--primary" @click="save">Save changes</button>
+        <button class="bw-btn bw-btn--primary" :disabled="saving" @click="save">{{ saving ? 'Saving…' : 'Save changes' }}</button>
       </div>
     </header>
 
@@ -58,7 +58,19 @@ const form = ref({
 })
 const toast = ref('')
 const uploading = ref(false)
-function save() { toast.value = 'Profile saved'; setTimeout(() => toast.value = '', 1800) }
+const saving = ref(false)
+async function save() {
+  saving.value = true
+  try {
+    await $fetch('/api/vendor/profile', { method: 'PUT', body: form.value })
+    toast.value = 'Profile saved'
+  } catch (err: any) {
+    toast.value = err?.data?.statusMessage || 'Failed to save profile.'
+  } finally {
+    saving.value = false
+    setTimeout(() => toast.value = '', 2200)
+  }
+}
 async function uploadLogo(e: Event) {
   const file = (e.target as HTMLInputElement).files?.[0]
   if (!file) return

@@ -10,7 +10,23 @@ export default defineEventHandler(async (event) => {
   const db = getDb()
   try {
     const rows = db.prepare(`
-      SELECT * FROM sponsored_slots
+      SELECT
+        id,
+        vendor_name  AS vendorName,
+        app_name     AS appName,
+        app_id       AS appId,
+        slot,
+        category,
+        status,
+        starts_at    AS startsAt,
+        ends_at      AS endsAt,
+        recurrence,
+        budget,
+        budget_used  AS budgetUsed,
+        notes,
+        created_at   AS createdAt,
+        updated_at   AS updatedAt
+      FROM sponsored_slots
       ORDER BY starts_at DESC
     `).all()
     return rows

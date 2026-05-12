@@ -61,7 +61,7 @@ export default defineEventHandler(async (event) => {
       body.budget ?? null, body.notes ?? null,
       status ?? null, now, id
     )
-    await logActivity(db, { actorId: admin.id, actorName: admin.name, action: 'sponsored.update', targetId: id, targetLabel: body.appName ?? id })
+    logActivity({ actorId: admin.id, actorEmail: admin.email, action: 'sponsored.update', entityType: 'sponsored_slot', entityId: id, meta: { appName: body.appName } })
   } catch (err: unknown) {
     if ((err as { statusCode?: number })?.statusCode === 404) throw err
     // DB not yet migrated — return success stub

@@ -20,8 +20,10 @@
         </ul>
       </div>
       <div class="bp-plan__actions">
-        <button class="bw-btn bw-btn--ghost bw-btn--sm">Change plan</button>
-        <button class="bw-btn bw-btn--subtle bw-btn--sm">Cancel</button>
+        <button class="bw-btn bw-btn--ghost bw-btn--sm" @click="openPortal">Change plan</button>
+        <button class="bw-btn bw-btn--subtle bw-btn--sm" :disabled="cancelling" @click="cancelPlan">
+          {{ cancelling ? 'Cancelling…' : 'Cancel' }}
+        </button>
       </div>
     </div>
 
@@ -35,7 +37,7 @@
               <td>{{ i.date }}</td>
               <td>${{ i.amount }}</td>
               <td><span class="bw-chip bw-chip--success">paid</span></td>
-              <td><a :href="invoiceUrl" target="_blank" class="bw-link">Download</a></td>
+              <td><a :href="i.url || invoiceUrl" target="_blank" rel="noopener" class="bw-link">Download</a></td>
             </tr>
           </tbody>
         </table>
@@ -50,20 +52,42 @@
             <div class="bp-card__sub">Expires 04/28</div>
           </div>
         </div>
-        <button class="bw-btn bw-btn--subtle bw-btn--sm" style="margin-top: 10px;">Update card</button>
+        <button class="bw-btn bw-btn--subtle bw-btn--sm" style="margin-top: 10px;" @click="openPortal">Update card</button>
       </aside>
     </div>
+    <div v-if="toast" class="bw-toast-fixed">{{ toast }}</div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 const renewDate = new Date(Date.now() + 20 * 86400000).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
 const invoiceUrl = '/api/billing/invoice'
 const invoices = [
-  { id: 'i1', date: 'Nov 1, 2025', amount: 149 },
-  { id: 'i2', date: 'Oct 1, 2025', amount: 149 },
-  { id: 'i3', date: 'Sep 1, 2025', amount: 149 }
+  { id: 'i1', date: 'Nov 1, 2025', amount: 149, url: null },
+  { id: 'i2', date: 'Oct 1, 2025', amount: 149, url: null },
+  { id: 'i3', date: 'Sep 1, 2025', amount: 149, url: null }
 ]
+const cancelling = ref(false)
+const toast = ref('')
+
+function openPortal() {
+  window.location.href = '/api/billing/portal'
+}
+
+async function cancelPlan() {
+  if (!confirm('Cancel your Growth plan? You will keep access until the end of this billing period.')) return
+  cancelling.value = true
+  try {
+    await $fetch('/api/billing/cancel', { method: 'POST' })
+    toast.value = 'Subscription cancelled. You have access until the end of the billing period.'
+  } catch (err: any) {
+    toast.value = err?.data?.statusMessage || 'Failed to cancel. Please contact support.'
+  } finally {
+    cancelling.value = false
+    setTimeout(() => toast.value = '', 4000)
+  }
+}
 </script>
 
 <style scoped>

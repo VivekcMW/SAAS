@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
     const row = db.prepare('SELECT id FROM sponsored_slots WHERE id = ?').get(id)
     if (!row) throw createError({ statusCode: 404, statusMessage: 'Sponsorship not found' })
     db.prepare('UPDATE sponsored_slots SET status = ?, updated_at = ? WHERE id = ?').run(body.status, now, id)
-    await logActivity(db, { actorId: admin.id, actorName: admin.name, action: `sponsored.${body.status}`, targetId: id, targetLabel: id })
+    logActivity({ actorId: admin.id, actorEmail: admin.email, action: `sponsored.${body.status}`, entityType: 'sponsored_slot', entityId: id })
   } catch (err: unknown) {
     if ((err as { statusCode?: number })?.statusCode === 404) throw err
   }

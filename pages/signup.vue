@@ -252,7 +252,7 @@ const handleSignup = async () => {
 }
 
 const handleSocial = (provider: 'google' | 'github') => {
-  errorMessage.value = `${provider === 'google' ? 'Google' : 'GitHub'} sign-up is coming soon.`
+  globalThis.location.href = `/api/auth/oauth/${provider}`
 }
 </script>
 

@@ -170,6 +170,6 @@ async function scheduleNew() {
 .promo-ai { font-size: 0.84rem; margin: 0; line-height: 1.5; }
 .promo-actions { display: flex; gap: 8px; margin-top: 4px; }
 
-.new-modal { position: fixed; inset: 0; background: rgba(17, 24, 39, 0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
-.new-modal__card { width: 100%; max-width: 440px; background: white; }
+.new-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.65); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+.new-modal__card { width: 100%; max-width: 440px; background: var(--vw-surface); border: 1px solid var(--vw-border-strong); }
 </style>

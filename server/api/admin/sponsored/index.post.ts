@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: `recurrence must be one of: ${VALID_RECURRENCE.join(', ')}` })
   }
 
-  const id = makeId()
+  const id = makeId('sp')
   const db = getDb()
   const now = new Date().toISOString()
   const status = new Date() >= new Date(body.startsAt) && new Date() <= new Date(body.endsAt) ? 'active' : 'scheduled'
@@ -50,7 +50,7 @@ export default defineEventHandler(async (event) => {
       body.startsAt, body.endsAt, body.recurrence ?? 'once',
       body.budget, body.notes ?? null, now, now
     )
-    await logActivity(db, { actorId: admin.id, actorName: admin.name, action: 'sponsored.create', targetId: id, targetLabel: body.appName })
+    logActivity({ actorId: admin.id, actorEmail: admin.email, action: 'sponsored.create', entityType: 'sponsored_slot', entityId: id, meta: { appName: body.appName } })
   } catch {
     // DB not yet migrated — return success stub so UI still works
   }

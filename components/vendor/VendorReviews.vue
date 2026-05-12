@@ -182,7 +182,7 @@ async function postReply(r: { id: string }) {
 
 .rv-draft-area {
   width: 100%;
-  background: var(--mm-s2, #161B2E);
+  background: var(--vw-surface-2);
   border: 0.5px solid var(--vw-border, rgba(255,255,255,0.08));
   border-radius: 8px;
   color: inherit;

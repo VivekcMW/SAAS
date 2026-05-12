@@ -1464,6 +1464,54 @@ function createSchema(db: Database.Database) {
     CREATE INDEX IF NOT EXISTS idx_vrr_status ON vendor_role_requests(status);
     CREATE INDEX IF NOT EXISTS idx_vrr_user ON vendor_role_requests(user_id);
   `)
+
+  // Sponsored slots — admin-managed active campaigns
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS sponsored_slots (
+      id          TEXT PRIMARY KEY,
+      vendor_name TEXT NOT NULL,
+      app_name    TEXT NOT NULL,
+      app_id      TEXT,
+      slot        TEXT NOT NULL,
+      category    TEXT,
+      status      TEXT NOT NULL DEFAULT 'scheduled'
+                  CHECK(status IN ('active','scheduled','paused','expired')),
+      starts_at   TEXT NOT NULL,
+      ends_at     TEXT NOT NULL,
+      recurrence  TEXT NOT NULL DEFAULT 'once'
+                  CHECK(recurrence IN ('once','weekly','monthly')),
+      budget      REAL NOT NULL,
+      budget_used REAL NOT NULL DEFAULT 0,
+      notes       TEXT,
+      created_at  TEXT NOT NULL,
+      updated_at  TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_ss_status ON sponsored_slots(status);
+    CREATE INDEX IF NOT EXISTS idx_ss_slot   ON sponsored_slots(slot);
+  `)
+
+  // Sponsored requests — vendor-submitted sponsorship requests
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS sponsored_requests (
+      id               TEXT PRIMARY KEY,
+      vendor_id        TEXT REFERENCES users(id) ON DELETE SET NULL,
+      app_name         TEXT NOT NULL,
+      slot             TEXT NOT NULL,
+      starts_at        TEXT NOT NULL,
+      ends_at          TEXT NOT NULL,
+      goal             TEXT NOT NULL,
+      budget           REAL NOT NULL,
+      tagline          TEXT,
+      notes            TEXT,
+      status           TEXT NOT NULL DEFAULT 'pending'
+                       CHECK(status IN ('pending','approved','rejected')),
+      rejection_reason TEXT,
+      reviewed_at      TEXT,
+      created_at       TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+    CREATE INDEX IF NOT EXISTS idx_sreq_status ON sponsored_requests(status);
+    CREATE INDEX IF NOT EXISTS idx_sreq_vendor ON sponsored_requests(vendor_id);
+  `)
 }
 
 function createId(prefix: string) {

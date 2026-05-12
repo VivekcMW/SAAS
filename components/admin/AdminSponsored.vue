@@ -621,7 +621,19 @@ async function confirmDelete(row: SponsoredRow) {
 }
 
 // ─── Approve vendor request ────────────────────────────────────────────────
-function approveRequest(req: VendorRequest) {
+async function approveRequest(req: VendorRequest) {
+  saving.value = true
+  try {
+    await $fetch(`/api/admin/sponsored/requests/${req.id}`, {
+      method: 'POST',
+      body: { action: 'approve' },
+    })
+  } catch {
+    showAdminToast('Failed to approve request. Please try again.', 'error')
+    saving.value = false
+    return
+  }
+  saving.value = false
   // Pre-fill the create campaign modal from vendor request data
   editId.value = null
   form.value = {
@@ -637,10 +649,8 @@ function approveRequest(req: VendorRequest) {
     notes: req.notes ?? ''
   }
   formError.value = ''
-  showModal.value = true
-
-  // Mark as approved in the queue
   req.status = 'approved'
+  showModal.value = true
   showAdminToast(`Request approved — complete the campaign form.`, 'success')
   activeTab.value = 'campaigns'
 }

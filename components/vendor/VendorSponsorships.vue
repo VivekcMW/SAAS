@@ -476,8 +476,8 @@ onMounted(async () => {
   finally { loading.value = false }
 
   try {
-    const listings = await $fetch<MyListing[]>('/api/vendor/listings')
-    if (Array.isArray(listings) && listings.length) myListings.value = listings
+    const data = await $fetch<{ listings: MyListing[] }>('/api/vendor/listings')
+    if (Array.isArray(data?.listings) && data.listings.length) myListings.value = data.listings
   } catch { /* use demo data */ }
 })
 </script>

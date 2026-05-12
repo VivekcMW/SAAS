@@ -42,9 +42,9 @@
         </div>
       </div>
       <hr class="bw-divider" />
-      <div style="display: flex; justify-content: flex-end; align-items: center; gap: 8px; flex-wrap: wrap;">
-        <span v-if="saveSuccess" style="font-size:0.85rem; color: var(--bw-success);">Changes saved.</span>
-        <span v-if="saveError" style="font-size:0.85rem; color: var(--bw-danger, #e53e3e);">{{ saveError }}</span>
+      <div class="bw-form-footer">
+        <span v-if="saveSuccess" class="bw-save-success">Changes saved.</span>
+        <span v-if="saveError" class="bw-save-error">{{ saveError }}</span>
         <button class="bw-btn bw-btn--primary" :disabled="saving" @click="save">{{ saving ? 'Saving…' : 'Save changes' }}</button>
       </div>
     </section>
@@ -72,9 +72,9 @@
         </div>
       </div>
       <hr class="bw-divider" />
-      <div style="display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
-        <span v-if="saveSuccess" style="font-size:0.85rem; color: var(--bw-success);">Preferences saved.</span>
-        <span v-if="saveError" style="font-size:0.85rem; color: var(--bw-danger, #e53e3e);">{{ saveError }}</span>
+      <div class="bw-form-footer">
+        <span v-if="saveSuccess" class="bw-save-success">Preferences saved.</span>
+        <span v-if="saveError" class="bw-save-error">{{ saveError }}</span>
         <button class="bw-btn bw-btn--primary" :disabled="saving" @click="save">{{ saving ? 'Saving…' : 'Save preferences' }}</button>
       </div>
     </section>
@@ -90,6 +90,12 @@
           <input type="checkbox" v-model="form.notifications[n.key]" :aria-label="n.title" />
           <span class="switch__slider"></span>
         </label>
+      </div>
+      <hr class="bw-divider" />
+      <div style="display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
+        <span v-if="saveSuccess" class="bw-save-success">Preferences saved.</span>
+        <span v-if="saveError" class="bw-save-error">{{ saveError }}</span>
+        <button class="bw-btn bw-btn--primary" :disabled="saving" @click="save">{{ saving ? 'Saving…' : 'Save notifications' }}</button>
       </div>
     </section>
   </div>
@@ -191,6 +197,9 @@ async function save() {
 </script>
 
 <style scoped>
+.bw-form-footer { display: flex; justify-content: flex-end; align-items: center; gap: 8px; flex-wrap: wrap; }
+.bw-save-success { font-size: 0.85rem; color: var(--bw-success); }
+.bw-save-error { font-size: 0.85rem; color: var(--bw-danger, #e53e3e); }
 .notif-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--bw-border); }
 .notif-row:last-child { border-bottom: none; }
 .notif-row__title { font-weight: 600; font-size: 0.92rem; color: var(--bw-text); }

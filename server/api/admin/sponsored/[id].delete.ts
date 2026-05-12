@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
     const row = db.prepare('SELECT id, app_name FROM sponsored_slots WHERE id = ?').get(id) as { id: string; app_name: string } | undefined
     if (!row) throw createError({ statusCode: 404, statusMessage: 'Sponsorship not found' })
     db.prepare('DELETE FROM sponsored_slots WHERE id = ?').run(id)
-    await logActivity(db, { actorId: admin.id, actorName: admin.name, action: 'sponsored.delete', targetId: id, targetLabel: row.app_name })
+    logActivity({ actorId: admin.id, actorEmail: admin.email, action: 'sponsored.delete', entityType: 'sponsored_slot', entityId: id, meta: { appName: row.app_name } })
   } catch (err: unknown) {
     if ((err as { statusCode?: number })?.statusCode === 404) throw err
   }
