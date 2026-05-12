@@ -3,8 +3,7 @@
  * Creates a new deal for the authenticated vendor.
  */
 import { requireVendor } from '~/server/utils/auth'
-import { getDb, makeId } from '~/server/utils/database'
-import { logActivity } from '~/server/utils/activityLog'
+import { getDb, makeId, logActivity } from '~/server/utils/database'
 
 export default defineEventHandler(async (event) => {
   const user = await requireVendor(event)

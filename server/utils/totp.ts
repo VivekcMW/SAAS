@@ -69,7 +69,7 @@ export function verifyTotp(secret: string, token: string): boolean {
   const code = parseInt(token, 10)
   const key = base32Decode(secret)
   const t = BigInt(Math.floor(Date.now() / 1000 / 30))
-  for (let drift = -1n; drift <= 1n; drift++) {
+  for (let drift = BigInt(-1); drift <= BigInt(1); drift++) {
     if (hotp(key, t + drift) === code) return true
   }
   return false

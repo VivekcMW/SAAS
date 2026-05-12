@@ -85,7 +85,7 @@ Respond ONLY with a JSON array, no markdown, no explanation outside JSON:
     })
 
     // Parse AI response
-    const jsonMatch = text.match(/\[[\s\S]*\]/)
+    const jsonMatch = (text ?? '').match(/\[[\s\S]*\]/)
     const aiPicks: Array<{ name: string; rationale: string }> = jsonMatch
       ? JSON.parse(jsonMatch[0])
       : []

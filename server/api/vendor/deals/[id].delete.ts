@@ -3,8 +3,7 @@
  * Deletes a deal owned by the authenticated vendor.
  */
 import { requireVendor } from '~/server/utils/auth'
-import { getDb } from '~/server/utils/database'
-import { logActivity } from '~/server/utils/activityLog'
+import { getDb, logActivity } from '~/server/utils/database'
 
 export default defineEventHandler(async (event) => {
   const user = await requireVendor(event)

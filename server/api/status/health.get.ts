@@ -34,6 +34,7 @@ async function checkRedis(): Promise<ServiceHealth> {
   try {
     const { getRedis } = await import('~/server/utils/redis')
     const redis = getRedis()
+    if (!redis) throw new Error('Redis not configured')
     await redis.ping()
     return { name: 'Cache', status: 'operational', latencyMs: Date.now() - start, message: 'Responding normally' }
   } catch (err: any) {

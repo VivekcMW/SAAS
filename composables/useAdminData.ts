@@ -212,7 +212,7 @@ async function updateUserStatus(id: string, status: UserStatus) {
     target: u?.name || id
   })
   try {
-    await $fetch(`/api/admin/users/${id}/status`, { method: 'PATCH', body: { status } })
+    await $fetch(`/api/admin/users/${id}/status`, { method: 'PUT', body: { status } })
     showAdminToast(
       status === 'suspended'
         ? `${u?.name ?? 'User'} suspended.`
