@@ -690,7 +690,7 @@ onBeforeUnmount(() => document.removeEventListener('click', handleDocClick))
 .agt-table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
+  table-layout: auto;
 }
 
 /* Sticky header */
@@ -713,6 +713,8 @@ onBeforeUnmount(() => document.removeEventListener('click', handleDocClick))
   border-bottom: 1px solid var(--bw-border, #ECEAE3);
   white-space: nowrap;
   user-select: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .agt-th--check { width: 44px; min-width: 44px; text-align: center; }
 .agt-th--sortable { cursor: pointer; }
@@ -720,9 +722,10 @@ onBeforeUnmount(() => document.removeEventListener('click', handleDocClick))
 .agt-th--sorted { color: var(--aw-accent, #7c3aed); }
 
 .agt-th__inner {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 5px;
+  width: 100%;
 }
 
 /* Sort arrows */
@@ -745,8 +748,12 @@ onBeforeUnmount(() => document.removeEventListener('click', handleDocClick))
   border-bottom: 1px solid var(--bw-border, #ECEAE3);
   font-size: 0.9rem;
   color: var(--bw-text, #1E1E1E);
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.agt-td--check { width: 44px; min-width: 44px; text-align: center; }
+.agt-td--check { width: 44px; min-width: 44px; text-align: center; max-width: unset; overflow: visible; }
 
 .agt-checkbox {
   width: 16px;

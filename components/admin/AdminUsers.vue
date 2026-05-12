@@ -106,11 +106,11 @@ const filteredByRoleStatus = computed(() =>
 
 const columns = [
   { key: 'name',       label: 'User',        sortable: true,  hideable: false },
-  { key: 'role',       label: 'Role',        sortable: true,  hideable: true  },
-  { key: 'status',     label: 'Status',      sortable: true,  hideable: true  },
-  { key: 'joinedAt',   label: 'Joined',      sortable: false, hideable: true  },
-  { key: 'lastActive', label: 'Last active', sortable: false, hideable: true  },
-  { key: '_actions',   label: '',            sortable: false, hideable: false, width: '120px', align: 'right' as const },
+  { key: 'role',       label: 'Role',        sortable: true,  hideable: true,  width: '100px' },
+  { key: 'status',     label: 'Status',      sortable: true,  hideable: true,  width: '115px' },
+  { key: 'joinedAt',   label: 'Joined',      sortable: false, hideable: true,  width: '130px' },
+  { key: 'lastActive', label: 'Last active', sortable: false, hideable: true,  width: '145px' },
+  { key: '_actions',   label: '',            sortable: false, hideable: false, width: '130px', align: 'right' as const },
 ]
 
 const bulkActions = [
@@ -142,7 +142,7 @@ function statusChip(s: string) {
 </script>
 
 <style scoped>
-.user-cell  { display: flex; gap: 10px; align-items: center; }
+.user-cell  { display: flex; gap: 10px; align-items: center; white-space: normal; }
 .user-email { font-size: 0.78rem; color: var(--bw-text-subtle); margin-top: 1px; }
 .u-avatar   { width: 34px; height: 34px; border-radius: 50%; color: white; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; font-size: 0.88rem; flex-shrink: 0; }
 .u-avatar--admin  { background: var(--aw-accent); }

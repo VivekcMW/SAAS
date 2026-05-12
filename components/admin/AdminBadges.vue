@@ -124,13 +124,13 @@ const formError = ref('')
 const form = ref({ appId: '', badgeType: '', reason: '', expiresAt: '' })
 
 const columns = [
-  { key: 'appName',    label: 'App',        sortable: true,  hideable: false },
-  { key: 'badgeType',  label: 'Badge',      sortable: true,  hideable: false },
-  { key: 'assignedBy', label: 'Assigned by', sortable: false, hideable: true },
-  { key: 'reason',     label: 'Reason',     sortable: false, hideable: true },
-  { key: 'createdAt',  label: 'Assigned',   sortable: true,  hideable: true, width: '130px' },
-  { key: 'expiresAt',  label: 'Expires',    sortable: true,  hideable: true, width: '120px' },
-  { key: '_actions',   label: '',           sortable: false, hideable: false, width: '80px' }
+  { key: 'appName',    label: 'App',         sortable: true,  hideable: false, minWidth: '160px' },
+  { key: 'badgeType',  label: 'Badge',       sortable: true,  hideable: false, width: '145px' },
+  { key: 'assignedBy', label: 'Assigned by', sortable: false, hideable: true,  width: '140px' },
+  { key: 'reason',     label: 'Reason',      sortable: false, hideable: true  },
+  { key: 'createdAt',  label: 'Assigned',    sortable: true,  hideable: true,  width: '130px' },
+  { key: 'expiresAt',  label: 'Expires',     sortable: true,  hideable: true,  width: '120px' },
+  { key: '_actions',   label: '',            sortable: false, hideable: false, width: '90px' }
 ]
 
 function fmtDate(d: string) {

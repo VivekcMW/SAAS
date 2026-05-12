@@ -86,11 +86,11 @@ const filteredByStatus = computed(() =>
 )
 
 const columns = [
-  { key: 'name',        label: 'App',       sortable: true,  hideable: false },
-  { key: 'vendorName',  label: 'Vendor',    sortable: true,  hideable: true  },
-  { key: 'category',    label: 'Category',  sortable: true,  hideable: true  },
-  { key: 'status',      label: 'Status',    sortable: true,  hideable: true  },
-  { key: 'submittedAt', label: 'Submitted', sortable: false, hideable: true  },
+  { key: 'name',        label: 'App',       sortable: true,  hideable: false, minWidth: '180px' },
+  { key: 'vendorName',  label: 'Vendor',    sortable: true,  hideable: true,  width: '155px' },
+  { key: 'category',    label: 'Category',  sortable: true,  hideable: true,  width: '135px' },
+  { key: 'status',      label: 'Status',    sortable: true,  hideable: true,  width: '110px' },
+  { key: 'submittedAt', label: 'Submitted', sortable: false, hideable: true,  width: '130px' },
   { key: '_actions',    label: '',          sortable: false, hideable: false, width: '160px', align: 'right' as const },
 ]
 
@@ -122,7 +122,7 @@ function statusLabel(s: string) {
 </script>
 
 <style scoped>
-.app-cell { display: flex; gap: 10px; align-items: center; }
+.app-cell { display: flex; gap: 10px; align-items: center; white-space: normal; }
 .app-logo { width: 32px; height: 32px; border-radius: 8px; color: white; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; }
 .app-meta { font-size: 0.75rem; color: var(--bw-text-subtle); margin-top: 1px; }
 </style>

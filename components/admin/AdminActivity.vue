@@ -65,9 +65,9 @@ function refresh() {
 onMounted(() => loadActivity())
 
 const columns = [
-  { key: 'at',     label: 'When',   sortable: false, hideable: true,  width: '140px' },
-  { key: 'actor',  label: 'Actor',  sortable: true,  hideable: false },
-  { key: 'action', label: 'Action', sortable: true,  hideable: true  },
+  { key: 'at',     label: 'When',   sortable: false, hideable: true,  width: '145px' },
+  { key: 'actor',  label: 'Actor',  sortable: true,  hideable: false, width: '165px' },
+  { key: 'action', label: 'Action', sortable: true,  hideable: true,  width: '200px' },
   { key: 'target', label: 'Target', sortable: true,  hideable: true  },
 ]
 </script>
