@@ -37,8 +37,8 @@
       </div>
     </div>
 
-    <div class="bw-grid bw-grid--main-aside bw-section">
-      <section>
+    <div class="bw-grid bw-grid--main-aside rev-section">
+      <div class="ov-main">
         <section v-if="pendingApps.length > 0" class="bw-card bw-section">
           <div class="bw-card__head">
             <h2 class="bw-card__title">Needs your attention</h2>
@@ -61,7 +61,6 @@
           </div>
           <p class="ov-empty-note">All caught up — no pending apps.</p>
         </section>
-
         <section class="bw-card">
           <div class="bw-card__head">
             <h2 class="bw-card__title">Recent activity</h2>
@@ -75,7 +74,7 @@
             </li>
           </ul>
         </section>
-      </section>
+      </div><!-- /.ov-main -->
 
       <aside>
         <section class="bw-card">
@@ -175,5 +174,7 @@ onMounted(async () => {
 
 aside { display: flex; flex-direction: column; gap: 16px; }
 .bw-section { margin-bottom: 16px; }
+.ov-main { display: flex; flex-direction: column; gap: 16px; }
 .ov-empty-note { font-size: 0.88rem; color: var(--aw-text-subtle); padding: 6px 0; margin: 0; }
+.rev-section { margin-top: 20px; }
 </style>

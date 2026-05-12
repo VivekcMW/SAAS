@@ -75,6 +75,8 @@
 .bw-kpi__label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--bw-text-subtle); font-weight: 600; margin-bottom: 6px; }
 .bw-kpi__value { font-family: var(--f-ui); font-size: 1.5rem; font-weight: 700; line-height: 1; color: var(--bw-text); }
 .bw-kpi__foot { margin-top: 8px; font-size: 0.78rem; color: var(--bw-text-muted); }
+.bw-kpi__link { color: var(--bw-primary); text-decoration: none; font-weight: 700; }
+.bw-kpi__link:hover { text-decoration: underline; }
 
 /* ---------- Buttons ---------- */
 .bw-btn { display: inline-flex; align-items: center; gap: 6px; height: 38px; padding: 0 14px; border-radius: 10px; font-weight: 600; font-size: 0.88rem; font-family: inherit; cursor: pointer; text-decoration: none; border: 1px solid transparent; transition: all .15s ease; white-space: nowrap; }
@@ -131,6 +133,9 @@
 .bw-empty__icon { width: 48px; height: 48px; border-radius: 14px; background: var(--bw-surface); color: var(--bw-text-subtle); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px; border: 1px solid var(--bw-border); }
 .bw-empty__title { font-family: var(--f-ui); font-weight: 700; font-size: 1.05rem; margin: 0 0 6px; color: var(--bw-text); }
 .bw-empty__desc { color: var(--bw-text-muted); font-size: 0.9rem; max-width: 340px; margin: 0 auto 16px; }
+
+/* ---------- Form feedback ---------- */
+.bw-form-error { font-size: 0.82rem; color: var(--bw-danger); background: var(--bw-danger-50); border: 1px solid rgba(239,68,68,.25); border-radius: 8px; padding: 8px 12px; margin-top: 8px; }
 
 /* ---------- Grid helpers ---------- */
 .bw-grid { display: grid; gap: 16px; }

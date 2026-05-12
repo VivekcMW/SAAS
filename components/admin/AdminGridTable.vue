@@ -645,7 +645,7 @@ onBeforeUnmount(() => document.removeEventListener('click', handleDocClick))
   min-width: 0;
   box-sizing: border-box;
   border: 1px solid var(--bw-border, #ECEAE3);
-  border-radius: var(--bw-radius, 12px);
+  border-radius: var(--bw-radius, 12px) var(--bw-radius, 12px) 0 0;
   background: var(--bw-surface, #fff);
 }
 
@@ -814,8 +814,13 @@ onBeforeUnmount(() => document.removeEventListener('click', handleDocClick))
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
-  padding-top: 14px;
-  font-size: 0.85rem;
+  padding: 12px 16px;
+  margin-top: 0;
+  border: 1px solid var(--bw-border, #ECEAE3);
+  border-top: none;
+  border-radius: 0 0 var(--bw-radius, 12px) var(--bw-radius, 12px);
+  background: var(--bw-surface-2, #F6F4EF);
+  font-size: 0.82rem;
   color: var(--bw-text-muted, #6B6B6B);
 }
 .agt-footer__info strong { color: var(--bw-text, #1E1E1E); }

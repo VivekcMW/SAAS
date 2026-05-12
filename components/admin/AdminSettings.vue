@@ -92,9 +92,9 @@ async function save() {
 <style scoped>
 .st-title { margin-bottom: 12px; }
 .st-input-narrow { max-width: 120px; width: 100%; }
-.st-saved { margin-top: 14px; color: var(--aw-accent); font-size: 0.85rem; font-weight: 500; }
-.st-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--aw-border); font-size: 0.9rem; }
+.st-saved { margin-top: 14px; color: var(--bw-success, #2A9D8F); font-size: 0.85rem; font-weight: 500; background: var(--bw-success-50, rgba(42,157,143,.1)); border-radius: 8px; padding: 8px 12px; display: inline-block; }
+.st-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--bw-border); font-size: 0.9rem; }
 .st-row:last-child { border-bottom: none; }
 .st-row--check { justify-content: flex-start; gap: 10px; }
-.st-error { margin-top: 14px; color: var(--aw-red-700, #b91c1c); font-size: 0.85rem; font-weight: 500; }
+.st-error { margin-top: 14px; color: var(--bw-danger, #EF4444); font-size: 0.85rem; font-weight: 500; background: var(--bw-danger-50); border-radius: 8px; padding: 8px 12px; }
 </style>
