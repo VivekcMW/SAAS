@@ -147,11 +147,7 @@ const valueProps = computed(() => {
           <span class="meta-count">{{ app.reviewCount.toLocaleString() }} reviews</span>
           <span class="meta-dot" />
           <span class="meta-price">{{ priceLabel }}</span>
-          <span class="meta-dot" />
-          <span class="meta-uptime">
-            <Icon name="heroicons:signal" class="uptime-icon" />
-            {{ app.performance?.uptime ?? 99.9 }}% uptime
-          </span>
+
         </div>
 
         <!-- Value props: 3 check rows -->
@@ -236,11 +232,6 @@ const valueProps = computed(() => {
           </div>
           <div class="ss-sep" />
           <div class="ss-item">
-            <span class="ss-val">{{ app.performance?.uptime ?? 99.9 }}%</span>
-            <span class="ss-lbl">Uptime</span>
-          </div>
-          <div class="ss-sep" />
-          <div class="ss-item">
             <span class="ss-val">{{ app.version || 'v3.0' }}</span>
             <span class="ss-lbl">Version</span>
           </div>
@@ -296,6 +287,7 @@ const valueProps = computed(() => {
   gap: 48px;
   align-items: center;
 }
+.hero-grid > * { min-width: 0; }
 
 /* ══ LEFT COLUMN ══ */
 .brand-row {
@@ -376,15 +368,7 @@ const valueProps = computed(() => {
 .meta-count { font-size: 13px; color: var(--mm-slate); }
 .meta-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--b3); }
 .meta-price { font-size: 14px; color: var(--mm-pearl); font-weight: 700; }
-.meta-uptime {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 13px;
-  color: #3DBFB0;
-  font-weight: 500;
-}
-.uptime-icon { width: 13px; height: 13px; }
+
 
 /* Value props */
 .value-props {

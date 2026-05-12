@@ -115,7 +115,6 @@ const stats = computed(() => [
   { label: 'Rating', value: `${app.value?.rating.toFixed(1) || '—'} ★`, icon: 'heroicons:star', hint: `${app.value?.reviewCount || 0} reviews` },
   { label: 'Starting Price', value: priceLabel.value, icon: 'heroicons:currency-dollar', hint: app.value?.pricing?.period ? `per ${app.value.pricing.period}` : 'starts at' },
   { label: 'Active Users', value: app.value?.analytics?.activeUsers ? formatNumber(app.value.analytics.activeUsers) : '10K+', icon: 'heroicons:users' },
-  { label: 'Uptime', value: `${app.value?.performance?.uptime || 99.9}%`, icon: 'heroicons:signal', hint: 'last 90 days' },
   { label: 'Deployment', value: 'Cloud / SaaS', icon: 'heroicons:cloud' },
   { label: 'Category', value: getCategoryLabel(app.value?.category), icon: 'heroicons:tag' }
 ])
@@ -656,12 +655,6 @@ function getCategoryLabel(cat?: string): string {
             <Icon name="heroicons:users" class="hss-icon" />
             <span class="hss-val">{{ app.analytics?.activeUsers ? formatNumber(app.analytics.activeUsers) : '10K+' }}</span>
             <span class="hss-lbl">active users</span>
-          </div>
-          <span class="hss-sep" />
-          <div class="hss-item">
-            <Icon name="heroicons:signal" class="hss-icon hss-icon--green" />
-            <span class="hss-val">{{ app.performance?.uptime ?? 99.9 }}%</span>
-            <span class="hss-lbl">uptime SLA</span>
           </div>
           <span class="hss-sep" />
           <div class="hss-item">
@@ -1291,6 +1284,7 @@ function getCategoryLabel(cat?: string): string {
   min-height: 100vh;
   background: var(--mm-bg);
   padding-bottom: 80px;
+  overflow-x: clip;
 }
 .container {
   max-width: 1200px;
@@ -1380,6 +1374,7 @@ function getCategoryLabel(cat?: string): string {
   align-items: start;
   padding-top: 0;
 }
+.page-with-rail > * { min-width: 0; }
 @media (max-width: 1100px) {
   .page-with-rail {
     grid-template-columns: 1fr;
