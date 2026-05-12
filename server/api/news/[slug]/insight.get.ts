@@ -59,7 +59,7 @@ Respond ONLY with valid JSON: { "summary": "...", "implications": ["...", "..."]
         messages: [{ role: 'user', content: `Title: ${post.title}\n\n${bodySnippet}` }],
         maxTokens: 400,
         temperature: 0.4,
-        quality: 'fast'
+        task: 'insight'
       })
 
       if (text) {

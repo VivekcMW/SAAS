@@ -79,7 +79,7 @@ Respond ONLY with a JSON array, no markdown, no explanation outside JSON:
 
   try {
     const { text } = await aiChat({
-      model: 'fast',
+      task: 'match',
       messages: [{ role: 'user', content: prompt }],
       maxTokens: 400,
     })

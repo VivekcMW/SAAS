@@ -61,6 +61,7 @@ export default defineEventHandler(async (event) => {
 - best_quarter: "Q1"|"Q2"|"Q3"|"Q4" (when vendors are most likely to offer discounts)
 - tips: string[] (5 actionable negotiation tips specific to this tool/category)
 - brief_content: string (2-3 paragraph negotiation guide in plain text)`,
+        task: 'write',
         messages: [{
           role: 'user',
           content: `Tool: ${app.name}

@@ -97,7 +97,7 @@ ${catalogueSummary}`
     messages: messages.slice(-10) as Array<{ role: 'user' | 'assistant'; content: string }>,
     maxTokens: 600,
     temperature: 0.7,
-    quality: 'smart'
+    task: 'copilot'
   })
 
   if (aiReply) {

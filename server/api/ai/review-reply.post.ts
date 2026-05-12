@@ -67,6 +67,7 @@ Rules:
 - Never be defensive or dismiss criticism
 - Do NOT start with "Dear" or end with "Best regards"
 - Write as the vendor team, not as a bot`,
+        task: 'write',
         messages: [{
           role: 'user',
           content: `Product: ${review.app_name} (${review.category})

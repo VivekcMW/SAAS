@@ -1,6 +1,7 @@
 import { getMarketplaceAppByIdOrSlug } from '~/server/utils/apps'
 import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
 import { aiChat, activeProviderName } from '~/server/utils/aiProvider'
+import { redisCacheGet, redisCacheSet } from '~/server/utils/redis'
 
 /**
  * POST /api/ai/app-summary
@@ -30,8 +31,13 @@ export default defineEventHandler(async (event) => {
 
   // Try real AI generation first; fall back to deterministic stub
   const context = body?.context || 'default'
+  const cacheKey = `ai:summary:${appId}:${context}`
 
-  if (process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY) {
+  // Check Redis cache first (24h TTL — summaries don't change often)
+  const cached = await redisCacheGet<object>(cacheKey)
+  if (cached) return cached
+
+  if (process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY || process.env.GEMINI_API_KEY) {
     try {
       const contextAngle: Record<string, string> = {
         sales: 'Focus on pipeline automation, ROI, and sales-ops value.',
@@ -56,13 +62,13 @@ Tags: ${app.tags?.slice(0, 8).join(', ') || 'N/A'}`
         }],
         maxTokens: 700,
         temperature: 0.4,
-        quality: 'fast'
+        task: 'summarise'
       })
 
       if (text) {
         const jsonStr = text.replace(/^```(?:json)?\n?|\n?```$/g, '').trim()
         const parsed = JSON.parse(jsonStr)
-        return {
+        const result = {
           appId: app.id,
           context,
           generatedAt: new Date().toISOString(),
@@ -76,6 +82,9 @@ Tags: ${app.tags?.slice(0, 8).join(', ') || 'N/A'}`
           confidence: 0.92,
           source: activeProviderName()
         }
+        // Cache for 24h — summaries are deterministic per app+context
+        await redisCacheSet(cacheKey, result, 60 * 60 * 24)
+        return result
       }
     } catch (err) {
       console.error('[ai/app-summary] AI call failed:', err)

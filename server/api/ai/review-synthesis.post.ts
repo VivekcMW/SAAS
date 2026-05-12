@@ -131,7 +131,7 @@ Return ONLY valid JSON.`,
         messages: [{ role: 'user', content: corpus }],
         maxTokens: 800,
         temperature: 0.2,
-        quality: 'fast'
+        task: 'summarise'
       })
 
       if (text) {

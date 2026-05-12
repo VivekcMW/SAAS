@@ -118,7 +118,7 @@ ${JSON.stringify(catalogue, null, 2)}`
         messages: [{ role: 'user', content: userMessage }],
         maxTokens: 1500,
         temperature: 0.3,
-        quality: 'smart'
+        task: 'match'
       })
 
       if (text) {

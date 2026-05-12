@@ -83,7 +83,7 @@ Generate the evaluation brief.`
       }],
       maxTokens: 2000,
       temperature: 0.4,
-      quality: 'smart'
+      task: 'briefing'
     })
     if (text) contentMd = text
   }

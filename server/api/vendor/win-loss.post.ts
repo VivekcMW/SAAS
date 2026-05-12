@@ -131,7 +131,7 @@ Generate 3-5 short, specific, actionable insights for the vendor. Each insight s
         messages: [{ role: 'user', content: prompt }],
         maxTokens: 300,
         temperature: 0.5,
-        quality: 'fast'
+        task: 'insight'
       })
 
       if (text) {
