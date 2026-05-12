@@ -494,9 +494,58 @@ onMounted(async () => {
 /* ── Expiring badge ── */
 .sp-expiring { color: var(--bw-danger, #EF4444); font-weight: 600; }
 
+/* ── Modal backdrop ── */
+.bw-modal-bg {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1000;
+  display: flex; align-items: center; justify-content: center; padding: 16px;
+}
+
+/* ── Modal panel ── */
+.bw-modal {
+  background: var(--bw-surface, #0F1220);
+  border: 1px solid var(--bw-border-strong, rgba(168,180,204,.2));
+  border-radius: 14px;
+  width: 100%;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 48px);
+}
+.bw-modal__head {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--bw-border, rgba(168,180,204,.1));
+  display: flex; justify-content: space-between; align-items: center;
+  flex-shrink: 0;
+}
+.bw-modal__title { font-family: var(--f-ui); font-weight: 700; font-size: 1rem; margin: 0; color: var(--bw-text, #F0F3F8); }
+.bw-modal__close {
+  background: none; border: none; cursor: pointer;
+  color: var(--bw-text-muted, #A8B4CC);
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 6px;
+  transition: background .15s;
+}
+.bw-modal__close:hover { background: var(--bw-surface-2, #161B2E); }
+.bw-modal__body {
+  padding: 20px;
+  display: flex; flex-direction: column; gap: 14px;
+  overflow-y: auto;
+}
+.bw-modal__foot {
+  padding: 14px 20px;
+  border-top: 1px solid var(--bw-border, rgba(168,180,204,.1));
+  display: flex; justify-content: flex-end; gap: 8px;
+  flex-shrink: 0;
+}
+
+/* ── Form primitives (scoped to this modal) ── */
+.bw-field { display: flex; flex-direction: column; gap: 4px; }
+.bw-label { font-size: 0.83rem; font-weight: 600; color: var(--bw-text-muted, #A8B4CC); }
+
 /* ── Modal sizing ── */
-.sp-modal { max-width: 620px; width: 100%; }
-.sp-modal-body { display: flex; flex-direction: column; gap: 4px; }
+.sp-modal { max-width: 620px; }
+.sp-modal-body { gap: 0; }
 
 /* ── Fieldsets inside modal ── */
 .sp-fieldset {
