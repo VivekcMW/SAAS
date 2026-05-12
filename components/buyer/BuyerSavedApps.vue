@@ -41,13 +41,13 @@
     <!-- Grid -->
     <div v-else class="bw-grid bw-grid--2">
       <article v-for="a in filtered" :key="a.id" class="bw-card bw-card--hover app">
-        <label class="app__select">
-          <input type="checkbox" :value="a.id" v-model="selected" />
+        <label class="app__select" :aria-label="`Select ${a.name} for comparison`">
+          <input type="checkbox" :value="a.id" v-model="selected" :aria-label="`Select ${a.name} for comparison`" />
         </label>
         <div class="app__head">
           <div class="app__logo" :style="{ background: a.color }">{{ a.logo }}</div>
           <div class="app__title">
-            <NuxtLink :to="`/app/${a.slug}`" class="app__name" target="_blank" rel="noopener noreferrer">{{ a.name }}</NuxtLink>
+            <NuxtLink :to="`/marketplace/app/${a.slug}`" class="app__name" target="_blank" rel="noopener noreferrer">{{ a.name }}</NuxtLink>
             <div class="app__cat">{{ a.category }}</div>
           </div>
           <span class="bw-chip" :class="`bw-chip--${tone(a.status)}`">{{ label(a.status) }}</span>
@@ -56,7 +56,7 @@
         <div class="app__meta">
           <div class="app__meta-item">
             <span class="app__meta-label">From</span>
-            <span class="app__meta-value">${{ a.priceFrom }}/seat</span>
+            <span class="app__meta-value">{{ a.priceFrom > 0 ? `$${a.priceFrom}/seat` : 'Free' }}</span>
           </div>
           <div class="app__meta-item">
             <span class="app__meta-label">Rating</span>
@@ -87,7 +87,7 @@
             <option v-for="s in statuses" :key="s" :value="s">{{ label(s) }}</option>
           </select>
           <div class="app__actions">
-            <NuxtLink :to="`/app/${a.slug}`" class="bw-btn bw-btn--ghost bw-btn--sm" target="_blank" rel="noopener noreferrer">Open</NuxtLink>
+            <NuxtLink :to="`/marketplace/app/${a.slug}`" class="bw-btn bw-btn--ghost bw-btn--sm" target="_blank" rel="noopener noreferrer">Open</NuxtLink>
             <button class="bw-icon-btn" title="Remove" @click="removeApp(a.id)">
               <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M6 6l1 14a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-14" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>

@@ -34,8 +34,8 @@
               <div class="plan__label">Payment method</div>
               <div class="plan__value">Visa •••• 4242</div>
             </div>
-            <div style="margin-left: auto; display: flex; gap: 8px;">
-              <button class="bw-btn bw-btn--ghost">Update card</button>
+            <div class="plan__foot-actions">
+              <button class="bw-btn bw-btn--ghost" @click="startCheckout('portal')">Update card</button>
               <button class="bw-btn bw-btn--primary" @click="startCheckout('buyer-pro')" :disabled="checkoutLoading !== null">
                 {{ checkoutLoading === 'buyer-pro' ? 'Redirecting...' : 'Upgrade' }}
               </button>
@@ -55,7 +55,7 @@
               <tr v-for="inv in invoices" :key="inv.id">
                 <td>{{ inv.date }}</td>
                 <td>{{ inv.description }}</td>
-                <td>${{ inv.amount }}</td>
+                <td>${{ (inv.amount / 100).toFixed(2) }}</td>
                 <td><span class="bw-chip bw-chip--success">Paid</span></td>
                 <td>
                   <a v-if="inv.invoiceUrl" :href="inv.invoiceUrl" target="_blank" rel="noopener" class="bw-card__link">Download</a>
@@ -139,11 +139,10 @@ async function startCheckout(planId: string) {
   checkoutLoading.value = planId
   checkoutError.value = null
   try {
-    const res = await $fetch<{ url: string }>('/api/billing/checkout', {
-      method: 'POST',
-      body: { planId, cycle: 'monthly' },
-    })
-    if (res.url) window.location.href = res.url
+    const endpoint = planId === 'portal' ? '/api/billing/portal' : '/api/billing/checkout'
+    const body = planId === 'portal' ? {} : { planId, cycle: 'monthly' }
+    const res = await $fetch<{ url: string }>(endpoint, { method: 'POST', body })
+    if (res.url) globalThis.location.href = res.url
   } catch (e: unknown) {
     const msg = (e as { data?: { statusMessage?: string } })?.data?.statusMessage
     checkoutError.value = msg || 'Could not start checkout. Please try again.'
@@ -168,12 +167,13 @@ const allPlans = [
 .plan__features li { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: var(--bw-text-muted); }
 .plan__features svg { color: var(--bw-success); flex-shrink: 0; }
 .plan__foot { display: flex; gap: 24px; align-items: center; padding-top: 16px; border-top: 1px solid var(--bw-border); flex-wrap: wrap; }
+.plan__foot-actions { margin-left: auto; display: flex; gap: 8px; }
 .plan__label { font-size: 0.76rem; text-transform: uppercase; color: var(--bw-text-subtle); letter-spacing: 0.05em; }
 .plan__value { font-weight: 600; font-size: 0.92rem; color: var(--bw-text); }
 
 .plan-opt { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--bw-border); }
 .plan-opt:last-child { border-bottom: none; }
-.plan-opt.is-current { background: var(--bw-primary-50); margin: 0 -20px; padding: 10px 20px; }
+.plan-opt.is-current { background: var(--bw-primary-50); margin: 0 -16px; padding: 10px 16px; }
 .plan-opt__name { font-weight: 600; font-size: 0.92rem; color: var(--bw-text); }
 .plan-opt__price { font-family: var(--f-ui); font-weight: 700; color: var(--bw-primary); }
 .plan-opt__price span { color: var(--bw-text-muted); font-size: 0.75rem; font-weight: 500; }

@@ -14,6 +14,12 @@ const submitting = ref(false)
 const success = ref(false)
 const error = ref('')
 
+const typeOptions = [
+  { value: 'decrease' as const, label: 'Price drops', icon: 'heroicons:arrow-trending-down' },
+  { value: 'increase' as const, label: 'Price increases', icon: 'heroicons:arrow-trending-up' },
+  { value: 'any' as const, label: 'Any change', icon: 'heroicons:arrows-up-down' },
+]
+
 async function subscribe() {
   if (!email.value) return
   submitting.value = true
@@ -44,131 +50,309 @@ function reset() {
 
 <template>
   <div class="price-alert">
-    <div class="alert-icon">
-      <Icon name="heroicons:bell-alert" />
-    </div>
-    <div class="alert-body">
-      <h4 class="alert-title">Get notified about pricing changes</h4>
-      <p class="alert-sub">We'll email you when {{ appName }} updates plans, runs promos, or adjusts pricing.</p>
 
-      <form v-if="!success" class="alert-form" @submit.prevent="subscribe">
-        <div class="form-row">
+    <!-- Header -->
+    <div class="pa-header">
+      <div class="pa-icon-wrap">
+        <Icon name="heroicons:bell-alert" class="pa-icon" />
+      </div>
+      <div class="pa-header-text">
+        <h4 class="pa-title">Get notified about pricing changes</h4>
+        <p class="pa-sub">We'll email you when {{ appName }} updates plans, runs promos, or adjusts pricing.</p>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form v-if="!success" class="pa-form" @submit.prevent="subscribe">
+
+      <!-- Alert type pills -->
+      <div class="pa-type-row">
+        <button
+          v-for="opt in typeOptions"
+          :key="opt.value"
+          type="button"
+          :class="['pa-type-pill', { active: threshold === opt.value }]"
+          @click="threshold = opt.value"
+          :disabled="submitting"
+        >
+          <Icon :name="opt.icon" class="pill-icon" />
+          {{ opt.label }}
+        </button>
+      </div>
+
+      <!-- Email + submit -->
+      <div class="pa-input-row">
+        <div class="pa-input-wrap">
+          <Icon name="heroicons:envelope" class="input-prefix-icon" />
           <input
             v-model="email"
             type="email"
             placeholder="you@company.com"
-            class="alert-input"
+            class="pa-input"
             required
             :disabled="submitting"
           />
-          <select v-model="threshold" class="alert-select" :disabled="submitting">
-            <option value="decrease">Price drops</option>
-            <option value="increase">Price increases</option>
-            <option value="any">Any change</option>
-          </select>
-          <button type="submit" class="alert-submit" :disabled="submitting || !email">
-            <Icon v-if="!submitting" name="heroicons:bell" />
-            <span v-else class="spinner"></span>
-            {{ submitting ? 'Subscribing…' : 'Notify me' }}
-          </button>
         </div>
-        <p v-if="error" class="alert-error">{{ error }}</p>
-      </form>
-
-      <div v-else class="alert-success">
-        <Icon name="heroicons:check-circle" />
-        <span>You're subscribed. We'll email <strong>{{ email }}</strong>.</span>
-        <button class="alert-reset" @click="reset">Subscribe another</button>
+        <button type="submit" class="pa-submit" :disabled="submitting || !email">
+          <span v-if="submitting" class="spinner"></span>
+          <Icon v-else name="heroicons:bell" class="submit-icon" />
+          <span>{{ submitting ? 'Subscribing…' : 'Notify me' }}</span>
+        </button>
       </div>
+
+      <p v-if="error" class="pa-error">
+        <Icon name="heroicons:exclamation-circle" />
+        {{ error }}
+      </p>
+
+      <p class="pa-privacy">
+        <Icon name="heroicons:lock-closed" />
+        No spam — unsubscribe any time.
+      </p>
+    </form>
+
+    <!-- Success -->
+    <div v-else class="pa-success">
+      <div class="pa-success-icon">
+        <Icon name="heroicons:check-circle" />
+      </div>
+      <div class="pa-success-body">
+        <span class="pa-success-title">You're all set!</span>
+        <span class="pa-success-sub">We'll email <strong>{{ email }}</strong> about pricing changes.</span>
+      </div>
+      <button class="pa-reset" @click="reset">Change</button>
     </div>
+
   </div>
 </template>
 
 <style scoped>
+/* ── Card shell ──────────────────────────────────────────── */
 .price-alert {
-  background: var(--mm-gold-soft);
-  border: 0.5px solid var(--mm-gold);
+  background: var(--mm-s2);
+  border: 0.5px solid rgba(212, 168, 67, 0.35);
   border-radius: var(--r-lg);
-  padding: 16px;
+  padding: 22px 24px;
   display: flex;
-  gap: 12px;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.alert-icon {
-  width: 36px;
-  height: 36px;
+/* ── Header ──────────────────────────────────────────────── */
+.pa-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.pa-icon-wrap {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
   border-radius: var(--r-md);
-  background: var(--mm-gold);
-  color: #0A0700;
+  background: rgba(212, 168, 67, 0.12);
+  border: 0.5px solid rgba(212, 168, 67, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  color: var(--mm-gold);
 }
-.alert-icon :deep(svg) { width: 18px; height: 18px; }
-
-.alert-body { flex: 1; min-width: 0; }
-.alert-title { margin: 0; font-size: 14px; font-weight: 700; color: var(--mm-pearl); }
-.alert-sub { margin: 2px 0 10px; font-size: 12px; color: var(--mm-slate); }
-
-.alert-form { display: flex; flex-direction: column; gap: 6px; }
-.form-row { display: flex; gap: 6px; flex-wrap: wrap; }
-
-.alert-input,
-.alert-select {
-  border: 0.5px solid var(--b2);
-  background: var(--mm-s3);
-  color: var(--mm-silver);
-  border-radius: var(--r-md);
-  padding: 8px 10px;
+.pa-icon { width: 20px; height: 20px; }
+.pa-header-text { flex: 1; }
+.pa-title {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--mm-pearl);
+  line-height: 1.3;
+}
+.pa-sub {
+  margin: 0;
   font-size: 13px;
-  outline: none;
-  transition: border-color var(--transition-fast);
+  color: var(--mm-slate);
+  line-height: 1.5;
 }
-.alert-input { flex: 1; min-width: 180px; }
-.alert-input:focus,
-.alert-select:focus { border-color: var(--mm-gold); }
 
-.alert-submit {
+/* ── Form ────────────────────────────────────────────────── */
+.pa-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Alert type pills */
+.pa-type-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.pa-type-pill {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--r-full);
+  border: 0.5px solid var(--b2);
+  background: var(--mm-s1);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--mm-silver);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.pa-type-pill .pill-icon { width: 14px; height: 14px; }
+.pa-type-pill:hover:not(:disabled) {
+  background: var(--mm-s2);
+  border-color: var(--b3);
+  color: var(--mm-pearl);
+}
+.pa-type-pill.active {
+  background: rgba(212, 168, 67, 0.12);
+  border-color: var(--mm-gold);
+  color: var(--mm-gold);
+}
+.pa-type-pill:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Email input row */
+.pa-input-row {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+.pa-input-wrap {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.input-prefix-icon {
+  position: absolute;
+  left: 12px;
+  width: 16px;
+  height: 16px;
+  color: var(--mm-slate);
+  pointer-events: none;
+  flex-shrink: 0;
+}
+.pa-input {
+  width: 100%;
+  padding: 10px 12px 10px 36px;
+  background: var(--mm-s1);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-md);
+  font-size: 14px;
+  color: var(--mm-pearl);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.pa-input::placeholder { color: var(--mm-slate); }
+.pa-input:focus { border-color: var(--mm-gold); }
+.pa-input:disabled { opacity: 0.5; }
+
+.pa-submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 20px;
   background: var(--mm-gold);
   color: #0A0700;
-  border: 0;
-  padding: 8px 14px;
+  border: none;
   border-radius: var(--r-md);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
-  transition: background var(--transition-fast);
+  white-space: nowrap;
+  transition: background 0.15s, opacity 0.15s;
+  flex-shrink: 0;
 }
-.alert-submit:hover:not(:disabled) { background: var(--mm-goldl); }
-.alert-submit:disabled { background: var(--mm-s3); color: var(--mm-slate); cursor: not-allowed; }
-.alert-submit :deep(svg) { width: 14px; height: 14px; }
+.pa-submit:hover:not(:disabled) { background: #e8bb4a; }
+.pa-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+.submit-icon { width: 15px; height: 15px; }
 
-.spinner { width: 12px; height: 12px; border: 2px solid #0A0700; border-top-color: transparent; border-radius: 50%; animation: spin 800ms linear infinite; }
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(10,7,0,0.3);
+  border-top-color: #0A0700;
+  border-radius: 50%;
+  animation: spin 700ms linear infinite;
+  flex-shrink: 0;
+}
 @keyframes spin { to { transform: rotate(360deg); } }
 
-.alert-error { margin: 4px 0 0; font-size: 12px; color: #f87171; }
-
-.alert-success {
+/* Error / privacy */
+.pa-error {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
-  color: var(--mm-seal);
+  margin: 0;
+  font-size: 12.5px;
+  color: #f87171;
+}
+.pa-error :deep(svg) { width: 14px; height: 14px; flex-shrink: 0; }
+
+.pa-privacy {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--mm-slate);
+}
+.pa-privacy :deep(svg) { width: 12px; height: 12px; flex-shrink: 0; }
+
+/* ── Success state ───────────────────────────────────────── */
+.pa-success {
+  display: flex;
+  align-items: center;
+  gap: 14px;
   flex-wrap: wrap;
 }
-.alert-success :deep(svg) { width: 16px; height: 16px; }
-.alert-reset {
-  margin-left: auto;
-  background: transparent;
-  border: 0;
-  color: var(--mm-slate);
-  font-size: 12px;
-  cursor: pointer;
-  text-decoration: underline;
+.pa-success-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-md);
+  background: rgba(212, 168, 67, 0.1);
+  border: 0.5px solid rgba(212, 168, 67, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mm-gold);
+  flex-shrink: 0;
 }
-.alert-reset:hover { color: var(--mm-gold); }
+.pa-success-icon :deep(svg) { width: 18px; height: 18px; }
+.pa-success-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.pa-success-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--mm-pearl);
+}
+.pa-success-sub {
+  font-size: 13px;
+  color: var(--mm-slate);
+}
+.pa-success-sub strong { color: var(--mm-silver); font-weight: 600; }
+.pa-reset {
+  background: transparent;
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-md);
+  padding: 6px 12px;
+  font-size: 12.5px;
+  color: var(--mm-slate);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.pa-reset:hover { border-color: var(--mm-gold); color: var(--mm-gold); }
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .pa-input-row { flex-direction: column; }
+  .pa-submit { width: 100%; justify-content: center; }
+}
 </style>

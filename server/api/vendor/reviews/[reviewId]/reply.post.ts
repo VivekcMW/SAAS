@@ -24,6 +24,7 @@ export default defineEventHandler(async (event) => {
 
   const body = await readBody(event)
   const body_text = typeof body?.body === 'string' ? body.body.trim() : ''
+  const is_private = body?.isPrivate ? 1 : 0
 
   if (!body_text) {
     throw createError({ statusCode: 400, statusMessage: 'Reply body is required' })
@@ -53,17 +54,17 @@ export default defineEventHandler(async (event) => {
 
   if (existing) {
     db.prepare(
-      'UPDATE review_replies SET body = ?, updated_at = ? WHERE id = ?'
-    ).run(body_text, now, existing.id)
+      'UPDATE review_replies SET body = ?, is_private = ?, updated_at = ? WHERE id = ?'
+    ).run(body_text, is_private, now, existing.id)
     logActivity({ actorId: user.id, actorEmail: user.email, action: 'review.reply_posted', entityType: 'review', entityId: reviewId })
     return { id: existing.id, action: 'updated', updatedAt: now }
   }
 
   const id = makeId('rr')
   db.prepare(`
-    INSERT INTO review_replies (id, review_id, vendor_id, body, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?)
-  `).run(id, reviewId, vendor.id, body_text, now, now)
+    INSERT INTO review_replies (id, review_id, vendor_id, body, is_private, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `).run(id, reviewId, vendor.id, body_text, is_private, now, now)
 
   logActivity({ actorId: user.id, actorEmail: user.email, action: 'review.reply_posted', entityType: 'review', entityId: reviewId })
 

@@ -21,6 +21,7 @@ export default defineEventHandler(async (event) => {
 
   const body = await readBody(event)
   const replyBody = typeof body?.body === 'string' ? body.body.trim() : ''
+  const is_private = body?.isPrivate ? 1 : 0
 
   if (!replyBody || replyBody.length < 2 || replyBody.length > 2000) {
     throw createError({ statusCode: 400, statusMessage: 'Reply must be between 2 and 2000 characters' })
@@ -48,15 +49,15 @@ export default defineEventHandler(async (event) => {
 
   if (existing) {
     db.prepare(
-      'UPDATE review_replies SET body = ?, updated_at = ? WHERE id = ?'
-    ).run(replyBody, now, existing.id)
+      'UPDATE review_replies SET body = ?, is_private = ?, updated_at = ? WHERE id = ?'
+    ).run(replyBody, is_private, now, existing.id)
     return { success: true, id: existing.id, body: replyBody, updated: true }
   }
 
   const id = makeId('rr')
   db.prepare(
-    'INSERT INTO review_replies (id, review_id, vendor_id, body, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)'
-  ).run(id, reviewId, vendor.id, replyBody, now, now)
+    'INSERT INTO review_replies (id, review_id, vendor_id, body, is_private, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
+  ).run(id, reviewId, vendor.id, replyBody, is_private, now, now)
 
   return { success: true, id, body: replyBody, updated: false }
 })

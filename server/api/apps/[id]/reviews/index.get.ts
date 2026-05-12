@@ -72,13 +72,13 @@ export default defineEventHandler(async (event) => {
 
   // Attach vendor replies
   const reviewIds = rows.map(r => r.id)
-  let repliesMap: Record<string, { body: string; created_at: string }> = {}
+  let repliesMap: Record<string, { body: string; isPrivate: boolean; created_at: string }> = {}
   if (reviewIds.length > 0) {
     const placeholders = reviewIds.map(() => '?').join(',')
     const replyRows = db.prepare(
-      `SELECT review_id, body, created_at FROM review_replies WHERE review_id IN (${placeholders})`
-    ).all(...reviewIds) as Array<{ review_id: string; body: string; created_at: string }>
-    replyRows.forEach(r => { repliesMap[r.review_id] = { body: r.body, created_at: r.created_at } })
+      `SELECT review_id, body, is_private, created_at FROM review_replies WHERE review_id IN (${placeholders})`
+    ).all(...reviewIds) as Array<{ review_id: string; body: string; is_private: number; created_at: string }>
+    replyRows.forEach(r => { repliesMap[r.review_id] = { body: r.body, isPrivate: r.is_private === 1, created_at: r.created_at } })
   }
 
   const breakdownRows = db

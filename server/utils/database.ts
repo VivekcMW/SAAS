@@ -438,7 +438,9 @@ function createSchema(db: Database.Database) {
     `ALTER TABLE users ADD COLUMN totp_backup_codes TEXT`,
     // vendor_promotions — buyer-facing fields
     `ALTER TABLE vendor_promotions ADD COLUMN promo_code TEXT`,
-    `ALTER TABLE vendor_promotions ADD COLUMN percent_off INTEGER`
+    `ALTER TABLE vendor_promotions ADD COLUMN percent_off INTEGER`,
+    // review_replies — visibility
+    `ALTER TABLE review_replies ADD COLUMN is_private INTEGER NOT NULL DEFAULT 0`
   ]
   for (const sql of alterations) {
     try { db.exec(sql) } catch { /* column already exists */ }

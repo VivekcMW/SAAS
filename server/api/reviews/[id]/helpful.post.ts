@@ -5,8 +5,7 @@
  */
 import { getDb } from '~/server/utils/database'
 import { getSessionUser } from '~/server/utils/auth'
-import { getClientIp } from '~/server/utils/rateLimit'
-import { checkRateLimit } from '~/server/utils/rateLimit'
+import { getClientIp, checkRateLimit } from '~/server/utils/rateLimit'
 
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
@@ -19,7 +18,7 @@ export default defineEventHandler(async (event) => {
 
   const db = getDb()
   const review = db.prepare(
-    `SELECT id, helpful_votes FROM reviews WHERE id = ? AND status = 'published'`
+    `SELECT id, helpful_votes FROM reviews WHERE id = ? AND status = 'approved'`
   ).get(id) as { id: string; helpful_votes: number } | undefined
   if (!review) throw createError({ statusCode: 404, statusMessage: 'Review not found' })
 

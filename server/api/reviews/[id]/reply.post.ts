@@ -16,8 +16,9 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 429, statusMessage: 'Too many requests.' })
   }
 
-  const body = await readBody<{ body?: string }>(event)
+  const body = await readBody<{ body?: string; isPrivate?: boolean }>(event)
   const replyBody = body?.body?.trim()
+  const is_private = body?.isPrivate ? 1 : 0
   if (!replyBody || replyBody.length < 5) {
     throw createError({ statusCode: 400, statusMessage: 'Reply must be at least 5 characters.' })
   }
@@ -43,16 +44,16 @@ export default defineEventHandler(async (event) => {
   // Upsert — vendor can edit their reply
   const existing = db.prepare(`SELECT id FROM review_replies WHERE review_id = ?`).get(reviewId) as { id: string } | undefined
   if (existing) {
-    db.prepare(`UPDATE review_replies SET body = ?, updated_at = ? WHERE review_id = ?`)
-      .run(replyBody, now, reviewId)
+    db.prepare(`UPDATE review_replies SET body = ?, is_private = ?, updated_at = ? WHERE review_id = ?`)
+      .run(replyBody, is_private, now, reviewId)
     return { id: existing.id, updated: true }
   }
 
   const replyId = makeId('rreply')
   db.prepare(`
-    INSERT INTO review_replies (id, review_id, vendor_id, body, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?)
-  `).run(replyId, reviewId, vendor.id, replyBody, now, now)
+    INSERT INTO review_replies (id, review_id, vendor_id, body, is_private, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `).run(replyId, reviewId, vendor.id, replyBody, is_private, now, now)
 
   return { id: replyId, updated: false }
 })

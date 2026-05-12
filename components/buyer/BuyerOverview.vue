@@ -10,10 +10,6 @@
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5" stroke-linecap="round"/></svg>
           Browse marketplace
         </NuxtLink>
-        <NuxtLink to="/dashboard/recommendations" class="bw-btn bw-btn--primary">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-          Get recommendations
-        </NuxtLink>
       </div>
     </header>
 
@@ -39,10 +35,24 @@
         <div class="bw-kpi__value">{{ kpis.reviews }}</div>
         <div class="bw-kpi__foot">{{ helpful }} people found them helpful</div>
       </div>
+      <div class="bw-kpi">
+        <div class="bw-kpi__label">Monthly spend</div>
+        <div class="bw-kpi__value">{{ monthlySpendFmt }}</div>
+        <div class="bw-kpi__foot">Across saved stack</div>
+      </div>
     </div>
 
-    <!-- Next step banner -->
-    <div v-if="nextStep" class="bw-card next-step">
+    <!-- Onboarding empty state -->
+    <div v-if="savedApps.length === 0" class="bw-card onboarding">
+      <h2 class="onboarding__title">Get started in 3 steps</h2>
+      <ol class="onboarding__steps">
+        <li><NuxtLink to="/marketplace" class="bw-link">Browse marketplace</NuxtLink> and save apps you want to evaluate</li>
+        <li>Compare your shortlisted apps side-by-side</li>
+        <li>Send enquiries to vendors to book demos or get pricing</li>
+      </ol>
+      <NuxtLink to="/marketplace" class="bw-btn bw-btn--primary">Browse marketplace</NuxtLink>
+    </div>
+    <div v-else-if="nextStep" class="bw-card next-step">
       <div class="next-step__icon">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
       </div>
@@ -61,12 +71,15 @@
           <h2 class="bw-card__title">Your shortlist</h2>
           <NuxtLink to="/dashboard/products" class="bw-card__link">Manage →</NuxtLink>
         </div>
-        <ul class="sl-list">
+        <div v-if="savedApps.length === 0" class="bw-empty" style="border: 0; padding: 24px 0 8px;">
+          <p class="bw-empty__desc">No apps saved yet. <NuxtLink to="/marketplace" class="bw-link">Browse the marketplace</NuxtLink> to get started.</p>
+        </div>
+        <ul v-else class="sl-list">
           <li v-for="a in savedApps.slice(0, 4)" :key="a.id" class="sl-item">
             <div class="sl-logo" :style="{ background: a.color }">{{ a.logo }}</div>
             <div class="sl-main">
               <div class="sl-name">{{ a.name }}</div>
-              <div class="sl-meta">{{ a.category }} · from ${{ a.priceFrom }}/seat</div>
+              <div class="sl-meta">{{ a.category }} · {{ a.priceFrom > 0 ? `from $${a.priceFrom}/seat` : 'Free' }}</div>
             </div>
             <span class="bw-chip" :class="`bw-chip--${tone(a.status)}`">{{ label(a.status) }}</span>
           </li>
@@ -80,7 +93,10 @@
             <h2 class="bw-card__title">Deals for you</h2>
             <NuxtLink to="/dashboard/deals" class="bw-card__link">All deals →</NuxtLink>
           </div>
-          <div v-for="d in deals.slice(0, 2)" :key="d.id" class="deal-mini">
+          <div v-if="deals.length === 0" class="bw-empty" style="border: 0; padding: 16px 0 4px;">
+            <p class="bw-empty__desc" style="margin: 0;">No active deals right now. <NuxtLink to="/dashboard/deals" class="bw-link">Check back later</NuxtLink>.</p>
+          </div>
+          <div v-else v-for="d in deals.slice(0, 2)" :key="d.id" class="deal-mini">
             <div class="deal-mini__head">
               <strong>{{ d.product }}</strong>
               <span class="bw-chip bw-chip--primary">{{ d.percentOff }}% OFF</span>
@@ -120,6 +136,8 @@ const { savedApps, kpis, enquiries, reviews, deals, digest } = useBuyerData()
 const categories = computed(() => new Set(savedApps.value.map(a => a.category)).size)
 const unread = computed(() => enquiries.value.reduce((a, e) => a + e.unread, 0))
 const helpful = computed(() => reviews.value.reduce((a, r) => a + r.helpful, 0))
+const monthlySpend = computed(() => savedApps.value.reduce((a, app) => a + (app.priceFrom || 0), 0))
+const monthlySpendFmt = computed(() => monthlySpend.value > 0 ? `$${monthlySpend.value.toLocaleString()}/mo` : '—')
 
 const tone = (s: string) => statusTone[s as keyof typeof statusTone]
 const label = (s: string) => statusLabel[s as keyof typeof statusLabel]
@@ -176,4 +194,10 @@ const nextStep = computed(() => {
 .activity-dot.is-review { background: var(--bw-warning); }
 .activity-title { font-size: 0.9rem; font-weight: 500; color: var(--bw-text); }
 .activity-meta { font-size: 0.78rem; color: var(--bw-text-subtle); margin-top: 2px; }
+
+.onboarding { padding: 2rem; margin-bottom: 1.5rem; }
+.onboarding__title { font-size: 1.05rem; font-weight: 600; color: var(--bw-text); margin: 0 0 1rem; }
+.onboarding__steps { padding-left: 1.25rem; margin: 0 0 1.25rem; color: var(--bw-text-muted); font-size: 0.9rem; line-height: 1.8; }
+.bw-link { color: var(--bw-primary); text-decoration: none; }
+.bw-link:hover { text-decoration: underline; }
 </style>

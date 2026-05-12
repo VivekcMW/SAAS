@@ -7,6 +7,24 @@
       </div>
     </header>
 
+    <!-- Loading -->
+    <div v-if="pending" class="bw-empty">
+      <div class="bw-empty__icon">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+        </svg>
+      </div>
+      <p class="bw-empty__desc">Loading your reviews…</p>
+    </div>
+
+    <!-- Error -->
+    <div v-else-if="error" class="bw-card bw-empty" style="border-color: var(--bw-danger);">
+      <h3 class="bw-empty__title">Could not load reviews</h3>
+      <p class="bw-empty__desc">{{ (error as any)?.data?.statusMessage || 'Please try again later.' }}</p>
+      <button class="bw-btn bw-btn--ghost bw-btn--sm" @click="refresh()">Retry</button>
+    </div>
+
+    <template v-else>
     <!-- KPIs -->
     <div class="bw-kpis" style="grid-template-columns: repeat(3, 1fr); max-width: 640px;">
       <div class="bw-kpi">
@@ -15,7 +33,7 @@
       </div>
       <div class="bw-kpi">
         <div class="bw-kpi__label">Average rating given</div>
-        <div class="bw-kpi__value">★ {{ avgRating }}</div>
+        <div class="bw-kpi__value">{{ avgRating }}<span class="kpi-star"> ★</span></div>
       </div>
       <div class="bw-kpi">
         <div class="bw-kpi__label">People helped</div>
@@ -32,7 +50,7 @@
         <ul v-if="reviews.length" class="rev-list">
           <li v-for="r in reviews" :key="r.id" class="rev-item">
             <div class="rev-head">
-              <NuxtLink :to="`/app/${r.productSlug}`" class="rev-product">{{ r.product }}</NuxtLink>
+              <NuxtLink :to="`/marketplace/app/${r.productSlug}`" class="rev-product">{{ r.product }}</NuxtLink>
               <div class="rev-stars" :title="`${r.rating} / 5`">
                 <span v-for="n in 5" :key="n" class="rev-star" :class="{ 'is-on': n <= r.rating }">★</span>
               </div>
@@ -58,7 +76,7 @@
           <div class="bw-card__head">
             <h2 class="bw-card__title">Apps you could review</h2>
           </div>
-          <p style="font-size: 0.86rem; color: var(--bw-text-muted); margin-bottom: 12px;">Saved apps you haven't reviewed yet.</p>
+          <p class="rev-aside__hint">Saved apps you haven't reviewed yet.</p>
           <ul class="review-next">
             <li v-for="a in reviewable" :key="a.id" class="review-next__item">
               <div class="review-next__logo" :style="{ background: a.color }">{{ a.logo }}</div>
@@ -66,20 +84,21 @@
                 <div class="review-next__name">{{ a.name }}</div>
                 <div class="review-next__cat">{{ a.category }}</div>
               </div>
-              <NuxtLink :to="`/app/${a.slug}#review`" class="bw-btn bw-btn--ghost bw-btn--sm">Write</NuxtLink>
+              <NuxtLink :to="`/marketplace/app/${a.slug}#reviews`" class="bw-btn bw-btn--ghost bw-btn--sm">Write</NuxtLink>
             </li>
           </ul>
-          <div v-if="!reviewable.length" style="font-size: 0.86rem; color: var(--bw-text-muted);">You're all caught up — nice work.</div>
+          <div v-if="!reviewable.length" class="rev-aside__all-done">You're all caught up — nice work.</div>
         </section>
 
-        <section class="bw-card" style="margin-top: 16px; background: var(--bw-primary-50); border-color: var(--bw-primary);">
-          <h3 style="font-family: var(--f-ui); margin: 0 0 8px; font-size: 0.95rem;">Verified Buyer badge</h3>
-          <p style="font-size: 0.86rem; color: var(--bw-text); margin: 0 0 12px;">Write 3 verified reviews to unlock the Verified Buyer badge on your profile.</p>
+        <section class="bw-card rev-badge-card" style="margin-top: 16px;">
+          <h3 class="bw-card__title rev-badge-card__title">Verified Buyer badge</h3>
+          <p class="rev-badge-card__desc">Write 3 verified reviews to unlock the Verified Buyer badge on your profile.</p>
           <div class="progress"><div class="progress__fill" :style="{ width: `${progress}%` }"></div></div>
-          <div style="font-size: 0.78rem; color: var(--bw-text-muted); margin-top: 6px;">{{ reviews.length }} / 3 reviews</div>
+          <div class="rev-badge-card__count">{{ reviews.length }} / 3 reviews</div>
         </section>
       </aside>
     </div>
+    </template>
   </div>
 </template>
 
@@ -87,7 +106,16 @@
 import { computed } from 'vue'
 import { useBuyerData } from '~/composables/useBuyerData'
 
-const { reviews, savedApps } = useBuyerData()
+const { savedApps } = useBuyerData()
+
+// ── Real reviews from API ──────────────────────────────────────────────
+const { data, pending, error, refresh } = await useFetch<{ reviews: Array<{
+  id: string; product: string; productSlug: string
+  rating: number; title: string; body: string
+  createdAt: string; helpful: number; vendorReplied: boolean; status: string
+}> }>('/api/buyer/reviews', { default: () => ({ reviews: [] }) })
+
+const reviews = computed(() => data.value?.reviews ?? [])
 
 const avgRating = computed(() => {
   if (!reviews.value.length) return '—'
@@ -112,7 +140,7 @@ const formatDate = (s: string) => new Date(s).toLocaleDateString('en', { month: 
 .rev-product:hover { color: var(--bw-primary); }
 .rev-stars { color: var(--bw-border-strong); font-size: 1rem; letter-spacing: 1px; }
 .rev-star.is-on { color: var(--bw-warning); }
-.rev-title { font-family: var(--f-ui); font-size: 1rem; font-weight: 600; margin: 0 0 6px; color: var(--bw-primary); }
+.rev-title { font-family: var(--f-ui); font-size: 1rem; font-weight: 600; margin: 0 0 6px; color: var(--bw-text); }
 .rev-body { color: var(--bw-text-muted); font-size: 0.88rem; margin: 0 0 10px; }
 .rev-foot { display: flex; gap: 6px; font-size: 0.78rem; color: var(--bw-text-subtle); align-items: center; }
 
@@ -126,4 +154,13 @@ const formatDate = (s: string) => new Date(s).toLocaleDateString('en', { month: 
 
 .progress { height: 6px; border-radius: 999px; background: var(--bw-surface); overflow: hidden; }
 .progress__fill { height: 100%; background: var(--bw-primary); transition: width .3s ease; }
+.rev-aside__hint { font-size: 0.86rem; color: var(--bw-text-muted); margin: 0 0 12px; }
+.rev-aside__all-done { font-size: 0.86rem; color: var(--bw-text-muted); }
+
+.rev-badge-card { background: var(--bw-primary-50); border-color: var(--bw-primary); }
+.rev-badge-card__title { font-size: 0.95rem; margin-bottom: 8px; }
+.rev-badge-card__desc { font-size: 0.86rem; color: var(--bw-text); margin: 0 0 12px; }
+.rev-badge-card__count { font-size: 0.78rem; color: var(--bw-text-muted); margin-top: 6px; }
+
+.kpi-star { font-size: 1rem; color: var(--bw-warning); vertical-align: middle; line-height: 1; }
 </style>

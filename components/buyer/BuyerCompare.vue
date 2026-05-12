@@ -20,7 +20,16 @@
         <h2 class="bw-card__title">Select apps to compare</h2>
         <span class="bw-chip bw-chip--neutral">{{ picks.length }} / 4</span>
       </div>
-      <div class="picker">
+      <!-- No apps saved yet -->
+      <div v-if="savedApps.length === 0" class="bw-empty" style="border: 0; padding: 24px 0 8px;">
+        <div class="bw-empty__icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h6M3 12h6M3 18h6M15 6h6M15 12h6M15 18h6M9 3v18M15 3v18" stroke-linecap="round"/></svg>
+        </div>
+        <h3 class="bw-empty__title">No apps to compare yet</h3>
+        <p class="bw-empty__desc">Save apps from the marketplace to compare them side-by-side here.</p>
+        <NuxtLink to="/marketplace" class="bw-btn bw-btn--primary">Browse marketplace</NuxtLink>
+      </div>
+      <div v-else class="picker">
         <label v-for="a in savedApps" :key="a.id" class="picker__chip" :class="{ 'is-on': picks.includes(a.id), 'is-disabled': !picks.includes(a.id) && picks.length >= 4 }">
           <input type="checkbox" :value="a.id" v-model="picks" />
           <span class="picker__logo" :style="{ background: a.color }">{{ a.logo }}</span>
@@ -34,8 +43,8 @@
       <table class="bw-table compare">
         <thead>
           <tr>
-            <th>Feature</th>
-            <th v-for="a in selectedApps" :key="a.id">
+            <th scope="col">Feature</th>
+            <th v-for="a in selectedApps" :key="a.id" scope="col">
               <div class="compare__head">
                 <div class="compare__logo" :style="{ background: a.color }">{{ a.logo }}</div>
                 <div>
@@ -126,7 +135,7 @@ const selectedApps = computed(() => savedApps.value.filter(a => compareIds.value
 
 type Row = { key: string; label: string; render: (a: SavedApp) => string | boolean | number }
 const rows: Row[] = [
-  { key: 'price', label: 'Starting price', render: a => `$${a.priceFrom} / seat / mo` },
+  { key: 'price', label: 'Starting price', render: a => a.priceFrom > 0 ? `$${a.priceFrom} / seat / mo` : 'Free' },
   { key: 'trial', label: 'Free trial', render: a => a.trial },
   { key: 'rating', label: 'Rating', render: a => `★ ${a.rating} (${fmtNumber(a.reviews)})` },
   { key: 'soc2', label: 'SOC 2 compliant', render: a => a.soc2 },

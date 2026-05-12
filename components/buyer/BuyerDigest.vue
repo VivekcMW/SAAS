@@ -6,7 +6,7 @@
         <p class="bw-head__sub">What changed across your saved apps and categories this week.</p>
       </div>
       <div class="bw-head__actions">
-        <button class="bw-btn bw-btn--ghost">Email me this</button>
+        <NuxtLink to="/dashboard/profile?tab=notifications" class="bw-btn bw-btn--ghost">Manage digest emails</NuxtLink>
       </div>
     </header>
 

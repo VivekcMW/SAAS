@@ -45,6 +45,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useBuyerData } from '~/composables/useBuyerData'
 
 interface NavItem {
   to: string
@@ -78,6 +79,10 @@ function isActive(to: string) {
   return route.path === to || route.path.startsWith(to + '/')
 }
 
+// Live unread count for buyer Enquiries badge
+const { enquiries } = useBuyerData()
+const enquiryUnread = computed(() => enquiries.value.reduce((a, e) => a + (e.unread || 0), 0))
+
 // Icons as inline SVG strings for speed + brand consistency
 const ICONS = {
   home: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1z"/></svg>',
@@ -97,7 +102,7 @@ const ICONS = {
   stack: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="4" rx="1"/><rect x="2" y="10" width="20" height="4" rx="1"/><rect x="2" y="17" width="20" height="4" rx="1"/></svg>'
 }
 
-const buyerGroups: NavGroup[] = [
+const buyerGroups = computed<NavGroup[]>(() => [
   {
     title: 'Workspace',
     items: [
@@ -105,14 +110,13 @@ const buyerGroups: NavGroup[] = [
       { to: '/dashboard/products', label: 'Saved apps', icon: ICONS.saved },
       { to: '/dashboard/compare', label: 'Compare', icon: ICONS.compare },
       { to: '/dashboard/stack', label: 'My Stack', icon: ICONS.stack },
-      { to: '/dashboard/enquiries', label: 'Enquiries', icon: ICONS.inbox },
+      { to: '/dashboard/enquiries', label: 'Enquiries', icon: ICONS.inbox, badge: enquiryUnread.value || undefined },
       { to: '/dashboard/reviews', label: 'Reviews', icon: ICONS.star }
     ]
   },
   {
     title: 'Discover',
     items: [
-      { to: '/dashboard/recommendations', label: 'Recommendations', icon: ICONS.apps },
       { to: '/dashboard/deals', label: 'Deals', icon: ICONS.budget },
       { to: '/dashboard/digest', label: 'Weekly digest', icon: ICONS.chart }
     ]
@@ -124,7 +128,7 @@ const buyerGroups: NavGroup[] = [
       { to: '/dashboard/billing', label: 'Billing', icon: ICONS.card }
     ]
   }
-]
+])
 
 const vendorGroups: NavGroup[] = [
   {
@@ -188,7 +192,7 @@ const adminGroups: NavGroup[] = [
 const groups = computed<NavGroup[]>(() => {
   if (props.role === 'vendor') return vendorGroups
   if (props.role === 'admin') return adminGroups
-  return buyerGroups
+  return buyerGroups.value
 })
 </script>
 

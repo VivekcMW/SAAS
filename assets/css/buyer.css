@@ -78,14 +78,15 @@
 
 /* ---------- Buttons ---------- */
 .bw-btn { display: inline-flex; align-items: center; gap: 6px; height: 38px; padding: 0 14px; border-radius: 10px; font-weight: 600; font-size: 0.88rem; font-family: inherit; cursor: pointer; text-decoration: none; border: 1px solid transparent; transition: all .15s ease; white-space: nowrap; }
-.bw-btn--primary { background: var(--bw-primary); color: #fff; }
-.bw-btn--primary:hover { background: var(--bw-primary-600); }
+.bw-btn--primary { background: var(--bw-primary); color: #07090F; }
+.bw-btn--primary:hover { background: var(--bw-primary-600); color: #07090F; }
 .bw-btn--ghost { background: var(--bw-surface); color: var(--bw-text); border-color: var(--bw-border-strong); }
 .bw-btn--ghost:hover { background: var(--bw-surface-2); }
 .bw-btn--subtle { background: var(--bw-surface-2); color: var(--bw-text); }
 .bw-btn--subtle:hover { background: var(--bw-border); }
 .bw-btn--danger { background: var(--bw-danger-50); color: var(--bw-danger); }
 .bw-btn--sm { height: 30px; padding: 0 10px; font-size: 0.8rem; border-radius: 8px; }
+.bw-btn:disabled, .bw-btn[disabled] { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
 
 /* ---------- Chips ---------- */
 .bw-chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; line-height: 1.4; }
@@ -140,6 +141,7 @@
 
 /* ---------- Section spacing ---------- */
 .bw-section + .bw-section { margin-top: 24px; }
+.bw-section { margin-top: 20px; }
 
 /* ---------- Divider ---------- */
 .bw-divider { height: 1px; background: var(--bw-border); margin: 16px 0; border: 0; }

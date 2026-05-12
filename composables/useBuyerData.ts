@@ -50,7 +50,7 @@ export interface Deal {
   title: string
   percentOff: number
   code: string
-  expiresAt: string
+  expiresAt: string | null
   category: string
 }
 
@@ -100,19 +100,13 @@ const savedAppsLoaded = ref(false)
 const savedAppsLoading = ref(false)
 const dealsLoaded = ref(false)
 const dealsLoading = ref(false)
+const enquiriesLoaded = ref(false)
+const enquiriesLoading = ref(false)
 
 const state = reactive({
   savedApps: [] as SavedApp[],
-  enquiries: [
-    { id: 'e1', product: 'Slack', productSlug: 'slack', vendor: 'Slack Technologies', lastMessage: 'Your trial has been extended by 14 days.', lastMessageAt: '3 hours ago', status: 'open', unread: 1 },
-    { id: 'e2', product: 'HubSpot', productSlug: 'hubspot', vendor: 'HubSpot Inc.', lastMessage: 'Demo scheduled for Apr 28, 3:00 PM.', lastMessageAt: '1 day ago', status: 'awaiting-reply', unread: 0 },
-    { id: 'e3', product: 'Linear', productSlug: 'linear', vendor: 'Linear', lastMessage: 'Here is the enterprise pricing sheet you requested.', lastMessageAt: '2 days ago', status: 'open', unread: 2 },
-    { id: 'e4', product: 'Intercom', productSlug: 'intercom', vendor: 'Intercom', lastMessage: 'Thanks for considering us.', lastMessageAt: '2 weeks ago', status: 'closed', unread: 0 }
-  ] as Enquiry[],
-  reviews: [
-    { id: 'r1', product: 'Slack', productSlug: 'slack', rating: 5, title: 'Still the gold standard for team chat', body: 'Channels + threads + Slack Connect cover every use case we have across 3 orgs.', createdAt: '2026-04-12', helpful: 24, vendorReplied: true },
-    { id: 'r2', product: 'Notion', productSlug: 'notion', rating: 4, title: 'Great docs, needs better offline', body: 'Love the flexibility, but the offline experience on mobile is still shaky.', createdAt: '2026-03-28', helpful: 11, vendorReplied: false }
-  ] as BuyerReview[],
+  enquiries: [] as Enquiry[],
+  reviews: [] as BuyerReview[],
   deals: [] as Deal[],
   digest: [
     { id: 'g1', kind: 'price-drop', title: 'Linear dropped its Standard plan price', description: '$8 → $7 per seat / month. Applies to new and existing customers.', product: 'Linear', at: 'Today' },
@@ -176,6 +170,20 @@ function resetSavedApps() {
   savedAppsLoading.value = false
 }
 
+async function loadEnquiries() {
+  if (enquiriesLoaded.value || enquiriesLoading.value) return
+  enquiriesLoading.value = true
+  try {
+    const data = await $fetch<{ enquiries: Enquiry[] }>('/api/buyer/enquiries')
+    state.enquiries = data.enquiries || []
+    enquiriesLoaded.value = true
+  } catch {
+    // Not authenticated — leave empty
+  } finally {
+    enquiriesLoading.value = false
+  }
+}
+
 export const statusLabel: Record<BuyerStatus, string> = {
   shortlisted: 'Shortlisted',
   evaluating: 'Evaluating',
@@ -196,6 +204,8 @@ export const useBuyerData = () => {
   loadSavedApps()
   // Load deals from real API
   loadDeals()
+  // Load enquiries from real API
+  loadEnquiries()
 
   const kpis = computed(() => ({
     saved: state.savedApps.length,
@@ -242,8 +252,16 @@ export const useBuyerData = () => {
     }
   }
 
-  const closeEnquiry = (id: string) => {
-    const e = state.enquiries.find(x => x.id === id); if (e) e.status = 'closed'
+  const closeEnquiry = async (id: string) => {
+    const e = state.enquiries.find(x => x.id === id)
+    if (!e) return
+    const prev = e.status
+    e.status = 'closed'
+    try {
+      await $fetch(`/api/enquiries/${id}/status`, { method: 'PATCH', body: { status: 'closed' } })
+    } catch {
+      e.status = prev
+    }
   }
 
   return {
