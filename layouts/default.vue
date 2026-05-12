@@ -64,16 +64,16 @@ useHead({
 }
 
 .site-main {
-  margin-top: 72px; /* Match the fixed navbar height */
+  margin-top: calc(72px + var(--mm-banner-h, 0px)); /* navbar + optional banner */
   flex: 1;
-  min-height: calc(100vh - 72px); /* Full height minus navbar */
+  min-height: calc(100vh - 72px - var(--mm-banner-h, 0px));
 }
 
 /* Mobile adjustments */
 @media (max-width: 768px) {
   .site-main {
-    margin-top: 64px; /* Match mobile navbar height */
-    min-height: calc(100vh - 64px);
+    margin-top: calc(64px + var(--mm-banner-h, 0px)); /* mobile navbar + optional banner */
+    min-height: calc(100vh - 64px - var(--mm-banner-h, 0px));
     padding-bottom: 64px; /* Space for mobile bottom nav */
   }
 }

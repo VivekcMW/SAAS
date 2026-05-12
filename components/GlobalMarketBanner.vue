@@ -1,5 +1,5 @@
 <template>
-  <div class="global-market-banner" v-if="showBanner">
+  <div ref="bannerEl" class="global-market-banner" v-if="showBanner">
     <div class="banner-content">
       <div class="banner-info">
         <UIcon dynamic name="i-heroicons-globe-alt" />
@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, useNuxtApp } from '#imports';
+import { ref, computed, onMounted, watch, nextTick, useNuxtApp } from '#imports';
 import { useRuntimeConfig, useRoute } from '#app';
 
 // Create safe fallback values in case the plugin isn't loaded yet
@@ -60,7 +60,20 @@ const formatCurrency = (amount: number): string => {
   return `$${amount.toFixed(2)}`;
 };
 
+const bannerEl = ref<HTMLDivElement | null>(null)
 const showBanner = ref(false);
+
+// Keep --mm-banner-h CSS variable in sync so Navbar and layout offset correctly
+watch(showBanner, async (val) => {
+  if (!process.client) return
+  if (val) {
+    await nextTick()
+    const h = bannerEl.value?.offsetHeight ?? 36
+    document.documentElement.style.setProperty('--mm-banner-h', `${h}px`)
+  } else {
+    document.documentElement.style.setProperty('--mm-banner-h', '0px')
+  }
+})
 
 const bannerMessage = computed(() => {
   const region = currentRegionSettings.value;
@@ -98,7 +111,7 @@ onMounted(() => {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 1001;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
   animation: slideDown 0.3s ease-out;
   font-size: var(--fs-caption);

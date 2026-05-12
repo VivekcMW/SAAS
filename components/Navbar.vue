@@ -841,7 +841,7 @@ watch(() => route.path, () => {
 /* Navbar styles */
 .navbar {
   position: fixed;
-  top: 0;
+  top: var(--mm-banner-h, 0px);
   left: 0;
   right: 0;
   z-index: 1000;
@@ -1165,7 +1165,7 @@ watch(() => route.path, () => {
   .nav-links.show {
     display: flex;
     position: fixed;
-    top: 64px;
+    top: calc(64px + var(--mm-banner-h, 0px));
     left: 0;
     right: 0;
     background: var(--mm-s1);
@@ -1372,7 +1372,7 @@ watch(() => route.path, () => {
 .mobile-menu-overlay {
   display: none;
   position: fixed;
-  top: 4rem;
+  top: calc(4rem + var(--mm-banner-h, 0px));
   left: 0;
   right: 0;
   bottom: 0;
@@ -1871,7 +1871,7 @@ watch(() => route.path, () => {
   
   .nav-links {
     position: fixed;
-    top: 4rem;
+    top: calc(4rem + var(--mm-banner-h, 0px));
     left: 0;
     right: 0;
     bottom: 0;
