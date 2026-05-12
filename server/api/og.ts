@@ -1,158 +1,179 @@
 /**
- * Open Graph Image Generator API
- * Dynamically generates OG images for better social media sharing
+ * Open Graph Image Generator
+ * Generates real 1200×630 PNG images using satori (SVG) + @resvg/resvg-js (PNG).
+ * Usage: /api/og?title=My+Title&category=CRM&subtitle=Custom+subtitle&theme=dark
  */
+import satori from 'satori'
+import { Resvg } from '@resvg/resvg-js'
+import { readFile } from 'node:fs/promises'
+import { join } from 'node:path'
+
+// Font cache — loaded once per process lifetime
+let fontCache: ArrayBuffer | null = null
+
+async function getFont(): Promise<ArrayBuffer> {
+  if (fontCache) return fontCache
+  const candidates = [
+    join(process.cwd(), 'assets/fonts/Inter-Bold.ttf'),
+    join(process.cwd(), 'node_modules/@fontsource/inter/files/inter-latin-700-normal.woff'),
+    join(process.cwd(), 'node_modules/@fontsource/inter/files/inter-latin-400-normal.woff'),
+  ]
+  for (const p of candidates) {
+    try {
+      const buf = await readFile(p)
+      fontCache = buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer
+      return fontCache
+    } catch { /* try next */ }
+  }
+  throw new Error('No font file found for OG image generation')
+}
+
+// Theme palette
+const THEMES: Record<string, { bg: string; accent: string; text: string; sub: string }> = {
+  default: { bg: '#0f172a', accent: '#3b82f6', text: '#f8fafc', sub: '#94a3b8' },
+  dark:    { bg: '#0f172a', accent: '#3b82f6', text: '#f8fafc', sub: '#94a3b8' },
+  light:   { bg: '#f8fafc', accent: '#1d4ed8', text: '#0f172a', sub: '#475569' },
+  purple:  { bg: '#1e1b4b', accent: '#818cf8', text: '#f8fafc', sub: '#a5b4fc' },
+  green:   { bg: '#052e16', accent: '#22c55e', text: '#f8fafc', sub: '#86efac' },
+}
 
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event)
-  const title = query.title as string || 'Moonmart'
-  const category = query.category as string
-  const theme = query.theme as string || 'default'
-  
-  // Set appropriate headers for image response
-  setHeader(event, 'Content-Type', 'text/html')
-  setHeader(event, 'Cache-Control', 'public, max-age=86400') // Cache for 24 hours
-  
-  // Generate HTML that can be used with Puppeteer or similar to create an image
-  // This is a simple implementation - you might want to integrate with a service like Vercel OG
-  const html = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=1200, height=630">
-        <style>
-          * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-          }
-          
-          body {
-            width: 1200px;
-            height: 630px;
-            background: linear-gradient(135deg, #1a73e8 0%, #4285f4 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-          }
-          
-          .background-pattern {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-              radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 0%, transparent 50%),
-              radial-gradient(circle at 75% 75%, rgba(255,255,255,0.1) 0%, transparent 50%);
-            opacity: 0.3;
-          }
-          
-          .container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 60px;
-            text-align: center;
-            max-width: 900px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            position: relative;
-            z-index: 1;
-          }
-          
-          .logo {
-            font-size: 36px;
-            font-weight: 800;
-            color: #1a73e8;
-            margin-bottom: 20px;
-            letter-spacing: -1px;
-          }
-          
-          .title {
-            font-size: 48px;
-            font-weight: 700;
-            color: #202124;
-            line-height: 1.2;
-            margin-bottom: 20px;
-            word-wrap: break-word;
-          }
-          
-          .category {
-            display: inline-block;
-            background: #1a73e8;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-          }
-          
-          .subtitle {
-            font-size: 24px;
-            color: #5f6368;
-            font-weight: 400;
-            line-height: 1.4;
-          }
-          
-          .decorative-elements {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-          }
-          
-          .circle {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-          }
-          
-          .circle-1 {
-            width: 200px;
-            height: 200px;
-            top: -100px;
-            right: -100px;
-          }
-          
-          .circle-2 {
-            width: 150px;
-            height: 150px;
-            bottom: -75px;
-            left: -75px;
-          }
-          
-          .circle-3 {
-            width: 100px;
-            height: 100px;
-            top: 50%;
-            left: -50px;
-            transform: translateY(-50%);
-          }
-        </style>
-      </head>
-      <body>
-        <div class="background-pattern"></div>
-        <div class="decorative-elements">
-          <div class="circle circle-1"></div>
-          <div class="circle circle-2"></div>
-          <div class="circle circle-3"></div>
-        </div>
-        <div class="container">
-          <div class="logo">Moonmart</div>
-          ${category ? `<div class="category">${category}</div>` : ''}
-          <h1 class="title">${title}</h1>
-          <p class="subtitle">Discover and compare the best business software solutions worldwide</p>
-        </div>
-      </body>
-    </html>
-  `
-  
-  return html
+  const q        = getQuery(event)
+  const title    = ((q.title    as string | undefined) ?? 'Moonmart').slice(0, 80)
+  const category = (q.category  as string | undefined)?.slice(0, 40)
+  const subtitle = ((q.subtitle as string | undefined) ?? 'Discover and compare the best business software').slice(0, 120)
+  const theme    = THEMES[(q.theme as string) ?? ''] ?? THEMES.default
+
+  setHeader(event, 'Cache-Control', 'public, max-age=86400, s-maxage=604800')
+  setHeader(event, 'Content-Type', 'image/png')
+
+  try {
+    const font = await getFont()
+
+    const svg = await satori(
+      {
+        type: 'div',
+        props: {
+          style: {
+            display: 'flex',
+            flexDirection: 'column',
+            width: '1200px',
+            height: '630px',
+            background: theme.bg,
+            padding: '60px 72px',
+            fontFamily: 'Inter',
+          },
+          children: [
+            // ── Logo row ───────────────────────────────────────────────────
+            {
+              type: 'div',
+              props: {
+                style: { display: 'flex', alignItems: 'center', marginBottom: '48px' },
+                children: [
+                  {
+                    type: 'div',
+                    props: {
+                      style: { fontSize: '28px', fontWeight: '700', color: theme.accent, letterSpacing: '-0.5px' },
+                      children: 'Moonmart',
+                    },
+                  },
+                  {
+                    type: 'div',
+                    props: {
+                      style: { flex: '1', height: '2px', background: theme.accent, marginLeft: '24px', opacity: '0.25' },
+                    },
+                  },
+                ],
+              },
+            },
+
+            // ── Category pill (optional) ───────────────────────────────────
+            ...(category
+              ? [{
+                  type: 'div',
+                  props: {
+                    style: {
+                      display: 'flex',
+                      alignSelf: 'flex-start',
+                      background: theme.accent,
+                      color: '#ffffff',
+                      fontSize: '18px',
+                      fontWeight: '700',
+                      padding: '8px 20px',
+                      borderRadius: '9999px',
+                      marginBottom: '28px',
+                      letterSpacing: '0.8px',
+                      textTransform: 'uppercase',
+                    },
+                    children: category,
+                  },
+                }]
+              : []),
+
+            // ── Main title ─────────────────────────────────────────────────
+            {
+              type: 'div',
+              props: {
+                style: {
+                  flex: '1',
+                  fontSize: title.length > 40 ? '52px' : '68px',
+                  fontWeight: '700',
+                  color: theme.text,
+                  lineHeight: '1.15',
+                  letterSpacing: '-1.5px',
+                },
+                children: title,
+              },
+            },
+
+            // ── Bottom row: subtitle + domain ──────────────────────────────
+            {
+              type: 'div',
+              props: {
+                style: {
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-end',
+                  marginTop: '32px',
+                },
+                children: [
+                  {
+                    type: 'div',
+                    props: {
+                      style: { fontSize: '22px', color: theme.sub, maxWidth: '820px', lineHeight: '1.4' },
+                      children: subtitle,
+                    },
+                  },
+                  {
+                    type: 'div',
+                    props: {
+                      style: { fontSize: '18px', color: theme.sub, opacity: '0.5', whiteSpace: 'nowrap' },
+                      children: 'moonmart.ai',
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+      {
+        width: 1200,
+        height: 630,
+        fonts: [{ name: 'Inter', data: font, weight: 700, style: 'normal' }],
+      }
+    )
+
+    const resvg = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } })
+    return resvg.render().asPng()
+
+  } catch (err) {
+    console.error('[og] PNG generation failed:', err)
+    // 1×1 transparent PNG fallback so <meta og:image> never returns a 500
+    const { Buffer } = await import('node:buffer')
+    return Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+      'base64'
+    )
+  }
 })
