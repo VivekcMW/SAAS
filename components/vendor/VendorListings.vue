@@ -82,7 +82,8 @@
             {{ l.status === 'live' ? 'Pause' : l.status === 'paused' ? 'Resume' : 'Publish' }}
           </button>
           <button class="bw-btn bw-btn--subtle bw-btn--sm" @click="startEdit(l)">Edit</button>
-          <button class="bw-btn bw-btn--subtle bw-btn--sm">View public page</button>
+          <button class="bw-btn bw-btn--subtle bw-btn--sm" @click="cloneListing(l)">Clone</button>
+          <a :href="publicUrl(l)" target="_blank" rel="noopener" class="bw-btn bw-btn--subtle bw-btn--sm">View public page</a>
           <button class="bw-btn bw-btn--danger bw-btn--sm" @click="deleteListing(l.id)">Delete</button>
         </div>
       </li>
@@ -171,9 +172,67 @@ function toggleStatus(id: string, s: string) {
   toast.value = `Listing ${next === 'live' ? 'published' : next}`
   setTimeout(() => (toast.value = ''), 2200)
 }
-function create() {
-  toast.value = 'New draft created — head to Content assistant to fill it.'
-  setTimeout(() => (toast.value = ''), 2600)
+function publicUrl(l: any) {
+  const slug = l.slug || l.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+  return `/app/${slug}`
+}
+
+async function create() {
+  try {
+    const res = await $fetch<{ id: string }>('/api/vendor/apps', {
+      method: 'POST',
+      body: { name: 'New listing (draft)', status: 'draft' }
+    })
+    // Optimistically add the new draft so user can immediately edit it
+    const newListing = {
+      id: res.id,
+      name: 'New listing (draft)',
+      logo: 'N',
+      color: '#6b7a96',
+      category: '',
+      status: 'draft' as const,
+      healthScore: 0,
+      views30d: 0,
+      savesPct: 0,
+      leads30d: 0,
+      rating: 0,
+      reviewsCount: 0,
+      aiIssues: ['Add a title', 'Add a description', 'Set pricing'],
+      priceFrom: 0
+    }
+    listings.value.unshift(newListing)
+    startEdit(newListing)
+  } catch {
+    toast.value = 'Failed to create listing — please try again'
+    setTimeout(() => (toast.value = ''), 2500)
+  }
+}
+
+async function cloneListing(l: any) {
+  try {
+    const res = await $fetch<{ id: string }>('/api/vendor/apps', {
+      method: 'POST',
+      body: {
+        name: l.name + ' (copy)',
+        description: l.description || '',
+        category: l.category || '',
+        status: 'draft',
+        pricing: l.pricing
+      }
+    })
+    const clone = {
+      ...l,
+      id: res.id,
+      name: l.name + ' (copy)',
+      status: 'draft' as const
+    }
+    listings.value.unshift(clone)
+    toast.value = 'Listing cloned as draft'
+    setTimeout(() => (toast.value = ''), 2500)
+  } catch {
+    toast.value = 'Clone failed — please try again'
+    setTimeout(() => (toast.value = ''), 2500)
+  }
 }
 
 function startEdit(l: any) {
@@ -250,7 +309,7 @@ async function deleteListing(id: string) {
 </script>
 
 <style scoped>
-.bw-toast { background: #111827; color: white; padding: 10px 14px; border-radius: 10px; font-size: 0.85rem; margin-bottom: 14px; display: inline-block; }
+.bw-toast { background: var(--vw-surface-2); border: 1px solid var(--vw-border-strong); color: var(--vw-text); padding: 10px 14px; border-radius: 10px; font-size: 0.85rem; margin-bottom: 14px; display: inline-block; }
 
 .list-grid { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px; }
 
@@ -284,15 +343,15 @@ async function deleteListing(id: string) {
 
 /* Edit modal */
 .vl-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 1rem; }
-.vl-modal { background: var(--mm-s1); border: 0.5px solid var(--b2); border-radius: var(--r-xl); padding: 2rem; width: 100%; max-width: 520px; }
-.vl-modal__title { font-size: 1.15rem; font-weight: 700; color: var(--mm-pearl); margin: 0 0 1.25rem; font-family: var(--f-display); }
+.vl-modal { background: var(--vw-surface); border: 0.5px solid var(--vw-border); border-radius: var(--r-xl); padding: 2rem; width: 100%; max-width: 520px; }
+.vl-modal__title { font-size: 1.15rem; font-weight: 700; color: var(--vw-text); margin: 0 0 1.25rem; font-family: var(--f-display); }
 .vl-modal__form { display: flex; flex-direction: column; gap: 0.85rem; }
-.vl-modal__form label { display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.85rem; color: var(--mm-silver); font-weight: 500; }
+.vl-modal__form label { display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.85rem; color: var(--vw-text-muted); font-weight: 500; }
 .vl-modal__form input, .vl-modal__form textarea, .vl-modal__form select {
-  padding: 0.65rem 0.85rem; border: 0.5px solid var(--b2); border-radius: var(--r-md);
-  background: var(--mm-s2); color: var(--mm-pearl); font-size: 0.9rem; font-family: inherit; outline: none;
+  padding: 0.65rem 0.85rem; border: 0.5px solid var(--vw-border); border-radius: var(--r-md);
+  background: var(--vw-surface-2); color: var(--vw-text); font-size: 0.9rem; font-family: inherit; outline: none;
 }
-.vl-modal__form input:focus, .vl-modal__form textarea:focus, .vl-modal__form select:focus { border-color: var(--mm-gold); }
+.vl-modal__form input:focus, .vl-modal__form textarea:focus, .vl-modal__form select:focus { border-color: var(--vw-primary); }
 .vl-modal__form textarea { resize: vertical; min-height: 64px; }
 .vl-modal__actions { display: flex; justify-content: flex-end; gap: 0.5rem; padding-top: 0.5rem; }
 </style>

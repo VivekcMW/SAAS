@@ -84,9 +84,16 @@ function toneLabel(t: string) {
   if (t === 'risk') return 'Risk'
   return 'Note'
 }
-function exportPdf() {
-  toast.value = 'PDF export queued — we\'ll email it in a minute.'
-  setTimeout(() => toast.value = '', 2400)
+async function exportPdf() {
+  toast.value = 'Generating PDF…'
+  try {
+    await $fetch('/api/vendor/insights/export-pdf', { method: 'POST' })
+    toast.value = 'PDF export queued — check your email in a moment.'
+  } catch {
+    toast.value = 'Export failed — please try again.'
+  } finally {
+    setTimeout(() => (toast.value = ''), 3000)
+  }
 }
 </script>
 
@@ -111,15 +118,15 @@ function exportPdf() {
   font-size: 0.68rem; padding: 2px 8px; border-radius: 4px;
   text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;
 }
-.in-tone-win { background: #d1fae5; color: #065f46; }
-.in-tone-risk { background: #fee2e2; color: #991b1b; }
+.in-tone-win { background: rgba(var(--vw-health-good-rgb, 16,185,129), 0.15); color: var(--vw-health-good); }
+.in-tone-risk { background: rgba(var(--vw-health-poor-rgb, 239,68,68), 0.15); color: var(--vw-health-poor); }
 .in-tone-neutral { background: var(--vw-surface-2); color: var(--vw-text-muted); }
 .in-card__title { font-family: var(--f-ui); font-size: 0.95rem; margin: 0; flex: 1; }
 .in-card__body { font-size: 0.88rem; color: var(--vw-text-muted); line-height: 1.5; margin: 0; }
 
 .bw-toast-fixed {
   position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-  background: #111827; color: white; padding: 10px 16px; border-radius: 10px;
+  background: var(--vw-surface-2); border: 1px solid var(--vw-border-strong); color: var(--vw-text); padding: 10px 16px; border-radius: 10px;
   font-size: 0.88rem; z-index: 1000;
 }
 

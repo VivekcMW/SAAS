@@ -34,10 +34,14 @@
 
     <!-- KPI row -->
     <div class="bw-kpis">
+      <template v-if="analyticsLoading">
+        <div v-for="i in 4" :key="i" class="bw-kpi bw-kpi--skel"></div>
+      </template>
+      <template v-else>
       <div class="bw-kpi">
         <div class="bw-kpi__label">Views</div>
         <div class="bw-kpi__value">{{ fmt(kpis.views30d) }}</div>
-        <div class="bw-kpi__foot">vs last period</div>
+        <div class="bw-kpi__foot">{{ analyticsData?.uniqueViews != null ? fmt(analyticsData.uniqueViews) + ' unique' : '—' }}</div>
       </div>
       <div class="bw-kpi">
         <div class="bw-kpi__label">Leads</div>
@@ -45,15 +49,16 @@
         <div class="bw-kpi__foot">{{ kpis.hotLeads }} hot</div>
       </div>
       <div class="bw-kpi">
-        <div class="bw-kpi__label">Deals won</div>
-        <div class="bw-kpi__value">11</div>
-        <div class="bw-kpi__foot">Est. ARR $96k</div>
+        <div class="bw-kpi__label">Demos booked</div>
+        <div class="bw-kpi__value">{{ analyticsData?.demos ?? '—' }}</div>
+        <div class="bw-kpi__foot">{{ analyticsData?.demos != null ? 'from ' + kpis.leads30d + ' leads' : 'no data yet' }}</div>
       </div>
       <div class="bw-kpi">
         <div class="bw-kpi__label">MRR</div>
         <div class="bw-kpi__value">${{ fmt(kpis.mrr) }}</div>
-        <div class="bw-kpi__foot">+12% MoM</div>
+        <div class="bw-kpi__foot">{{ analyticsData ? 'this ' + (analyticsPeriod === '7d' ? 'week' : analyticsPeriod === '90d' ? 'quarter' : 'month') : '—' }}</div>
       </div>
+      </template>
     </div>
 
     <div class="bw-grid bw-grid--main-aside bw-section">
@@ -74,9 +79,10 @@
         <div class="bw-card__head">
           <h2 class="bw-card__title">Traffic by day</h2>
         </div>
-        <div class="vw-bars">
+        <div v-if="traffic.length" class="vw-bars">
           <div v-for="(v, i) in traffic" :key="i" class="vw-bars__bar" :class="{ 'vw-bars__bar--active': i === traffic.length - 1 }" :style="{ height: (v / maxTraffic * 100) + '%' }" />
         </div>
+        <p v-else class="va-no-data">Traffic breakdown available once analytics sync.</p>
         <div class="vw-bars__labels">
           <div v-for="d in days" :key="d" class="vw-bars__label">{{ d }}</div>
         </div>
@@ -87,7 +93,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
-const { kpis, funnel, loadAnalytics, analyticsLoading } = useVendorData()
+const { kpis, funnel, loadAnalytics, analyticsLoading, analyticsData, analyticsPeriod } = useVendorData()
 const ai = useAICopilot()
 
 const period = ref('30d')
@@ -100,9 +106,10 @@ const nlQuery = ref('')
 const nlAnswer = ref('')
 const thinking = ref(false)
 
-const traffic = [420, 510, 490, 610, 580, 720, 830]
+// Traffic chart — derived from analyticsData when available, empty otherwise
+const traffic = computed(() => (analyticsData.value as any)?.dailyViews ?? [])
 const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-const maxTraffic = Math.max(...traffic)
+const maxTraffic = computed(() => traffic.value.length ? Math.max(...traffic.value) : 1)
 
 const suggestions = [
   'Why did demos drop last week?',
@@ -142,4 +149,7 @@ async function askAI() {
   border-radius: 999px; font-size: 0.78rem; cursor: pointer;
 }
 .nl-chip:hover { background: var(--vw-ai-50); }
+.va-no-data { font-size: 0.82rem; color: var(--vw-text-subtle); padding: 24px 0; text-align: center; }
+.bw-kpi--skel { min-height: 72px; animation: va-skel-pulse 1.4s ease-in-out infinite; }
+@keyframes va-skel-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
 </style>

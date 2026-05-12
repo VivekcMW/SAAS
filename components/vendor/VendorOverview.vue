@@ -3,7 +3,7 @@
     <!-- Header -->
     <header class="bw-head">
       <div>
-        <h1 class="bw-head__title">Good day — here's your pulse</h1>
+        <h1 class="bw-head__title">{{ greeting }} — here's your pulse</h1>
         <p class="bw-head__sub">Leads, listings, and the 3 things worth doing today.</p>
       </div>
       <div class="bw-head__actions">
@@ -36,6 +36,31 @@
         <div class="bw-kpi__value">★ {{ kpis.avgRating }}</div>
         <div class="bw-kpi__foot">MRR ${{ fmt(kpis.mrr) }}</div>
       </div>
+    </div>
+
+    <!-- Onboarding checklist (hides automatically once all done) -->
+    <div v-if="!onboardingDone" class="bw-card ob-card bw-section">
+      <div class="ob-head">
+        <div>
+          <h2 class="bw-card__title">Get set up — {{ obStepsDone }}/{{ obSteps.length }} done</h2>
+          <p class="ob-sub">Complete these to start generating leads.</p>
+        </div>
+        <div class="ob-progress-ring" :style="{ '--pct': obPct }">
+          <span class="ob-progress-ring__num">{{ obPct }}%</span>
+        </div>
+      </div>
+      <ol class="ob-list">
+        <li v-for="step in obSteps" :key="step.id" class="ob-step" :class="{ 'is-done': step.done }">
+          <span class="ob-step__check">
+            <svg v-if="step.done" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="12" height="12"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          <div class="ob-step__body">
+            <div class="ob-step__label">{{ step.label }}</div>
+            <div class="ob-step__hint">{{ step.hint }}</div>
+          </div>
+          <NuxtLink v-if="!step.done" :to="step.to" class="bw-btn bw-btn--subtle bw-btn--sm">{{ step.cta }}</NuxtLink>
+        </li>
+      </ol>
     </div>
 
     <!-- AI Today actions -->
@@ -118,9 +143,63 @@
 </template>
 
 <script setup lang="ts">
-const { kpis, todayActions, leads, listings, insights } = useVendorData()
+const { kpis, todayActions, leads, listings, insights, promotions } = useVendorData()
 const { fmtNumber } = useFmt()
 function fmt(n: number) { return fmtNumber(n) }
+
+const greeting = computed(() => {
+  const h = new Date().getHours()
+  if (h < 12) return 'Good morning'
+  if (h < 17) return 'Good afternoon'
+  return 'Good evening'
+})
+
+// Onboarding checklist
+const obSteps = computed(() => [
+  {
+    id: 'listing',
+    label: 'Create your first listing',
+    hint: 'Describe your product so buyers can find it.',
+    to: '/dashboard/products',
+    cta: 'Add listing',
+    done: kpis.totalListings > 0
+  },
+  {
+    id: 'live',
+    label: 'Publish a listing',
+    hint: 'Go live so buyers can discover and enquire.',
+    to: '/dashboard/products',
+    cta: 'Manage listings',
+    done: kpis.activeListings > 0
+  },
+  {
+    id: 'lead',
+    label: 'Reply to your first lead',
+    hint: 'Fast replies win deals. Aim to respond within 2 hours.',
+    to: '/dashboard/leads',
+    cta: 'View leads',
+    done: leads.value.some(l => l.status === 'replied')
+  },
+  {
+    id: 'review',
+    label: 'Collect your first review',
+    hint: 'Reviews are your #1 ranking signal on Moonmart.',
+    to: '/dashboard/review-requests',
+    cta: 'Send request',
+    done: kpis.avgRating > 0
+  },
+  {
+    id: 'promo',
+    label: 'Launch a promotion or deal',
+    hint: 'Discounts and featured placements drive 3× more leads.',
+    to: '/dashboard/promotions',
+    cta: 'Add promotion',
+    done: promotions.value.length > 0
+  }
+])
+const obStepsDone = computed(() => obSteps.value.filter(s => s.done).length)
+const obPct = computed(() => Math.round(obStepsDone.value / obSteps.value.length * 100))
+const onboardingDone = computed(() => obStepsDone.value === obSteps.value.length)
 function tempClass(t: string) {
   if (t === 'hot') return 'bw-chip--danger'
   if (t === 'warm') return 'bw-chip--warning'
@@ -139,6 +218,37 @@ function healthBar(s: number) {
 </script>
 
 <style scoped>
+/* Onboarding checklist */
+.ob-card { background: var(--vw-primary-50); border-color: var(--vw-primary); }
+.ob-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 16px; }
+.ob-sub { font-size: 0.84rem; color: var(--vw-text-muted); margin: 4px 0 0; }
+
+.ob-progress-ring {
+  --pct: 0;
+  width: 52px; height: 52px; flex-shrink: 0;
+  border-radius: 50%;
+  background: conic-gradient(var(--vw-primary) calc(var(--pct) * 1%), var(--vw-surface-2) 0%);
+  display: flex; align-items: center; justify-content: center;
+}
+.ob-progress-ring__num { font-size: 0.72rem; font-weight: 700; color: var(--vw-text); background: var(--vw-surface); border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; }
+
+.ob-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0; }
+.ob-step {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 0; border-top: 1px solid var(--vw-border);
+}
+.ob-step:first-child { border-top: none; }
+.ob-step__check {
+  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+  border: 2px solid var(--vw-border-strong);
+  display: flex; align-items: center; justify-content: center;
+}
+.ob-step.is-done .ob-step__check { background: var(--vw-primary); border-color: var(--vw-primary); color: white; }
+.ob-step.is-done .ob-step__label { text-decoration: line-through; color: var(--vw-text-muted); }
+.ob-step__body { flex: 1; min-width: 0; }
+.ob-step__label { font-size: 0.9rem; font-weight: 600; }
+.ob-step__hint { font-size: 0.8rem; color: var(--vw-text-muted); margin-top: 2px; }
+
 .today-actions { margin-bottom: 24px; }
 .today-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
 .today-item {
@@ -150,9 +260,9 @@ function healthBar(s: number) {
   font-size: 0.68rem; font-weight: 800; text-transform: uppercase;
   padding: 3px 8px; border-radius: 4px; letter-spacing: 0.05em;
 }
-.today-impact.is-high { background: #fef2f2; color: #b91c1c; }
-.today-impact.is-med { background: #fffbeb; color: #b45309; }
-.today-impact.is-low { background: #f0fdf4; color: #15803d; }
+.today-impact.is-high { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+.today-impact.is-med { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+.today-impact.is-low { background: rgba(16, 185, 129, 0.15); color: #34d399; }
 .today-body { flex: 1; min-width: 0; }
 .today-title { font-weight: 600; font-size: 0.92rem; color: var(--vw-text); }
 .today-why { font-size: 0.82rem; color: var(--vw-text-muted); margin-top: 2px; }
