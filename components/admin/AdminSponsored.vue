@@ -30,22 +30,6 @@
       </div>
     </div>
 
-    <!-- Filters -->
-    <div class="bw-toolbar">
-      <select v-model="filterStatus" class="bw-select" aria-label="Filter by status">
-        <option value="">All statuses</option>
-        <option value="active">Active</option>
-        <option value="scheduled">Scheduled</option>
-        <option value="paused">Paused</option>
-        <option value="expired">Expired</option>
-      </select>
-      <select v-model="filterSlot" class="bw-select" aria-label="Filter by placement">
-        <option value="">All placements</option>
-        <option v-for="s in SLOT_OPTIONS" :key="s.value" :value="s.value">{{ s.label }}</option>
-      </select>
-      <input v-model="search" class="bw-input" style="flex:1; min-width:180px;" placeholder="Search vendor or app…" aria-label="Search" />
-    </div>
-
     <!-- Table -->
     <p v-if="loading" style="padding:24px; color:var(--bw-text-muted);">Loading sponsorships…</p>
 
@@ -59,6 +43,19 @@
       export-file-name="sponsorships-export"
       search-placeholder="Search vendor or app…"
     >
+      <template #toolbar-extra>
+        <select v-model="filterStatus" class="bw-select sp-filter-select" aria-label="Filter by status">
+          <option value="">All statuses</option>
+          <option value="active">Active</option>
+          <option value="scheduled">Scheduled</option>
+          <option value="paused">Paused</option>
+          <option value="expired">Expired</option>
+        </select>
+        <select v-model="filterSlot" class="bw-select sp-filter-select" aria-label="Filter by placement">
+          <option value="">All placements</option>
+          <option v-for="s in SLOT_OPTIONS" :key="s.value" :value="s.value">{{ s.label }}</option>
+        </select>
+      </template>
       <template #cell-appName="{ row }">
         <strong style="display:block;">{{ row.appName }}</strong>
         <span style="font-size:0.78rem; color:var(--bw-text-muted);">{{ row.vendorName }}</span>
@@ -270,7 +267,6 @@ const saving    = ref(false)
 const showModal = ref(false)
 const editId    = ref<string | null>(null)
 const formError = ref('')
-const search      = ref('')
 const filterStatus = ref('')
 const filterSlot   = ref('')
 
@@ -328,14 +324,6 @@ const filteredRows = computed(() => {
   let rows = sponsorships.value
   if (filterStatus.value) rows = rows.filter(r => r.status === filterStatus.value)
   if (filterSlot.value)   rows = rows.filter(r => r.slot === filterSlot.value)
-  if (search.value) {
-    const q = search.value.toLowerCase()
-    rows = rows.filter(r =>
-      r.vendorName.toLowerCase().includes(q) ||
-      r.appName.toLowerCase().includes(q) ||
-      (r.category?.toLowerCase().includes(q) ?? false)
-    )
-  }
   return rows
 })
 
@@ -500,8 +488,8 @@ onMounted(async () => {
 /* ── KPI strip ── */
 .sp-kpis { margin-bottom: 20px; }
 
-/* ── Filters toolbar ── */
-.bw-toolbar { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+/* ── Filter selects inside AdminGridTable toolbar ── */
+.sp-filter-select { width: auto; min-width: 130px; max-width: 175px; }
 
 /* ── Expiring badge ── */
 .sp-expiring { color: var(--bw-danger, #EF4444); font-weight: 600; }
