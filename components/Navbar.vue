@@ -92,7 +92,7 @@
                   <UIcon dynamic name="i-heroicons-squares-2x2" class="dropdown-item-icon" />
                   <span>Dashboard</span>
                 </NuxtLink>
-                <NuxtLink to="/my-stack" class="dropdown-item">
+                <NuxtLink to="/dashboard/stack" class="dropdown-item">
                   <UIcon dynamic name="i-heroicons-rectangle-stack" class="dropdown-item-icon" />
                   <span>My Stack</span>
                 </NuxtLink>
@@ -707,34 +707,16 @@ const handleScroll = () => {
 // Handle login form submission
 const handleLogin = async () => {
   if (!isLoginFormValid.value) return;
-  
   try {
     isLoggingIn.value = true;
-    
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // In a real app, you would make an API call here
-    const userData = {
-      id: Date.now().toString(),
-      firstName: loginForm.value.email.split('@')[0], // Simple firstname from email
-      lastName: 'User',
-      email: loginForm.value.email,
-      fullName: `${loginForm.value.email.split('@')[0]} User`
-    };
-    
-    // Set user as authenticated
-    handleUserLogin(userData);
-    
-    // Close modal
+    const data = await $fetch<{ user: any }>('/api/auth/login', {
+      method: 'POST',
+      body: { email: loginForm.value.email, password: loginForm.value.password, rememberMe: loginForm.value.rememberMe }
+    });
+    if (data?.user) handleUserLogin(data.user);
     closeSignUpModal();
-    
-    // Show success message
-    console.log('Logged in successfully!');
-    
-  } catch (error) {
-    console.error('Login error:', error);
-    // Handle error (show error message)
+  } catch (error: any) {
+    alert(error?.data?.statusMessage || 'Login failed. Please check your credentials.');
   } finally {
     isLoggingIn.value = false;
   }
@@ -764,72 +746,10 @@ const handleSendResetEmail = async () => {
   }
 };
 
-// Handle social media login/signup
-const handleSocialLogin = async (provider: string) => {
-  try {
-    console.log(`Initiating ${provider} authentication...`);
-    
-    // In a real app, you would:
-    // 1. Redirect to the social provider's OAuth URL
-    // 2. Handle the callback with authorization code
-    // 3. Exchange code for access token
-    // 4. Get user profile data
-    // 5. Create or login user in your system
-    
-    // Simulate social login process
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // Mock user data based on provider
-    const mockUserData = {
-      google: { 
-        name: 'John Doe', 
-        email: 'john.doe@gmail.com', 
-        avatar: 'https://lh3.googleusercontent.com/a/default-user',
-        provider: 'google'
-      },
-      facebook: { 
-        name: 'Jane Smith', 
-        email: 'jane.smith@facebook.com', 
-        avatar: 'https://graph.facebook.com/me/picture',
-        provider: 'facebook'
-      },
-      github: { 
-        name: 'Dev User', 
-        email: 'dev.user@github.com', 
-        avatar: 'https://github.com/identicons/sample.png',
-        provider: 'github'
-      },
-      linkedin: { 
-        name: 'Pro User', 
-        email: 'pro.user@linkedin.com', 
-        avatar: 'https://media.licdn.com/dms/image/sample',
-        provider: 'linkedin'
-      },
-      x: { 
-        name: 'X User', 
-        email: 'x.user@x.com', 
-        avatar: 'https://pbs.twimg.com/profile_images/sample',
-        provider: 'x'
-      }
-    };
-    
-    const userData = mockUserData[provider as keyof typeof mockUserData];
-    
-    if (userData) {
-      // Set user as authenticated
-      handleUserLogin(userData);
-      
-      // Close modal
-      closeSignUpModal();
-      
-      // Show success message
-      console.log(`Successfully authenticated with ${provider}!`);
-    }
-    
-  } catch (error) {
-    console.error(`${provider} authentication error:`, error);
-    alert(`Failed to authenticate with ${provider}. Please try again.`);
-  }
+// Handle social media login/signup — redirect to OAuth provider
+const handleSocialLogin = (provider: string) => {
+  closeSignUpModal();
+  navigateTo(`/api/auth/oauth/${provider}`);
 };
 
 // Handle login event (legacy modal path — kept as a no-op; auth happens on /login page now)
@@ -841,34 +761,21 @@ const handleUserLogin = (_userData: any) => {
 // Handle sign up form submission
 const handleSignUp = async () => {
   if (!isSignUpFormValid.value) return;
-  
   try {
     isSigningUp.value = true;
-    
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // In a real app, you would make an API call here
-    const userData = {
-      id: Date.now().toString(),
-      firstName: signUpForm.value.firstName,
-      lastName: signUpForm.value.lastName,
-      email: signUpForm.value.email,
-      fullName: `${signUpForm.value.firstName} ${signUpForm.value.lastName}`
-    };
-    
-    // Set user as authenticated
-    handleUserLogin(userData);
-    
-    // Close modal
+    const data = await $fetch<{ user: any }>('/api/auth/register', {
+      method: 'POST',
+      body: {
+        firstName: signUpForm.value.firstName,
+        lastName: signUpForm.value.lastName,
+        email: signUpForm.value.email,
+        password: signUpForm.value.password
+      }
+    });
+    if (data?.user) handleUserLogin(data.user);
     closeSignUpModal();
-    
-    // Show success message (you can implement toast notifications)
-    console.log('Account created successfully!');
-    
-  } catch (error) {
-    console.error('Sign up error:', error);
-    // Handle error (show error message)
+  } catch (error: any) {
+    alert(error?.data?.statusMessage || 'Registration failed. Please try again.');
   } finally {
     isSigningUp.value = false;
   }

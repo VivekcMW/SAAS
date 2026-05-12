@@ -398,24 +398,26 @@ const closeIntegrationDetails = () => {
 };
 
 // Submit integration request
-const submitIntegrationRequest = () => {
+const submitIntegrationRequest = async () => {
   submitting.value = true;
-  
-  // Simulate API call
-  setTimeout(() => {
-    console.log('Submitting integration request:', requestForm.value);
-    // Reset form
-    requestForm.value = {
-      name: '',
-      url: '',
-      description: '',
-      email: ''
-    };
-    submitting.value = false;
+  try {
+    await $fetch('/api/integrations/request', {
+      method: 'POST',
+      body: {
+        name: requestForm.value.name,
+        url: requestForm.value.url || undefined,
+        description: requestForm.value.description,
+        email: requestForm.value.email
+      }
+    });
+    requestForm.value = { name: '', url: '', description: '', email: '' };
     showRequestForm.value = false;
-    // Normally, you would send this to your backend using fetch or axios
     alert('Your integration request has been submitted. Our team will review it soon!');
-  }, 1500);
+  } catch (err: any) {
+    alert(err?.data?.statusMessage || 'Failed to submit request. Please try again.');
+  } finally {
+    submitting.value = false;
+  }
 };
 </script>
 

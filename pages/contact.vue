@@ -260,11 +260,22 @@ function resetForm() {
 async function onSubmit() {
   if (submitting.value) return
   submitting.value = true
-  // NOTE: replace the mock delay below with a real POST /api/contact call
-  // once the backend endpoint is available.
-  await new Promise((r) => setTimeout(r, 700))
-  submitting.value = false
-  sent.value = true
+  try {
+    await $fetch('/api/contact', {
+      method: 'POST',
+      body: {
+        name: `${form.firstName.trim()} ${form.lastName.trim()}`.trim(),
+        email: form.email.trim(),
+        subject: form.topic || undefined,
+        message: form.message
+      }
+    })
+    sent.value = true
+  } catch (err: any) {
+    alert(err?.data?.statusMessage || 'Something went wrong. Please try again.')
+  } finally {
+    submitting.value = false
+  }
 }
 
 const faqs = [

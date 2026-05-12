@@ -60,40 +60,28 @@ export function useStatusData() {
   // Methods
   const refreshStatus = async () => {
     isLoading.value = true
-    
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
-      // In a real implementation, you would fetch from your monitoring API
-      // For now, we'll simulate some minor changes to mock real-time updates
-      simulateStatusUpdates()
-      
-      // Update system status
+      const data = await $fetch<{
+        overall: string
+        services: Array<{ name: string; status: string; latencyMs: number | null; message: string }>
+        checkedAt: string
+      }>('/api/status/health')
+
+      // Update services with real data
+      data.services.forEach(realSvc => {
+        const existing = currentServices.value.find(s => s.name === realSvc.name)
+        if (existing) {
+          existing.status = realSvc.status as any
+          if (realSvc.latencyMs !== null) existing.responseTime = realSvc.latencyMs
+        }
+      })
+
       systemStatus.value = calculateOverallStatus(currentServices.value)
-      lastRefresh.value = new Date()
-      
+      lastRefresh.value = new Date(data.checkedAt)
     } catch (error) {
-      console.error('Failed to refresh status:', error)
+      // Silently continue on error — stale data is better than a broken page
     } finally {
       isLoading.value = false
-    }
-  }
-
-  const simulateStatusUpdates = () => {
-    // Randomly update response times to simulate real monitoring
-    currentServices.value.forEach(service => {
-      if (service.responseTime) {
-        const variation = (Math.random() - 0.5) * 20 // ±10ms variation
-        service.responseTime = Math.max(10, Math.round(service.responseTime + variation))
-      }
-    })
-
-    // Occasionally update uptime (very small changes)
-    if (Math.random() < 0.1) { // 10% chance
-      const randomService = currentServices.value[Math.floor(Math.random() * currentServices.value.length)]
-      const variation = (Math.random() - 0.5) * 0.02 // ±0.01% variation
-      randomService.uptime.last24h = Math.min(100, Math.max(98, randomService.uptime.last24h + variation))
     }
   }
 

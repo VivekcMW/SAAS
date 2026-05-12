@@ -1,9 +1,10 @@
 <template>
   <BuyerDeals v-if="role === 'buyer'" />
+  <VendorDeals v-else-if="role === 'vendor' || role === 'admin'" />
   <div v-else class="bw">
     <div class="bw-empty">
-      <h3 class="bw-empty__title">Available to buyers</h3>
-      <p class="bw-empty__desc">This page is part of the buyer workspace.</p>
+      <h3 class="bw-empty__title">Please log in</h3>
+      <p class="bw-empty__desc">Sign in to view your deals.</p>
     </div>
   </div>
 </template>

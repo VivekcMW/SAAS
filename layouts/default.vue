@@ -36,11 +36,23 @@ const isRTL = computed(() => RTL_LOCALES.has(locale.value))
 // Inject hreflang alternate link tags for all locales on every page
 useHreflang()
 
+const route = useRoute()
+const BASE_URL = 'https://moonmart.ai'
+
+// Strip pagination + tracking params to build the canonical URL
+const canonicalUrl = computed(() => {
+  const cleanPath = route.path.replace(/\/+$/, '') || '/'
+  return `${BASE_URL}${cleanPath}`
+})
+
 useHead({
   htmlAttrs: {
     dir: () => (isRTL.value ? 'rtl' : 'ltr'),
     lang: () => locale.value
-  }
+  },
+  link: [
+    { rel: 'canonical', href: () => canonicalUrl.value }
+  ]
 })
 </script>
 

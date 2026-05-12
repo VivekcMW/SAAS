@@ -1434,6 +1434,28 @@ function createSchema(db: Database.Database) {
     CREATE INDEX IF NOT EXISTS idx_promo_vendor ON vendor_promotions(vendor_id);
   `)
 
+  // Vendor deals — time-limited offers created by vendors for buyers
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS vendor_deals (
+      id           TEXT PRIMARY KEY,
+      vendor_id    TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      app_id       TEXT REFERENCES apps(id) ON DELETE SET NULL,
+      title        TEXT NOT NULL,
+      description  TEXT,
+      discount_pct INTEGER,
+      promo_code   TEXT,
+      deal_type    TEXT NOT NULL DEFAULT 'percent' CHECK(deal_type IN ('percent','flat','trial','free')),
+      starts_at    TEXT NOT NULL,
+      expires_at   TEXT NOT NULL,
+      max_claims   INTEGER,
+      claim_count  INTEGER NOT NULL DEFAULT 0,
+      active       INTEGER NOT NULL DEFAULT 1,
+      created_at   TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+    CREATE INDEX IF NOT EXISTS idx_vd_vendor ON vendor_deals(vendor_id);
+    CREATE INDEX IF NOT EXISTS idx_vd_expires ON vendor_deals(expires_at);
+  `)
+
   // Ad events (impressions + clicks) — lightweight append-only table
   db.exec(`
     CREATE TABLE IF NOT EXISTS ad_events (

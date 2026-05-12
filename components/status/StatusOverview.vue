@@ -71,11 +71,31 @@
       </div>
     </div>
   </div>
+
+  <!-- Subscribe modal -->
+  <div v-if="showSubscribeModal" style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:flex;align-items:center;justify-content:center;" @click.self="showSubscribeModal = false">
+    <div style="background:#fff;border-radius:12px;padding:2rem;width:380px;max-width:95vw;">
+      <h2 style="font-size:1.1rem;font-weight:700;margin:0 0 .5rem;">Get incident notifications</h2>
+      <p style="font-size:.875rem;color:#64748b;margin:0 0 1rem;">We'll email you when services are impacted.</p>
+      <template v-if="!subscribeMsg">
+        <input v-model="subscribeEmail" type="email" placeholder="you@company.com" style="width:100%;padding:.6rem .9rem;border:1px solid #e2e8f0;border-radius:8px;font-size:.9rem;margin-bottom:.75rem;" @keydown.enter="submitSubscribe" />
+        <p v-if="subscribeError" style="color:#dc2626;font-size:.8rem;margin:0 0 .5rem;">{{ subscribeError }}</p>
+        <div style="display:flex;gap:.75rem;justify-content:flex-end;">
+          <button style="padding:.5rem 1rem;border-radius:8px;border:1px solid #e2e8f0;background:transparent;cursor:pointer;" @click="showSubscribeModal = false">Cancel</button>
+          <button style="padding:.5rem 1rem;border-radius:8px;background:#2563eb;color:#fff;border:none;cursor:pointer;" :disabled="subscribing" @click="submitSubscribe">{{ subscribing ? 'Subscribing…' : 'Subscribe' }}</button>
+        </div>
+      </template>
+      <div v-else style="text-align:center;padding:1rem 0;">
+        <p style="font-size:.95rem;color:#16a34a;font-weight:600;">{{ subscribeMsg }}</p>
+        <button style="margin-top:1rem;padding:.5rem 1.25rem;border-radius:8px;background:#2563eb;color:#fff;border:none;cursor:pointer;" @click="showSubscribeModal = false">Done</button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 const { 
-  systemStatus, 
   overallUptime, 
   averageResponseTime, 
   activeIncidents, 
@@ -99,9 +119,30 @@ const getStatusText = (status: string) => {
   return texts[status as keyof typeof texts] || 'Status Unknown'
 }
 
+const subscribeEmail = ref('')
+const subscribeMsg = ref('')
+const subscribeError = ref('')
+const subscribing = ref(false)
+const showSubscribeModal = ref(false)
+
 const openSubscribeModal = () => {
-  // TODO: Implement subscription modal
-  console.log('Opening subscribe modal...')
+  subscribeEmail.value = ''
+  subscribeMsg.value = ''
+  subscribeError.value = ''
+  showSubscribeModal.value = true
+}
+
+async function submitSubscribe() {
+  subscribeError.value = ''
+  subscribing.value = true
+  try {
+    await $fetch('/api/status/subscribe', { method: 'POST', body: { email: subscribeEmail.value } })
+    subscribeMsg.value = 'Subscribed! You will be notified of incidents.'
+  } catch (err: any) {
+    subscribeError.value = err?.data?.statusMessage || 'Could not subscribe. Try again.'
+  } finally {
+    subscribing.value = false
+  }
 }
 </script>
 

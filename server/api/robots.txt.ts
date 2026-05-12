@@ -16,6 +16,7 @@ Allow: /
 
 # Strategic disallows for optimal crawling budget
 Disallow: /admin/
+Disallow: /api/
 Disallow: /api/private/
 Disallow: /dashboard/
 Disallow: /vendor/

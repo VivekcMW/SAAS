@@ -79,7 +79,7 @@
             <div class="sl-logo" :style="{ background: a.color }">{{ a.logo }}</div>
             <div class="sl-main">
               <div class="sl-name">{{ a.name }}</div>
-              <div class="sl-meta">{{ a.category }} · {{ a.priceFrom > 0 ? `from $${a.priceFrom}/seat` : 'Free' }}</div>
+              <div class="sl-meta">{{ a.category }} · {{ a.priceFrom > 0 ? `from ${formatPrice(a.priceFrom)}/seat` : 'Free' }}</div>
             </div>
             <span class="bw-chip" :class="`bw-chip--${tone(a.status)}`">{{ label(a.status) }}</span>
           </li>
@@ -119,6 +119,18 @@
             </li>
           </ul>
         </section>
+
+        <!-- Become a Vendor CTA -->
+        <section class="bw-card become-vendor">
+          <div class="become-vendor__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9h18M9 3v18M3 3h18v18H3z" stroke-linecap="round"/></svg>
+          </div>
+          <div class="become-vendor__body">
+            <p class="become-vendor__title">Sell your product on Moonmart</p>
+            <p class="become-vendor__desc">Reach thousands of buyers actively comparing software in your category.</p>
+          </div>
+          <NuxtLink to="/list-product" class="bw-btn bw-btn--primary become-vendor__cta">List your product →</NuxtLink>
+        </section>
       </aside>
     </div>
   </div>
@@ -127,11 +139,13 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useBuyerData, statusLabel, statusTone } from '~/composables/useBuyerData'
+import { useCurrency } from '~/composables/useCurrency'
 
 const props = defineProps<{ firstName?: string }>()
 const firstName = computed(() => props.firstName || 'there')
 
 const { savedApps, kpis, enquiries, reviews, deals, digest } = useBuyerData()
+const { formatPrice } = useCurrency()
 
 const categories = computed(() => new Set(savedApps.value.map(a => a.category)).size)
 const unread = computed(() => enquiries.value.reduce((a, e) => a + e.unread, 0))
@@ -200,4 +214,10 @@ const nextStep = computed(() => {
 .onboarding__steps { padding-left: 1.25rem; margin: 0 0 1.25rem; color: var(--bw-text-muted); font-size: 0.9rem; line-height: 1.8; }
 .bw-link { color: var(--bw-primary); text-decoration: none; }
 .bw-link:hover { text-decoration: underline; }
+.become-vendor { display: flex; align-items: center; gap: 1rem; padding: 1.1rem 1.25rem; flex-wrap: wrap; }
+.become-vendor__icon { width: 40px; height: 40px; border-radius: 10px; background: var(--bw-primary-50, #eff6ff); color: var(--bw-primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.become-vendor__body { flex: 1; min-width: 0; }
+.become-vendor__title { font-weight: 600; font-size: 0.9rem; color: var(--bw-text); margin: 0 0 2px; }
+.become-vendor__desc { font-size: 0.8rem; color: var(--bw-text-muted); margin: 0; }
+.become-vendor__cta { flex-shrink: 0; font-size: 0.8rem; }
 </style>

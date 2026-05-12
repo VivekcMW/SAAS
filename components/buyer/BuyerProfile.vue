@@ -13,6 +13,20 @@
 
     <!-- Personal -->
     <section v-if="tab === 'personal'" class="bw-card">
+      <!-- Avatar upload -->
+      <div class="bp-avatar-row">
+        <img v-if="avatarPreview || currentUser?.avatarUrl" :src="avatarPreview || currentUser?.avatarUrl" class="bp-avatar" alt="Profile photo" />
+        <div v-else class="bp-avatar bp-avatar--placeholder">{{ (form.firstName || '?')[0].toUpperCase() }}</div>
+        <div>
+          <label class="bw-btn bw-btn--ghost bw-btn--sm" style="cursor: pointer;">
+            Change photo
+            <input type="file" accept="image/png,image/jpeg,image/webp" style="display: none;" @change="uploadAvatar" />
+          </label>
+          <p class="bp-avatar-hint">PNG, JPG or WebP · max 2 MB</p>
+          <p v-if="avatarError" style="color: #fca5a5; font-size: 0.8rem; margin: 0;">{{ avatarError }}</p>
+        </div>
+      </div>
+      <hr class="bw-divider" />
       <div class="bw-grid bw-grid--2">
         <div>
           <label class="bw-label" for="bp-firstName">First name</label>
@@ -98,6 +112,12 @@
         <button class="bw-btn bw-btn--primary" :disabled="saving" @click="save">{{ saving ? 'Saving…' : 'Save notifications' }}</button>
       </div>
     </section>
+
+    <!-- Security / 2FA -->
+    <section v-if="tab === 'security'" class="bw-card">
+      <h2 class="bw-section-title" style="margin-bottom: 1.25rem;">Security</h2>
+      <TwoFactorSetup />
+    </section>
   </div>
 </template>
 
@@ -108,10 +128,30 @@ import { useAuth } from '~/composables/useAuth'
 const { currentUser } = useAuth()
 const route = useRoute()
 
+const avatarPreview = ref<string | null>(null)
+const avatarError = ref('')
+
+async function uploadAvatar(e: Event) {
+  avatarError.value = ''
+  const file = (e.target as HTMLInputElement).files?.[0]
+  if (!file) return
+  if (file.size > 2 * 1024 * 1024) { avatarError.value = 'File exceeds 2 MB limit.'; return }
+  avatarPreview.value = URL.createObjectURL(file)
+  const form = new FormData()
+  form.append('file', file)
+  try {
+    await $fetch('/api/user/avatar', { method: 'POST', body: form })
+  } catch (err: any) {
+    avatarError.value = err?.data?.statusMessage || 'Upload failed.'
+    avatarPreview.value = null
+  }
+}
+
 const tabs = [
   { id: 'personal', label: 'Personal' },
   { id: 'preferences', label: 'Preferences' },
-  { id: 'notifications', label: 'Notifications' }
+  { id: 'notifications', label: 'Notifications' },
+  { id: 'security', label: 'Security' }
 ] as const
 
 // Sync tab with ?tab= query parameter so external links work (e.g. ?tab=notifications)
@@ -197,6 +237,10 @@ async function save() {
 </script>
 
 <style scoped>
+.bp-avatar-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; }
+.bp-avatar { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 2px solid var(--bw-border); }
+.bp-avatar--placeholder { background: var(--bw-primary, #2563eb); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 700; }
+.bp-avatar-hint { color: var(--bw-text-muted); font-size: 0.78rem; margin: 4px 0 0; }
 .bw-form-footer { display: flex; justify-content: flex-end; align-items: center; gap: 8px; flex-wrap: wrap; }
 .bw-save-success { font-size: 0.85rem; color: var(--bw-success); }
 .bw-save-error { font-size: 0.85rem; color: var(--bw-danger, #e53e3e); }

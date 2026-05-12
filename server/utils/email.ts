@@ -32,6 +32,21 @@ const DEFAULT_FROM = process.env.MAIL_FROM || 'Moonmart <no-reply@moonmart.local
 
 export const ADMIN_EMAIL = process.env.MAIL_ADMIN || 'admin@moonmart.local'
 
+// Startup warning: alert operators when no email transport is configured
+if (
+  process.env.NODE_ENV === 'production' &&
+  !process.env.SMTP_HOST &&
+  !process.env.RESEND_API_KEY &&
+  !process.env.SENDGRID_API_KEY &&
+  process.env.MAIL_DRIVER !== 'smtp'
+) {
+  console.error(
+    '\n⚠️  [email] WARNING: No email transport configured in production!\n' +
+    '   Transactional emails (password reset, notifications, etc.) will be silently discarded.\n' +
+    '   Set SMTP_HOST + SMTP_USER + SMTP_PASS, or RESEND_API_KEY to enable email delivery.\n'
+  )
+}
+
 function shouldUseSmtp() {
   if (process.env.MAIL_DRIVER === 'console') return false
   if (process.env.MAIL_DRIVER === 'smtp') return true

@@ -113,6 +113,7 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
+import { computed } from 'vue';
 import MarketplaceSearchBar from './MarketplaceSearchBar.vue';
 import { useCategoriesMenu } from '~/composables/useCategoriesMenu';
 
@@ -130,51 +131,9 @@ const allCategories = [
 
 const quickCategories = allCategories.slice(0, 8);
 
-// Mock data - In a real app, this would come from an API
-const sponsoredApps = [
-  { 
-    id: 'salesforce', 
-    name: 'Salesforce', 
-    category: 'CRM', 
-    logo: '/assets/images/integrations/salesforce.svg',
-    rating: 4.8 
-  },
-  { 
-    id: 'slack', 
-    name: 'Slack', 
-    category: 'Communication', 
-    logo: '/assets/images/integrations/slack.svg',
-    rating: 4.7 
-  },
-  { 
-    id: 'hubspot', 
-    name: 'HubSpot', 
-    category: 'Marketing', 
-    logo: '/assets/images/integrations/hubspot.svg',
-    rating: 4.6 
-  },
-  { 
-    id: 'zoom', 
-    name: 'Zoom', 
-    category: 'Video Conferencing', 
-    logo: '/assets/images/integrations/zoom.svg',
-    rating: 4.5 
-  },
-  { 
-    id: 'dropbox', 
-    name: 'Dropbox', 
-    category: 'File Storage', 
-    logo: '/assets/images/integrations/dropbox.svg',
-    rating: 4.5 
-  },
-  { 
-    id: 'stripe', 
-    name: 'Stripe', 
-    category: 'Payments', 
-    logo: '/assets/images/integrations/stripe.svg',
-    rating: 4.9 
-  },
-];
+// Fetch sponsored apps from API, fall back to empty array
+const { data: sponsoredData } = await useFetch<{ apps: Array<{ id: string; name: string; category: string; logo: string | null; rating: number }> }>('/api/marketplace/sponsored', { default: () => ({ apps: [] }) })
+const sponsoredApps = computed(() => sponsoredData.value?.apps ?? [])
 
 const trendingApps = [
   { 

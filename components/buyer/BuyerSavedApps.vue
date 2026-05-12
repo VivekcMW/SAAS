@@ -56,7 +56,7 @@
         <div class="app__meta">
           <div class="app__meta-item">
             <span class="app__meta-label">From</span>
-            <span class="app__meta-value">{{ a.priceFrom > 0 ? `$${a.priceFrom}/seat` : 'Free' }}</span>
+            <span class="app__meta-value">{{ a.priceFrom > 0 ? `${formatPrice(a.priceFrom)}/seat` : 'Free' }}</span>
           </div>
           <div class="app__meta-item">
             <span class="app__meta-label">Rating</span>
@@ -101,8 +101,10 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useBuyerData, statusLabel, statusTone, type BuyerStatus } from '~/composables/useBuyerData'
+import { useCurrency } from '~/composables/useCurrency'
 
 const { savedApps, updateStatus, removeApp, setNote } = useBuyerData()
+const { formatPrice } = useCurrency()
 
 const q = ref('')
 const filterStatus = ref<'' | BuyerStatus>('')

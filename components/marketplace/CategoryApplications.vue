@@ -189,9 +189,9 @@ const navigateToApp = (appId: string) => {
 
 // Transform app data for the global ProductCard component
 const transformAppData = (app: Application, variant: 'regular' | 'sponsored' | 'trending' = 'regular') => {
-  // Generate mock growth stats for trending apps
+  // Deterministic growth stat derived from app id (no Math.random)
   const growthStats = variant === 'trending' ? {
-    percentage: Math.floor(Math.random() * 50) + 10, // 10-60% growth
+    percentage: ((app.id.charCodeAt(0) + app.id.charCodeAt(app.id.length - 1)) % 50) + 10,
     period: 'week',
     trend: 'up' as const
   } : undefined;
@@ -211,7 +211,7 @@ const transformAppData = (app: Application, variant: 'regular' | 'sponsored' | '
     logo: app.logo,
     rating: app.rating,
     reviewCount: app.reviewCount,
-    activeUsers: Math.floor(Math.random() * 100000) + 10000, // Mock active users data
+    activeUsers: ((app.id.charCodeAt(0) * 397 + app.name.length * 1021) % 90000) + 10000,
     pricing: app.pricing,
     isFavorited: false, // TODO: Implement favorites system
     growthStats,
@@ -299,9 +299,6 @@ const handleImageError = (event: Event, app: Application) => {
 // Load applications
 const loadApplications = async () => {
   loading.value = true;
-  
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 500));
   
   // Extended mock data with at least 10 apps for each major category
   let allMockApps: Application[] = [

@@ -4,6 +4,7 @@
  */
 
 import type { Badge, AnalyticsSummary } from '~/types/enhanced-app'
+import { getDb, makeId } from '~/server/utils/database'
 
 export class BadgeAssigner {
   private static instance: BadgeAssigner
@@ -289,32 +290,41 @@ export class BadgeAssigner {
   }
 
   private async getExistingBadge(appId: string, badgeType: string): Promise<Badge | null> {
-    // Check if badge already exists
-    return null
+    try {
+      const db = getDb()
+      const row = db.prepare(`SELECT * FROM app_badges WHERE app_id = ? AND type = ? AND (expires_at IS NULL OR expires_at > datetime('now')) LIMIT 1`).get(appId, badgeType) as Badge | undefined
+      return row ?? null
+    } catch { return null }
   }
 
   private async saveBadge(appId: string, badge: Badge): Promise<void> {
-    // Save badge to database
-    console.log(`Saving badge ${badge.type} for app ${appId}`)
+    try {
+      const db = getDb()
+      const id = badge.id || makeId('badge')
+      const now = new Date().toISOString()
+      db.prepare(`INSERT OR REPLACE INTO app_badges (id, app_id, type, label, description, awarded_at, expires_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(id, appId, badge.type, badge.label ?? badge.type, badge.description ?? null, badge.awardedAt ?? now, badge.expiresAt ?? null, now, now)
+    } catch (e) { console.error('[badgeAssigner] saveBadge failed:', e) }
   }
 
   private async getExpiredBadges(appId: string): Promise<Badge[]> {
-    // Get badges that have expired
-    return []
+    try {
+      const db = getDb()
+      return db.prepare(`SELECT * FROM app_badges WHERE app_id = ? AND expires_at IS NOT NULL AND expires_at <= datetime('now')`).all(appId) as Badge[]
+    } catch { return [] }
   }
 
   private async removeBadge(appId: string, badgeId: string): Promise<void> {
-    // Remove badge from database
-    console.log(`Removing badge ${badgeId} from app ${appId}`)
+    try {
+      const db = getDb()
+      db.prepare('DELETE FROM app_badges WHERE id = ? AND app_id = ?').run(badgeId, appId)
+    } catch (e) { console.error('[badgeAssigner] removeBadge failed:', e) }
   }
 
   private async getActiveApps(): Promise<Array<{ id: string }>> {
-    // Get list of active apps
-    return [
-      { id: 'app-001' },
-      { id: 'app-002' },
-      { id: 'app-003' }
-    ]
+    try {
+      const db = getDb()
+      return db.prepare(`SELECT id FROM app_listings WHERE status = 'published' ORDER BY updated_at DESC LIMIT 500`).all() as Array<{ id: string }>
+    } catch { return [] }
   }
 
   private async requestEditorReview(appId: string, badgeType: string): Promise<void> {
