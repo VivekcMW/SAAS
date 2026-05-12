@@ -99,7 +99,8 @@ const ICONS = {
   shield: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z"/></svg>',
   file: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
   budget: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M9 9h6a2 2 0 0 1 0 4H9a2 2 0 0 0 0 4h6"/></svg>',
-  stack: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="4" rx="1"/><rect x="2" y="10" width="20" height="4" rx="1"/><rect x="2" y="17" width="20" height="4" rx="1"/></svg>'
+  stack: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="4" rx="1"/><rect x="2" y="10" width="20" height="4" rx="1"/><rect x="2" y="17" width="20" height="4" rx="1"/></svg>',
+  megaphone: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2M20 4v16"/><path d="M20 4L5 9v6l15 5V4z"/><path d="M5 15l-2 5"/></svg>',
 }
 
 const buyerGroups = computed<NavGroup[]>(() => [
@@ -136,7 +137,6 @@ const vendorGroups: NavGroup[] = [
     items: [
       { to: '/dashboard/overview', label: 'Overview', icon: ICONS.home },
       { to: '/dashboard/products', label: 'Listings', icon: ICONS.apps },
-      { to: '/dashboard/news', label: 'News', icon: ICONS.file },
       { to: '/dashboard/leads', label: 'Leads', icon: ICONS.inbox },
       { to: '/dashboard/reviews', label: 'Reviews', icon: ICONS.star }
     ]
@@ -146,7 +146,7 @@ const vendorGroups: NavGroup[] = [
     items: [
       { to: '/dashboard/analytics', label: 'Analytics', icon: ICONS.chart },
       { to: '/dashboard/promotions', label: 'Promotions', icon: ICONS.budget },
-      { to: '/dashboard/similar-vendors', label: 'Similar vendors', icon: ICONS.compare }
+      { to: '/dashboard/review-requests', label: 'Review requests', icon: ICONS.star }
     ]
   },
   {
@@ -161,8 +161,7 @@ const vendorGroups: NavGroup[] = [
     title: 'Account',
     items: [
       { to: '/dashboard/profile', label: 'Company profile', icon: ICONS.user },
-      { to: '/dashboard/billing', label: 'Billing & plan', icon: ICONS.card },
-      { to: '/dashboard/team', label: 'Team & API', icon: ICONS.team }
+      { to: '/dashboard/billing', label: 'Billing & plan', icon: ICONS.card }
     ]
   }
 ]
@@ -182,6 +181,7 @@ const adminGroups: NavGroup[] = [
     items: [
       { to: '/dashboard/pending-apps', label: 'Pending approvals', icon: ICONS.file },
       { to: '/dashboard/badges', label: 'Badges', icon: ICONS.star },
+      { to: '/dashboard/sponsored', label: 'Sponsored slots', icon: ICONS.megaphone },
       { to: '/dashboard/news', label: 'News moderation', icon: ICONS.file },
       { to: '/dashboard/support', label: 'Support', icon: ICONS.inbox }
     ]
