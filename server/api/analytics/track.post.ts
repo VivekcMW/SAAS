@@ -43,8 +43,6 @@ export default defineEventHandler(async (event) => {
     // 3. Trigger alerts if needed
     // 4. Process for machine learning models
     
-    console.log('Tracking analytics event:', analyticsEvent)
-
     // Update app metrics in real-time
     await updateAppMetrics(analyticsEvent.appId, analyticsEvent.type)
 
@@ -88,8 +86,6 @@ async function getLocationFromIP(ip: string) {
 
 async function updateAppMetrics(appId: string, eventType: string) {
   // In a real implementation, this would update metrics in the database
-  console.log(`Updating metrics for app ${appId}, event: ${eventType}`)
-  
   // Example of what this would do:
   // - Increment view count for 'view' events
   // - Increment download count for 'download' events

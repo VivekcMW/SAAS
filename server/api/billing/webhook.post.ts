@@ -136,7 +136,7 @@ export default defineEventHandler(async (event) => {
 
       default:
         // Unhandled event — log and return 200 so Stripe doesn't retry
-        console.log('[webhook] Unhandled event type:', stripeEvent.type)
+        // Unhandled event type — return 200 so Stripe doesn't retry
     }
   } catch (err) {
     console.error('[webhook] Error processing event', stripeEvent.type, err)

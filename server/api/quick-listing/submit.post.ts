@@ -1,82 +1,67 @@
+import { getDb, makeId, logActivity } from '~/server/utils/database'
+import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
+
 export default defineEventHandler(async (event) => {
-  try {
-    const body = await readBody(event);
-    
-    // Validate required fields
-    const requiredFields = ['productName', 'category', 'websiteUrl', 'companyName', 'contactName', 'contactEmail'];
-    const missingFields = requiredFields.filter(field => !body[field]);
-    
-    if (missingFields.length > 0) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: `Missing required fields: ${missingFields.join(', ')}`
-      });
-    }
-    
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(body.contactEmail)) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Invalid email format'
-      });
-    }
-    
-    // Validate URL format
-    const urlRegex = /^https?:\/\/.+/;
-    if (!urlRegex.test(body.websiteUrl)) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Website URL must start with http:// or https://'
-      });
-    }
-    
-    // TODO: Implement actual database storage
-    // For now, we'll simulate a successful submission
-    const listingId = `ql_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    
-    // Log the submission for debugging
-    console.log('Quick Listing Submission:', {
-      listingId,
-      productName: body.productName,
-      category: body.category,
-      companyName: body.companyName,
-      contactEmail: body.contactEmail,
-      timestamp: new Date().toISOString()
-    });
-    
-    // Simulate processing time
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // TODO: Send confirmation email
-    // TODO: Add to search index
-    // TODO: Trigger quality review workflow
-    
-    return {
-      success: true,
-      listingId,
-      message: 'Your quick listing has been successfully submitted!',
-      data: {
-        productName: body.productName,
-        status: 'published',
-        reviewStatus: 'pending',
-        publishedAt: new Date().toISOString(),
-        editUrl: `/dashboard/listings/${listingId}/edit`,
-        publicUrl: `/product/${body.productName.toLowerCase().replace(/[^a-z0-9]/g, '-')}`
-      }
-    };
-    
-  } catch (error) {
-    // Log error for debugging
-    console.error('Quick Listing Submission Error:', error);
-    
-    if ((error as any).statusCode) {
-      throw error;
-    }
-    
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Internal server error during submission'
-    });
+  const ip = getClientIp(event)
+  if (!checkRateLimit(ip, { prefix: 'quick-listing', limit: 5, windowMs: 60 * 60 * 1000 }).allowed) {
+    throw createError({ statusCode: 429, statusMessage: 'Too many submissions. Try again later.' })
   }
-});
+
+  const body = await readBody(event)
+
+  // Validate required fields
+  const requiredFields = ['productName', 'category', 'websiteUrl', 'companyName', 'contactName', 'contactEmail']
+  const missingFields = requiredFields.filter(field => !body[field])
+  if (missingFields.length > 0) {
+    throw createError({ statusCode: 400, statusMessage: `Missing required fields: ${missingFields.join(', ')}` })
+  }
+
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(body.contactEmail)) {
+    throw createError({ statusCode: 400, statusMessage: 'Invalid email format' })
+  }
+
+  // Validate URL format
+  const urlRegex = /^https?:\/\/.+/
+  if (!urlRegex.test(body.websiteUrl)) {
+    throw createError({ statusCode: 400, statusMessage: 'Website URL must start with http:// or https://' })
+  }
+
+  const db = getDb()
+  const now = new Date().toISOString()
+  const submissionId = makeId('qs')
+
+  db.prepare(`
+    INSERT INTO onboarding_submissions (id, user_id, product_name, company_name, contact_email, payload, status, created_at, updated_at)
+    VALUES (?, NULL, ?, ?, ?, ?, 'submitted', ?, ?)
+  `).run(
+    submissionId,
+    body.productName,
+    body.companyName,
+    body.contactEmail,
+    JSON.stringify({ ...body, source: 'quick-listing' }),
+    now,
+    now
+  )
+
+  logActivity({
+    actorEmail: body.contactEmail,
+    action: 'quick_listing_submitted',
+    entityType: 'onboarding_submission',
+    entityId: submissionId,
+    meta: { productName: body.productName, category: body.category }
+  })
+
+  return {
+    success: true,
+    submissionId,
+    message: 'Your listing has been submitted and is pending review.',
+    data: {
+      productName: body.productName,
+      status: 'pending_review',
+      reviewStatus: 'pending',
+      submittedAt: now
+    }
+  }
+})

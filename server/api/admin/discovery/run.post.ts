@@ -53,12 +53,10 @@ export default defineEventHandler(async (event) => {
   if (body.source === 'enrich') {
     const enrichFn: EnrichFn = runProxycurlEnrichmentBatch
     enrichFn(limit)
-      .then(r => console.log('[discovery/run] enrich complete', r))
       .catch(e => console.error('[discovery/run] enrich error', e))
   }
   else {
     runners[body.source](limit)
-      .then(r => console.log(`[discovery/run] ${body.source} complete`, r))
       .catch(e => console.error(`[discovery/run] ${body.source} error`, e))
   }
 
