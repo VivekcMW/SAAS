@@ -21,7 +21,7 @@
         </div>
         <div v-if="ai.typing.value" class="vw-chat__msg vw-chat__msg--ai">
           <div class="vw-chat__bubble vw-chat__typing">
-            <span /><span /><span />
+            <span></span><span></span><span></span>
           </div>
         </div>
       </div>
@@ -113,3 +113,4 @@ watch(() => ai.messages.value.length, async () => {
   border: 1px solid var(--vw-ai-100); border-radius: 6px; padding: 2px 8px;
   margin-bottom: 6px; align-self: flex-start;
 }
+</style>
