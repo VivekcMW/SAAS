@@ -49,7 +49,9 @@
       <div class="bw-modal">
         <div class="bw-modal__head">
           <h2 class="bw-modal__title">Assign badge</h2>
-          <button class="bw-modal__close" type="button" @click="showAssignModal = false">✕</button>
+          <button class="bw-modal__close" type="button" aria-label="Close" @click="showAssignModal = false">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
         </div>
         <div class="bw-modal__body">
           <div class="bw-field">
@@ -69,13 +71,16 @@
           </div>
           <div class="bw-field">
             <label class="bw-label">Expires at (optional)</label>
-            <input v-model="form.expiresAt" type="date" class="bw-input" />
+            <input v-model="form.expiresAt" type="date" class="bw-input" :min="today" />
           </div>
-          <p v-if="formError" class="bw-form-error">{{ formError }}</p>
+          <p v-if="formError" class="bw-form-error">
+            {{ formError }}
+            <button type="button" style="margin-left:8px;background:none;border:none;cursor:pointer;font-size:0.75rem;color:inherit;text-decoration:underline;" @click="formError = ''">Dismiss</button>
+          </p>
         </div>
         <div class="bw-modal__foot">
           <button class="bw-btn bw-btn--ghost" @click="showAssignModal = false">Cancel</button>
-          <button class="bw-btn bw-btn--primary" :disabled="saving" @click="assignBadge">
+          <button class="bw-btn bw-btn--primary" :disabled="saving" :aria-busy="saving ? 'true' : 'false'" @click="assignBadge">
             {{ saving ? 'Saving…' : 'Assign' }}
           </button>
         </div>
@@ -108,6 +113,8 @@ const BADGE_TYPES = [
   { value: 'verified', label: 'Verified' },
   { value: 'top_rated', label: 'Top Rated' }
 ]
+
+const today = new Date().toISOString().split('T')[0]
 
 const badges = ref<BadgeRow[]>([])
 const loading = ref(false)

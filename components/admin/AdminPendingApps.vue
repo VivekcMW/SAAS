@@ -84,7 +84,9 @@ watch(pendingApps, (list) => {
 })
 
 function decide(d: 'approved' | 'rejected') {
-  if (selectedId.value) decideApp(selectedId.value, d)
+  if (!selectedId.value) return
+  if (d === 'rejected' && !confirm(`Reject "${selected.value?.name}"? This cannot be undone.`)) return
+  decideApp(selectedId.value, d)
 }
 </script>
 

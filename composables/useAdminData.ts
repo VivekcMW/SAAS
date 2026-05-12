@@ -102,6 +102,7 @@ async function loadActivity(opts?: { action?: string; entityType?: string; limit
     activityLoaded.value = true
   } catch (err) {
     console.error('[useAdminData] activity fetch failed:', err)
+    activityError.value = true
   } finally {
     activityLoading.value = false
   }
@@ -162,8 +163,22 @@ const kpis = computed(() => {
   }
 })
 
-function decideApp(id: string, decision: 'approved' | 'rejected') {
+// ── Shared admin toast ────────────────────────────────────────────
+const adminToast = ref<{ msg: string; type: 'success' | 'error' } | null>(null)
+let _toastTimer: ReturnType<typeof setTimeout> | null = null
+
+function showAdminToast(msg: string, type: 'success' | 'error' = 'success') {
+  if (_toastTimer) clearTimeout(_toastTimer)
+  adminToast.value = { msg, type }
+  _toastTimer = setTimeout(() => { adminToast.value = null }, 3500)
+}
+
+// ── Activity error ────────────────────────────────────────────────
+const activityError = ref(false)
+
+async function decideApp(id: string, decision: 'approved' | 'rejected') {
   const a = apps.value.find(x => x.id === id)
+  const prevStatus = a?.status
   if (a) a.status = decision
   activity.value.unshift({
     id: `e-${Date.now()}`,
@@ -173,10 +188,20 @@ function decideApp(id: string, decision: 'approved' | 'rejected') {
     action: decision === 'approved' ? 'approved' : 'rejected',
     target: a?.name || id
   })
+  try {
+    await $fetch(`/api/admin/apps/${id}/decide`, { method: 'POST', body: { decision } })
+    showAdminToast(decision === 'approved' ? `"${a?.name ?? 'App'}" approved.` : `"${a?.name ?? 'App'}" rejected.`)
+  } catch (err) {
+    if (a && prevStatus !== undefined) a.status = prevStatus
+    showAdminToast('Action failed. Please try again.', 'error')
+    console.error('[useAdminData] decideApp failed:', err)
+    throw err
+  }
 }
 
-function updateUserStatus(id: string, status: UserStatus) {
+async function updateUserStatus(id: string, status: UserStatus) {
   const u = users.value.find(x => x.id === id)
+  const prevStatus = u?.status
   if (u) u.status = status
   activity.value.unshift({
     id: `e-${Date.now()}`,
@@ -186,9 +211,22 @@ function updateUserStatus(id: string, status: UserStatus) {
     action: status === 'active' ? 'activated' : status === 'suspended' ? 'suspended' : 'updated',
     target: u?.name || id
   })
+  try {
+    await $fetch(`/api/admin/users/${id}/status`, { method: 'PATCH', body: { status } })
+    showAdminToast(
+      status === 'suspended'
+        ? `${u?.name ?? 'User'} suspended.`
+        : `${u?.name ?? 'User'} status updated.`
+    )
+  } catch (err) {
+    if (u && prevStatus !== undefined) u.status = prevStatus
+    showAdminToast('Action failed. Please try again.', 'error')
+    console.error('[useAdminData] updateUserStatus failed:', err)
+    throw err
+  }
 }
 
-function resolveTicket(id: string) {
+async function resolveTicket(id: string) {
   const t = tickets.value.find(x => x.id === id)
   if (t) t.status = 'resolved'
   activity.value.unshift({
@@ -199,6 +237,15 @@ function resolveTicket(id: string) {
     action: 'resolved',
     target: t?.subject || id
   })
+  try {
+    await $fetch(`/api/admin/support/${id}/resolve`, { method: 'POST' })
+    showAdminToast('Ticket resolved.')
+  } catch (err) {
+    if (t) t.status = 'open'
+    showAdminToast('Failed to resolve ticket.', 'error')
+    console.error('[useAdminData] resolveTicket failed:', err)
+    throw err
+  }
 }
 
 export function useAdminData() {
@@ -208,6 +255,7 @@ export function useAdminData() {
     tickets,
     activity,
     activityLoading,
+    activityError,
     loadActivity,
     mrrTrend,
     signupsByDay,
@@ -217,6 +265,8 @@ export function useAdminData() {
     loadLiveStats,
     decideApp,
     updateUserStatus,
-    resolveTicket
+    resolveTicket,
+    adminToast,
+    showAdminToast
   }
 }

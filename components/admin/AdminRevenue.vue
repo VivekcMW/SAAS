@@ -7,7 +7,13 @@
       </div>
     </header>
 
-    <div class="bw-kpis">
+    <template v-if="liveStatsLoading">
+      <div class="bw-kpis">
+        <div v-for="i in 4" :key="i" class="bw-kpi rev-kpi-skel" />
+      </div>
+    </template>
+
+    <template v-else>
       <div class="bw-kpi">
         <div class="bw-kpi__label">MRR</div>
         <div class="bw-kpi__value">${{ kpis.mrr.toLocaleString() }}</div>
@@ -27,7 +33,7 @@
         <div class="bw-kpi__value">8</div>
         <div class="bw-kpi__foot">+2 this quarter</div>
       </div>
-    </div>
+    </template>
 
     <div class="bw-grid bw-grid--main-aside bw-section">
       <section class="bw-card">
@@ -44,10 +50,15 @@
       <aside class="bw-card">
         <h2 class="bw-card__title">Top vendors</h2>
         <ul class="top-list">
-          <li><strong>Acme Technologies</strong><span>$3,640/mo</span></li>
-          <li><strong>Nebula Data Co.</strong><span>$2,180/mo</span></li>
-          <li><strong>FlowDesk Inc.</strong><span>$1,920/mo</span></li>
-          <li><strong>Wolfsoft Labs</strong><span>$1,480/mo</span></li>
+          <template v-if="liveStatsLoading">
+            <li v-for="i in 4" :key="i" class="rev-vendor-skel" />
+          </template>
+          <template v-else>
+            <li><strong>Acme Technologies</strong><span>$3,640/mo</span></li>
+            <li><strong>Nebula Data Co.</strong><span>$2,180/mo</span></li>
+            <li><strong>FlowDesk Inc.</strong><span>$1,920/mo</span></li>
+            <li><strong>Wolfsoft Labs</strong><span>$1,480/mo</span></li>
+          </template>
         </ul>
       </aside>
     </div>
@@ -56,7 +67,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
-const { kpis, mrrTrend, loadLiveStats } = useAdminData()
+const { kpis, mrrTrend, loadLiveStats, liveStatsLoading } = useAdminData()
 const maxMrr = computed(() => Math.max(...mrrTrend))
 const months = ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr']
 onMounted(() => loadLiveStats())
@@ -72,4 +83,22 @@ onMounted(() => loadLiveStats())
 .top-list li { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--aw-border); font-size: 0.88rem; }
 .top-list li:last-child { border-bottom: none; }
 .top-list span { color: var(--aw-text-muted); font-weight: 600; }
+
+.rev-kpi-skel {
+  min-height: 84px;
+  background: var(--aw-surface-2);
+  border-radius: 12px;
+  animation: rev-pulse 1.5s infinite;
+}
+.rev-vendor-skel {
+  height: 18px;
+  border-radius: 6px;
+  background: var(--aw-surface-2);
+  margin: 10px 0;
+  animation: rev-pulse 1.5s infinite;
+}
+@keyframes rev-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
 </style>

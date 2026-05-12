@@ -25,6 +25,7 @@
         :key="src.key"
         class="bw-btn bw-btn--sm bw-btn--outline"
         :disabled="!!runningSource"
+        :aria-label="`Run ${src.label} crawler`"
         @click="runCrawler(src.key)"
       >
         <span v-if="runningSource === src.key" class="dq-spinner" aria-hidden="true" />
@@ -180,6 +181,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+const { showAdminToast } = useAdminData()
 
 interface ExtractedData {
   name?: string
@@ -281,8 +283,10 @@ async function approve(id: string) {
   actioning.value = 'approve'
   try {
     await $fetch(`/api/admin/discovery/${id}/approve`, { method: 'POST', body: { overrides: {} } })
+    showAdminToast('Item approved and published.')
     await load()
   } catch (e) {
+    showAdminToast('Approval failed. Please try again.', 'error')
     console.error(e)
   } finally {
     actioning.value = false
@@ -290,11 +294,14 @@ async function approve(id: string) {
 }
 
 async function reject(id: string) {
+  if (!confirm('Reject this discovery item?')) return
   actioning.value = 'reject'
   try {
     await $fetch(`/api/admin/discovery/${id}/reject`, { method: 'POST', body: {} })
+    showAdminToast('Item rejected.')
     await load()
   } catch (e) {
+    showAdminToast('Rejection failed. Please try again.', 'error')
     console.error(e)
   } finally {
     actioning.value = false
@@ -445,16 +452,14 @@ onMounted(load)
 .pq-desc { margin-bottom: 16px; }
 .pq-desc-text { font-size: 0.88rem; color: var(--aw-text-muted); line-height: 1.6; margin-top: 4px; }
 .pq-actions { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
-.dq-sources { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-.dq-sources__label { font-size: 0.82rem; color: var(--aw-text-muted); font-weight: 500; }
+.dq-outreach-form { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--aw-border); }
+.dq-outreach-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.dq-outreach-row .dq-textarea { flex: 1; min-width: 140px; }
 .bw-btn--sm { padding: 4px 12px; font-size: 0.8rem; }
 .bw-btn--outline { background: transparent; border: 1.5px solid var(--aw-border); color: var(--aw-text); }
 .bw-btn--outline:hover { border-color: var(--aw-accent); color: var(--aw-accent); }
 .dq-spinner { display: inline-block; width: 10px; height: 10px; border: 1.5px solid currentColor; border-top-color: transparent; border-radius: 50%; animation: spin 0.6s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.dq-outreach-form { margin-top: 16px; padding: 14px 16px; background: var(--aw-surface-2); border-radius: 10px; }
-.dq-outreach-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
-.dq-outreach-row input { flex: 1; min-width: 180px; }
 .dq-badge--outreached { background: #f3e8ff; color: #7c3aed; }
 .dq-badge--claimed    { background: #ccfbf1; color: #0f766e; }
 .dq-badge--auto_approved { background: #dcfce7; color: #15803d; }

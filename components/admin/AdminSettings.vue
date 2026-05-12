@@ -6,7 +6,7 @@
         <p class="bw-head__sub">Platform-wide policy and pricing.</p>
       </div>
       <div class="bw-head__actions">
-        <button class="bw-btn bw-btn--primary" @click="save">Save changes</button>
+        <button class="bw-btn bw-btn--primary" :disabled="saving" @click="save">{{ saving ? 'Saving…' : 'Save changes' }}</button>
       </div>
     </header>
 
@@ -53,6 +53,7 @@
     </div>
 
     <p v-if="saved" class="st-saved">Settings saved.</p>
+    <p v-if="saveError" class="st-error">{{ saveError }}</p>
   </div>
 </template>
 
@@ -69,10 +70,22 @@ const settings = ref({
   publicReviews: true
 })
 
+const saving = ref(false)
 const saved = ref(false)
-function save() {
-  saved.value = true
-  setTimeout(() => { saved.value = false }, 1800)
+const saveError = ref('')
+
+async function save() {
+  saving.value = true
+  saveError.value = ''
+  try {
+    await $fetch('/api/admin/settings', { method: 'POST', body: { ...settings.value } })
+    saved.value = true
+    setTimeout(() => { saved.value = false }, 3500)
+  } catch (err: any) {
+    saveError.value = err?.data?.message || 'Failed to save settings. Please try again.'
+  } finally {
+    saving.value = false
+  }
 }
 </script>
 
@@ -83,4 +96,5 @@ function save() {
 .st-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--aw-border); font-size: 0.9rem; }
 .st-row:last-child { border-bottom: none; }
 .st-row--check { justify-content: flex-start; gap: 10px; }
+.st-error { margin-top: 14px; color: var(--aw-red-700, #b91c1c); font-size: 0.85rem; font-weight: 500; }
 </style>

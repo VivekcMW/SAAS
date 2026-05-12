@@ -8,20 +8,22 @@
     </header>
 
     <div class="bw-toolbar">
-      <select v-model="kindF" class="bw-select" style="max-width: 180px;">
+      <select v-model="kindF" class="bw-select" aria-label="Filter by type" style="max-width: 180px;">
         <option value="all">All types</option>
         <option value="dispute">Disputes</option>
         <option value="flag">Flags</option>
         <option value="report">Reports</option>
       </select>
-      <select v-model="statusF" class="bw-select" style="max-width: 160px;">
+      <select v-model="statusF" class="bw-select" aria-label="Filter by status" style="max-width: 160px;">
         <option value="open">Open</option>
         <option value="resolved">Resolved</option>
         <option value="all">All</option>
       </select>
     </div>
 
-    <div v-if="rows.length === 0" class="bw-empty">
+    <div v-if="ticketsLoading" style="padding: 24px; color: var(--aw-text-muted);">Loading tickets…</div>
+
+    <div v-else-if="rows.length === 0" class="bw-empty">
       <p class="bw-empty__title">Nothing here.</p>
       <p class="bw-empty__desc">No tickets match this filter.</p>
     </div>
@@ -43,7 +45,7 @@
         </div>
         <p class="sp-desc">{{ t.description }}</p>
         <div v-if="t.status === 'open'" class="sp-actions">
-          <button class="bw-btn bw-btn--primary bw-btn--sm" @click="resolveTicket(t.id)">Resolve</button>
+          <button class="bw-btn bw-btn--primary bw-btn--sm" @click="confirmResolve(t)">Resolve</button>
         </div>
       </li>
     </ul>
@@ -56,6 +58,7 @@ const { tickets, resolveTicket } = useAdminData()
 
 const kindF = ref('all')
 const statusF = ref<'open' | 'resolved' | 'all'>('open')
+const ticketsLoading = ref(false)
 
 const openCount = computed(() => tickets.value.filter(t => t.status === 'open').length)
 const rows = computed(() => tickets.value.filter(t => {
@@ -63,6 +66,11 @@ const rows = computed(() => tickets.value.filter(t => {
   if (statusF.value !== 'all' && t.status !== statusF.value) return false
   return true
 }))
+
+function confirmResolve(t: any) {
+  if (!confirm(`Mark "${t.subject}" as resolved?`)) return
+  resolveTicket(t.id)
+}
 
 function kindChip(k: string) {
   if (k === 'dispute') return 'bw-chip--danger'

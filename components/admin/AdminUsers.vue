@@ -20,13 +20,13 @@
     >
       <!-- Role + Status filters in toolbar -->
       <template #toolbar-extra>
-        <select v-model="roleF" class="bw-select" style="max-width: 160px;">
+        <select v-model="roleF" class="bw-select" aria-label="Filter by role" style="max-width: 160px;">
           <option value="all">All roles</option>
           <option value="buyer">Buyers</option>
           <option value="vendor">Vendors</option>
           <option value="admin">Admins</option>
         </select>
-        <select v-model="statusF" class="bw-select" style="max-width: 180px;">
+        <select v-model="statusF" class="bw-select" aria-label="Filter by status" style="max-width: 180px;">
           <option value="all">All statuses</option>
           <option value="active">Active</option>
           <option value="pending">Pending</option>
@@ -71,7 +71,7 @@
           <button
             v-if="row.status === 'active' && row.role !== 'admin'"
             class="bw-btn bw-btn--subtle bw-btn--sm"
-            @click.stop="updateUserStatus(row.id, 'suspended')"
+            @click.stop="confirmSuspend(row)"
           >Suspend</button>
           <button
             v-else-if="row.status === 'suspended'"
@@ -119,13 +119,19 @@ const bulkActions = [
 ]
 
 function handleBulkAction({ action, rows }: { action: string; rows: any[] }) {
-  rows.forEach(u => {
-    if (action === 'suspend' && u.status === 'active' && u.role !== 'admin') {
-      updateUserStatus(u.id, 'suspended')
-    } else if (action === 'approve' && u.status === 'pending') {
-      updateUserStatus(u.id, 'active')
-    }
-  })
+  if (action === 'suspend') {
+    const targets = rows.filter(u => u.status === 'active' && u.role !== 'admin')
+    if (!targets.length) return
+    if (!confirm(`Suspend ${targets.length} user(s)? They will lose access to the platform.`)) return
+    targets.forEach(u => updateUserStatus(u.id, 'suspended'))
+  } else if (action === 'approve') {
+    rows.filter(u => u.status === 'pending').forEach(u => updateUserStatus(u.id, 'active'))
+  }
+}
+
+function confirmSuspend(row: any) {
+  if (!confirm(`Suspend ${row.name}? They will lose access to the platform.`)) return
+  updateUserStatus(row.id, 'suspended')
 }
 
 function statusChip(s: string) {

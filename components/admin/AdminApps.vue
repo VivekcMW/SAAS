@@ -25,7 +25,7 @@
     >
       <!-- Status filter in toolbar -->
       <template #toolbar-extra>
-        <select v-model="statusFilter" class="bw-select" style="max-width: 200px;">
+        <select v-model="statusFilter" class="bw-select" aria-label="Filter by status" style="max-width: 200px;">
           <option value="all">All statuses</option>
           <option value="approved">Live</option>
           <option value="pending">Pending</option>
@@ -65,7 +65,7 @@
           <button
             v-if="row.status === 'pending'"
             class="bw-btn bw-btn--ghost bw-btn--sm"
-            @click.stop="decideApp(row.id, 'rejected')"
+            @click.stop="confirmReject(row)"
           >Reject</button>
         </div>
       </template>
@@ -100,7 +100,13 @@ const bulkActions = [
 ]
 
 function handleBulkAction({ action, rows }: { action: string; rows: any[] }) {
+  if (action === 'reject' && !confirm(`Reject ${rows.length} app(s)? This cannot be undone.`)) return
   rows.forEach(r => decideApp(r.id, action === 'approve' ? 'approved' : 'rejected'))
+}
+
+function confirmReject(row: any) {
+  if (!confirm(`Reject "${row.name}"? This cannot be undone.`)) return
+  decideApp(row.id, 'rejected')
 }
 
 function statusChip(s: string) {

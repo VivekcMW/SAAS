@@ -17,6 +17,13 @@
         <NuxtPage :key="$route.path" />
       </main>
     </div>
+
+    <!-- Global admin toast -->
+    <Transition name="aw-toast-slide">
+      <div v-if="adminToast" class="aw-toast" :class="`aw-toast--${adminToast.type}`" role="status" aria-live="polite">
+        {{ adminToast.msg }}
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -31,6 +38,7 @@ useHead({
 })
 
 const { isAuthenticated, currentUser, isLoading, initialized, handleLogout } = useAuth()
+const { adminToast } = useAdminData()
 const route = useRoute()
 
 // Guard: redirect unauthenticated users to /login with redirect back here
@@ -102,4 +110,15 @@ const onLogout = async () => {
   .dash-shell__main { margin-left: 0 !important; }
   .dash-shell__content { padding: 16px; }
 }
+
+/* Admin toast */
+.aw-toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 9000;
+  padding: 12px 20px; border-radius: 10px; font-size: 0.88rem; font-weight: 500;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15); pointer-events: none;
+}
+.aw-toast--success { background: var(--bw-surface, #fff); border: 1.5px solid #bbf7d0; color: #047857; }
+.aw-toast--error   { background: var(--bw-surface, #fff); border: 1.5px solid #fecaca; color: #b91c1c; }
+.aw-toast-slide-enter-active, .aw-toast-slide-leave-active { transition: all 0.2s ease; }
+.aw-toast-slide-enter-from, .aw-toast-slide-leave-to { opacity: 0; transform: translateY(8px); }
 </style>

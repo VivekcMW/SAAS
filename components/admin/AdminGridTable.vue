@@ -73,7 +73,7 @@
         </div>
 
         <!-- Export CSV -->
-        <button v-if="exportable" class="bw-btn bw-btn--ghost bw-btn--sm" @click="exportCSV" title="Export visible columns as CSV">
+        <button v-if="exportable" class="bw-btn bw-btn--ghost bw-btn--sm" :title="hiddenColumnsCount > 0 ? `Export visible columns as CSV (${hiddenColumnsCount} column${hiddenColumnsCount > 1 ? 's' : ''} hidden)` : 'Export visible columns as CSV'" @click="exportCSV">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
             <polyline points="7 10 12 15 17 10"/>
@@ -398,6 +398,9 @@ const selectedRows = computed(() =>
 
 // ── Computed: misc ────────────────────────────────────────────────────
 const hasActiveFilters = computed(() => searchQuery.value.trim() !== '')
+const hiddenColumnsCount = computed(() =>
+  props.columns.filter(c => c.hideable !== false && c.label && !visibleKeys.value.includes(c.key)).length
+)
 
 // ── Methods ───────────────────────────────────────────────────────────
 function setSort(key: string) {
@@ -647,6 +650,11 @@ onBeforeUnmount(() => document.removeEventListener('click', handleDocClick))
 }
 
 /* ── Skeleton loader ──────────────────────────────────────────── */
+/* Checkbox — indeterminate visual */
+.agt-checkbox:indeterminate {
+  accent-color: var(--aw-accent, #7c3aed);
+  opacity: 0.7;
+}
 .agt-skeleton { padding: 0; }
 .agt-skeleton__header {
   height: 42px;

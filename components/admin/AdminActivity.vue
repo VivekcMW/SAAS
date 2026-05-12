@@ -5,8 +5,15 @@
         <h1 class="bw-head__title">Activity log</h1>
         <p class="bw-head__sub">Every admin and system action on the platform.</p>
       </div>
+      <div class="bw-head__actions">
+        <button class="bw-btn bw-btn--ghost" :disabled="activityLoading" @click="refresh" title="Refresh activity log">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          Refresh
+        </button>
+      </div>
     </header>
 
+    <p v-if="activityError" class="act-error">Failed to load activity log. <button class="bw-btn bw-btn--ghost bw-btn--sm" @click="refresh">Retry</button></p>
     <p v-if="activityLoading" style="padding: 24px; color: var(--bw-text-muted);">Loading activity…</p>
     <AdminGridTable
       v-else
@@ -49,7 +56,11 @@
 
 <script setup lang="ts">
 import { onMounted } from 'vue'
-const { activity, activityLoading, loadActivity } = useAdminData()
+const { activity, activityLoading, activityError, loadActivity } = useAdminData()
+
+function refresh() {
+  loadActivity()
+}
 
 onMounted(() => loadActivity())
 
@@ -65,4 +76,5 @@ const columns = [
 .act-time   { font-size: 0.82rem; color: var(--bw-text-muted); white-space: nowrap; }
 .act-actor  { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .act-action { font-size: 0.9rem; color: var(--bw-text); }
+.act-error  { padding: 12px 16px; background: var(--aw-red-50, #fef2f2); color: var(--aw-red-700, #b91c1c); border-radius: 8px; font-size: 0.88rem; display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 </style>

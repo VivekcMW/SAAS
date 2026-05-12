@@ -55,6 +55,12 @@
             </li>
           </ul>
         </section>
+        <section v-else class="bw-card bw-section">
+          <div class="bw-card__head">
+            <h2 class="bw-card__title">Needs your attention</h2>
+          </div>
+          <p class="ov-empty-note">All caught up — no pending apps.</p>
+        </section>
 
         <section class="bw-card">
           <div class="bw-card__head">
@@ -139,7 +145,9 @@ const kpis = computed(() => {
 onMounted(async () => {
   try {
     liveStats.value = await $fetch<LiveStats>('/api/admin/stats')
-  } catch { /* use mock fallback */ }
+  } catch (err) {
+    console.error('[AdminOverview] stats fetch failed:', err)
+  }
 })
 </script>
 
@@ -167,4 +175,5 @@ onMounted(async () => {
 
 aside { display: flex; flex-direction: column; gap: 16px; }
 .bw-section { margin-bottom: 16px; }
+.ov-empty-note { font-size: 0.88rem; color: var(--aw-text-subtle); padding: 6px 0; margin: 0; }
 </style>
