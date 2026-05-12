@@ -643,6 +643,40 @@ function getCategoryLabel(cat?: string): string {
         </AppHero>
       </div>
 
+      <!-- ── HERO STATS STRIP ────────────────────────────────────── -->
+      <div class="hero-stats-strip">
+        <div class="container hss-inner">
+          <div class="hss-item">
+            <Icon name="heroicons:star-solid" class="hss-icon hss-icon--gold" />
+            <span class="hss-val">{{ app.rating.toFixed(1) }}</span>
+            <span class="hss-lbl">{{ app.reviewCount.toLocaleString() }} reviews</span>
+          </div>
+          <span class="hss-sep" />
+          <div class="hss-item">
+            <Icon name="heroicons:users" class="hss-icon" />
+            <span class="hss-val">{{ app.analytics?.activeUsers ? formatNumber(app.analytics.activeUsers) : '10K+' }}</span>
+            <span class="hss-lbl">active users</span>
+          </div>
+          <span class="hss-sep" />
+          <div class="hss-item">
+            <Icon name="heroicons:signal" class="hss-icon hss-icon--green" />
+            <span class="hss-val">{{ app.performance?.uptime ?? 99.9 }}%</span>
+            <span class="hss-lbl">uptime SLA</span>
+          </div>
+          <span class="hss-sep" />
+          <div class="hss-item">
+            <Icon name="heroicons:shield-check" class="hss-icon" />
+            <span class="hss-lbl">SOC 2 · Verified vendor</span>
+          </div>
+          <div class="hss-right">
+            <button class="hss-cta" @click="handleTrial">
+              {{ app.pricing.type === 'free' ? 'Get started free' : 'Start free trial' }}
+              <Icon name="heroicons:arrow-right" />
+            </button>
+          </div>
+        </div>
+      </div>
+
       <!-- ── MODE TOGGLE BAR ───────────────────────────────────── -->
       <div class="mode-bar">
         <div class="container mode-bar__inner">
@@ -824,7 +858,91 @@ function getCategoryLabel(cat?: string): string {
       <!-- ══════════════════════════════════════════════════════ -->
       <!--  NORMAL (DETAILED) MODE                                -->
       <!-- ══════════════════════════════════════════════════════ -->
-      <main v-else id="app-main" class="container app-main" tabindex="-1">
+      <div v-else class="container page-with-rail">
+
+        <!-- ── STICKY RIGHT RAIL ── -->
+        <aside class="sticky-rail no-print" aria-label="Quick actions">
+          <div class="rail-card">
+            <!-- App identity -->
+            <div class="rail-app-row">
+              <img :src="app.logo" :alt="app.name" class="rail-logo">
+              <div>
+                <div class="rail-app-name">{{ app.name }}</div>
+                <div class="rail-app-rating">
+                  <span v-for="s in 5" :key="s" class="rail-star" :class="{ 'rail-star--lit': s <= Math.round(app.rating) }">★</span>
+                  <span class="rail-rating-num">{{ app.rating.toFixed(1) }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Price -->
+            <div class="rail-price-row">
+              <span class="rail-price">{{ priceLabel }}</span>
+              <span v-if="app.pricing.period" class="rail-period">/ {{ app.pricing.period }}</span>
+            </div>
+
+            <!-- Primary CTA -->
+            <button class="rail-cta-primary" @click="handleTrial">
+              {{ app.pricing.type === 'free' ? 'Get Started Free' : 'Start Free Trial' }}
+              <Icon name="heroicons:arrow-right" />
+            </button>
+
+            <!-- Secondary CTA -->
+            <button class="rail-cta-ghost" @click="$nextTick(() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }))">
+              <Icon name="heroicons:play-circle" />
+              Request a Demo
+            </button>
+
+            <!-- Trust micro-copy -->
+            <p class="rail-trust">
+              <Icon name="heroicons:lock-closed" />
+              {{ app.pricing.type === 'free' ? 'No credit card required' : 'Cancel anytime · No credit card' }}
+            </p>
+
+            <!-- Divider -->
+            <div class="rail-divider" />
+
+            <!-- Quick proof -->
+            <div class="rail-proof">
+              <div class="rp-item">
+                <Icon name="heroicons:clock" />
+                <span>Response in <strong>&lt; 2 hrs</strong></span>
+              </div>
+              <div class="rp-item">
+                <Icon name="heroicons:shield-check" />
+                <span>SOC 2 Type II</span>
+              </div>
+              <div class="rp-item">
+                <Icon name="heroicons:users" />
+                <span>{{ app.analytics?.activeUsers ? formatNumber(app.analytics.activeUsers) : '10K+' }} users</span>
+              </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="rail-divider" />
+
+            <!-- Quick actions -->
+            <div class="rail-actions">
+              <button type="button" class="ra-btn" :class="{ 'ra-btn--active': inFavorite }" @click="handleSave">
+                <Icon :name="inFavorite ? 'heroicons:heart-solid' : 'heroicons:heart'" />
+                {{ inFavorite ? 'Saved' : 'Save' }}
+              </button>
+              <button
+                type="button"
+                class="ra-btn"
+                :class="{ 'ra-btn--active': inCompare }"
+                :disabled="!inCompare && !canAddMore"
+                @click="handleCompare"
+              >
+                <Icon :name="inCompare ? 'heroicons:scale-solid' : 'heroicons:scale'" />
+                Compare
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        <!-- ── MAIN CONTENT ── -->
+        <main id="app-main" class="app-main" tabindex="-1">
 
         <!-- ── OVERVIEW ─────────────────────────────────────── -->
         <section id="overview" class="section">
@@ -881,7 +999,7 @@ function getCategoryLabel(cat?: string): string {
                 </ul>
               </div>
             </div>
-            <aside class="side-col">
+            <aside class="side-col" aria-label="App info and resources">
               <AppCompanyCard :info="companyInfo" />
               <div class="resources-card">
                 <div class="resources-head"><Icon name="heroicons:squares-2x2" /><span>Resources</span></div>
@@ -1159,7 +1277,8 @@ function getCategoryLabel(cat?: string): string {
           </div>
         </section>
 
-      </main>
+        </main>
+      </div><!-- /page-with-rail -->
     </template>
   </div>
 </template>
@@ -1199,6 +1318,215 @@ function getCategoryLabel(cat?: string): string {
 .bc-link:hover { color: var(--mm-gold); }
 .bc-sep { width: 12px; height: 12px; color: var(--b3); }
 .bc-current { color: var(--mm-pearl); font-weight: 500; }
+
+/* ─────────────────────────────────────────────────────────── *
+ *  HERO STATS STRIP                                            *
+ * ─────────────────────────────────────────────────────────── */
+.hero-stats-strip {
+  background: var(--mm-s1);
+  border-top: 0.5px solid var(--b1);
+  border-bottom: 0.5px solid var(--b1);
+}
+.hss-inner {
+  display: flex;
+  align-items: center;
+  padding: 14px 24px;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.hss-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 16px;
+  font-size: 13px;
+  color: var(--mm-silver);
+  font-weight: 500;
+}
+.hss-item:first-child { padding-left: 0; }
+.hss-icon { width: 14px; height: 14px; color: var(--mm-slate); flex-shrink: 0; }
+.hss-icon--gold { color: var(--mm-gold); }
+.hss-icon--green { color: #2A9D8F; }
+.hss-val { font-size: 14px; font-weight: 700; color: var(--mm-pearl); }
+.hss-lbl { color: var(--mm-slate); }
+.hss-sep { width: 0.5px; height: 18px; background: var(--b1); flex-shrink: 0; }
+.hss-right { margin-left: auto; }
+.hss-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  background: var(--mm-gold);
+  color: #07090F;
+  border: none;
+  border-radius: var(--r-full);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.hss-cta :deep(svg) { width: 14px; height: 14px; }
+.hss-cta:hover { background: #c49a38; }
+@media (max-width: 900px) { .hero-stats-strip { display: none; } }
+
+/* ─────────────────────────────────────────────────────────── *
+ *  PAGE WITH RAIL LAYOUT                                       *
+ * ─────────────────────────────────────────────────────────── */
+.page-with-rail {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 40px;
+  align-items: start;
+  padding-top: 0;
+}
+@media (max-width: 1100px) {
+  .page-with-rail {
+    grid-template-columns: 1fr;
+  }
+  .sticky-rail { display: none; }
+}
+
+/* ── STICKY RAIL ── */
+.sticky-rail {
+  position: sticky;
+  top: 120px;
+  order: 2;
+}
+.rail-card {
+  background: var(--mm-s1);
+  border: 0.5px solid var(--b1);
+  border-radius: var(--r-xl);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.rail-app-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.rail-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-md);
+  background: var(--mm-s2);
+  padding: 6px;
+  border: 0.5px solid var(--b2);
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.rail-app-name { font-size: 14px; font-weight: 700; color: var(--mm-pearl); margin-bottom: 3px; }
+.rail-app-rating { display: flex; align-items: center; gap: 2px; }
+.rail-star { font-size: 12px; color: var(--b3); }
+.rail-star--lit { color: var(--mm-gold); }
+.rail-rating-num { font-size: 12px; color: var(--mm-silver); margin-left: 4px; font-weight: 600; }
+
+.rail-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 10px 0;
+  border-top: 0.5px solid var(--b1);
+  border-bottom: 0.5px solid var(--b1);
+}
+.rail-price { font-size: 22px; font-weight: 800; color: var(--mm-pearl); }
+.rail-period { font-size: 13px; color: var(--mm-slate); }
+
+.rail-cta-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 12px;
+  background: var(--mm-gold);
+  color: #07090F;
+  border: none;
+  border-radius: var(--r-sm);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+  width: 100%;
+}
+.rail-cta-primary :deep(svg) { width: 15px; height: 15px; }
+.rail-cta-primary:hover { background: #c49a38; box-shadow: 0 4px 16px rgba(212,168,67,.3); }
+
+.rail-cta-ghost {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px;
+  background: transparent;
+  color: var(--mm-silver);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  width: 100%;
+}
+.rail-cta-ghost :deep(svg) { width: 15px; height: 15px; }
+.rail-cta-ghost:hover { border-color: var(--mm-gold); color: var(--mm-gold); }
+
+.rail-trust {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--mm-slate);
+  margin: -6px 0 0;
+  text-align: center;
+}
+.rail-trust :deep(svg) { width: 12px; height: 12px; flex-shrink: 0; }
+
+.rail-divider { height: 0.5px; background: var(--b1); }
+
+.rail-proof {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.rp-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+  color: var(--mm-silver);
+}
+.rp-item :deep(svg) { width: 14px; height: 14px; color: var(--mm-gold); flex-shrink: 0; }
+.rp-item strong { color: var(--mm-pearl); }
+
+.rail-actions {
+  display: flex;
+  gap: 6px;
+}
+.ra-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px 0;
+  background: var(--mm-s2);
+  color: var(--mm-slate);
+  border: 0.5px solid var(--b2);
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  font-family: inherit;
+}
+.ra-btn :deep(svg) { width: 13px; height: 13px; }
+.ra-btn:hover { border-color: var(--mm-gold); color: var(--mm-gold); }
+.ra-btn--active { border-color: rgba(212,168,67,.4); color: var(--mm-gold); background: var(--mm-gold-soft); }
+.ra-btn:disabled { opacity: .4; cursor: not-allowed; }
 
 /* ─────────────────────────────────────────────────────────── *
  *  MODE TOGGLE BAR                                             *

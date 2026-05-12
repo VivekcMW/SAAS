@@ -102,64 +102,67 @@ const valueProps = computed(() => {
 </script>
 
 <template>
+  <!-- ── BORDERLESS HERO: full-bleed screenshot + open editorial layout ── -->
   <section class="app-hero">
-    <!-- Top trust bar -->
-    <div class="hero-trust">
-      <div class="trust-item">
-        <Icon name="heroicons:check-badge" class="trust-icon verified" />
-        <span>Verified vendor</span>
-      </div>
-      <span class="trust-sep">·</span>
-      <div class="trust-item">
-        <Icon name="heroicons:signal" class="trust-icon" />
-        <span>{{ app.performance?.uptime ?? 99.9 }}% uptime</span>
-      </div>
-      <span v-if="app.lastUpdated" class="trust-sep">·</span>
-      <div v-if="app.lastUpdated" class="trust-item">
-        <Icon name="heroicons:clock" class="trust-icon" />
-        <span>Updated {{ app.lastUpdated }}</span>
-      </div>
-    </div>
+
+    <!-- Ambient glow blobs (pure atmosphere, no border) -->
+    <div class="hero-glow hero-glow--gold" aria-hidden="true" />
+    <div class="hero-glow hero-glow--blue" aria-hidden="true" />
 
     <div class="hero-grid">
-      <!-- Left: branding + headline + CTAs -->
+      <!-- ══ LEFT: editorial content ══ -->
       <div class="hero-left">
+
+        <!-- Brand row: logo + provider + badges -->
         <div class="brand-row">
-          <div class="logo-wrap">
+          <div class="logo-halo">
             <img :src="app.logo" :alt="`${app.name} logo`" class="logo-img">
           </div>
-          <div class="brand-text">
-            <p class="provider-pill">by {{ app.provider }}</p>
+          <div class="brand-meta">
+            <span class="provider-label">
+              <Icon name="heroicons:building-office-2" class="prov-icon" />
+              {{ app.provider }}
+            </span>
             <div class="hero-badges">
-              <Badge v-if="verdict" variant="sponsored">{{ verdict }}</Badge>
-              <Badge v-else-if="app.featured" variant="sponsored">Editor's Pick</Badge>
-              <Badge v-if="app.trending" variant="trending">Trending</Badge>
+              <span v-if="verdict" class="badge badge--gold">
+                <Icon name="heroicons:sparkles" />{{ verdict }}
+              </span>
+              <span v-if="app.trending" class="badge badge--blue">
+                <Icon name="heroicons:arrow-trending-up" />Trending
+              </span>
+              <span class="badge badge--verify">
+                <Icon name="heroicons:check-badge" />Verified
+              </span>
             </div>
           </div>
         </div>
 
+        <!-- Title -->
         <h1 class="hero-title">{{ app.name }}</h1>
         <p class="hero-tagline">{{ app.description }}</p>
 
-        <!-- Social proof + price line -->
+        <!-- Rating + price inline -->
         <div class="hero-meta">
-          <div class="meta-rating">
-            <Rating :model-value="app.rating" :show-value="true" readonly size="md" />
-            <span class="meta-count">{{ app.reviewCount.toLocaleString() }} reviews</span>
-          </div>
-          <span class="meta-sep">·</span>
+          <Rating :model-value="app.rating" :show-value="true" readonly size="md" />
+          <span class="meta-count">{{ app.reviewCount.toLocaleString() }} reviews</span>
+          <span class="meta-dot" />
           <span class="meta-price">{{ priceLabel }}</span>
+          <span class="meta-dot" />
+          <span class="meta-uptime">
+            <Icon name="heroicons:signal" class="uptime-icon" />
+            {{ app.performance?.uptime ?? 99.9 }}% uptime
+          </span>
         </div>
 
-        <!-- Value props -->
+        <!-- Value props: 3 check rows -->
         <ul class="value-props">
           <li v-for="vp in valueProps" :key="vp.label">
-            <Icon :name="vp.icon" />
+            <span class="vp-check"><Icon name="heroicons:check" /></span>
             <span>{{ vp.label }}</span>
           </li>
         </ul>
 
-        <!-- Inline CTAs -->
+        <!-- Primary CTA -->
         <div class="hero-ctas">
           <Button variant="primary" size="lg" @click="$emit('trial')">
             {{ ctaLabel }}
@@ -167,12 +170,12 @@ const valueProps = computed(() => {
           </Button>
           <Button variant="ghost" size="lg" @click="$emit('demo')">
             <Icon name="heroicons:play-circle" class="demo-icon" />
-            Watch 2-min demo
+            Watch demo
           </Button>
         </div>
         <p class="cta-sub">{{ ctaSubLabel }}</p>
 
-        <!-- Quick actions row -->
+        <!-- Utility actions: save / compare / share — minimal ghost style -->
         <div class="quick-actions">
           <button type="button" class="qa-btn" :class="{ 'qa-btn--active': props.inSaved }" @click="$emit('save')">
             <Icon :name="props.inSaved ? 'heroicons:heart-solid' : 'heroicons:heart'" />
@@ -198,38 +201,48 @@ const valueProps = computed(() => {
         </div>
       </div>
 
-      <!-- Right: hero preview / screenshot -->
+      <!-- ══ RIGHT: immersive full-bleed screenshot ══ -->
       <div class="hero-right">
-        <div class="preview-card">
-          <div class="preview-chrome">
-            <span class="dot dot-r" />
-            <span class="dot dot-y" />
-            <span class="dot dot-g" />
-            <span class="preview-url">{{ app.provider.toLowerCase().replaceAll(/\s+/g, '') }}.com</span>
-          </div>
-          <div class="preview-body">
-            <img v-if="heroImage" :src="heroImage" :alt="`${app.name} preview`" class="preview-img">
-            <div v-else class="preview-placeholder">
-              <img :src="app.logo" :alt="app.name" class="preview-logo">
-              <p class="preview-name">{{ app.name }}</p>
-              <p class="preview-mini">Live preview</p>
-            </div>
-          </div>
+        <!-- Browser chrome bar -->
+        <div class="screen-chrome">
+          <span class="dot dot-r" /><span class="dot dot-y" /><span class="dot dot-g" />
+          <span class="screen-url">{{ app.provider.toLowerCase().replaceAll(/\s+/g, '') }}.com</span>
+          <span class="screen-live">
+            <span class="live-dot" />LIVE
+          </span>
         </div>
 
-        <!-- Mini stats below preview -->
-        <div class="preview-stats">
-          <div class="ps-item">
-            <span class="ps-value">{{ formattedUsers }}</span>
-            <span class="ps-label">Users</span>
+        <!-- Screenshot panel — no border box, depth via shadow only -->
+        <div class="screen-panel">
+          <img v-if="heroImage" :src="heroImage" :alt="`${app.name} interface`" class="screen-img">
+          <div v-else class="screen-empty">
+            <img :src="app.logo" :alt="app.name" class="screen-empty-logo">
+            <p class="screen-empty-name">{{ app.name }}</p>
           </div>
-          <div class="ps-item">
-            <span class="ps-value">{{ app.rating.toFixed(1) }}<Icon name="heroicons:star-solid" class="ps-star" /></span>
-            <span class="ps-label">Rating</span>
+          <!-- Left fade so screenshot blends into page -->
+          <div class="screen-fade" aria-hidden="true" />
+        </div>
+
+        <!-- Stats anchor strip below screenshot -->
+        <div class="screen-stats">
+          <div class="ss-item">
+            <span class="ss-val">{{ formattedUsers }}</span>
+            <span class="ss-lbl">Users</span>
           </div>
-          <div class="ps-item">
-            <span class="ps-value">{{ app.performance?.uptime ?? 99.9 }}%</span>
-            <span class="ps-label">Uptime</span>
+          <div class="ss-sep" />
+          <div class="ss-item">
+            <span class="ss-val">{{ app.rating.toFixed(1) }}<Icon name="heroicons:star-solid" class="ss-star" /></span>
+            <span class="ss-lbl">Rating</span>
+          </div>
+          <div class="ss-sep" />
+          <div class="ss-item">
+            <span class="ss-val">{{ app.performance?.uptime ?? 99.9 }}%</span>
+            <span class="ss-lbl">Uptime</span>
+          </div>
+          <div class="ss-sep" />
+          <div class="ss-item">
+            <span class="ss-val">{{ app.version || 'v3.0' }}</span>
+            <span class="ss-lbl">Version</span>
           </div>
         </div>
       </div>
@@ -244,283 +257,351 @@ const valueProps = computed(() => {
 </template>
 
 <style scoped>
+/* ── BASE: no card, no border, blends into page ── */
 .app-hero {
-  background: var(--mm-s1);
-  border: 0.5px solid var(--b1);
-  border-radius: var(--r-xl);
-  padding: 28px 32px 24px;
   position: relative;
+  padding: 40px 0 32px;
   overflow: hidden;
 }
 
-/* Subtle accent backdrop */
-.app-hero::before {
-  content: '';
+/* ── AMBIENT GLOW BLOBS ── */
+.hero-glow {
   position: absolute;
-  top: -120px;
-  right: -120px;
-  width: 360px;
-  height: 360px;
-  background: var(--mm-gold-soft);
   border-radius: 50%;
   pointer-events: none;
+  filter: blur(80px);
+  opacity: 0.18;
   z-index: 0;
 }
-.app-hero > * { position: relative; z-index: 1; }
-
-/* Trust bar */
-.hero-trust {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 18px;
-  padding-bottom: 14px;
-  border-bottom: 0.5px dashed var(--b1);
+.hero-glow--gold {
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, #D4A843 0%, transparent 70%);
+  top: -160px;
+  right: -80px;
 }
-.trust-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  color: var(--mm-slate);
-  font-weight: 500;
+.hero-glow--blue {
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, #4A80D4 0%, transparent 70%);
+  bottom: -100px;
+  left: -60px;
 }
-.trust-icon { width: 14px; height: 14px; color: var(--mm-slate); }
-.trust-icon.verified { color: var(--mm-seal); }
-.trust-sep { color: var(--b3); font-size: 12px; }
+.app-hero > *:not(.hero-glow) { position: relative; z-index: 1; }
 
-/* Grid */
+/* ── GRID ── */
 .hero-grid {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 36px;
-  align-items: start;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 48px;
+  align-items: center;
 }
 
-/* Left column */
+/* ══ LEFT COLUMN ══ */
 .brand-row {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 16px;
+  gap: 16px;
+  margin-bottom: 20px;
 }
-.logo-wrap {
-  width: 64px;
-  height: 64px;
-  border-radius: var(--r-lg);
-  border: 0.5px solid var(--b2);
+
+/* Logo with soft gold shadow halo */
+.logo-halo {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--r-xl);
   background: var(--mm-s2);
+  border: 0.5px solid var(--b2);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 0 0 4px rgba(212, 168, 67, 0.08), 0 8px 24px rgba(0, 0, 0, 0.3);
 }
-.logo-img { width: 100%; height: 100%; object-fit: contain; padding: 8px; }
+.logo-img { width: 100%; height: 100%; object-fit: contain; padding: 10px; }
 
-.brand-text { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.provider-pill { margin: 0; font-size: 13px; color: var(--mm-slate); font-weight: 500; }
-.hero-badges { display: flex; flex-wrap: wrap; gap: 4px; }
+.brand-meta { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.provider-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--mm-slate);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.prov-icon { width: 13px; height: 13px; }
+
+.hero-badges { display: flex; flex-wrap: wrap; gap: 5px; }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 3px 8px;
+  border-radius: var(--r-full);
+}
+.badge :deep(svg) { width: 12px; height: 12px; }
+.badge--gold { background: #2A2212; color: #E8C060; border: 0.5px solid rgba(212,168,67,0.3); }
+.badge--blue { background: #161E33; color: #8AB4F8; border: 0.5px solid rgba(74,128,212,0.3); }
+.badge--verify { background: #112220; color: #3DBFB0; border: 0.5px solid rgba(42,157,143,0.3); }
 
 .hero-title {
-  margin: 0 0 8px;
-  font-size: 36px;
-  font-weight: 700;
+  margin: 0 0 10px;
+  font-size: 40px;
+  font-weight: 800;
   color: var(--mm-pearl);
-  line-height: 1.15;
-  letter-spacing: -0.02em;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
 }
 .hero-tagline {
-  margin: 0 0 16px;
+  margin: 0 0 20px;
   font-size: 17px;
   color: var(--mm-silver);
-  line-height: 1.55;
-  max-width: 540px;
+  line-height: 1.6;
+  max-width: 480px;
 }
 
+/* Rating + meta row */
 .hero-meta {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
-.meta-rating { display: flex; align-items: center; gap: 8px; }
 .meta-count { font-size: 13px; color: var(--mm-slate); }
-.meta-sep { color: var(--b3); }
-.meta-price { font-size: 14px; color: var(--mm-pearl); font-weight: 600; }
+.meta-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--b3); }
+.meta-price { font-size: 14px; color: var(--mm-pearl); font-weight: 700; }
+.meta-uptime {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: #3DBFB0;
+  font-weight: 500;
+}
+.uptime-icon { width: 13px; height: 13px; }
 
 /* Value props */
 .value-props {
   list-style: none;
-  margin: 0 0 24px;
+  margin: 0 0 28px;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 .value-props li {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   font-size: 14px;
   color: var(--mm-silver);
   font-weight: 500;
 }
-.value-props li :deep(svg) {
-  width: 18px;
-  height: 18px;
-  color: var(--mm-gold);
+.vp-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #1F1A0E;
+  color: #E8C060;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 }
+.vp-check :deep(svg) { width: 12px; height: 12px; }
 
 /* CTAs */
 .hero-ctas {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
   margin-bottom: 8px;
 }
 .cta-arrow { width: 16px; height: 16px; margin-left: 4px; }
 .demo-icon { width: 18px; height: 18px; margin-right: 4px; }
-.cta-sub {
-  margin: 0 0 16px;
-  font-size: 12px;
-  color: var(--mm-slate);
-}
+.cta-sub { margin: 0 0 20px; font-size: 12px; color: var(--mm-slate); }
 
+/* Quick action buttons */
 .quick-actions {
   display: flex;
-  gap: 6px;
+  gap: 2px;
   flex-wrap: wrap;
-  padding-top: 16px;
-  border-top: 0.5px solid var(--b1);
 }
 .qa-btn {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   background: transparent;
   color: var(--mm-slate);
   border: 0;
-  padding: 6px 10px;
+  padding: 7px 12px;
   font-family: inherit;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   border-radius: var(--r-sm);
-  transition: background var(--transition-fast), color var(--transition-fast);
+  transition: background 0.15s, color 0.15s;
 }
-.qa-btn:hover { background: var(--mm-s3); color: var(--mm-gold); }
-.qa-btn--active { background: rgba(212,168,67,.1) !important; color: var(--mm-gold) !important; border-color: rgba(212,168,67,.3) !important; }
-.qa-btn:disabled { opacity: .4; cursor: not-allowed; }
 .qa-btn :deep(svg) { width: 14px; height: 14px; }
+.qa-btn:hover { background: var(--mm-s2); color: var(--mm-gold); }
+.qa-btn--active { background: rgba(212,168,67,.1); color: var(--mm-gold); }
+.qa-btn:disabled { opacity: .4; cursor: not-allowed; }
 
-/* Right column: preview card */
+/* ══ RIGHT COLUMN: full-bleed screenshot ══ */
 .hero-right {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-}
-.preview-card {
-  background: var(--mm-s2);
-  border: 0.5px solid var(--b2);
-  border-radius: var(--r-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
-  transition: transform 200ms ease, box-shadow 200ms ease;
-}
-.preview-card:hover {
-  box-shadow: var(--shadow-lg);
+  gap: 0;
 }
 
-.preview-chrome {
+/* Chrome bar */
+.screen-chrome {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 12px;
-  background: var(--mm-s3);
-  border-bottom: 0.5px solid var(--b1);
+  padding: 9px 14px;
+  background: #1A1F2E;
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
 }
-.dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  display: inline-block;
-}
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 .dot-r { background: #ff5f57; }
 .dot-y { background: #febc2e; }
 .dot-g { background: #28c840; }
-.preview-url {
-  margin-left: 12px;
+.screen-url {
+  flex: 1;
+  margin-left: 10px;
   font-size: 11px;
   color: var(--mm-slate);
   font-family: ui-monospace, monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.screen-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #28c840;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #28c840;
+  animation: pulse-live 2s ease-in-out infinite;
+}
+@keyframes pulse-live {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
 }
 
-.preview-body {
+/* Screenshot panel: depth via shadow, no border */
+.screen-panel {
   position: relative;
-  background: var(--mm-s3);
   aspect-ratio: 16 / 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: #141921;
+  border-radius: 0 0 var(--r-lg) var(--r-lg);
+  overflow: hidden;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.05),
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 0.5px rgba(255, 255, 255, 0.04) inset;
 }
-.preview-img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.preview-placeholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 24px;
-  text-align: center;
+.screen-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 400ms ease;
 }
-.preview-logo {
-  width: 56px;
-  height: 56px;
-  border-radius: var(--r-lg);
-  object-fit: contain;
-  background: var(--mm-s2);
-  padding: 8px;
-  border: 0.5px solid var(--b2);
-}
-.preview-name { margin: 4px 0 0; font-size: 16px; font-weight: 600; color: var(--mm-pearl); }
-.preview-mini { margin: 0; font-size: 12px; color: var(--mm-slate); }
+.screen-panel:hover .screen-img { transform: scale(1.015); }
 
-.preview-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  background: var(--mm-s3);
-  border: 0.5px solid var(--b1);
-  border-radius: var(--r-lg);
-  padding: 12px;
-}
-.ps-item {
+.screen-empty {
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
-  padding: 4px;
+  justify-content: center;
+  gap: 10px;
 }
-.ps-value {
+.screen-empty-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: var(--r-lg);
+  background: var(--mm-s2);
+  padding: 10px;
+}
+.screen-empty-name {
   font-size: 18px;
+  font-weight: 600;
+  color: var(--mm-silver);
+  margin: 0;
+}
+
+/* Left edge fade: screenshot bleeds into text column */
+.screen-fade {
+  position: absolute;
+  inset: 0;
+  left: 0;
+  width: 80px;
+  background: linear-gradient(to right, var(--mm-bg) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Stats strip directly below screenshot, no border */
+.screen-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 16px 20px;
+  background: rgba(20, 25, 33, 0.6);
+  border-radius: 0 0 var(--r-lg) var(--r-lg);
+  margin-top: -1px;
+}
+.ss-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 0;
+}
+.ss-sep {
+  width: 0.5px;
+  height: 28px;
+  background: var(--b1);
+  flex-shrink: 0;
+}
+.ss-val {
+  font-size: 20px;
   font-weight: 700;
   color: var(--mm-pearl);
   display: inline-flex;
   align-items: center;
-  gap: 2px;
+  gap: 3px;
+  line-height: 1;
 }
-.ps-star { width: 14px; height: 14px; color: var(--mm-gold); }
-.ps-label { font-size: 11px; color: var(--mm-slate); text-transform: uppercase; letter-spacing: 0.04em; }
+.ss-star { width: 14px; height: 14px; color: var(--mm-gold); }
+.ss-lbl { font-size: 11px; color: var(--mm-slate); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
 
-/* Tags row */
+/* ── TAG PILLS ROW ── */
 .hero-tags {
-  margin-top: 20px;
-  padding-top: 18px;
+  margin-top: 28px;
+  padding-top: 20px;
   border-top: 0.5px solid var(--b1);
   display: flex;
   align-items: center;
@@ -529,18 +610,18 @@ const valueProps = computed(() => {
 }
 .tags-label { font-size: 12px; color: var(--mm-slate); font-weight: 500; margin-right: 4px; }
 
-/* Responsive */
-@media (max-width: 900px) {
-  .app-hero { padding: 22px 20px 20px; }
-  .hero-grid { grid-template-columns: 1fr; gap: 24px; }
-  .hero-title { font-size: 28px; }
-  .hero-tagline { font-size: 15px; }
-  .preview-stats { grid-template-columns: repeat(3, 1fr); }
+/* ── RESPONSIVE ── */
+@media (max-width: 1000px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 36px; }
+  .hero-title { font-size: 32px; }
+  .screen-fade { display: none; }
 }
-
-@media (max-width: 480px) {
-  .hero-title { font-size: 24px; }
+@media (max-width: 600px) {
+  .hero-title { font-size: 26px; }
+  .hero-tagline { font-size: 15px; }
   .hero-ctas { flex-direction: column; }
   .hero-ctas :deep(button) { width: 100%; }
+  .screen-stats { gap: 0; padding: 12px; }
+  .ss-val { font-size: 16px; }
 }
 </style>
