@@ -146,6 +146,7 @@ const vendorGroups: NavGroup[] = [
     items: [
       { to: '/dashboard/analytics', label: 'Analytics', icon: ICONS.chart },
       { to: '/dashboard/promotions', label: 'Promotions', icon: ICONS.budget },
+      { to: '/dashboard/vendor-sponsorships', label: 'Sponsorships', icon: ICONS.megaphone },
       { to: '/dashboard/review-requests', label: 'Review requests', icon: ICONS.star }
     ]
   },

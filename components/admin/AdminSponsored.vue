@@ -30,11 +30,73 @@
       </div>
     </div>
 
-    <!-- Table -->
-    <p v-if="loading" style="padding:24px; color:var(--bw-text-muted);">Loading sponsorships…</p>
+    <!-- Tab strip -->
+    <div class="sp-tabs">
+      <button class="sp-tab" :class="{ active: activeTab === 'campaigns' }" @click="activeTab = 'campaigns'">
+        Campaigns
+        <span class="sp-tab-count">{{ sponsorships.length }}</span>
+      </button>
+      <button class="sp-tab" :class="{ active: activeTab === 'requests' }" @click="activeTab = 'requests'">
+        Vendor requests
+        <span class="sp-tab-count sp-tab-count--pending" v-if="pendingCount > 0">{{ pendingCount }}</span>
+        <span class="sp-tab-count" v-else>{{ vendorRequests.length }}</span>
+      </button>
+    </div>
+
+    <!-- ─── Requests tab ─── -->
+    <div v-if="activeTab === 'requests'" class="sp-req-section">
+      <p v-if="vendorRequests.length === 0" class="sp-req-empty">No vendor requests yet.</p>
+      <div v-else class="sp-req-list">
+        <div v-for="req in vendorRequests" :key="req.id" class="sp-req-card">
+          <div class="sp-req-card__top">
+            <div class="sp-req-card__info">
+              <strong class="sp-req-card__app">{{ req.appName }}</strong>
+              <span class="sp-req-card__vendor">{{ req.vendorName }}</span>
+            </div>
+            <span class="sp-req-badge" :class="reqBadgeClass(req.status)">{{ reqStatusLabel(req.status) }}</span>
+          </div>
+          <div class="sp-req-card__meta">
+            <div class="sp-req-meta-item">
+              <span class="sp-req-meta-label">Slot</span>
+              <span>{{ slotLabel(req.slot) }}</span>
+            </div>
+            <div class="sp-req-meta-item">
+              <span class="sp-req-meta-label">Dates</span>
+              <span>{{ fmtDate(req.startsAt) }} → {{ fmtDate(req.endsAt) }}</span>
+            </div>
+            <div class="sp-req-meta-item">
+              <span class="sp-req-meta-label">Budget</span>
+              <span>${{ req.budget.toLocaleString() }}</span>
+            </div>
+            <div class="sp-req-meta-item">
+              <span class="sp-req-meta-label">Goal</span>
+              <span>{{ goalLabel(req.goal) }}</span>
+            </div>
+            <div class="sp-req-meta-item">
+              <span class="sp-req-meta-label">Submitted</span>
+              <span>{{ fmtDate(req.submittedAt) }}</span>
+            </div>
+          </div>
+          <div v-if="req.tagline || req.notes" class="sp-req-card__notes">
+            <div v-if="req.tagline"><em>"{{ req.tagline }}"</em></div>
+            <div v-if="req.notes" style="font-size:0.78rem; color:var(--bw-text-muted); margin-top:4px;">{{ req.notes }}</div>
+          </div>
+          <div v-if="req.rejectionReason" class="sp-req-reject-reason">
+            Rejected: {{ req.rejectionReason }}
+          </div>
+          <div class="sp-req-card__actions" v-if="req.status === 'pending'">
+            <button class="bw-btn bw-btn--primary bw-btn--sm" @click="approveRequest(req)">Approve → create campaign</button>
+            <button class="bw-btn bw-btn--ghost bw-btn--sm bw-btn--danger" @click="openReject(req)">Reject</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Campaigns tab -->
+    <p v-if="loading && activeTab === 'campaigns'" style="padding:24px; color:var(--bw-text-muted);">Loading sponsorships…</p>
 
     <AdminGridTable
-      v-else
+      v-if="!loading && activeTab === 'campaigns'"
       :columns="columns"
       :rows="filteredRows"
       row-key="id"
@@ -102,6 +164,30 @@
         </div>
       </template>
     </AdminGridTable>
+
+    <!-- ─── Reject modal ─── -->
+    <div v-if="showReject" class="bw-modal-bg" @click.self="showReject = false">
+      <div class="bw-modal sp-modal sp-modal--sm">
+        <div class="bw-modal__head">
+          <h2 class="bw-modal__title">Reject sponsorship request</h2>
+          <button class="bw-modal__close" type="button" aria-label="Close" @click="showReject = false">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="bw-modal__body">
+          <p style="font-size:0.88rem; color:var(--bw-text-muted); margin:0 0 12px;">You are rejecting the request for <strong style="color:var(--bw-text);">{{ rejectTarget?.appName }}</strong> ({{ rejectTarget ? slotLabel(rejectTarget.slot) : '' }}).</p>
+          <div class="bw-field">
+            <label class="bw-label">Reason for rejection <span class="sp-req">*</span></label>
+            <textarea v-model="rejectReason" class="bw-input sp-textarea" rows="3" placeholder="e.g. Budget below minimum, dates conflict with existing campaign…" />
+          </div>
+          <p v-if="rejectError" class="bw-form-error">{{ rejectError }}</p>
+        </div>
+        <div class="bw-modal__foot">
+          <button class="bw-btn" @click="showReject = false">Cancel</button>
+          <button class="bw-btn bw-btn--primary" style="background:var(--bw-danger);" :disabled="saving" @click="submitReject">{{ saving ? 'Saving…' : 'Confirm rejection' }}</button>
+        </div>
+      </div>
+    </div>
 
     <!-- ─── Create / Edit Modal ─── -->
     <div v-if="showModal" class="bw-modal-bg" @click.self="closeModal">
@@ -212,6 +298,22 @@ import { useAdminData } from '~/composables/useAdminData'
 const { showAdminToast } = useAdminData()
 
 // ─── Types ───────────────────────────────────────────────────────────────────
+interface VendorRequest {
+  id: string
+  vendorName: string
+  appName: string
+  slot: string
+  startsAt: string
+  endsAt: string
+  goal: string
+  budget: number
+  tagline?: string
+  notes?: string
+  submittedAt: string
+  status: 'pending' | 'approved' | 'rejected'
+  rejectionReason?: string
+}
+
 interface SponsoredRow {
   id: string
   vendorName: string
@@ -262,13 +364,42 @@ function slotChip(slot: string) {
 }
 
 // ─── State ───────────────────────────────────────────────────────────────────
-const loading   = ref(false)
-const saving    = ref(false)
-const showModal = ref(false)
-const editId    = ref<string | null>(null)
-const formError = ref('')
+const loading    = ref(false)
+const saving     = ref(false)
+const showModal  = ref(false)
+const showReject = ref(false)
+const editId     = ref<string | null>(null)
+const formError  = ref('')
 const filterStatus = ref('')
 const filterSlot   = ref('')
+const activeTab    = ref<'campaigns' | 'requests'>('campaigns')
+
+// Reject state
+const rejectTarget = ref<VendorRequest | null>(null)
+const rejectReason = ref('')
+const rejectError  = ref('')
+
+const vendorRequests = ref<VendorRequest[]>([
+  {
+    id: 'vreq_1', vendorName: 'Acme Corp', appName: 'Acme CRM',
+    slot: 'category_top', startsAt: '2026-06-01', endsAt: '2026-06-30',
+    goal: 'lead_gen', budget: 500, tagline: 'The #1 CRM for growing SaaS teams',
+    notes: 'Looking to target the CRM and Sales categories.', submittedAt: '2026-05-10',
+    status: 'pending'
+  },
+  {
+    id: 'vreq_2', vendorName: 'FlowDesk', appName: 'FlowDesk Pro',
+    slot: 'newsletter', startsAt: '2026-06-07', endsAt: '2026-06-28',
+    goal: 'launch', budget: 400, notes: 'New product launch — very time-sensitive.',
+    submittedAt: '2026-05-12', status: 'pending'
+  },
+  {
+    id: 'vreq_3', vendorName: 'Prism Cloud', appName: 'PrismDB',
+    slot: 'homepage_hero', startsAt: '2026-07-01', endsAt: '2026-07-31',
+    goal: 'brand_awareness', budget: 2000, submittedAt: '2026-05-05',
+    status: 'rejected', rejectionReason: 'Homepage hero slot already booked for that period.'
+  },
+])
 
 const sponsorships = ref<SponsoredRow[]>([
   {
@@ -319,6 +450,7 @@ const activeCount    = computed(() => sponsorships.value.filter(s => s.status ==
 const scheduledCount = computed(() => sponsorships.value.filter(s => s.status === 'scheduled').length)
 const expiredCount   = computed(() => sponsorships.value.filter(s => s.status === 'expired').length)
 const totalRevenue   = computed(() => sponsorships.value.filter(s => s.status !== 'expired').reduce((a, s) => a + (s.budgetUsed ?? 0), 0))
+const pendingCount   = computed(() => vendorRequests.value.filter(r => r.status === 'pending').length)
 
 const filteredRows = computed(() => {
   let rows = sponsorships.value
@@ -358,6 +490,23 @@ function statusChip(status: string) {
   if (status === 'scheduled') return 'bw-chip--info'
   if (status === 'paused')    return 'bw-chip--warning'
   return ''   // expired — default grey
+}
+
+function goalLabel(g: string) {
+  const m: Record<string, string> = { brand_awareness: 'Brand awareness', lead_gen: 'Lead generation', launch: 'Product launch', category_dominance: 'Category dominance' }
+  return m[g] ?? g
+}
+
+function reqStatusLabel(s: string) {
+  const m: Record<string, string> = { pending: 'Pending', approved: 'Approved', rejected: 'Rejected' }
+  return m[s] ?? s
+}
+
+function reqBadgeClass(s: string) {
+  if (s === 'pending')  return 'sp-req-badge--pending'
+  if (s === 'approved') return 'sp-req-badge--approved'
+  if (s === 'rejected') return 'sp-req-badge--rejected'
+  return ''
 }
 
 function makeId() { return 'sp_' + Math.random().toString(36).slice(2, 9) }
@@ -471,6 +620,60 @@ async function confirmDelete(row: SponsoredRow) {
   }
 }
 
+// ─── Approve vendor request ────────────────────────────────────────────────
+function approveRequest(req: VendorRequest) {
+  // Pre-fill the create campaign modal from vendor request data
+  editId.value = null
+  form.value = {
+    vendorName: req.vendorName,
+    appName: req.appName,
+    appId: '',
+    slot: req.slot,
+    category: '',
+    startsAt: req.startsAt,
+    endsAt: req.endsAt,
+    recurrence: 'once',
+    budget: req.budget,
+    notes: req.notes ?? ''
+  }
+  formError.value = ''
+  showModal.value = true
+
+  // Mark as approved in the queue
+  req.status = 'approved'
+  showAdminToast(`Request approved — complete the campaign form.`, 'success')
+  activeTab.value = 'campaigns'
+}
+
+// ─── Reject vendor request ─────────────────────────────────────────────────
+function openReject(req: VendorRequest) {
+  rejectTarget.value = req
+  rejectReason.value = ''
+  rejectError.value  = ''
+  showReject.value   = true
+}
+
+async function submitReject() {
+  if (!rejectReason.value.trim()) { rejectError.value = 'A rejection reason is required.'; return }
+  if (!rejectTarget.value) return
+  saving.value = true
+  rejectError.value = ''
+  try {
+    await $fetch(`/api/admin/sponsored/requests/${rejectTarget.value.id}`, {
+      method: 'POST',
+      body: { action: 'reject', reason: rejectReason.value }
+    })
+    rejectTarget.value.status = 'rejected'
+    rejectTarget.value.rejectionReason = rejectReason.value
+    showReject.value = false
+    showAdminToast('Request rejected — vendor will be notified.', 'success')
+  } catch {
+    rejectError.value = 'Failed to save. Please try again.'
+  } finally {
+    saving.value = false
+  }
+}
+
 onMounted(async () => {
   loading.value = true
   try {
@@ -481,12 +684,88 @@ onMounted(async () => {
   } finally {
     loading.value = false
   }
+
+  try {
+    const reqs = await $fetch<VendorRequest[]>('/api/admin/sponsored/requests')
+    if (Array.isArray(reqs) && reqs.length) vendorRequests.value = reqs
+  } catch {
+    // demo data is pre-loaded
+  }
 })
 </script>
 
 <style scoped>
 /* ── KPI strip ── */
 .sp-kpis { margin-bottom: 20px; }
+
+/* ── Tabs ── */
+.sp-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1.5px solid var(--bw-border);
+  margin-bottom: 20px;
+}
+.sp-tab {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px;
+  font-size: 0.88rem; font-weight: 600; font-family: var(--f-ui);
+  background: none; border: none; cursor: pointer;
+  color: var(--bw-text-muted);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1.5px;
+  transition: color .15s, border-color .15s;
+}
+.sp-tab:hover { color: var(--bw-text); }
+.sp-tab.active { color: var(--bw-primary); border-bottom-color: var(--bw-primary); }
+.sp-tab-count {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 18px; height: 18px; padding: 0 5px;
+  background: var(--bw-surface-2); border-radius: 9px;
+  font-size: 0.72rem; font-weight: 700; color: var(--bw-text-muted);
+}
+.sp-tab-count--pending {
+  background: rgba(239,68,68,.12); color: #EF4444;
+}
+
+/* ── Requests section ── */
+.sp-req-section { margin-bottom: 24px; }
+.sp-req-empty { font-size: 0.88rem; color: var(--bw-text-muted); padding: 24px 0; }
+.sp-req-list { display: flex; flex-direction: column; gap: 12px; }
+.sp-req-card {
+  background: var(--bw-surface);
+  border: 1px solid var(--bw-border);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+.sp-req-card__top {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 10px; gap: 10px;
+}
+.sp-req-card__app    { display: block; font-size: 0.95rem; font-weight: 700; }
+.sp-req-card__vendor { font-size: 0.78rem; color: var(--bw-text-muted); }
+.sp-req-badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 0.72rem; font-weight: 700; white-space: nowrap; flex-shrink: 0;
+  background: var(--bw-surface-2); color: var(--bw-text-muted);
+}
+.sp-req-badge--pending  { background: rgba(240,201,106,.12); color: #D4A843; }
+.sp-req-badge--approved { background: rgba(42,157,143,.12);  color: #2A9D8F; }
+.sp-req-badge--rejected { background: rgba(239,68,68,.12);   color: #EF4444; }
+.sp-req-card__meta {
+  display: flex; flex-wrap: wrap; gap: 14px;
+  font-size: 0.82rem; margin-bottom: 10px;
+}
+.sp-req-meta-item  { display: flex; flex-direction: column; gap: 2px; }
+.sp-req-meta-label { font-size: 0.70rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--bw-text-subtle); }
+.sp-req-card__notes { font-size: 0.82rem; color: var(--bw-text-muted); margin-bottom: 10px; }
+.sp-req-reject-reason {
+  font-size: 0.80rem; color: #EF4444;
+  background: rgba(239,68,68,.08); border-radius: 6px;
+  padding: 6px 10px; margin-bottom: 8px;
+}
+.sp-req-card__actions { display: flex; gap: 8px; }
+.sp-modal--sm { max-width: 460px; }
 
 /* ── Filter selects inside AdminGridTable toolbar ── */
 .sp-filter-select { width: auto; min-width: 130px; max-width: 175px; }
