@@ -1,5 +1,5 @@
 <template>
-  <div class="br-detail" v-if="roomData">
+  <div v-if="roomData" class="br-detail">
     <div class="br-detail__hero">
       <div class="container">
         <NuxtLink to="/buying-room" class="back-link">← Buying Rooms</NuxtLink>
@@ -22,8 +22,8 @@
 
           <!-- Add app form -->
           <form v-if="showAddApp" class="add-app-form" @submit.prevent="addApp">
-            <input v-model="addAppId" type="text" placeholder="App ID (from marketplace URL)" required />
-            <textarea v-model="addAppNotes" placeholder="Notes (optional)" rows="2"></textarea>
+            <input v-model="addAppId" type="text" placeholder="App ID (from marketplace URL)" required >
+            <textarea v-model="addAppNotes" placeholder="Notes (optional)" rows="2"/>
             <div class="add-app-form__actions">
               <button type="submit" :disabled="addingApp">{{ addingApp ? 'Adding…' : 'Add app' }}</button>
               <button type="button" @click="showAddApp = false">Cancel</button>
@@ -35,7 +35,7 @@
           <div v-else class="app-grid">
             <div v-for="app in roomData.apps" :key="app.id" class="app-card">
               <div class="app-card__header">
-                <img v-if="app.logo_url" :src="app.logo_url" :alt="app.name" width="32" height="32" class="app-card__logo" />
+                <img v-if="app.logo_url" :src="app.logo_url" :alt="app.name" width="32" height="32" class="app-card__logo" >
                 <div v-else class="app-card__logo-placeholder">{{ app.name?.[0] }}</div>
                 <NuxtLink :to="`/app/${app.app_id}`" class="app-card__name">{{ app.name }}</NuxtLink>
                 <span :class="['app-status', `app-status--${app.status}`]">{{ app.status }}</span>
@@ -65,7 +65,7 @@
               </div>
             </div>
             <form class="comment-form" @submit.prevent="postComment">
-              <textarea v-model="newComment" rows="2" placeholder="Add a comment…" required></textarea>
+              <textarea v-model="newComment" rows="2" placeholder="Add a comment…" required/>
               <button type="submit" :disabled="postingComment">{{ postingComment ? 'Posting…' : 'Post' }}</button>
               <p v-if="commentError" class="form-error">{{ commentError }}</p>
             </form>
@@ -93,7 +93,7 @@
             <div v-if="roomData.is_owner" class="invite-form">
               <h4>Invite member</h4>
               <form @submit.prevent="inviteMember">
-                <input v-model="inviteEmail" type="email" placeholder="Email address" required />
+                <input v-model="inviteEmail" type="email" placeholder="Email address" required >
                 <button type="submit" :disabled="inviting">{{ inviting ? 'Inviting…' : 'Invite' }}</button>
               </form>
               <p v-if="inviteError" class="form-error">{{ inviteError }}</p>
@@ -113,8 +113,9 @@ const slug = computed(() => route.params.slug as string)
 const { data: roomData, refresh } = await useAsyncData<{ room: { title: string; description?: string; status: string }; apps: any[]; comments: any[]; members: any[]; is_owner: boolean }>(`br-${slug.value}`, () => $fetch(`/api/buying-rooms/${slug.value}`))
 useSeoMeta({ title: computed(() => roomData.value ? `${(roomData.value as any).room.title} — Buying Room` : 'Buying Room') })
 
+const { fmtDate: _fmtDate } = useFmt()
 function fmtDate(d: string) {
-  return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+  return _fmtDate(d, { month: 'short', day: 'numeric' })
 }
 
 // Add app
@@ -144,7 +145,7 @@ async function voteApp(roomAppId: string) {
   try {
     await $fetch(`/api/buying-rooms/${slug.value}/apps/${roomAppId}/vote`, { method: 'POST' })
     await refresh()
-  } catch {}
+  } catch { /* ignore */ }
 }
 
 // Comments

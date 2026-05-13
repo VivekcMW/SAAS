@@ -4,20 +4,20 @@
       <h3>System Uptime - Last 90 Days</h3>
       <div class="chart-legend">
         <div class="legend-item">
-          <div class="legend-dot excellent"></div>
+          <div class="legend-dot excellent"/>
           <span>99.5-100%</span>
         </div>
         <div class="legend-item">
-          <div class="legend-dot good"></div>
+          <div class="legend-dot good"/>
           <span>99-99.4%</span>
         </div>
         <div class="legend-item">
-          <div class="legend-dot fair"></div>
+          <div class="legend-dot fair"/>
           <span>98-98.9%</span>
         </div>
         <div class="legend-item">
-          <div class="legend-dot poor"></div>
-          <span>< 98%</span>
+          <div class="legend-dot poor"/>
+          <span>&lt; 98%</span>
         </div>
       </div>
     </div>
@@ -31,7 +31,7 @@
           :class="getUptimeClass(day.uptime)"
           :title="`${formatChartDate(day.date)}: ${day.uptime}% uptime`"
           :style="{ height: `${Math.max(20, day.uptime)}%` }"
-        ></div>
+        />
       </div>
       
       <div class="chart-labels">

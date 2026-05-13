@@ -208,9 +208,9 @@ const trendIcon = computed(() => {
     <!-- Panel -->
     <div class="ai-panel" role="tabpanel">
       <div v-if="loading" class="ai-skel">
-        <div class="skel-line w-90"></div>
-        <div class="skel-line w-75"></div>
-        <div class="skel-line w-60"></div>
+        <div class="skel-line w-90"/>
+        <div class="skel-line w-75"/>
+        <div class="skel-line w-60"/>
       </div>
 
       <div v-else-if="errMsg" class="ai-error">
@@ -274,9 +274,9 @@ const trendIcon = computed(() => {
         <!-- Review Insights -->
         <div v-else-if="tab === 'reviews'" class="panel-content">
           <div v-if="synthLoading" class="ai-skel">
-            <div class="skel-line w-90"></div>
-            <div class="skel-line w-75"></div>
-            <div class="skel-line w-60"></div>
+            <div class="skel-line w-90"/>
+            <div class="skel-line w-75"/>
+            <div class="skel-line w-60"/>
           </div>
           <div v-else-if="synthErr" class="ai-error">
             <Icon name="heroicons:exclamation-triangle" />
@@ -348,9 +348,9 @@ const trendIcon = computed(() => {
         <!-- Negotiate -->
         <div v-else-if="tab === 'negotiate'" class="panel-content">
           <div v-if="negLoading" class="ai-skel">
-            <div class="skel-line w-90"></div>
-            <div class="skel-line w-75"></div>
-            <div class="skel-line w-60"></div>
+            <div class="skel-line w-90"/>
+            <div class="skel-line w-75"/>
+            <div class="skel-line w-60"/>
           </div>
           <div v-else-if="negErr" class="ai-error">
             <Icon name="heroicons:exclamation-triangle" />

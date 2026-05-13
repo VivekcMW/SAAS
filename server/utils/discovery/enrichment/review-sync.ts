@@ -13,7 +13,7 @@
  *
  * Only updates review_count and rating — never overwrites editorial content.
  */
-import { getDb, makeId } from '~/server/utils/database'
+import { getDb } from '~/server/utils/database'
 
 interface ReviewStats {
   rating: number | null

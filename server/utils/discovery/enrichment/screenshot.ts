@@ -13,7 +13,7 @@
  *
  * Schedule: Daily (5am UTC) — processes up to 50 apps per run to stay in API limits
  */
-import { getDb, makeId } from '~/server/utils/database'
+import { getDb } from '~/server/utils/database'
 
 const SCREENSHOT_WIDTH = 1280
 const SCREENSHOT_HEIGHT = 800

@@ -19,7 +19,7 @@
     <div class="health-score__meta">
       <p class="health-score__label" :class="`health-score__label--${labelClass}`">{{ label }}</p>
 
-      <ul class="health-score__breakdown" v-if="breakdown">
+      <ul v-if="breakdown" class="health-score__breakdown">
         <li v-for="item in breakdownItems" :key="item.key">
           <span class="breakdown__name">{{ item.name }}</span>
           <div class="breakdown__bar-wrap">

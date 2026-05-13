@@ -115,7 +115,7 @@ const generateAllThumbnails = async () => {
         })
         imageUrl = dalleResponse.imageUrl
         console.log('✅ Generated with DALL-E')
-      } catch (dalleError) {
+      } catch (_dalleError) {
         console.log('⚠️  DALL-E failed, trying Stability AI...')
         
         try {
@@ -132,7 +132,7 @@ const generateAllThumbnails = async () => {
           })
           imageUrl = stabilityResponse.imageUrl
           console.log('✅ Generated with Stability AI')
-        } catch (stabilityError) {
+        } catch (_stabilityError) {
           console.log('❌ Both AI providers failed, skipping...')
           continue
         }

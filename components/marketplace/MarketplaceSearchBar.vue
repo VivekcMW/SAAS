@@ -7,19 +7,19 @@
           <UIcon name="i-heroicons-magnifying-glass" dynamic  />
         </div>
         <input 
+          v-model="searchQuery" 
           type="text" 
-          placeholder="Search for applications, categories, or keywords..." 
-          v-model="searchQuery"
-          @input="handleSearch"
-          @focus="showSuggestions = true"
-          @blur="hideSuggestionsDelayed" 
+          placeholder="Search for applications, categories, or keywords..."
           class="search-input"
-        />
-        <button v-if="searchQuery" @click="clearSearch" class="clear-button">
+          @input="handleSearch"
+          @focus="showSuggestions = true" 
+          @blur="hideSuggestionsDelayed"
+        >
+        <button v-if="searchQuery" class="clear-button" @click="clearSearch">
           <UIcon name="i-heroicons-x-mark" dynamic  />
         </button>
       </div>
-      <button class="category-btn" @click="handleCategoryClick" title="Browse Categories">
+      <button class="category-btn" title="Browse Categories" @click="handleCategoryClick">
         <UIcon name="i-heroicons-squares-2x2" dynamic />
       </button>
     </div>
@@ -30,7 +30,7 @@
       <div v-if="recentSearches.length > 0 && !searchQuery" class="suggestion-section">
         <div class="suggestion-header">
           <span>Recent Searches</span>
-          <button @click="clearRecentSearches" class="clear-all-button">Clear All</button>
+          <button class="clear-all-button" @click="clearRecentSearches">Clear All</button>
         </div>
         <div class="suggestion-items">
           <div 
@@ -57,7 +57,7 @@
             class="suggestion-item app"
             @mousedown="navigateToApp(app.id)"
           >
-            <img :src="app.logo" :alt="app.name" class="suggestion-app-logo" />
+            <img :src="app.logo" :alt="app.name" class="suggestion-app-logo" >
             <div class="suggestion-app-info">
               <span class="app-name">{{ app.name }}</span>
               <span class="app-category">{{ app.category }}</span>
@@ -86,7 +86,7 @@
       
       <!-- See all results -->
       <div v-if="searchQuery" class="suggestion-footer">
-        <button @mousedown="performSearch" class="see-all-button">
+        <button class="see-all-button" @mousedown="performSearch">
           <UIcon name="i-heroicons-magnifying-glass" dynamic  />
           <span>See all results for "{{ searchQuery }}"</span>
         </button>

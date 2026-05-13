@@ -11,7 +11,7 @@ import { generateClaimToken, claimTokenExpiry } from '~/server/utils/discovery/c
 
 const SITE_NAME = process.env.SITE_NAME || 'SaasWorld'
 const SITE_URL  = process.env.SITE_URL  || 'https://saasworld.com'
-const FROM_NAME = process.env.OUTREACH_FROM_NAME || `${SITE_NAME} Discovery Team`
+const _FROM_NAME = process.env.OUTREACH_FROM_NAME || `${SITE_NAME} Discovery Team`
 
 export interface OutreachResult {
   ok: boolean

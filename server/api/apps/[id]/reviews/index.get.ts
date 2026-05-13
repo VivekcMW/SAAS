@@ -72,7 +72,7 @@ export default defineEventHandler(async (event) => {
 
   // Attach vendor replies
   const reviewIds = rows.map(r => r.id)
-  let repliesMap: Record<string, { body: string; isPrivate: boolean; created_at: string }> = {}
+  const repliesMap: Record<string, { body: string; isPrivate: boolean; created_at: string }> = {}
   if (reviewIds.length > 0) {
     const placeholders = reviewIds.map(() => '?').join(',')
     const replyRows = db.prepare(

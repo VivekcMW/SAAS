@@ -15,7 +15,7 @@
       <div class="container">
         <div class="search-filter-container">
           <div class="search-container">
-            <input type="text" placeholder="Search integrations..." class="search-input" v-model="searchQuery">
+            <input v-model="searchQuery" type="text" placeholder="Search integrations..." class="search-input">
             <div class="search-icon">
               <UIcon dynamic name="i-heroicons-magnifying-glass" />
             </div>
@@ -24,7 +24,8 @@
             <div class="filter-item" :class="{ active: selectedCategory === 'all' }" @click="filterCategory('all')">
               All
             </div>
-            <div class="filter-item" v-for="category in categories" :key="category" 
+            <div
+v-for="category in categories" :key="category" class="filter-item" 
                  :class="{ active: selectedCategory === category }"
                  @click="filterCategory(category)">
               {{ category }}
@@ -60,7 +61,7 @@
           <p>Discover integrations by category to enhance specific aspects of your business.</p>
         </div>
         <div class="categories-grid">
-          <div class="category-card" v-for="(category, index) in categoryDetails" :key="index" @click="filterCategory(category.name)">
+          <div v-for="(category, index) in categoryDetails" :key="index" class="category-card" @click="filterCategory(category.name)">
             <div class="category-icon">
               <UIcon dynamic :name="category.icon" />
             </div>
@@ -74,7 +75,7 @@
 
 
     <!-- Request Integration Modal -->
-    <div class="modal-overlay" v-if="showRequestForm" @click="showRequestForm = false">
+    <div v-if="showRequestForm" class="modal-overlay" @click="showRequestForm = false">
       <div class="modal-container" @click.stop>
         <div class="modal-header">
           <h3>Request New Integration</h3>
@@ -86,19 +87,19 @@
           <form @submit.prevent="submitIntegrationRequest">
             <div class="form-group">
               <label for="integration-name">Integration Name</label>
-              <input type="text" id="integration-name" v-model="requestForm.name" required placeholder="e.g., Zapier, Asana, etc.">
+              <input id="integration-name" v-model="requestForm.name" type="text" required placeholder="e.g., Zapier, Asana, etc.">
             </div>
             <div class="form-group">
               <label for="integration-url">Integration Website (optional)</label>
-              <input type="url" id="integration-url" v-model="requestForm.url" placeholder="https://...">
+              <input id="integration-url" v-model="requestForm.url" type="url" placeholder="https://...">
             </div>
             <div class="form-group">
               <label for="integration-description">Why do you need this integration?</label>
-              <textarea id="integration-description" v-model="requestForm.description" rows="4" required placeholder="Describe how you would use this integration..."></textarea>
+              <textarea id="integration-description" v-model="requestForm.description" rows="4" required placeholder="Describe how you would use this integration..."/>
             </div>
             <div class="form-group">
               <label for="integration-email">Your Email</label>
-              <input type="email" id="integration-email" v-model="requestForm.email" required placeholder="Your email address">
+              <input id="integration-email" v-model="requestForm.email" type="email" required placeholder="Your email address">
             </div>
             <button type="submit" class="btn btn-primary submit-btn" :disabled="submitting">
               {{ submitting ? 'Submitting...' : 'Submit Request' }}

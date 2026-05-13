@@ -338,7 +338,7 @@ export const useInternationalSEO = () => {
     }
 
     // Track regional performance in analytics
-    if (process.client && typeof window !== 'undefined' && 'gtag' in window) {
+    if (import.meta.client && typeof window !== 'undefined' && 'gtag' in window) {
       const gtag = (window as any).gtag
       gtag('event', 'regional_performance', {
         event_category: 'International SEO',
@@ -356,7 +356,7 @@ export const useInternationalSEO = () => {
   }
 
   // Automatic translation quality assessment
-  const assessTranslationQuality = (originalText: string, translatedText: string, targetLanguage: string): number => {
+  const assessTranslationQuality = (originalText: string, translatedText: string, _targetLanguage: string): number => {
     // Simple quality checks (in production, use professional translation APIs)
     let qualityScore = 0.5 // Base score
 

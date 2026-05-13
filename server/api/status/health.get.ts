@@ -21,7 +21,7 @@ async function checkDatabase(): Promise<ServiceHealth> {
     const db = getDb()
     db.prepare('SELECT 1').get()
     return { name: 'Database', status: 'operational', latencyMs: Date.now() - start, message: 'Responding normally' }
-  } catch (err: any) {
+  } catch (_err: any) {
     return { name: 'Database', status: 'outage', latencyMs: null, message: err?.message ?? 'Connection failed' }
   }
 }
@@ -37,7 +37,7 @@ async function checkRedis(): Promise<ServiceHealth> {
     if (!redis) throw new Error('Redis not configured')
     await redis.ping()
     return { name: 'Cache', status: 'operational', latencyMs: Date.now() - start, message: 'Responding normally' }
-  } catch (err: any) {
+  } catch (_err: any) {
     return { name: 'Cache', status: 'degraded', latencyMs: null, message: 'Redis ping failed' }
   }
 }

@@ -17,7 +17,7 @@
 
     <section v-else class="budget-grid container">
       <article v-for="app in apps" :key="app.id" class="budget-card">
-        <img v-if="app.logo" :src="app.logo" :alt="app.name" class="budget-card__logo" @error="onLogoErr" />
+        <img v-if="app.logo" :src="app.logo" :alt="app.name" class="budget-card__logo" @error="onLogoErr" >
         <div v-else class="budget-card__logo-fb">{{ app.name[0] }}</div>
         <div class="budget-card__info">
           <h2 class="budget-card__name">{{ app.name }}</h2>

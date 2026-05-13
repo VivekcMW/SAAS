@@ -404,7 +404,7 @@ export default defineEventHandler(async (event) => {
 
     return appData;
     
-  } catch (error) {
+  } catch (_error) {
     // If it's already a proper error, re-throw it
     if (error && typeof error === 'object' && 'statusCode' in error) {
       throw error;

@@ -43,7 +43,7 @@
             :src="claimData.app.logo_url"
             :alt="claimData.app.name"
             class="w-16 h-16 rounded-xl object-contain border border-gray-100 bg-gray-50 flex-shrink-0"
-          />
+          >
           <div v-else class="w-16 h-16 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
             <UIcon name="i-lucide-box" class="w-8 h-8 text-blue-500" />
           </div>

@@ -16,15 +16,15 @@
       <div class="pi-form-row">
         <div class="pi-field">
           <label class="pi-label">Plan name</label>
-          <input v-model="form.planName" class="pi-input" placeholder="e.g. Pro, Business, Enterprise" required />
+          <input v-model="form.planName" class="pi-input" placeholder="e.g. Pro, Business, Enterprise" required >
         </div>
         <div class="pi-field">
           <label class="pi-label">Price (USD/mo)</label>
-          <input v-model.number="form.price" type="number" min="0" step="0.01" class="pi-input" placeholder="99" required />
+          <input v-model.number="form.price" type="number" min="0" step="0.01" class="pi-input" placeholder="99" required >
         </div>
         <div class="pi-field">
           <label class="pi-label">Seats</label>
-          <input v-model.number="form.seats" type="number" min="1" class="pi-input" placeholder="10" />
+          <input v-model.number="form.seats" type="number" min="1" class="pi-input" placeholder="10" >
         </div>
         <div class="pi-field">
           <label class="pi-label">Billing</label>

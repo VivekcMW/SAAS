@@ -83,9 +83,9 @@
 
             <div class="enq-thread__reply">
               <textarea
+                v-model="replyText[e.id]"
                 class="bw-textarea"
                 placeholder="Type your reply…"
-                v-model="replyText[e.id]"
                 :disabled="sendingReply[e.id]"
               />
               <p v-if="replyError[e.id]" class="enq-thread__error">{{ replyError[e.id] }}</p>

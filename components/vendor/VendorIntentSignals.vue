@@ -31,7 +31,7 @@
 
     <!-- Loading -->
     <div v-else-if="loading && !data" class="vis-skels">
-      <div v-for="i in 5" :key="i" class="vis-skel"></div>
+      <div v-for="i in 5" :key="i" class="vis-skel"/>
     </div>
 
     <!-- Error -->

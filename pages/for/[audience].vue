@@ -53,7 +53,7 @@
         class="for-card"
       >
         <div class="for-card__head">
-          <img v-if="app.logo" :src="app.logo" :alt="app.name" class="for-card__logo" @error="onLogoErr" />
+          <img v-if="app.logo" :src="app.logo" :alt="app.name" class="for-card__logo" @error="onLogoErr" >
           <div v-else class="for-card__logo-fb">{{ app.name[0] }}</div>
           <div class="for-card__top">
             <span class="for-card__cat">{{ app.category }}</span>
@@ -218,7 +218,7 @@ const audienceConfig = computed<AudienceConfig>(() => AUDIENCE_MAP[audience] || 
 })
 
 // Fetch apps using matching category/search
-const searchQuery = computed(() => audienceConfig.value.searchTerms.join(','))
+const _searchQuery = computed(() => audienceConfig.value.searchTerms.join(','))
 const { data, pending } = await useFetch<{ apps: App[]; total: number }>(
   `/api/apps?search=${encodeURIComponent(audienceConfig.value.searchTerms[0])}&sortBy=rating&perPage=24`,
   { key: `for-${audience}` }

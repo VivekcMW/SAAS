@@ -29,7 +29,7 @@
 
     <section class="mk-section">
       <div class="mk-section__inner">
-        <div v-for="group in filteredGroups" :key="group.letter" :id="`ltr-${group.letter}`" class="gl-group">
+        <div v-for="group in filteredGroups" :id="`ltr-${group.letter}`" :key="group.letter" class="gl-group">
           <h2 class="gl-group__letter">{{ group.letter }}</h2>
           <div class="gl-list">
             <article v-for="t in group.terms" :key="t.term" class="gl-term">

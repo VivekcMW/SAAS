@@ -64,7 +64,7 @@
       <div class="bw-card__head">
         <h2 class="bw-card__title">Closed deals — ready to review</h2>
         <div style="display: flex; gap: 8px; align-items: center;">
-          <input v-model="search" class="bw-input" placeholder="Search by name…" style="max-width: 220px;" />
+          <input v-model="search" class="bw-input" placeholder="Search by name…" style="max-width: 220px;" >
         </div>
       </div>
 
@@ -87,7 +87,7 @@
             <th scope="col">Product</th>
             <th scope="col">Closed</th>
             <th scope="col">Status</th>
-            <th scope="col"></th>
+            <th scope="col"/>
           </tr>
         </thead>
         <tbody>
@@ -139,7 +139,7 @@
       </div>
       <div class="rr-template">
         <p><strong>Subject:</strong> Would you share your experience with {{ selectedListingName || '[Product Name]' }}?</p>
-        <hr class="rr-template__hr" />
+        <hr class="rr-template__hr" >
         <p>Hi [First Name],</p>
         <p>Thanks for using {{ selectedListingName || '[Product Name]' }} — I hope it's been useful for your team.</p>
         <p>If you've had a positive experience, I'd love it if you could take 2 minutes to leave a review on Moonmart. Honest reviews help other buyers make better decisions and mean a lot to us.</p>

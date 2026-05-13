@@ -21,7 +21,7 @@
           <p class="help-text">Didn't receive the email? Check your spam folder or try again.</p>
           
           <div class="success-actions">
-            <button @click="resetForm" class="btn-secondary">
+            <button class="btn-secondary" @click="resetForm">
               Try different email
             </button>
             <NuxtLink to="/login" class="btn-primary">
@@ -32,7 +32,7 @@
 
         <!-- Form State -->
         <div v-else>
-          <form @submit.prevent="handleSubmit" class="forgot-password-form">
+          <form class="forgot-password-form" @submit.prevent="handleSubmit">
             <div class="form-group">
               <label for="email">Email address</label>
               <input
@@ -42,7 +42,7 @@
                 required
                 placeholder="Enter your email address"
                 :disabled="isLoading"
-              />
+              >
             </div>
 
             <button type="submit" class="btn-submit" :disabled="isLoading">

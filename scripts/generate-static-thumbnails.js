@@ -1,4 +1,4 @@
-const { createCanvas, loadImage } = require('canvas');
+const { createCanvas } = require('canvas');
 const fs = require('fs');
 const path = require('path');
 
@@ -43,7 +43,7 @@ const blogPosts = [
 ];
 
 // Color schemes for different categories
-const categoryColors = {
+const _categoryColors = {
   'AI & Automation': ['#667eea', '#764ba2'],
   'Communication': ['#f093fb', '#f5576c'],
   'Remote Work': ['#4facfe', '#00f2fe'],
@@ -132,7 +132,7 @@ async function generateThumbnail(post) {
   ctx.textAlign = 'left';
   
   // Wrap text for title
-  const titleHeight = wrapText(ctx, post.title, 60, 220, width - 120, 60);
+  const _titleHeight = wrapText(ctx, post.title, 60, 220, width - 120, 60);
   
   // Add subtle shadow to text for better readability
   ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';

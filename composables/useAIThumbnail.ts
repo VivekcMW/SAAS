@@ -153,7 +153,7 @@ export const useAIThumbnail = () => {
           }
         })
         return response.imageUrl
-      } catch (err) {
+      } catch (_err) {
         throw new Error('DALL-E generation failed')
       }
     }
@@ -178,7 +178,7 @@ export const useAIThumbnail = () => {
           }
         })
         return response.imageUrl
-      } catch (err) {
+      } catch (_err) {
         throw new Error('Stability AI generation failed')
       }
     }
@@ -223,7 +223,7 @@ export const useAIThumbnail = () => {
       if (provider === 'dalle' || !provider) {
         try {
           return await dalleProvider.generateImage(prompt, config)
-        } catch (err) {
+        } catch (_err) {
           console.warn('DALL-E failed, trying Stability AI')
         }
       }
@@ -231,7 +231,7 @@ export const useAIThumbnail = () => {
       if (provider === 'stability' || !provider) {
         try {
           return await stabilityProvider.generateImage(prompt, config)
-        } catch (err) {
+        } catch (_err) {
           console.warn('Stability AI failed, falling back to canvas')
         }
       }
@@ -268,7 +268,7 @@ export const useAIThumbnail = () => {
     const thumbnailUrl = await generateThumbnail(config)
     
     // Save to local storage for caching
-    if (process.client) {
+    if (import.meta.client) {
       localStorage.setItem(`thumbnail-${postData.slug}`, thumbnailUrl)
     }
 
@@ -285,7 +285,7 @@ export const useAIThumbnail = () => {
     style?: ThumbnailConfig['style']
   }): Promise<string> => {
     // Check cache first
-    if (process.client) {
+    if (import.meta.client) {
       const cached = localStorage.getItem(`thumbnail-${postData.slug}`)
       if (cached && cached.startsWith('data:image')) {
         return cached

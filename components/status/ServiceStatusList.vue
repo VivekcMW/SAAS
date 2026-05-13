@@ -1,6 +1,6 @@
 <template>
   <div class="service-status-list">
-    <div class="service-category" v-for="(categoryServices, category) in servicesByCategory" :key="category">
+    <div v-for="(categoryServices, category) in servicesByCategory" :key="category" class="service-category">
       <div class="category-header">
         <h2 class="category-title">{{ getCategoryTitle(category) }}</h2>
         <div class="category-status">
@@ -39,7 +39,7 @@
               </div>
             </div>
             
-            <div class="metric" v-if="service.responseTime">
+            <div v-if="service.responseTime" class="metric">
               <div class="metric-label">Response Time</div>
               <div class="metric-value" :class="getResponseTimeClass(service.responseTime)">
                 {{ formatResponseTime(service.responseTime) }}
@@ -64,7 +64,7 @@
                 class="chart-bar"
                 :class="getUptimeBarClass(day)"
                 :title="`${day.toFixed(1)}% uptime`"
-              ></div>
+              />
             </div>
           </div>
         </div>

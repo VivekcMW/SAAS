@@ -130,7 +130,7 @@ const pillars: Pillar[] = [
   }
 ]
 
-const stats: Stat[] = [
+const _stats: Stat[] = [
   { value: '10k+', label: 'Software products' },
   { value: '120+', label: 'Categories covered' },
   { value: '50k+', label: 'Verified reviews' },
@@ -268,12 +268,12 @@ function toggleFaq(i: number) {
         <div class="stage-picker" role="tablist" aria-label="Founder stage">
           <button
             v-for="(audience, i) in audiences"
+            :id="`stage-tab-${i}`"
             :key="audience.title"
             type="button"
             role="tab"
             :aria-selected="selectedAudienceIndex === i"
             :aria-controls="`stage-panel-${i}`"
-            :id="`stage-tab-${i}`"
             :tabindex="selectedAudienceIndex === i ? 0 : -1"
             class="stage-chip"
             :class="{ 'stage-chip--active': selectedAudienceIndex === i }"

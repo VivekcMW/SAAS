@@ -6,7 +6,7 @@
 export default defineNuxtPlugin((nuxtApp) => {
   // Ensure CSS variables are available in SSR and client
   const injectGlobalCSS = () => {
-    if (process.client) {
+    if (import.meta.client) {
       // Client-side specific CSS
       document.documentElement.classList.add('css-loaded');
     }
@@ -16,7 +16,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.hook('app:rendered', injectGlobalCSS);
   
   // Also execute immediately for client-side
-  if (process.client) {
+  if (import.meta.client) {
     injectGlobalCSS();
   }
 });

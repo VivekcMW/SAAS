@@ -47,8 +47,8 @@
           >
             <button
               v-if="error.field && focusOnClick"
-              @click="focusField(error.field)"
               class="hover:underline focus:underline focus:outline-none"
+              @click="focusField(error.field)"
             >
               {{ formatFieldError(error) }}
             </button>
@@ -75,8 +75,8 @@
     <!-- Retry Button for Submission Errors -->
     <div v-if="showRetryButton && (submissionErrors.length > 0 || networkErrors.length > 0)" class="mt-4">
       <button
-        @click="$emit('retry')"
         class="inline-flex items-center px-3 py-1.5 border border-red-300 dark:border-red-600 rounded-md text-sm font-medium text-red-700 dark:text-red-300 bg-white dark:bg-red-900/30 hover:bg-red-50 dark:hover:bg-red-900/50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 transition-colors"
+        @click="$emit('retry')"
       >
         <svg 
           class="w-4 h-4 mr-1.5" 

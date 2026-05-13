@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
   const id = makeId('news')
 
   // Ensure unique slug
-  let baseSlug = makeSlug(title)
+  const baseSlug = makeSlug(title)
   let slug = baseSlug
   let attempt = 0
   while (db.prepare('SELECT id FROM news_posts WHERE slug = ?').get(slug)) {

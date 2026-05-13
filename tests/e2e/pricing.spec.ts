@@ -26,10 +26,10 @@ test.describe('Pricing Page', () => {
     // Find a toggle button between monthly and annual
     const toggle = page.locator('button:has-text("Annual"), button:has-text("annual"), button:has-text("Yearly"), [class*="toggle"]').first()
     if (await toggle.count()) {
-      const before = await page.locator('[class*="price__amount"], [class*="plan-price"]').first().textContent().catch(() => '')
+      const _before = await page.locator('[class*="price__amount"], [class*="plan-price"]').first().textContent().catch(() => '')
       await toggle.click()
       await page.waitForTimeout(300)
-      const after = await page.locator('[class*="price__amount"], [class*="plan-price"]').first().textContent().catch(() => '')
+      const _after = await page.locator('[class*="price__amount"], [class*="plan-price"]').first().textContent().catch(() => '')
       // Prices should change (or page still works)
       await expect(page.locator('body')).toBeVisible()
     }

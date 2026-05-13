@@ -34,7 +34,7 @@ export const usePerformanceMonitoring = () => {
   // Core Web Vitals measurement
   const measureCoreWebVitals = (): Promise<CoreWebVitals> => {
     return new Promise((resolve) => {
-      if (process.server) {
+      if (import.meta.server) {
         resolve({
           lcp: 0,
           fid: 0,
@@ -147,7 +147,7 @@ export const usePerformanceMonitoring = () => {
   // SEO performance metrics
   const measureSEOMetrics = (): Promise<SEOMetrics> => {
     return new Promise((resolve) => {
-      if (process.server) {
+      if (import.meta.server) {
         resolve({
           pageLoadTime: 0,
           timeToInteractive: 0,
@@ -257,7 +257,7 @@ export const usePerformanceMonitoring = () => {
     }
 
     // Send to analytics endpoint
-    if (process.client) {
+    if (import.meta.client) {
       fetch('/api/analytics/rum', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -289,7 +289,7 @@ export const usePerformanceMonitoring = () => {
     }
 
     // Track in analytics
-    if (process.client && typeof window !== 'undefined' && 'gtag' in window) {
+    if (import.meta.client && typeof window !== 'undefined' && 'gtag' in window) {
       const gtag = (window as any).gtag
       gtag('event', 'page_performance', {
         event_category: 'Performance',
@@ -354,7 +354,7 @@ export const usePerformanceMonitoring = () => {
 
   // Automated performance alerts
   const setupPerformanceAlerts = () => {
-    if (process.server) return
+    if (import.meta.server) return
 
     // Monitor for performance regressions
     const performanceObserver = new PerformanceObserver((list) => {
@@ -382,7 +382,7 @@ export const usePerformanceMonitoring = () => {
     // Observe long tasks and layout shifts
     try {
       performanceObserver.observe({ entryTypes: ['longtask', 'layout-shift'] })
-    } catch (e) {
+    } catch (_e) {
       console.warn('Performance Observer not supported')
     }
   }

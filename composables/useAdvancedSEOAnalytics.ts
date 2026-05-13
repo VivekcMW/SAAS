@@ -3,12 +3,6 @@
  * Monitors SEO performance and user engagement for optimization insights
  */
 
-// Type definitions for analytics
-interface WebVitalMetric {
-  value: number
-  rating: 'good' | 'needs-improvement' | 'poor'
-}
-
 declare global {
   interface Window {
     gtag?: (command: string, action: string, parameters?: Record<string, any>) => void
@@ -18,7 +12,7 @@ declare global {
 export const useAdvancedSEOAnalytics = () => {
   // Core Web Vitals tracking
   const trackCoreWebVitals = () => {
-    if (process.client) {
+    if (import.meta.client) {
       // Track performance metrics manually without web-vitals dependency
       const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
@@ -44,7 +38,7 @@ export const useAdvancedSEOAnalytics = () => {
 
       try {
         observer.observe({ entryTypes: ['largest-contentful-paint', 'first-input', 'layout-shift'] })
-      } catch (e) {
+      } catch (_e) {
         // Fallback for browsers that don't support these entry types
         console.warn('Performance Observer not fully supported')
       }
@@ -53,7 +47,7 @@ export const useAdvancedSEOAnalytics = () => {
 
   // Track SEO-specific metrics
   const trackSEOMetric = (name: string, value: number, rating: string) => {
-    if (process.client && window.gtag) {
+    if (import.meta.client && window.gtag) {
       window.gtag('event', 'core_web_vitals', {
         metric_name: name,
         metric_value: value,
@@ -85,8 +79,8 @@ export const useAdvancedSEOAnalytics = () => {
 
   // User engagement tracking
   const trackUserEngagement = () => {
-    if (process.client) {
-      let startTime = Date.now()
+    if (import.meta.client) {
+      const startTime = Date.now()
       let maxScroll = 0
       
       // Track scroll depth
@@ -124,7 +118,7 @@ export const useAdvancedSEOAnalytics = () => {
 
   // Click tracking for SEO elements
   const trackSEOClicks = () => {
-    if (process.client) {
+    if (import.meta.client) {
       document.addEventListener('click', (event) => {
         const target = event.target as HTMLElement
         
@@ -190,7 +184,7 @@ export const useAdvancedSEOAnalytics = () => {
 
   // SEO heatmap data collection
   const collectHeatmapData = () => {
-    if (process.client) {
+    if (import.meta.client) {
       const clicks: Array<{x: number, y: number, element: string, timestamp: number}> = []
       
       document.addEventListener('click', (event) => {
@@ -212,7 +206,7 @@ export const useAdvancedSEOAnalytics = () => {
 
   // Generic event tracking helper
   const trackEvent = (eventName: string, parameters: Record<string, any>) => {
-    if (process.client && window.gtag) {
+    if (import.meta.client && window.gtag) {
       window.gtag('event', eventName, parameters)
     }
   }

@@ -10,7 +10,7 @@ import { getDb, makeId } from '~/server/utils/database'
 import { getSessionUser, requirePlan } from '~/server/utils/auth'
 import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
 import { getMarketplaceApps } from '~/server/utils/apps'
-import { aiChat, activeProviderName } from '~/server/utils/aiProvider'
+import { aiChat } from '~/server/utils/aiProvider'
 
 interface CopilotRequest {
   sessionId?: string

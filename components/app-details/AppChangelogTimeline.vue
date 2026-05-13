@@ -84,7 +84,7 @@ function formatDate(iso: string): string {
         <div class="cl-marker" :class="`tone-${typeMeta(entry.type).color}`">
           <Icon :name="typeMeta(entry.type).icon" />
         </div>
-        <div v-if="idx < items.length - 1" class="cl-line"></div>
+        <div v-if="idx < items.length - 1" class="cl-line"/>
 
         <div class="cl-card">
           <div class="cl-meta">

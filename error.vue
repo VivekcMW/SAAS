@@ -27,7 +27,7 @@ import { computed } from 'vue'
 
 const props = defineProps<{ error: { statusCode: number; statusMessage?: string; stack?: string } }>()
 
-const isDev = process.dev
+const isDev = import.meta.dev
 
 const title = computed(() => {
   switch (props.error.statusCode) {

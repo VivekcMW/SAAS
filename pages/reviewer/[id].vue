@@ -91,10 +91,11 @@ const { data, pending, error } = await useFetch<{ profile: ReviewerProfile; revi
 
 const profile = computed(() => data.value?.profile || null)
 const reviews = computed(() => data.value?.reviews || [])
+const { fmtDate } = useFmt()
 
 function formatDate(str: string) {
   if (!str) return ''
-  return new Date(str).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+  return fmtDate(str, { month: 'long', year: 'numeric' })
 }
 
 useHead(() => {

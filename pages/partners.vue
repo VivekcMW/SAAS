@@ -207,7 +207,7 @@
 
     <!-- CTA Section -->
     <!-- Partner Application Form -->
-    <section class="partner-cta" id="become-partner">
+    <section id="become-partner" class="partner-cta">
       <div class="container">
         <div class="cta-content">
           <h2>Ready to Partner with Us?</h2>
@@ -219,12 +219,12 @@
 
           <form v-else class="apply-form" @submit.prevent="submitApplication">
             <div class="form-row">
-              <input v-model="applyForm.company_name" class="form-input" placeholder="Company name *" required />
-              <input v-model="applyForm.contact_name" class="form-input" placeholder="Contact name *" required />
+              <input v-model="applyForm.company_name" class="form-input" placeholder="Company name *" required >
+              <input v-model="applyForm.contact_name" class="form-input" placeholder="Contact name *" required >
             </div>
             <div class="form-row">
-              <input v-model="applyForm.email" class="form-input" type="email" placeholder="Business email *" required />
-              <input v-model="applyForm.website" class="form-input" type="url" placeholder="Website (optional)" />
+              <input v-model="applyForm.email" class="form-input" type="email" placeholder="Business email *" required >
+              <input v-model="applyForm.website" class="form-input" type="url" placeholder="Website (optional)" >
             </div>
             <select v-model="applyForm.partnership_type" class="form-input" required>
               <option value="" disabled>Partnership type *</option>
@@ -249,7 +249,7 @@
     </section>
 
     <!-- Affiliate Program Section -->
-    <section class="affiliate-section" id="affiliate">
+    <section id="affiliate" class="affiliate-section">
       <div class="container">
         <div class="section-header">
           <h2>Affiliate Program</h2>

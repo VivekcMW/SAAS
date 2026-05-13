@@ -56,6 +56,8 @@ export function useListingEditor() {
   const lastSaved = ref<Date | null>(null)
   const publishedUrl = ref('')
   const publishedAsDraft = ref(false)
+  const publishedId = ref('')
+  const publishedName = ref('')
 
   // ── Load from sessionStorage ───────────────────────────────────────────────
   function loadFromSession(): boolean {
@@ -206,7 +208,7 @@ export function useListingEditor() {
     publishing.value = true
     saveError.value = ''
     try {
-      const data = await $fetch<{ ok: boolean; url: string; status: string }>('/api/listings/express', {
+      const data = await $fetch<{ ok: boolean; url: string; status: string; listing?: { id: string; slug: string } }>('/api/listings/express', {
         method: 'POST',
         body: {
           url: draft.url,
@@ -225,6 +227,8 @@ export function useListingEditor() {
       })
       publishedAsDraft.value = false
       publishedUrl.value = data.url
+      if (data.listing?.id) publishedId.value = data.listing.id
+      publishedName.value = draft.name
       lastSaved.value = new Date()
       // Clear session draft after publish
       if (import.meta.client) sessionStorage.removeItem(SESSION_KEY)
@@ -245,6 +249,8 @@ export function useListingEditor() {
     lastSaved,
     publishedUrl,
     publishedAsDraft,
+    publishedId,
+    publishedName,
     completeness,
     pricingLabel,
     loadFromSession,

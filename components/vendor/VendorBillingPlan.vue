@@ -41,7 +41,7 @@
           <h2 class="bw-card__title">Invoices</h2>
           <div v-if="!sub?.invoices?.length" style="color: var(--vw-text-muted); font-size: 0.9rem; padding: 8px 0;">No invoices yet.</div>
           <table v-else class="bw-table">
-            <thead><tr><th>Date</th><th>Description</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+            <thead><tr><th>Date</th><th>Description</th><th>Amount</th><th>Status</th><th/></tr></thead>
             <tbody>
               <tr v-for="i in sub.invoices" :key="i.id">
                 <td>{{ i.date }}</td>

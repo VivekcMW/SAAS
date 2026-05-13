@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
 interface Props {
   appId: string
@@ -8,8 +8,6 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-
-const STORAGE_KEY = 'saasworld_stack'
 
 interface StackEntry {
   id: string
@@ -20,48 +18,83 @@ interface StackEntry {
 
 const stack = ref<StackEntry[]>([])
 const inStack = computed(() => stack.value.some(x => x.id === props.appId))
+const showPanel = ref(false)
+const saving = ref(false)
 
-function loadStack(): StackEntry[] {
-  if (globalThis.window === undefined) return []
+// ── DB persistence helpers ──────────────────────────────────────────────────
+
+/** Persist the current stack to the server (full replace). Falls back silently if not authed. */
+async function persistStack(entries: StackEntry[]) {
   try {
-    const raw = globalThis.localStorage.getItem(STORAGE_KEY)
-    return raw ? JSON.parse(raw) : []
+    await $fetch('/api/buyer/stack', {
+      method: 'PUT',
+      body: {
+        tools: entries.map(e => ({
+          app_id: e.id,
+          name: e.name,
+          category: 'SaaS',
+          notes: null,
+        })),
+      },
+    })
   } catch {
-    return []
+    // Not authenticated — silently keep local state
   }
 }
 
-function saveStack() {
-  if (globalThis.window === undefined) return
-  globalThis.localStorage.setItem(STORAGE_KEY, JSON.stringify(stack.value))
+/** Load stack from server; fall back to localStorage for guests */
+async function loadStack(): Promise<StackEntry[]> {
+  try {
+    const data = await $fetch<{ tools: Array<{ app_id?: string; name: string }> }>('/api/buyer/stack')
+    if (Array.isArray(data.tools) && data.tools.length > 0) {
+      return data.tools
+        .filter(t => t.app_id)
+        .map(t => ({ id: t.app_id!, name: t.name, addedAt: '' }))
+    }
+  } catch {
+    // Fallback to localStorage for unauthenticated visitors
+  }
+  if (globalThis.window !== undefined) {
+    try {
+      const raw = localStorage.getItem('saasworld_stack')
+      return raw ? JSON.parse(raw) : []
+    } catch { /* ignore */ }
+  }
+  return []
 }
 
-onMounted(() => {
-  stack.value = loadStack()
+onMounted(async () => {
+  stack.value = await loadStack()
 })
 
-watch(stack, saveStack, { deep: true })
+// ── Mutations ───────────────────────────────────────────────────────────────
 
-function toggle() {
+async function toggle() {
+  let updated: StackEntry[]
   if (inStack.value) {
-    stack.value = stack.value.filter(x => x.id !== props.appId)
+    updated = stack.value.filter(x => x.id !== props.appId)
   } else {
-    stack.value = [
+    updated = [
       ...stack.value,
       { id: props.appId, name: props.appName, logo: props.appLogo, addedAt: new Date().toISOString() }
     ]
   }
+  stack.value = updated
+  saving.value = true
+  await persistStack(updated)
+  saving.value = false
 }
 
-function remove(id: string) {
-  stack.value = stack.value.filter(x => x.id !== id)
+async function remove(id: string) {
+  const updated = stack.value.filter(x => x.id !== id)
+  stack.value = updated
+  await persistStack(updated)
 }
 
-function clearAll() {
+async function clearAll() {
   stack.value = []
+  await persistStack([])
 }
-
-const showPanel = ref(false)
 </script>
 
 <template>
@@ -90,11 +123,11 @@ const showPanel = ref(false)
         <ul class="stack-list">
           <li v-for="item in stack" :key="item.id">
             <div class="stack-logo">
-              <img v-if="item.logo" :src="item.logo" :alt="`${item.name} logo`" />
+              <img v-if="item.logo" :src="item.logo" :alt="`${item.name} logo`" >
               <span v-else>{{ item.name.charAt(0) }}</span>
             </div>
             <NuxtLink :to="`/marketplace/app/${item.id}`" class="stack-name">{{ item.name }}</NuxtLink>
-            <button class="stack-remove" @click="remove(item.id)" :aria-label="`Remove ${item.name}`">
+            <button class="stack-remove" :aria-label="`Remove ${item.name}`" @click="remove(item.id)">
               <Icon name="heroicons:x-mark" />
             </button>
           </li>

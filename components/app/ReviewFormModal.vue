@@ -4,7 +4,7 @@
 -->
 <template>
   <BaseModal :model-value="true" title="Write a Review" size="lg" @close="emit('close')" @update:model-value="emit('close')">
-    <form @submit.prevent="submitReview" class="rfm-form">
+    <form class="rfm-form" @submit.prevent="submitReview">
 
       <BaseInput
         v-model="formData.userName"
@@ -91,8 +91,7 @@ interface Props {
 }
 
 interface Emits {
-  (e: 'close'): void
-  (e: 'submitted'): void
+  (e: 'close' | 'submitted'): void
 }
 
 const props = defineProps<Props>()
@@ -157,7 +156,7 @@ const submitReview = async () => {
 
     // Success notification could be added here
     emit('submitted')
-  } catch (error) {
+  } catch (_error) {
     console.error('Failed to submit review:', error)
     // Error notification could be added here
   } finally {

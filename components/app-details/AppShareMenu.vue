@@ -177,7 +177,7 @@ defineExpose({ toggle, open: () => { open.value = true; nextTick(updatePanelPosi
         </div>
 
         <div class="share-url-row">
-          <input class="share-url" readonly :value="url" />
+          <input class="share-url" readonly :value="url" >
           <button
             type="button"
             :class="['share-copy', { copied }]"
@@ -225,7 +225,7 @@ defineExpose({ toggle, open: () => { open.value = true; nextTick(updatePanelPosi
 
         <Transition name="sm">
           <div v-if="qrShown" class="share-qr">
-            <img :src="qrUrl" alt="QR code for this app" />
+            <img :src="qrUrl" alt="QR code for this app" >
             <p class="share-qr-hint">Scan to open on another device</p>
           </div>
         </Transition>
@@ -233,7 +233,7 @@ defineExpose({ toggle, open: () => { open.value = true; nextTick(updatePanelPosi
         <details class="share-embed">
           <summary>Embed this on your site</summary>
           <div class="embed-wrap">
-            <textarea readonly rows="3" :value="embedCode"></textarea>
+            <textarea readonly rows="3" :value="embedCode"/>
             <button type="button" class="share-copy" @click="copy(embedCode)">
               <Icon name="heroicons:clipboard" />
               Copy embed

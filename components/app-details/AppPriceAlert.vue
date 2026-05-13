@@ -72,8 +72,8 @@ function reset() {
           :key="opt.value"
           type="button"
           :class="['pa-type-pill', { active: threshold === opt.value }]"
-          @click="threshold = opt.value"
           :disabled="submitting"
+          @click="threshold = opt.value"
         >
           <Icon :name="opt.icon" class="pill-icon" />
           {{ opt.label }}
@@ -91,10 +91,10 @@ function reset() {
             class="pa-input"
             required
             :disabled="submitting"
-          />
+          >
         </div>
         <button type="submit" class="pa-submit" :disabled="submitting || !email">
-          <span v-if="submitting" class="spinner"></span>
+          <span v-if="submitting" class="spinner"/>
           <Icon v-else name="heroicons:bell" class="submit-icon" />
           <span>{{ submitting ? 'Subscribing…' : 'Notify me' }}</span>
         </button>

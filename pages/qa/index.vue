@@ -32,7 +32,7 @@
         <!-- Filters -->
         <div class="qa-filters">
           <div class="qa-filters__search">
-            <input v-model="filters.q" type="search" placeholder="Search questions…" @input="onSearch" />
+            <input v-model="filters.q" type="search" placeholder="Search questions…" @input="onSearch" >
           </div>
           <div class="qa-filters__sort">
             <button
@@ -44,7 +44,7 @@
             >{{ s.label }}</button>
           </div>
           <label class="qa-filters__solved">
-            <input type="checkbox" v-model="filters.solved" @change="load()" /> Solved only
+            <input v-model="filters.solved" type="checkbox" @change="load()" > Solved only
           </label>
         </div>
 
@@ -103,7 +103,7 @@ const SORTS = [
 ]
 
 const route = useRoute()
-const router = useRouter()
+const _router = useRouter()
 
 const filters = reactive({
   q: (route.query.q as string) || '',

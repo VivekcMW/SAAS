@@ -222,7 +222,7 @@ export const useLeadGeneration = () => {
 
   // Personalized content recommendations
   const getPersonalizedRecommendations = (userData: Record<string, any>) => {
-    const { role, industry, companySize, interests } = userData
+    const { role, industry, companySize, interests: _interests } = userData
 
     const recommendations = []
 
@@ -359,7 +359,7 @@ export const useLeadGeneration = () => {
     const leadScore = calculateLeadScore(conversionData.userData)
     
     // Track conversion event
-    if (process.client && typeof window !== 'undefined' && 'gtag' in window) {
+    if (import.meta.client && typeof window !== 'undefined' && 'gtag' in window) {
       const gtag = (window as any).gtag
       gtag('event', 'generate_lead', {
         event_category: 'Lead Generation',

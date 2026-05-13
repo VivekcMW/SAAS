@@ -39,7 +39,7 @@ let resizeObserver: ResizeObserver | null = null
 let hashSyncTimer: ReturnType<typeof setTimeout> | undefined
 
 const effectiveHeader = computed(() => props.headerHeight || measuredHeader.value)
-const totalTopOffset = computed(() => effectiveHeader.value + navHeight.value + props.offset)
+const _totalTopOffset = computed(() => effectiveHeader.value + navHeight.value + props.offset)
 
 const prefersReducedMotion = () =>
   globalThis.window !== undefined

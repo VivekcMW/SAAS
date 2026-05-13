@@ -59,22 +59,22 @@
             <div class="ct-row">
               <label class="ct-field">
                 <span>First name <span class="ct-req">*</span></span>
-                <input v-model="form.firstName" type="text" required autocomplete="given-name" />
+                <input v-model="form.firstName" type="text" required autocomplete="given-name" >
               </label>
               <label class="ct-field">
                 <span>Last name <span class="ct-req">*</span></span>
-                <input v-model="form.lastName" type="text" required autocomplete="family-name" />
+                <input v-model="form.lastName" type="text" required autocomplete="family-name" >
               </label>
             </div>
 
             <div class="ct-row">
               <label class="ct-field">
                 <span>Work email <span class="ct-req">*</span></span>
-                <input v-model="form.email" type="email" required autocomplete="email" placeholder="you@company.com" />
+                <input v-model="form.email" type="email" required autocomplete="email" placeholder="you@company.com" >
               </label>
               <label class="ct-field">
                 <span>Company</span>
-                <input v-model="form.company" type="text" autocomplete="organization" />
+                <input v-model="form.company" type="text" autocomplete="organization" >
               </label>
             </div>
 
@@ -118,7 +118,7 @@
             </label>
 
             <label class="ct-consent">
-              <input v-model="form.consent" type="checkbox" required />
+              <input v-model="form.consent" type="checkbox" required >
               <span>
                 I agree to Moonmart processing my details under the
                 <NuxtLink to="/privacy">Privacy Policy</NuxtLink>.

@@ -4,7 +4,7 @@
       <div class="hero-content">
         <div class="app-header">
           <div class="app-logo">
-            <img :src="app.logo" :alt="app.name + ' logo'" @error="handleImageError" />
+            <img :src="app.logo" :alt="app.name + ' logo'" @error="handleImageError" >
           </div>
           <div class="app-info">
             <h1 class="app-title">{{ app.name }}</h1>
@@ -12,10 +12,11 @@
             <div class="app-meta">
               <div class="app-rating">
                 <div class="stars">
-                  <i v-for="n in 5" :key="n"
+                  <i
+v-for="n in 5" :key="n"
                     class="fas fa-star"
                     :class="{ 'filled': n <= Math.floor(app.rating) }"
-                  ></i>
+                  />
                   <span class="rating-score">{{ app.rating.toFixed(1) }}</span>
                 </div>
                 <span class="rating-count">({{ app.reviewCount }} reviews)</span>
@@ -32,7 +33,7 @@
         <div class="hero-actions">
           <div class="action-buttons">
             <button class="btn btn-primary btn-lg get-started">
-              <i class="fas fa-rocket"></i>
+              <i class="fas fa-rocket"/>
               Get Started
             </button>
             <button 
@@ -40,7 +41,7 @@
               :class="{ 'is-favorite': isFavorite }"
               @click="toggleFavorite"
             >
-              <i :class="isFavorite ? 'fas fa-heart' : 'far fa-heart'"></i>
+              <i :class="isFavorite ? 'fas fa-heart' : 'far fa-heart'"/>
               {{ isFavorite ? 'Favorited' : 'Add to Favorites' }}
             </button>
           </div>
@@ -57,28 +58,28 @@
         
         <div class="quick-stats">
           <div class="stat-item">
-            <i class="fas fa-calendar"></i>
+            <i class="fas fa-calendar"/>
             <div class="stat-info">
               <span class="stat-value">{{ formatDate(app.launchDate) }}</span>
               <span class="stat-label">Launch Date</span>
             </div>
           </div>
           <div class="stat-item">
-            <i class="fas fa-users"></i>
+            <i class="fas fa-users"/>
             <div class="stat-info">
               <span class="stat-value">{{ formatNumber(app.userCount) }}+</span>
               <span class="stat-label">Active Users</span>
             </div>
           </div>
           <div class="stat-item">
-            <i class="fas fa-building"></i>
+            <i class="fas fa-building"/>
             <div class="stat-info">
               <span class="stat-value">{{ formatNumber(app.companyCount) }}+</span>
               <span class="stat-label">Companies</span>
             </div>
           </div>
           <div class="stat-item">
-            <i class="fas fa-code-branch"></i>
+            <i class="fas fa-code-branch"/>
             <div class="stat-info">
               <span class="stat-value">{{ formatNumber(app.integrationCount) }}</span>
               <span class="stat-label">Integrations</span>
@@ -114,7 +115,7 @@ interface Props {
   app: AppDetails;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 const isFavorite = ref(false);
 
 const handleImageError = (event: Event) => {

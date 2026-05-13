@@ -24,7 +24,7 @@
       </div>
 
       <!-- Sponsored Apps Row -->
-      <div class="apps-section" v-if="false">
+      <div v-if="false" class="apps-section">
         <div class="section-header">
           <h2 class="section-title">
             <UIcon name="i-heroicons-sparkles" class="section-icon" dynamic />
@@ -36,7 +36,7 @@
           </button>
         </div>
         
-        <div class="apps-row" ref="sponsoredRow">
+        <div ref="sponsoredRow" class="apps-row">
           <div class="apps-grid">
             <div 
               v-for="(app, index) in sponsoredApps.slice(0, 4)" 
@@ -67,7 +67,7 @@
       </div>
 
       <!-- Trending Apps Row -->
-      <div class="apps-section" v-if="false">
+      <div v-if="false" class="apps-section">
         <div class="section-header">
           <h2 class="section-title">
             <UIcon name="i-heroicons-arrow-trending-up" class="section-icon" dynamic />
@@ -79,7 +79,7 @@
           </button>
         </div>
         
-        <div class="apps-row" ref="trendingRow">
+        <div ref="trendingRow" class="apps-row">
           <div class="apps-grid">
             <div 
               v-for="(app, index) in trendingApps.slice(0, 4)" 
@@ -120,7 +120,7 @@ import { useCategoriesMenu } from '~/composables/useCategoriesMenu';
 const router = useRouter();
 
 // Global categories menu composable for cross-component communication
-const { openCategoriesDrawer } = useCategoriesMenu();
+const { openCategoriesDrawer: _openCategoriesDrawer } = useCategoriesMenu();
 
 const allCategories = [
   'CRM', 'Communication', 'Marketing', 'Video Conferencing', 'File Storage', 

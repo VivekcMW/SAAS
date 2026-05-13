@@ -12,7 +12,7 @@ import { getDb, makeId } from '~/server/utils/database'
 import { filterNew } from '~/server/utils/discovery/deduplicator'
 import { fetchPageText, extractWithAI, computeScore, routeByScore } from '~/server/utils/ai-extractor'
 
-const GH_API = 'https://api.github.com'
+const _GH_API = 'https://api.github.com'
 const GH_RAW = 'https://raw.githubusercontent.com'
 
 /** Curated list of awesome repos to crawl */
@@ -26,7 +26,7 @@ const AWESOME_REPOS = [
   { owner: 'virajkulkarni14', repo: 'WebDeveloperSecurityChecklist', file: 'README.md' },
 ] as const
 
-function githubHeaders(): Record<string, string> {
+function _githubHeaders(): Record<string, string> {
   const token = process.env.GITHUB_TOKEN
   const headers: Record<string, string> = {
     'Accept': 'application/vnd.github.v3+json',

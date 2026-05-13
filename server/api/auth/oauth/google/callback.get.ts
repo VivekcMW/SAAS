@@ -3,9 +3,8 @@
  * Handles Google OAuth callback: exchanges code for tokens, upserts user, creates session.
  */
 import { getCookie, deleteCookie } from 'h3'
-import { getDb, makeId, makeSlug } from '~/server/utils/database'
+import { getDb, makeId } from '~/server/utils/database'
 import { createSession, findUserByEmail } from '~/server/utils/auth'
-import { createHash } from 'node:crypto'
 
 interface GoogleTokenResponse {
   access_token: string

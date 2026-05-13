@@ -40,7 +40,7 @@
           <div v-else class="stack-list">
             <div v-for="item in stack.items" :key="item.id" class="stack-item">
               <div class="stack-item__logo">
-                <img v-if="item.app_logo" :src="item.app_logo" :alt="item.app_name" width="36" height="36" loading="lazy" />
+                <img v-if="item.app_logo" :src="item.app_logo" :alt="item.app_name" width="36" height="36" loading="lazy" >
                 <div v-else class="stack-item__logo-placeholder">{{ item.app_name[0] }}</div>
               </div>
               <div class="stack-item__body">
@@ -73,12 +73,12 @@
             <p v-if="!suggestions?.suggestions?.length" class="muted">Add more tools to get suggestions.</p>
             <div v-else class="suggestion-list">
               <div v-for="app in suggestions.suggestions" :key="app.id" class="suggestion-item">
-                <img v-if="app.logo" :src="app.logo" :alt="app.name" width="28" height="28" loading="lazy" class="suggestion-item__logo" />
+                <img v-if="app.logo" :src="app.logo" :alt="app.name" width="28" height="28" loading="lazy" class="suggestion-item__logo" >
                 <div class="suggestion-item__body">
                   <NuxtLink :to="`/app/${app.id}`" class="suggestion-item__name">{{ app.name }}</NuxtLink>
                   <span class="suggestion-item__cat">{{ app.category }}</span>
                 </div>
-                <button class="suggestion-item__add" @click="addToStack(app.id)" :disabled="addingIds.has(app.id)">
+                <button class="suggestion-item__add" :disabled="addingIds.has(app.id)" @click="addToStack(app.id)">
                   {{ addingIds.has(app.id) ? '✓' : '+' }}
                 </button>
               </div>
@@ -94,7 +94,7 @@
         <h4>Set renewal reminder for <strong>{{ reminderModal.app_name }}</strong></h4>
         <form @submit.prevent="saveReminder">
           <label>Remind me on</label>
-          <input v-model="reminderDate" type="date" required :min="today" />
+          <input v-model="reminderDate" type="date" required :min="today" >
           <div class="modal__actions">
             <button type="submit" :disabled="reminderLoading">{{ reminderLoading ? 'Saving…' : 'Set reminder' }}</button>
             <button type="button" @click="reminderModal = null">Cancel</button>

@@ -29,7 +29,7 @@
     <!-- Applications Grid -->
     <section class="applications-section">
       <div class="container">
-        <CategoryApplications :selectedCategory="categoryId" />
+        <CategoryApplications :selected-category="categoryId" />
       </div>
     </section>
   </div>
@@ -49,7 +49,7 @@ const categoryId = computed(() => {
 const sortBy = ref('popular');
 
 // Advanced SEO implementation
-const { applySEO, generateCategorySEO, generateHreflangTags } = useSEO();
+const { applySEO, generateCategorySEO: _generateCategorySEO, generateHreflangTags } = useSEO();
 
 // Apply category-specific SEO
 onMounted(() => {

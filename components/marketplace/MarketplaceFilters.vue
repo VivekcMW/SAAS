@@ -3,7 +3,7 @@
     <div class="filters-header">
       <h2 class="filters-title">{{ filteredAppsCount }} Applications</h2>
       
-      <div class="applied-filters" v-if="hasActiveFilters">
+      <div v-if="hasActiveFilters" class="applied-filters">
         <span class="filter-label">Filters:</span>
         <div class="filter-tags">
           <div 
@@ -11,7 +11,7 @@
             class="filter-tag"
           >
             Category: {{ getCategoryName(selectedCategory) }}
-            <button @click="removeFilter('category')" class="remove-filter">
+            <button class="remove-filter" @click="removeFilter('category')">
               <UIcon name="i-heroicons-x-mark" dynamic  />
             </button>
           </div>
@@ -22,19 +22,19 @@
             class="filter-tag"
           >
             {{ getFilterLabel(key) }}: {{ getFilterValueLabel(key, value) }}
-            <button @click="removeFilter(key)" class="remove-filter">
+            <button class="remove-filter" @click="removeFilter(key)">
               <UIcon name="i-heroicons-x-mark" dynamic  />
             </button>
           </div>
         </div>
         
-        <button @click="clearAllFilters" class="clear-all-filters">
+        <button class="clear-all-filters" @click="clearAllFilters">
           Clear All
         </button>
       </div>
       
       <div class="filters-controls">
-        <button @click="toggleFiltersPanel" class="filters-button">
+        <button class="filters-button" @click="toggleFiltersPanel">
           <UIcon name="i-heroicons-funnel" dynamic  />
           <span>Filters</span>
         </button>
@@ -82,7 +82,7 @@
     <div class="filters-panel" :class="{ active: showFiltersPanel }">
       <div class="filters-panel-header">
         <h3>Advanced Filters</h3>
-        <button @click="toggleFiltersPanel" class="close-filters" aria-label="Close filters">
+        <button class="close-filters" aria-label="Close filters" @click="toggleFiltersPanel">
           <UIcon name="i-heroicons-x-mark" dynamic  />
         </button>
       </div>
@@ -97,7 +97,7 @@
                 type="checkbox" 
                 :checked="activeFilters.fundingStatus === 'seeking'"
                 @change="toggleFilter('fundingStatus', 'seeking')"
-              />
+              >
               <span>Seeking Investment</span>
             </label>
             <label class="checkbox-option">
@@ -105,7 +105,7 @@
                 type="checkbox" 
                 :checked="activeFilters.fundingStatus === 'funded'"
                 @change="toggleFilter('fundingStatus', 'funded')"
-              />
+              >
               <span>Recently Funded</span>
             </label>
             <label class="checkbox-option">
@@ -113,7 +113,7 @@
                 type="checkbox" 
                 :checked="activeFilters.fundingStatus === 'unicorn'"
                 @change="toggleFilter('fundingStatus', 'unicorn')"
-              />
+              >
               <span>Unicorn Companies</span>
             </label>
             <label class="checkbox-option">
@@ -121,7 +121,7 @@
                 type="checkbox" 
                 :checked="activeFilters.fundingStatus === 'ipo'"
                 @change="toggleFilter('fundingStatus', 'ipo')"
-              />
+              >
               <span>Public Companies</span>
             </label>
           </div>
@@ -135,7 +135,7 @@
                 type="checkbox" 
                 :checked="activeFilters.growthStage === 'early'"
                 @change="toggleFilter('growthStage', 'early')"
-              />
+              >
               <span>Early Stage</span>
             </label>
             <label class="checkbox-option">
@@ -143,7 +143,7 @@
                 type="checkbox" 
                 :checked="activeFilters.growthStage === 'growth'"
                 @change="toggleFilter('growthStage', 'growth')"
-              />
+              >
               <span>Growth Stage</span>
             </label>
             <label class="checkbox-option">
@@ -151,7 +151,7 @@
                 type="checkbox" 
                 :checked="activeFilters.growthStage === 'mature'"
                 @change="toggleFilter('growthStage', 'mature')"
-              />
+              >
               <span>Mature</span>
             </label>
             <label class="checkbox-option">
@@ -159,7 +159,7 @@
                 type="checkbox" 
                 :checked="activeFilters.growthStage === 'emerging'"
                 @change="toggleFilter('growthStage', 'emerging')"
-              />
+              >
               <span>Emerging Leaders</span>
             </label>
           </div>
@@ -173,7 +173,7 @@
                 type="checkbox" 
                 :checked="activeFilters.marketPosition === 'leader'"
                 @change="toggleFilter('marketPosition', 'leader')"
-              />
+              >
               <span>Market Leader</span>
             </label>
             <label class="checkbox-option">
@@ -181,7 +181,7 @@
                 type="checkbox" 
                 :checked="activeFilters.marketPosition === 'challenger'"
                 @change="toggleFilter('marketPosition', 'challenger')"
-              />
+              >
               <span>Market Challenger</span>
             </label>
             <label class="checkbox-option">
@@ -189,7 +189,7 @@
                 type="checkbox" 
                 :checked="activeFilters.marketPosition === 'disruptor'"
                 @change="toggleFilter('marketPosition', 'disruptor')"
-              />
+              >
               <span>Market Disruptor</span>
             </label>
           </div>
@@ -234,7 +234,7 @@
                 type="checkbox" 
                 :checked="activeFilters.price === 'free'"
                 @change="toggleFilter('price', 'free')"
-              />
+              >
               <span>Free</span>
             </label>
             <label class="checkbox-option">
@@ -242,7 +242,7 @@
                 type="checkbox" 
                 :checked="activeFilters.price === 'freemium'"
                 @change="toggleFilter('price', 'freemium')"
-              />
+              >
               <span>Freemium</span>
             </label>
             <label class="checkbox-option">
@@ -250,7 +250,7 @@
                 type="checkbox" 
                 :checked="activeFilters.price === 'paid'"
                 @change="toggleFilter('price', 'paid')"
-              />
+              >
               <span>Paid</span>
             </label>
             <label class="checkbox-option">
@@ -258,7 +258,7 @@
                 type="checkbox" 
                 :checked="activeFilters.price === 'enterprise'"
                 @change="toggleFilter('price', 'enterprise')"
-              />
+              >
               <span>Enterprise</span>
             </label>
           </div>
@@ -272,7 +272,7 @@
                 type="checkbox" 
                 :checked="activeFilters.integrations === 'api'"
                 @change="toggleFilter('integrations', 'api')"
-              />
+              >
               <span>API Available</span>
             </label>
             <label class="checkbox-option">
@@ -280,7 +280,7 @@
                 type="checkbox" 
                 :checked="activeFilters.integrations === 'zapier'"
                 @change="toggleFilter('integrations', 'zapier')"
-              />
+              >
               <span>Zapier Integration</span>
             </label>
             <label class="checkbox-option">
@@ -288,7 +288,7 @@
                 type="checkbox" 
                 :checked="activeFilters.integrations === 'webhook'"
                 @change="toggleFilter('integrations', 'webhook')"
-              />
+              >
               <span>Webhooks</span>
             </label>
           </div>
@@ -302,7 +302,7 @@
                 type="checkbox" 
                 :checked="activeFilters.businessSize === 'small'"
                 @change="toggleFilter('businessSize', 'small')"
-              />
+              >
               <span>Small Business</span>
             </label>
             <label class="checkbox-option">
@@ -310,7 +310,7 @@
                 type="checkbox" 
                 :checked="activeFilters.businessSize === 'medium'"
                 @change="toggleFilter('businessSize', 'medium')"
-              />
+              >
               <span>Medium Business</span>
             </label>
             <label class="checkbox-option">
@@ -318,7 +318,7 @@
                 type="checkbox" 
                 :checked="activeFilters.businessSize === 'enterprise'"
                 @change="toggleFilter('businessSize', 'enterprise')"
-              />
+              >
               <span>Enterprise</span>
             </label>
           </div>
@@ -339,7 +339,7 @@
                 :value="region.value"
                 :checked="activeFilters.region === region.value"
                 @change="toggleFilter('region', region.value)"
-              />
+              >
               <span>{{ region.label }}</span>
             </label>
           </div>
@@ -347,10 +347,10 @@
       </div>
 
       <div class="filters-panel-footer">
-        <button @click="clearAllFilters" class="clear-filters-button">
+        <button class="clear-filters-button" @click="clearAllFilters">
           Clear All Filters
         </button>
-        <button @click="applyFilters" class="apply-filters-button">
+        <button class="apply-filters-button" @click="applyFilters">
           Apply Filters
         </button>
       </div>
@@ -361,7 +361,7 @@
       v-if="showFiltersPanel" 
       class="filters-overlay"
       @click="toggleFiltersPanel"
-    ></div>
+    />
   </div>
 </template>
 
@@ -369,7 +369,7 @@
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-const props = defineProps<{ viewMode?: 'grid' | 'list' }>();
+defineProps<{ viewMode?: 'grid' | 'list' }>();
 const emit = defineEmits<{ 'update:viewMode': [value: 'grid' | 'list'] }>();
 
 const route = useRoute();
@@ -449,9 +449,8 @@ const toggleFilter = (key: string, value: string) => {
 
 // Remove a specific filter
 const removeFilter = (key: string) => {
-  const newQuery = { ...route.query };
-  delete newQuery[key];
-  router.push({ query: newQuery });
+  const { [key]: _removed, ...newQuery } = route.query
+  router.push({ query: newQuery })
 };
 
 // Clear all filters

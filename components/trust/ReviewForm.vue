@@ -11,15 +11,15 @@
           type="button"
           class="star-btn"
           :class="{ 'star-btn--on': i <= form.rating }"
-          @click="form.rating = i"
           :aria-label="`${i} star${i > 1 ? 's' : ''}`"
+          @click="form.rating = i"
         >&#9733;</button>
       </div>
     </div>
 
     <div class="review-form__group">
       <label>Title <span class="required">*</span></label>
-      <input v-model="form.title" type="text" placeholder="Summarise your experience" maxlength="120" required />
+      <input v-model="form.title" type="text" placeholder="Summarise your experience" maxlength="120" required >
     </div>
 
     <div class="review-form__group">
@@ -47,7 +47,7 @@
     <div class="review-form__group">
       <label>Pros <small>(up to 3)</small></label>
       <div v-for="(_, i) in form.pros" :key="i" class="review-form__list-row">
-        <input v-model="form.pros[i]" type="text" placeholder="What did you love?" />
+        <input v-model="form.pros[i]" type="text" placeholder="What did you love?" >
         <button type="button" class="remove-btn" @click="form.pros.splice(i, 1)">&#x2715;</button>
       </div>
       <button v-if="form.pros.length < 3" type="button" class="add-btn" @click="form.pros.push('')">+ Add pro</button>
@@ -56,7 +56,7 @@
     <div class="review-form__group">
       <label>Cons <small>(up to 3)</small></label>
       <div v-for="(_, i) in form.cons" :key="i" class="review-form__list-row">
-        <input v-model="form.cons[i]" type="text" placeholder="What could be improved?" />
+        <input v-model="form.cons[i]" type="text" placeholder="What could be improved?" >
         <button type="button" class="remove-btn" @click="form.cons.splice(i, 1)">&#x2715;</button>
       </div>
       <button v-if="form.cons.length < 3" type="button" class="add-btn" @click="form.cons.push('')">+ Add con</button>
@@ -64,17 +64,17 @@
 
     <div class="review-form__group">
       <label>Use case</label>
-      <input v-model="form.use_case" type="text" placeholder="What do you primarily use this for?" maxlength="200" />
+      <input v-model="form.use_case" type="text" placeholder="What do you primarily use this for?" maxlength="200" >
     </div>
 
     <div class="review-form__group">
       <label>Outcome metric <small>(optional)</small></label>
-      <input v-model="form.outcome_metric" type="text" placeholder="e.g. Reduced onboarding time by 40%" maxlength="200" />
+      <input v-model="form.outcome_metric" type="text" placeholder="e.g. Reduced onboarding time by 40%" maxlength="200" >
     </div>
 
     <div class="review-form__group">
       <label>Purchase token <small>(optional — boosts authenticity score)</small></label>
-      <input v-model="form.verified_purchase_token" type="text" placeholder="Paste your verification token" />
+      <input v-model="form.verified_purchase_token" type="text" placeholder="Paste your verification token" >
     </div>
 
     <p v-if="error" class="review-form__error">{{ error }}</p>

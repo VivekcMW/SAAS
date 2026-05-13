@@ -6,9 +6,18 @@ export default defineEventHandler(async (event) => {
   const today = new Date().toISOString().split('T')[0]
 
   const sitemaps = [
+    // Core pages
     { loc: `${base}/sitemap.xml`, lastmod: today },
+    // App listings (DB-driven, updated every 2 h)
+    { loc: `${base}/api/sitemap-apps.xml`, lastmod: today },
+    // Comparison pages
     { loc: `${base}/api/sitemap-comparisons.xml`, lastmod: today },
-    { loc: `${base}/api/sitemap-hreflang.xml`, lastmod: today }
+    // Alternatives pages
+    { loc: `${base}/api/sitemap-alternatives.xml`, lastmod: today },
+    // Blog & guides
+    { loc: `${base}/api/sitemap-blog.xml`, lastmod: today },
+    // Hreflang (i18n)
+    { loc: `${base}/api/sitemap-hreflang.xml`, lastmod: today },
   ]
 
   const entries = sitemaps.map((s) =>

@@ -77,13 +77,13 @@ const FINGERPRINTS: Array<{
   scripts?: RegExp[]
 }> = [
   // ── Frontend ──
-  { name: 'React', category: 'frontend', html: [/react[\./](?:production|development)/, /__REACT/, /data-reactroot/i, /data-reactid/i] },
+  { name: 'React', category: 'frontend', html: [/react[./](?:production|development)/, /__REACT/, /data-reactroot/i, /data-reactid/i] },
   { name: 'Vue.js', category: 'frontend', html: [/__VUE_OPTIONS_API__|vue(?:\.runtime)?\.global\.prod\.js/i, /data-v-[a-f0-9]{8}/] },
   { name: 'Angular', category: 'frontend', html: [/ng-version=/, /\/angular(?:\.min)?\.js/, /\[\(ngModel\)\]/] },
   { name: 'Next.js', category: 'frontend', html: [/__NEXT_DATA__/, /_next\/static\//] },
   { name: 'Nuxt', category: 'frontend', html: [/__NUXT__/, /_nuxt\//] },
   { name: 'Svelte', category: 'frontend', html: [/svelte\/internal/, /\.svelte-[a-z0-9]{6}/] },
-  { name: 'jQuery', category: 'frontend', html: [/jquery[.\-](min\.)?js/, /jquery\.com/] },
+  { name: 'jQuery', category: 'frontend', html: [/jquery[.-](min\.)?js/, /jquery\.com/] },
   { name: 'Bootstrap', category: 'frontend', html: [/bootstrap(?:\.min)?\.(?:css|js)/, /getbootstrap\.com/] },
   { name: 'Tailwind CSS', category: 'frontend', html: [/tailwindcss/, /cdn\.tailwindcss\.com/] },
   { name: 'Webflow', category: 'frontend', headers: { 'x-powered-by': /Webflow/i }, html: [/assets\.website-files\.com/, /webflow\.com\/css/] },
@@ -312,7 +312,7 @@ export async function runTechStackEnrichmentBatch(
           fetchBuiltWith(domain)
         ])
 
-        let stack: Partial<TechStackData> = {
+        const stack: Partial<TechStackData> = {
           frontend: [], backend: [], databases: [], infrastructure: [], analytics: [],
           payments: [], communications: [], cms: [], mobile: [], devtools: [], security: [],
           raw_technologies: []

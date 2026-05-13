@@ -3,10 +3,9 @@
  * Step 2 of 2FA login: submit the TOTP code (or backup code) to complete sign-in.
  * Called after /api/auth/login returns { twoFactorRequired: true, twoFactorToken }.
  */
-import { getDb } from '~/server/utils/database'
+import { getDb, logActivity } from '~/server/utils/database'
 import { createSession } from '~/server/utils/auth'
 import { verifyTotp, verifyTwoFactorToken } from '~/server/utils/totp'
-import { logActivity } from '~/server/utils/database'
 import { checkRateLimit, getClientIp } from '~/server/utils/rateLimit'
 import { createHash } from 'node:crypto'
 import type { DbUser } from '~/server/utils/database'

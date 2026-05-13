@@ -5,6 +5,7 @@
 import { getDb, logActivity } from '~/server/utils/database'
 import { requireAdmin } from '~/server/utils/auth'
 import { buildListingStatusEmail, sendEmail } from '~/server/utils/email'
+import { indexNowApp } from '~/server/utils/seoEngine'
 
 const VALID_STATUSES = ['published', 'draft', 'submitted', 'archived']
 
@@ -57,6 +58,11 @@ export default defineEventHandler(async (event) => {
     entityId: id,
     meta: { name: existing.name, adminNote: body.adminNote }
   })
+
+  // Trigger IndexNow on publish
+  if (body.status === 'published') {
+    indexNowApp(id).catch(() => {})
+  }
 
   return { success: true, status: body.status }
 })

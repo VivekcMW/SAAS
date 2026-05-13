@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
   const { id } = getRouterParams(event)
   const query = getQuery(event)
   
-  const timeframe = (query.timeframe as string) || '30d' // 7d, 30d, 90d, 1y
+  const _timeframe = (query.timeframe as string) || '30d' // 7d, 30d, 90d, 1y
   const includeDetails = query.details === 'true'
   
   try {
@@ -85,7 +85,7 @@ export default defineEventHandler(async (event) => {
     }
 
     return analyticsSummary
-  } catch (error: any) {
+  } catch (_error: any) {
     throw createError({
       statusCode: 500,
       statusMessage: 'Failed to fetch app metrics'

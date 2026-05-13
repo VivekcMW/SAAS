@@ -76,7 +76,7 @@ function paybackLabel(): string {
             <span class="input-label">Team size</span>
             <span class="input-val">{{ teamSize }} users</span>
           </div>
-          <input v-model.number="teamSize" type="range" min="1" max="500" step="1" class="roi-range" aria-label="Team size" />
+          <input v-model.number="teamSize" type="range" min="1" max="500" step="1" class="roi-range" aria-label="Team size" >
         </div>
 
         <div class="input-row">
@@ -84,7 +84,7 @@ function paybackLabel(): string {
             <span class="input-label">Hours saved per user / week</span>
             <span class="input-val">{{ hoursSavedPerWeek }}h</span>
           </div>
-          <input v-model.number="hoursSavedPerWeek" type="range" min="0" max="20" step="0.5" class="roi-range" aria-label="Hours saved per user per week" />
+          <input v-model.number="hoursSavedPerWeek" type="range" min="0" max="20" step="0.5" class="roi-range" aria-label="Hours saved per user per week" >
         </div>
 
         <div class="input-row">
@@ -92,7 +92,7 @@ function paybackLabel(): string {
             <span class="input-label">Average hourly rate</span>
             <span class="input-val">${{ hourlyRate }}/hr</span>
           </div>
-          <input v-model.number="hourlyRate" type="range" min="10" max="250" step="5" class="roi-range" aria-label="Average hourly rate" />
+          <input v-model.number="hourlyRate" type="range" min="10" max="250" step="5" class="roi-range" aria-label="Average hourly rate" >
         </div>
       </div>
 

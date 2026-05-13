@@ -17,8 +17,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'cta-trial'): void
-  (e: 'cta-compare'): void
+  (e: 'cta-trial' | 'cta-compare'): void
 }>()
 
 const questions: Question[] = [
@@ -119,7 +118,7 @@ const currentQuestion = computed(() => questions[step.value])
     <!-- In-progress -->
     <div v-if="!completed" class="fc-quiz">
       <div class="fc-progress" :aria-label="`Question ${step + 1} of ${questions.length}`">
-        <div class="fc-progress-bar" :style="{ width: `${progress}%` }"></div>
+        <div class="fc-progress-bar" :style="{ width: `${progress}%` }"/>
         <span class="fc-progress-label">{{ step + 1 }} / {{ questions.length }}</span>
       </div>
 

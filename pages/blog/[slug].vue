@@ -38,7 +38,7 @@
                 <span v-if="post.authorTitle" class="bp-meta__author-title">{{ post.authorTitle }}</span>
               </div>
             </div>
-            <div class="bp-meta__divider" aria-hidden="true"></div>
+            <div class="bp-meta__divider" aria-hidden="true"/>
             <div class="bp-meta__facts">
               <span>{{ formattedDate }}</span>
               <span class="bp-meta__dot" aria-hidden="true">·</span>
@@ -51,7 +51,7 @@
       <!-- Decorative cover -->
       <section class="bp-cover-wrap">
         <div class="bp-cover" aria-hidden="true">
-          <div class="bp-cover__pattern"></div>
+          <div class="bp-cover__pattern"/>
           <div class="bp-cover__badge">
             <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 5h16v3H4zM4 10.5h16v3H4zM4 16h10v3H4z" fill="currentColor"/></svg>
             <span>{{ post.category }}</span>
@@ -119,7 +119,7 @@
               <h3 class="bp-side__title">Weekly software memo</h3>
               <p>One short email. Real buyer insights, zero vendor fluff.</p>
               <form @submit.prevent="subscribe">
-                <input v-model="newsletterEmail" type="email" required placeholder="you@company.com" aria-label="Email address" />
+                <input v-model="newsletterEmail" type="email" required placeholder="you@company.com" aria-label="Email address" >
                 <button type="submit" class="mk-btn mk-btn--primary" :disabled="subscribed">
                   {{ subscribed ? 'Subscribed' : 'Subscribe' }}
                 </button>
@@ -137,12 +137,12 @@
             <span class="bp-nav__dir">&larr; Previous</span>
             <span class="bp-nav__title">{{ prev.title }}</span>
           </NuxtLink>
-          <span v-else></span>
+          <span v-else/>
           <NuxtLink v-if="next" :to="`/blog/${next.slug}`" class="bp-nav__card bp-nav__card--next">
             <span class="bp-nav__dir">Next &rarr;</span>
             <span class="bp-nav__title">{{ next.title }}</span>
           </NuxtLink>
-          <span v-else></span>
+          <span v-else/>
         </div>
       </section>
 
@@ -159,7 +159,7 @@
               class="bp-related__card"
             >
               <div class="bp-related__thumb">
-                <img :src="r.image" :alt="r.title" loading="lazy" />
+                <img :src="r.image" :alt="r.title" loading="lazy" >
               </div>
               <div class="bp-related__text">
                 <span class="bp-related__cat">{{ r.category }}</span>

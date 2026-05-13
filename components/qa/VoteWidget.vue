@@ -1,10 +1,10 @@
 <template>
   <div class="vote-widget">
-    <button class="vote-btn vote-btn--up" :class="{ 'vote-btn--active': currentVote === 1 }" @click="vote(1)" aria-label="Upvote">
+    <button class="vote-btn vote-btn--up" :class="{ 'vote-btn--active': currentVote === 1 }" aria-label="Upvote" @click="vote(1)">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
     </button>
     <span class="vote-widget__score">{{ localScore }}</span>
-    <button class="vote-btn vote-btn--down" :class="{ 'vote-btn--active': currentVote === -1 }" @click="vote(-1)" aria-label="Downvote">
+    <button class="vote-btn vote-btn--down" :class="{ 'vote-btn--active': currentVote === -1 }" aria-label="Downvote" @click="vote(-1)">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
     </button>
   </div>

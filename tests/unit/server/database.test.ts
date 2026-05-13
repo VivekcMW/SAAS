@@ -46,7 +46,7 @@ describe('Database schema', () => {
     return db
   }
 
-  const CORE_TABLES = [
+  const _CORE_TABLES = [
     'users', 'sessions', 'apps', 'reviews', 'blog_posts',
     'changelog_entries', 'roadmap_items', 'roadmap_votes',
     'guide_articles', 'job_listings'

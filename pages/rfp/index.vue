@@ -32,7 +32,7 @@
           <form class="rfp-form" @submit.prevent="submitRfp">
             <div class="form-group">
               <label>Title <span class="req">*</span></label>
-              <input v-model="form.title" type="text" placeholder="e.g. Looking for a CRM for 50-seat sales team" required />
+              <input v-model="form.title" type="text" placeholder="e.g. Looking for a CRM for 50-seat sales team" required >
             </div>
 
             <div class="form-row">
@@ -56,29 +56,29 @@
               </div>
               <div class="form-group">
                 <label>Seats</label>
-                <input v-model.number="form.seats" type="number" min="1" placeholder="Number of seats" />
+                <input v-model.number="form.seats" type="number" min="1" placeholder="Number of seats" >
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-group">
                 <label>Budget min (USD/yr)</label>
-                <input v-model.number="form.budget_min" type="number" min="0" placeholder="e.g. 500" />
+                <input v-model.number="form.budget_min" type="number" min="0" placeholder="e.g. 500" >
               </div>
               <div class="form-group">
                 <label>Budget max (USD/yr)</label>
-                <input v-model.number="form.budget_max" type="number" min="0" placeholder="e.g. 5000" />
+                <input v-model.number="form.budget_max" type="number" min="0" placeholder="e.g. 5000" >
               </div>
             </div>
 
             <div class="form-group">
               <label>Requirements <span class="req">*</span></label>
-              <textarea v-model="form.requirements" rows="5" placeholder="Describe your must-haves, integrations needed, compliance requirements, etc." required></textarea>
+              <textarea v-model="form.requirements" rows="5" placeholder="Describe your must-haves, integrations needed, compliance requirements, etc." required/>
             </div>
 
             <div class="form-group">
               <label>Response deadline</label>
-              <input v-model="form.deadline" type="date" :min="today" />
+              <input v-model="form.deadline" type="date" :min="today" >
             </div>
 
             <p v-if="error" class="form-error">{{ error }}</p>

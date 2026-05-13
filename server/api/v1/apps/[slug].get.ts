@@ -46,7 +46,7 @@ export default defineEventHandler(async (event) => {
       website_url: app.websiteUrl,
       integrations: app.integrations,
       moonmart_url: `https://moonmart.ai/marketplace/app/${app.slug}`,
-      embed_snippet: `<script src="https://moonmart.ai/embed.js" data-app="${app.slug}" async><\/script>`,
+      embed_snippet: `<script src="https://moonmart.ai/embed.js" data-app="${app.slug}" async></script>`,
       top_reviews: reviews,
     },
   }

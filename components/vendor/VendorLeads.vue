@@ -46,8 +46,8 @@
       </div>
       <div class="leads-bar__search">
         <svg class="leads-search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        <input v-model="search" class="leads-search-input" placeholder="Search name, company, listing…" />
-        <button v-if="search" class="leads-search-clear" @click="search = ''" type="button">×</button>
+        <input v-model="search" class="leads-search-input" placeholder="Search name, company, listing…" >
+        <button v-if="search" class="leads-search-clear" type="button" @click="search = ''">×</button>
       </div>
     </div>
 
@@ -59,9 +59,9 @@
         <!-- Loading skeletons -->
         <template v-if="leadsLoading">
           <div v-for="i in 5" :key="i" class="lead-skel">
-            <div class="lead-skel__line lead-skel__line--wide"></div>
-            <div class="lead-skel__line lead-skel__line--mid"></div>
-            <div class="lead-skel__line lead-skel__line--narrow"></div>
+            <div class="lead-skel__line lead-skel__line--wide"/>
+            <div class="lead-skel__line lead-skel__line--mid"/>
+            <div class="lead-skel__line lead-skel__line--narrow"/>
           </div>
         </template>
 
@@ -127,8 +127,8 @@
                 v-if="active.status !== 'closed'"
                 class="thread-action-btn"
                 :disabled="closing"
-                @click="closeLead(active.id)"
                 title="Close lead"
+                @click="closeLead(active.id)"
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
                 {{ closing ? '…' : 'Close' }}
@@ -137,8 +137,8 @@
                 v-if="active.status !== 'closed'"
                 class="thread-action-btn thread-action-btn--win"
                 :disabled="closing"
-                @click="markWon(active.id)"
                 title="Mark as won"
+                @click="markWon(active.id)"
               >
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                 Won
@@ -147,7 +147,7 @@
           </div>
 
           <!-- Messages -->
-          <div class="thread-messages" ref="msgEl">
+          <div ref="msgEl" class="thread-messages">
             <div
               v-for="m in active.messages"
               :key="m.id"
@@ -178,7 +178,7 @@
               rows="3"
             />
             <div class="composer-footer">
-              <button class="composer-btn composer-btn--ghost" @click="reply = ''" :disabled="!reply">Clear</button>
+              <button class="composer-btn composer-btn--ghost" :disabled="!reply" @click="reply = ''">Clear</button>
               <button
                 class="composer-btn composer-btn--primary"
                 :disabled="!reply.trim()"

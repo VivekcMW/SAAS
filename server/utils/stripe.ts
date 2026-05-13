@@ -14,6 +14,7 @@
  * SITE_URL — used to build success/cancel redirect URLs (default: http://localhost:3000)
  */
 import Stripe from 'stripe'
+import { getDb } from './database'
 
 let _stripe: Stripe | null = null
 
@@ -102,7 +103,6 @@ export interface SubscriptionStatus {
 }
 
 export function getUserSubscription(userId: string): SubscriptionStatus {
-  const { getDb } = require('./database')
   const db = getDb()
 
   const row = db.prepare(`

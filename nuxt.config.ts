@@ -41,7 +41,15 @@ export default defineNuxtConfig({
     prerender: {
       routes: ['/api/sitemap.xml', '/api/robots.txt']
     },
-    compressPublicAssets: true
+    compressPublicAssets: true,
+    experimental: {
+      tasks: true
+    }
+  },
+
+  // Nitro scheduled tasks — SEO score cron runs nightly at 3 AM UTC
+  scheduledTasks: {
+    '0 3 * * *': ['seo:score-all']
   },
 
   // Per-route headers — embed pages must be iframe-safe

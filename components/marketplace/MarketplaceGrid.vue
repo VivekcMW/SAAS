@@ -1,7 +1,7 @@
 <template>
   <div class="marketplace-grid">
     <div v-if="loading" class="loading-container">
-      <div class="loading-spinner"></div>
+      <div class="loading-spinner"/>
       <p>Loading applications...</p>
     </div>
     
@@ -89,7 +89,7 @@ const shouldShowAd = (index: number) => index === 2 || (index > 2 && (index - 2)
 const isInFavorites = (appId: string) => favorites.value.includes(appId)
 
 const loadFavorites = () => {
-  if (!process.client) {
+  if (!import.meta.client) {
     return
   }
 
@@ -117,7 +117,7 @@ const loadApplications = async () => {
     applications.value = response.apps || []
     totalApps.value = response.total || 0
     emit('total-loaded', totalApps.value)
-  } catch (error) {
+  } catch (_error) {
     console.error('Failed to load marketplace applications:', error)
     applications.value = []
   } finally {
@@ -169,7 +169,7 @@ const handleToggleFavorite = (appId: string, isFavorited: boolean) => {
     favorites.value = favorites.value.filter(id => id !== appId)
   }
 
-  if (process.client) {
+  if (import.meta.client) {
     localStorage.setItem('app-favorites', JSON.stringify(favorites.value))
   }
 }

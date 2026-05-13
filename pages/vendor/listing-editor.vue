@@ -18,6 +18,12 @@
         <NuxtLink to="/list-product" class="le-btn le-btn--ghost">List another product</NuxtLink>
       </div>
     </div>
+
+    <!-- SEO score + promote widgets, shown if we have an app ID -->
+    <div v-if="editor.publishedId.value" class="le-success__widgets">
+      <VendorSeoScoreWidget :app-id="editor.publishedId.value" :app-name="editor.publishedName.value" />
+      <VendorPromoteApp :app-id="editor.publishedId.value" :app-name="editor.publishedName.value" />
+    </div>
   </div>
 
   <!-- Editor layout -->
@@ -86,7 +92,7 @@
                     :src="editor.draft.screenshots[0]"
                     class="le-hero__img"
                     alt="Screenshot"
-                  />
+                  >
                   <div v-else class="le-hero__img-placeholder">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                     <span>Add a screenshot</span>
@@ -99,7 +105,7 @@
                   </div>
                   <div class="le-hero__brand">
                     <div class="le-hero__logo-wrap">
-                      <img v-if="editor.draft.logo" :src="editor.draft.logo" class="le-hero__logo" :alt="editor.draft.name" @error="editor.draft.logo = ''" />
+                      <img v-if="editor.draft.logo" :src="editor.draft.logo" class="le-hero__logo" :alt="editor.draft.name" @error="editor.draft.logo = ''" >
                       <div v-else class="le-hero__logo-fallback">{{ initial }}</div>
                     </div>
                     <div>
@@ -108,7 +114,7 @@
                     </div>
                   </div>
                   <p class="le-hero__tagline">{{ editor.draft.tagline || 'Your product tagline will appear here.' }}</p>
-                  <div class="le-hero__keywords" v-if="editor.draft.keywords.length">
+                  <div v-if="editor.draft.keywords.length" class="le-hero__keywords">
                     <span v-for="kw in editor.draft.keywords.slice(0, 5)" :key="kw" class="le-kw">{{ kw }}</span>
                   </div>
                 </div>
@@ -126,14 +132,14 @@
               @click="setSection('media')"
             >
               <h2 class="le-section-title">Screenshots</h2>
-              <div class="le-screenshots" v-if="editor.draft.screenshots.length">
+              <div v-if="editor.draft.screenshots.length" class="le-screenshots">
                 <img
                   v-for="(ss, i) in editor.draft.screenshots.slice(0, 4)"
                   :key="i"
                   :src="ss"
                   class="le-screenshot"
                   :alt="`Screenshot ${i + 1}`"
-                />
+                >
               </div>
               <div v-else class="le-empty-section">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
@@ -152,7 +158,7 @@
               @click="setSection('features')"
             >
               <h2 class="le-section-title">Features</h2>
-              <div class="le-features" v-if="editor.draft.features.length">
+              <div v-if="editor.draft.features.length" class="le-features">
                 <div v-for="(f, i) in editor.draft.features" :key="i" class="le-feature">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14" class="le-feature__check"><polyline points="20 6 9 17 4 12"/></svg>
                   {{ f }}
@@ -237,20 +243,20 @@
           <div v-show="activeSection === 'basics'" class="le-fields">
             <div class="le-field">
               <label class="le-label">Product name <span class="le-req">*</span></label>
-              <input v-model="editor.draft.name" class="le-input" placeholder="e.g. Notion" maxlength="80" @input="editor.persist()" />
+              <input v-model="editor.draft.name" class="le-input" placeholder="e.g. Notion" maxlength="80" @input="editor.persist()" >
             </div>
             <div class="le-field">
               <label class="le-label">Company / maker <span class="le-req">*</span></label>
-              <input v-model="editor.draft.provider" class="le-input" placeholder="e.g. Notion Labs" maxlength="80" @input="editor.persist()" />
+              <input v-model="editor.draft.provider" class="le-input" placeholder="e.g. Notion Labs" maxlength="80" @input="editor.persist()" >
             </div>
             <div class="le-field">
               <label class="le-label">Tagline <span class="le-req">*</span></label>
-              <input v-model="editor.draft.tagline" class="le-input" placeholder="One sentence that sells your product" maxlength="160" @input="editor.persist()" />
+              <input v-model="editor.draft.tagline" class="le-input" placeholder="One sentence that sells your product" maxlength="160" @input="editor.persist()" >
               <span class="le-hint">{{ editor.draft.tagline.length }}/160</span>
             </div>
             <div class="le-field">
               <label class="le-label">Website URL</label>
-              <input v-model="editor.draft.websiteUrl" class="le-input" type="url" placeholder="https://yourapp.com" @input="editor.persist()" />
+              <input v-model="editor.draft.websiteUrl" class="le-input" type="url" placeholder="https://yourapp.com" @input="editor.persist()" >
             </div>
             <div class="le-field">
               <label class="le-label">Categories <span class="le-req">*</span></label>
@@ -284,8 +290,8 @@
                   placeholder="Add tag, press Enter"
                   maxlength="32"
                   @keydown.enter.prevent="addKeyword"
-                  @keydown.comma.prevent="addKeyword"
-                />
+                  @keydown="(e: KeyboardEvent) => { if (e.key === ',') { e.preventDefault(); addKeyword() } }"
+                >
               </div>
             </div>
           </div>
@@ -294,9 +300,9 @@
           <div v-show="activeSection === 'media'" class="le-fields">
             <div class="le-field">
               <label class="le-label">Logo URL</label>
-              <input v-model="editor.draft.logo" class="le-input" type="url" placeholder="https://cdn.example.com/logo.png" @input="editor.persist()" />
+              <input v-model="editor.draft.logo" class="le-input" type="url" placeholder="https://cdn.example.com/logo.png" @input="editor.persist()" >
               <div v-if="editor.draft.logo" class="le-logo-preview">
-                <img :src="editor.draft.logo" alt="Logo preview" @error="editor.draft.logo = ''" />
+                <img :src="editor.draft.logo" alt="Logo preview" @error="editor.draft.logo = ''" >
               </div>
             </div>
             <div class="le-field">
@@ -307,7 +313,7 @@
                   :key="i"
                   class="le-ss-item"
                 >
-                  <img :src="ss" class="le-ss-thumb" alt="" @error="(e) => (e.target as HTMLImageElement).style.display='none'" />
+                  <img :src="ss" class="le-ss-thumb" alt="" @error="(e) => (e.target as HTMLImageElement).style.display='none'" >
                   <span class="le-ss-url">{{ ss }}</span>
                   <button type="button" class="le-ss-rm" @click="editor.removeScreenshot(i)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -320,7 +326,7 @@
                     type="url"
                     placeholder="https://cdn.example.com/screenshot.png"
                     @keydown.enter.prevent="addScreenshot"
-                  />
+                  >
                   <button type="button" class="le-btn le-btn--ghost le-btn--sm" @click="addScreenshot">
                     Add
                   </button>
@@ -359,7 +365,7 @@
                   placeholder="e.g. Real-time collaboration"
                   maxlength="120"
                   @keydown.enter.prevent="addFeature"
-                />
+                >
                 <button type="button" class="le-btn le-btn--ghost le-btn--sm" @click="addFeature">Add</button>
               </div>
             </div>
@@ -395,7 +401,7 @@
                   step="1"
                   placeholder="29"
                   @input="editor.persist()"
-                />
+                >
                 <select v-model="editor.draft.pricingPeriod" class="le-select" @change="editor.persist()">
                   <option value="month">/ month</option>
                   <option value="year">/ year</option>
@@ -405,7 +411,7 @@
             </div>
             <div v-if="editor.draft.pricingType === 'contact'" class="le-field">
               <label class="le-label">Contact email</label>
-              <input v-model="editor.draft.contactEmail" class="le-input" type="email" placeholder="sales@yourcompany.com" @input="editor.persist()" />
+              <input v-model="editor.draft.contactEmail" class="le-input" type="email" placeholder="sales@yourcompany.com" @input="editor.persist()" >
             </div>
           </div>
 
@@ -425,7 +431,7 @@
             </div>
             <div class="le-field">
               <label class="le-label">Website URL</label>
-              <input v-model="editor.draft.websiteUrl" class="le-input" type="url" placeholder="https://yourapp.com" @input="editor.persist()" />
+              <input v-model="editor.draft.websiteUrl" class="le-input" type="url" placeholder="https://yourapp.com" @input="editor.persist()" >
             </div>
           </div>
 
@@ -481,6 +487,8 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useListingEditor } from '~/composables/useListingEditor'
+import VendorSeoScoreWidget from '~/components/vendor/VendorSeoScoreWidget.vue'
+import VendorPromoteApp from '~/components/vendor/VendorPromoteApp.vue'
 
 definePageMeta({ layout: false })
 
@@ -1332,6 +1340,7 @@ async function confirmPublish() {
 .le-success__card p { color: var(--mm-slate, #68788F); margin: 0 0 28px; line-height: 1.6; }
 .le-success__actions { display: flex; flex-direction: column; gap: 8px; }
 .le-success__actions .le-btn { justify-content: center; height: 44px; }
+.le-success__widgets { display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 520px; margin: 24px auto 0; }
 
 /* ── Responsive ─────────────────────────────────────────────────────────────── */
 @media (max-width: 900px) {

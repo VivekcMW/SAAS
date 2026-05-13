@@ -128,7 +128,7 @@ export const useVCSEO = () => {
   /**
    * Add VC-focused internal linking suggestions
    */
-  const generateVCInternalLinks = (currentPage: string, availablePages: string[]) => {
+  const generateVCInternalLinks = (currentPage: string, _availablePages: string[]) => {
     const vcLinkingStrategy = {
       homepage: [
         { text: "emerging startups", url: "/marketplace?filter=seeking-funding" },

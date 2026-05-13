@@ -5,7 +5,7 @@
 
 export default defineEventHandler(async (event) => {
   const baseUrl = 'https://moonmart.ai'
-  const currentDate = new Date().toISOString().split('T')[0]
+  const _currentDate = new Date().toISOString().split('T')[0]
   
   // Blog posts by category for better organization and SEO
   const blogPosts = [
@@ -324,7 +324,7 @@ ${allContentPages.map(page => {
 
   // Set appropriate headers
   setHeader(event, 'Content-Type', 'application/xml');
-  setHeader(event, 'Cache-Control', 'public, max-age=3600'); // Cache for 1 hour
+  setHeader(event, 'Cache-Control', 'public, max-age=7200, s-maxage=14400'); // Cache for 2 hours
   
   return sitemap;
 });

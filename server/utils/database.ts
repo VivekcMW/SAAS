@@ -1534,6 +1534,100 @@ function createSchema(db: Database.Database) {
     CREATE INDEX IF NOT EXISTS idx_sreq_status ON sponsored_requests(status);
     CREATE INDEX IF NOT EXISTS idx_sreq_vendor ON sponsored_requests(vendor_id);
   `)
+
+  // ── SEO Engine tables ──────────────────────────────────────────────────────
+
+  db.exec(`
+    -- Per-app SEO metadata cache (populated by nightly cron + AI generation)
+    CREATE TABLE IF NOT EXISTS app_seo_meta (
+      app_id           TEXT PRIMARY KEY,
+      seo_title        TEXT,
+      seo_description  TEXT,
+      seo_keywords     TEXT,
+      llm_summary      TEXT,
+      faq_json         TEXT NOT NULL DEFAULT '[]',
+      comparison_slugs TEXT NOT NULL DEFAULT '[]',
+      seo_score        REAL NOT NULL DEFAULT 0,
+      score_breakdown  TEXT NOT NULL DEFAULT '{}',
+      page_speed_score REAL,
+      last_scored_at   TEXT,
+      last_ai_gen_at   TEXT,
+      created_at       TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at       TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (app_id) REFERENCES app_listings(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_seo_meta_score ON app_seo_meta(seo_score DESC);
+    CREATE INDEX IF NOT EXISTS idx_seo_meta_scored_at ON app_seo_meta(last_scored_at);
+
+    -- IndexNow submission log
+    CREATE TABLE IF NOT EXISTS indexnow_log (
+      id         TEXT PRIMARY KEY,
+      url        TEXT NOT NULL,
+      engine     TEXT NOT NULL DEFAULT 'bing',
+      status     TEXT NOT NULL DEFAULT 'pending',
+      response   TEXT,
+      submitted_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+    CREATE INDEX IF NOT EXISTS idx_inow_url ON indexnow_log(url);
+    CREATE INDEX IF NOT EXISTS idx_inow_status ON indexnow_log(status);
+
+    -- Search Console impressions/clicks per app (fetched nightly)
+    CREATE TABLE IF NOT EXISTS seo_search_console (
+      id           TEXT PRIMARY KEY,
+      app_id       TEXT,
+      url          TEXT NOT NULL,
+      query        TEXT NOT NULL,
+      impressions  INTEGER NOT NULL DEFAULT 0,
+      clicks       INTEGER NOT NULL DEFAULT 0,
+      ctr          REAL NOT NULL DEFAULT 0,
+      position     REAL NOT NULL DEFAULT 0,
+      date         TEXT NOT NULL,
+      created_at   TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (app_id) REFERENCES app_listings(id) ON DELETE SET NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_gsc_app_id ON seo_search_console(app_id);
+    CREATE INDEX IF NOT EXISTS idx_gsc_date ON seo_search_console(date DESC);
+    CREATE INDEX IF NOT EXISTS idx_gsc_url ON seo_search_console(url);
+
+    -- SEM ad campaigns (Google Ads / Bing Ads integration)
+    CREATE TABLE IF NOT EXISTS sem_campaigns (
+      id                TEXT PRIMARY KEY,
+      app_id            TEXT NOT NULL,
+      vendor_id         TEXT NOT NULL,
+      platform          TEXT NOT NULL DEFAULT 'google',
+      campaign_type     TEXT NOT NULL DEFAULT 'search',
+      campaign_id_ext   TEXT,
+      status            TEXT NOT NULL DEFAULT 'draft',
+      daily_budget      REAL NOT NULL DEFAULT 5,
+      target_cpa        REAL,
+      keywords_json     TEXT NOT NULL DEFAULT '[]',
+      ad_headlines_json TEXT NOT NULL DEFAULT '[]',
+      ad_descriptions_json TEXT NOT NULL DEFAULT '[]',
+      impressions       INTEGER NOT NULL DEFAULT 0,
+      clicks            INTEGER NOT NULL DEFAULT 0,
+      conversions       INTEGER NOT NULL DEFAULT 0,
+      spend             REAL NOT NULL DEFAULT 0,
+      created_at        TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at        TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (app_id) REFERENCES app_listings(id) ON DELETE CASCADE,
+      FOREIGN KEY (vendor_id) REFERENCES vendor_profiles(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_semc_app_id ON sem_campaigns(app_id);
+    CREATE INDEX IF NOT EXISTS idx_semc_vendor ON sem_campaigns(vendor_id);
+    CREATE INDEX IF NOT EXISTS idx_semc_status ON sem_campaigns(status);
+  `)
+
+  // Idempotent SEO column migrations on app_listings
+  const seoAlterations = [
+    `ALTER TABLE app_listings ADD COLUMN seo_title TEXT`,
+    `ALTER TABLE app_listings ADD COLUMN seo_description TEXT`,
+    `ALTER TABLE app_listings ADD COLUMN llm_summary TEXT`,
+    `ALTER TABLE app_listings ADD COLUMN comparison_slugs TEXT DEFAULT '[]'`,
+    `ALTER TABLE app_listings ADD COLUMN indexed_at TEXT`,
+  ]
+  for (const sql of seoAlterations) {
+    try { db.exec(sql) } catch { /* column already exists */ }
+  }
 }
 
 function createId(prefix: string) {

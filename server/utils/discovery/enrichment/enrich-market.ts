@@ -262,7 +262,7 @@ async function fetchMozDA(domain: string): Promise<{ domain_authority: number | 
     const expires = Math.floor(Date.now() / 1000) + 300
     const stringToSign = `${accessId}\n${expires}`
     const { createHmac } = await import('node:crypto')
-    const signature = createHmac('sha1', secretKey).update(stringToSign).digest('base64')
+    const _signature = createHmac('sha1', secretKey).update(stringToSign).digest('base64')
 
     const res = await fetch('https://lsapi.seomoz.com/v2/url_metrics', {
       method: 'POST',

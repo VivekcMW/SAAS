@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useCurrency } from '~/composables/useCurrency'
 
 interface PricingPlan {
   name: string
@@ -24,12 +25,9 @@ const props = withDefaults(defineProps<Props>(), {
 
 defineEmits<{ select: [plan: PricingPlan] }>()
 
-const billing = ref<'monthly' | 'annual'>('monthly')
+const { formatPrice } = useCurrency()
 
-const currencySymbol = computed(() => {
-  const sym: Record<string, string> = { USD: '$', EUR: '€', GBP: '£', INR: '₹' }
-  return sym[props.currency] || '$'
-})
+const billing = ref<'monthly' | 'annual'>('monthly')
 
 const adjustedPlans = computed(() =>
   props.plans.map(p => {
@@ -85,13 +83,12 @@ const adjustedPlans = computed(() =>
             <span class="price-amount">Free</span>
           </template>
           <template v-else>
-            <span class="price-currency">{{ currencySymbol }}</span>
-            <span class="price-amount">{{ (plan as any).displayPrice ?? plan.price }}</span>
+            <span class="price-amount">{{ formatPrice((plan as any).displayPrice ?? plan.price ?? 0) }}</span>
             <span class="price-period">/{{ plan.period || 'month' }}</span>
           </template>
         </div>
         <p v-if="billing === 'annual' && (plan as any).savings > 0" class="plan-save">
-          Save {{ currencySymbol }}{{ (plan as any).savings }}/year
+          Save {{ formatPrice((plan as any).savings) }}/year
         </p>
 
         <button

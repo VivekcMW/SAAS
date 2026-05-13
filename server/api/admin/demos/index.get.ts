@@ -2,7 +2,7 @@
  * GET /api/admin/demos
  * Admin-only paginated list of demo booking requests.
  */
-import { createError, defineEventHandler, getQuery } from 'h3'
+import { defineEventHandler, getQuery } from 'h3'
 import { getDb } from '~/server/utils/database'
 import { requireAdmin } from '~/server/utils/auth'
 

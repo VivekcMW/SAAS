@@ -30,9 +30,9 @@
 
     <!-- Loading -->
     <div v-else-if="loading && !data" class="vi-skels">
-      <div class="vi-skel"></div>
-      <div class="vi-skel"></div>
-      <div class="vi-skel vi-skel--sm"></div>
+      <div class="vi-skel"/>
+      <div class="vi-skel"/>
+      <div class="vi-skel vi-skel--sm"/>
     </div>
 
     <!-- Error -->
@@ -52,17 +52,17 @@
             <span class="vi-score__n">{{ data.competitiveSentimentMap.yourScore.toFixed(1) }}★</span>
             <span class="vi-score__l">Your listing</span>
           </div>
-          <div class="vi-score-divider"></div>
+          <div class="vi-score-divider"/>
           <div class="vi-score-col">
             <span class="vi-score__n">{{ data.competitiveSentimentMap.categoryAvg.toFixed(1) }}★</span>
             <span class="vi-score__l">Category avg</span>
           </div>
-          <div v-if="data.competitiveSentimentMap.topCompetitor" class="vi-score-divider"></div>
+          <div v-if="data.competitiveSentimentMap.topCompetitor" class="vi-score-divider"/>
           <div v-if="data.competitiveSentimentMap.topCompetitor" class="vi-score-col">
             <span class="vi-score__n">{{ data.competitiveSentimentMap.topCompetitor.score.toFixed(1) }}★</span>
             <span class="vi-score__l">{{ data.competitiveSentimentMap.topCompetitor.name }}</span>
           </div>
-          <div class="vi-score-divider"></div>
+          <div class="vi-score-divider"/>
           <div class="vi-score-col">
             <span class="vi-score__n">{{ data.competitiveSentimentMap.reviewCount }}</span>
             <span class="vi-score__l">Reviews</span>
@@ -107,7 +107,7 @@
               <div
                 class="vi-bar-fill"
                 :style="{ width: barWidth(item.count, data.buyerPersonas.intentBreakdown) + '%' }"
-              ></div>
+              />
             </div>
             <span class="vi-bar-count">{{ item.count }}</span>
           </div>

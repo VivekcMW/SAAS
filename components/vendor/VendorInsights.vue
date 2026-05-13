@@ -17,7 +17,9 @@
     <div class="in-summary bw-card">
       <div class="in-summary__week">Week of {{ weekLabel }}</div>
       <div class="in-summary__kpis">
-        <div v-if="analyticsLoading" v-for="i in 4" :key="i" class="in-kpi in-kpi--skel"></div>
+        <template v-if="analyticsLoading">
+          <div v-for="i in 4" :key="i" class="in-kpi in-kpi--skel"/>
+        </template>
         <template v-else>
           <div class="in-kpi">
             <span class="in-kpi__n">{{ fmt(kpis.views30d) }}</span>

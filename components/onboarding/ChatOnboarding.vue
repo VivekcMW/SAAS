@@ -617,7 +617,7 @@ function goToEditor() {
   navigateTo('/vendor/listing-editor')
 }
 
-const submitListing = async (publish: boolean) => {
+const _submitListing = async (publish: boolean) => {
   publishError.value = ''
   busy.value = true
   try {

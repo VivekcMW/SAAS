@@ -78,7 +78,7 @@ export function useStatusData() {
 
       systemStatus.value = calculateOverallStatus(currentServices.value)
       lastRefresh.value = new Date(data.checkedAt)
-    } catch (error) {
+    } catch (_error) {
       // Silently continue on error — stale data is better than a broken page
     } finally {
       isLoading.value = false

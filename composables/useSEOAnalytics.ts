@@ -3,10 +3,9 @@
  * Provides advanced SEO analytics, keyword tracking, and search engine optimization utilities
  */
 
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { allCategoryKeywords, globalKeywords, getKeywordsForCategory } from '~/seo/keywords'
 import { getCategoryKeywords, isValidCategory } from '~/utils/categoryMapping'
-import type { CategoryName } from '~/utils/categoryMapping'
 
 export interface SEOAnalytics {
   pageviews: number
@@ -157,7 +156,7 @@ export function useSEOAnalytics() {
     keywordPerformance.value.set(keyword, updatedData)
     
     // In a real application, this would send data to analytics service
-    if (process.client) {
+    if (import.meta.client) {
       console.log(`Tracking keyword performance for: ${keyword}`, updatedData)
     }
   }
@@ -186,7 +185,7 @@ export function useSEOAnalytics() {
         name: `${categoryName} Software Directory`,
         description: `Comprehensive list of ${categoryName.toLowerCase()} software solutions`,
         numberOfItems: Object.keys(categoryKeywords.subcategories).length,
-        itemListElement: Object.entries(categoryKeywords.subcategories).map(([key, sub], index) => ({
+        itemListElement: Object.entries(categoryKeywords.subcategories).map(([_key, sub], index) => ({
           '@type': 'ListItem',
           position: index + 1,
           item: {
@@ -293,7 +292,7 @@ export function useSEOAnalytics() {
 
   // Track page performance metrics
   const trackPageMetrics = (pageType: string, category?: string) => {
-    if (process.client) {
+    if (import.meta.client) {
       // Simulate analytics tracking
       analytics.value.pageviews++
       
@@ -333,7 +332,7 @@ export function useSEOAnalytics() {
    * Track Core Web Vitals for SEO performance
    */
   const trackCoreWebVitals = () => {
-    if (process.client) {
+    if (import.meta.client) {
       // Track Largest Contentful Paint (LCP)
       new PerformanceObserver((entryList) => {
         for (const entry of entryList.getEntries()) {
@@ -369,7 +368,7 @@ export function useSEOAnalytics() {
    * Monitor LLM crawler activity
    */
   const trackLLMCrawlers = async () => {
-    if (process.server) {
+    if (import.meta.server) {
       // This would typically be done on the server-side
       // Monitor server logs for LLM bot activity
       const userAgent = useRequestHeaders(['user-agent'])['user-agent'] || '';
@@ -396,7 +395,7 @@ export function useSEOAnalytics() {
   /**
    * Track search queries for keyword analysis
    */
-  const trackSearchQuery = async (query: string, results: number, category?: string) => {
+  const trackSearchQuery = async (query: string, results: number, _category?: string) => {
     // Update keyword performance tracking
     await trackKeywordPerformance(query, {
       searchVolume: (keywordPerformance.value.get(query)?.searchVolume || 0) + 1
@@ -405,7 +404,7 @@ export function useSEOAnalytics() {
     // Track in analytics
     analytics.value.searchImpressions++;
     
-    if (process.client) {
+    if (import.meta.client) {
       // Send to analytics service
       console.log(`Search tracked: ${query} (${results} results)`);
     }
@@ -415,8 +414,8 @@ export function useSEOAnalytics() {
    * Monitor page performance metrics
    */
   const trackAdvancedPageMetrics = () => {
-    if (process.client) {
-      let startTime = Date.now();
+    if (import.meta.client) {
+      const startTime = Date.now();
       let scrollDepth = 0;
       
       // Track time on page
@@ -482,7 +481,7 @@ export function useSEOAnalytics() {
    * Initialize comprehensive SEO tracking
    */
   const initializeSEOTracking = () => {
-    if (process.client) {
+    if (import.meta.client) {
       trackCoreWebVitals();
       trackAdvancedPageMetrics();
       
@@ -494,7 +493,7 @@ export function useSEOAnalytics() {
       setContext(route.path, route.params.category as string);
     }
     
-    if (process.server) {
+    if (import.meta.server) {
       trackLLMCrawlers();
     }
   };

@@ -253,7 +253,7 @@ export function getAllKeywords(): string[] {
   return Array.from(new Set(allKeywords))
 }
 
-export function generateMetaKeywords(categoryId?: string, subcategoryPath?: string): string {
+export function generateMetaKeywords(categoryId?: string, _subcategoryPath?: string): string {
   const keywords: string[] = [...globalKeywords.platformKeywords]
   
   if (categoryId) {

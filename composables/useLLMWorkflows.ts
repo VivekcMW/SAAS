@@ -364,7 +364,7 @@ export const useLLMWorkflows = () => {
    */
   const executeOptimizationStep = async (
     step: WorkflowStep,
-    config: LLMOptimizationConfig
+    _config: LLMOptimizationConfig
   ) => {
     const { tier } = step.config
     
@@ -412,7 +412,7 @@ export const useLLMWorkflows = () => {
    */
   const executeTestingStep = async (
     step: WorkflowStep,
-    config: LLMOptimizationConfig
+    _config: LLMOptimizationConfig
   ) => {
     const { suites } = step.config
     const results: Record<string, any> = {}
@@ -443,7 +443,7 @@ export const useLLMWorkflows = () => {
    */
   const executeValidationStep = async (
     step: WorkflowStep,
-    config: LLMOptimizationConfig
+    _config: LLMOptimizationConfig
   ) => {
     const { strict } = step.config
     const errors: string[] = []
@@ -490,10 +490,10 @@ export const useLLMWorkflows = () => {
    */
   const executeAnalyticsStep = async (
     step: WorkflowStep,
-    config: LLMOptimizationConfig,
-    execution: WorkflowExecution
+    _config: LLMOptimizationConfig,
+    _execution: WorkflowExecution
   ) => {
-    const { generateReport, healthCheck, checkAlerts, lightweight, qualityFocus, reportType } = step.config
+    const { generateReport, healthCheck, checkAlerts, lightweight, qualityFocus: _qualityFocus, reportType } = step.config
 
     const result: any = {}
 

@@ -106,7 +106,7 @@ function isCircuitOpen(provider: string, quality: string): boolean {
   if (!state) return false
   if (state.openUntil > Date.now()) return true
   // Auto-reset after cooldown
-  delete CIRCUIT[circuitKey(provider, quality)]
+  Reflect.deleteProperty(CIRCUIT, circuitKey(provider, quality))
   return false
 }
 
@@ -122,7 +122,7 @@ function recordFailure(provider: string, quality: string): void {
 }
 
 function recordSuccess(provider: string, quality: string): void {
-  delete CIRCUIT[circuitKey(provider, quality)]
+  Reflect.deleteProperty(CIRCUIT, circuitKey(provider, quality))
 }
 
 // ── Retry helper ──────────────────────────────────────────────────────────────

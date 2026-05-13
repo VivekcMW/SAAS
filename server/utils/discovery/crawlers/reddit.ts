@@ -60,7 +60,7 @@ function extractProductUrl(post: RedditPost): string | null {
   // Self-posts link to reddit itself — extract URL from text
   if (!isSaasUrl(post.url)) {
     // Try to find a URL in the post text
-    const urlMatch = /https?:\/\/[^\s\]\)"]+/g.exec(post.selftext)
+    const urlMatch = /https?:\/\/[^\s\])"]+/g.exec(post.selftext)
     if (urlMatch && isSaasUrl(urlMatch[0])) return urlMatch[0]
     return null
   }

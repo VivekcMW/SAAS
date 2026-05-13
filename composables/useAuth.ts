@@ -76,7 +76,7 @@ export const useAuth = () => {
       })
       setUser(response.user)
       return currentUser.value
-    } catch (error) {
+    } catch (_error) {
       setUser(null)
       return null
     } finally {

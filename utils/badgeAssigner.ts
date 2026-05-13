@@ -3,7 +3,7 @@
  * Automatically assigns and removes badges based on app performance and metrics
  */
 
-import type { Badge, AnalyticsSummary } from '~/types/enhanced-app'
+import type { Badge } from '~/types/enhanced-app'
 import { getDb, makeId } from '~/server/utils/database'
 
 export class BadgeAssigner {

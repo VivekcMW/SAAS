@@ -46,11 +46,11 @@
         <form @submit.prevent="createRoom">
           <div class="form-group">
             <label>Room name <span class="req">*</span></label>
-            <input v-model="newRoom.title" type="text" placeholder="e.g. Q3 CRM Evaluation" required />
+            <input v-model="newRoom.title" type="text" placeholder="e.g. Q3 CRM Evaluation" required >
           </div>
           <div class="form-group">
             <label>Description</label>
-            <textarea v-model="newRoom.description" rows="3" placeholder="What are you evaluating?"></textarea>
+            <textarea v-model="newRoom.description" rows="3" placeholder="What are you evaluating?"/>
           </div>
           <p v-if="createError" class="form-error">{{ createError }}</p>
           <div class="modal__actions">
@@ -66,7 +66,7 @@
 <script setup lang="ts">
 useSeoMeta({ title: 'Buying Rooms — SaasWorld', description: 'Collaborate with your team to shortlist and evaluate SaaS tools.' })
 
-const { data: rooms, pending: roomsPending, refresh } = await useAsyncData('my-buying-rooms', () => $fetch('/api/buying-rooms'))
+const { data: rooms, pending: roomsPending, refresh: _refresh } = await useAsyncData('my-buying-rooms', () => $fetch('/api/buying-rooms'))
 
 const showCreate = ref(false)
 const newRoom = reactive({ title: '', description: '' })

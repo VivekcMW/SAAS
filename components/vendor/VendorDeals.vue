@@ -17,7 +17,7 @@
     <div v-else class="bw-card" style="overflow: auto;">
       <table class="bw-table">
         <thead>
-          <tr><th>Title</th><th>App</th><th>Type</th><th>Discount</th><th>Expires</th><th>Claims</th><th>Status</th><th></th></tr>
+          <tr><th>Title</th><th>App</th><th>Type</th><th>Discount</th><th>Expires</th><th>Claims</th><th>Status</th><th/></tr>
         </thead>
         <tbody>
           <tr v-for="d in deals" :key="d.id">
@@ -49,7 +49,7 @@
         <h2 class="deal-modal__title">{{ editing ? 'Edit deal' : 'New deal' }}</h2>
         <div class="deal-modal__form">
           <label class="bw-label">Title *</label>
-          <input v-model="form.title" class="bw-input" placeholder="e.g. Summer sale — 30% off" />
+          <input v-model="form.title" class="bw-input" placeholder="e.g. Summer sale — 30% off" >
 
           <label class="bw-label">App (optional)</label>
           <select v-model="form.app_id" class="bw-select">
@@ -69,26 +69,26 @@
             </div>
             <div>
               <label class="bw-label">Discount %</label>
-              <input v-model.number="form.discount_pct" class="bw-input" type="number" min="1" max="100" placeholder="30" />
+              <input v-model.number="form.discount_pct" class="bw-input" type="number" min="1" max="100" placeholder="30" >
             </div>
           </div>
 
           <label class="bw-label">Promo code (optional)</label>
-          <input v-model="form.promo_code" class="bw-input" placeholder="SUMMER30" style="text-transform: uppercase;" />
+          <input v-model="form.promo_code" class="bw-input" placeholder="SUMMER30" style="text-transform: uppercase;" >
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
             <div>
               <label class="bw-label">Starts at *</label>
-              <input v-model="form.starts_at" class="bw-input" type="date" />
+              <input v-model="form.starts_at" class="bw-input" type="date" >
             </div>
             <div>
               <label class="bw-label">Expires at *</label>
-              <input v-model="form.expires_at" class="bw-input" type="date" />
+              <input v-model="form.expires_at" class="bw-input" type="date" >
             </div>
           </div>
 
           <label class="bw-label">Max claims (optional)</label>
-          <input v-model.number="form.max_claims" class="bw-input" type="number" min="1" placeholder="Unlimited" />
+          <input v-model.number="form.max_claims" class="bw-input" type="number" min="1" placeholder="Unlimited" >
 
           <label class="bw-label">Description (optional)</label>
           <textarea v-model="form.description" class="bw-input" rows="3" style="resize: vertical;" />

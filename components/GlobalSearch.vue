@@ -5,8 +5,8 @@
       <div 
         v-if="!isExpanded" 
         class="global-search-button" 
-        @click="expandSearch"
         :title="'Search (⌘K)'"
+        @click="expandSearch"
       >
         <UIcon name="i-heroicons-magnifying-glass" class="search-button-icon" />
       </div>
@@ -25,17 +25,17 @@
               @keydown.escape="collapseSearch"
               @keydown.enter="performFullSearch"
               @input="handleSearch"
-            />
+            >
             <button 
               v-if="searchQuery" 
-              @click="clearSearch" 
-              class="clear-search-button"
+              class="clear-search-button" 
+              @click="clearSearch"
             >
               <UIcon name="i-heroicons-x-mark" class="clear-icon" />
             </button>
           </div>
           
-          <button @click="collapseSearch" class="close-search-button">
+          <button class="close-search-button" @click="collapseSearch">
             <UIcon name="i-heroicons-x-mark" class="close-icon" />
           </button>
         </div>
@@ -66,7 +66,7 @@
           <div v-if="!searchQuery && recentSearches.length > 0" class="results-section">
             <div class="section-header">
               <h3>Recent Searches</h3>
-              <button @click="clearRecentSearches" class="clear-all-button">Clear All</button>
+              <button class="clear-all-button" @click="clearRecentSearches">Clear All</button>
             </div>
             <div class="results-grid recent-searches">
               <div 
@@ -131,7 +131,7 @@
             <UIcon name="i-heroicons-magnifying-glass" class="no-results-icon" />
             <h3>No results found</h3>
             <p>Try adjusting your search terms or browse categories</p>
-            <button @click="openCategories" class="browse-categories-button">
+            <button class="browse-categories-button" @click="openCategories">
               Browse Categories
             </button>
           </div>
@@ -163,14 +163,14 @@ interface QuickFilter {
 // Composables
 const router = useRouter()
 const {
-  performSearch,
+  performSearch: _performSearch,
   debouncedSearch,
   getQuickActions,
   searchHistory,
   saveToHistory,
   loadHistory,
   clearHistory: clearSearchHistory,
-  getPopularSearches
+  getPopularSearches: _getPopularSearches
 } = useGlobalSearch()
 
 // Reactive state
@@ -263,7 +263,7 @@ const executeQuickAction = (action: QuickAction) => {
   collapseSearch()
 }
 
-const navigateTo = (path: string) => {
+const _navigateTo = (path: string) => {
   router.push(path)
 }
 

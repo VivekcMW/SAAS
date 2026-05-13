@@ -38,7 +38,7 @@
           :alt="`${product.name} logo`"
           loading="lazy"
           @error="handleImageError"
-        />
+        >
         <span v-else class="product-logo-initial" aria-hidden="true">
           {{ (product.name || '?').charAt(0).toUpperCase() }}
         </span>
@@ -141,8 +141,8 @@
         v-if="layout === 'horizontal'"
         class="btn-action btn-favorite"
         :class="{ 'btn-favorite--active': isFavorited }"
-        @click.stop="handleToggleFavorite"
         :aria-label="isFavorited ? `Remove ${product.name} from favorites` : `Add ${product.name} to favorites`"
+        @click.stop="handleToggleFavorite"
       >
         <UIcon 
           :name="isFavorited ? 'i-heroicons-heart-solid' : 'i-heroicons-heart'" 

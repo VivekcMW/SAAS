@@ -40,7 +40,7 @@ function isSaasUrl(url: string): boolean {
   catch { return false }
 }
 
-function parseFromNextData(html: string, pageUrl: string): IHProduct[] {
+function parseFromNextData(html: string, _pageUrl: string): IHProduct[] {
   const dataMatch = NEXT_DATA_RE.exec(html)
   if (!dataMatch?.[1]) return []
 

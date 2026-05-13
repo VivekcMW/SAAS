@@ -47,7 +47,7 @@
       <!-- App being replaced -->
       <section class="alts-replacing container">
         <div class="alts-replacing__card">
-          <img v-if="app.logo" :src="app.logo" :alt="app.name" class="alts-replacing__logo" @error="onLogoErr" />
+          <img v-if="app.logo" :src="app.logo" :alt="app.name" class="alts-replacing__logo" @error="onLogoErr" >
           <div class="alts-replacing__info">
             <p class="alts-replacing__label">Replacing</p>
             <p class="alts-replacing__name">{{ app.name }}</p>
@@ -69,7 +69,7 @@
           class="alt-card"
         >
           <div class="alt-card__rank">{{ i + 1 }}</div>
-          <img v-if="alt.logo" :src="alt.logo" :alt="alt.name" class="alt-card__logo" @error="onLogoErr" />
+          <img v-if="alt.logo" :src="alt.logo" :alt="alt.name" class="alt-card__logo" @error="onLogoErr" >
           <div v-else class="alt-card__logo-fallback">{{ alt.name[0] }}</div>
           <div class="alt-card__body">
             <div class="alt-card__name-row">
@@ -170,13 +170,28 @@ useHead(() => {
   if (!app.value) return {}
   const name = app.value.name
   const altNames = alternatives.value.slice(0, 3).map(a => a.name).join(', ')
+  const desc = `${alternatives.value.length} top-rated alternatives to ${name}: ${altNames}. Compare features, pricing, and verified reviews on moonmart.ai.`
   return {
     title: `Best ${name} Alternatives (${currentYear}) — Ranked by moonmart.ai`,
     meta: [
-      { name: 'description', content: `${alternatives.value.length} top-rated alternatives to ${name}: ${altNames}. Compare features, pricing, and verified reviews on moonmart.ai.` },
+      { name: 'description', content: desc },
       { property: 'og:title', content: `${name} Alternatives — moonmart.ai` },
       { property: 'og:description', content: `Top alternatives to ${name} ranked by verified buyers.` },
-      { name: 'robots', content: 'index, follow' }
+      { property: 'og:image', content: `https://moonmart.ai/api/og/app/${slug}` },
+      { name: 'robots', content: 'index, follow' },
+      // LLM / AI crawler meta
+      { name: 'chatgpt:description', content: desc },
+      { name: 'chatgpt:entity-type', content: 'SoftwareAlternativesList' },
+      { name: 'chatgpt:category', content: app.value.category || '' },
+      { name: 'perplexity:source-type', content: 'software-alternatives' },
+      { name: 'perplexity:entity', content: name },
+      { name: 'perplexity:verified', content: 'true' },
+      { name: 'claude:entity-type', content: 'SoftwareAlternativesList' },
+      { name: 'claude:description', content: desc },
+      { name: 'gemini:page-type', content: 'alternatives-list' },
+      { name: 'ai:content-type', content: 'software-alternatives' },
+      { name: 'ai:entity-name', content: name },
+      { name: 'ai:data-freshness', content: new Date().toISOString().split('T')[0] },
     ],
     link: [{ rel: 'canonical', href: `https://moonmart.ai/alternatives/${slug}` }],
     script: alternatives.value.length ? [

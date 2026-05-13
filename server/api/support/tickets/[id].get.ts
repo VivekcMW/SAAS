@@ -3,7 +3,7 @@
  * Returns a single ticket with replies. User can only view their own tickets.
  */
 import { getDb } from '~/server/utils/database'
-import { requireAdmin, requireUser } from '~/server/utils/auth'
+import { requireUser } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const user = await requireUser(event)

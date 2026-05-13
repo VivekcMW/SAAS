@@ -32,13 +32,17 @@
     :aria-label="animated ? 'Moonmart animated logo' : 'Moonmart logo'"
     role="img"
   >
-    <circle cx="50" cy="50" r="46" fill="none" stroke="#2A9D8F" stroke-width=".4"
+    <circle
+cx="50" cy="50" r="46" fill="none" stroke="#2A9D8F" stroke-width=".4"
       :class="animated ? 'mm-r3' : ''" style="opacity:.2" />
-    <circle cx="50" cy="50" r="38" fill="none" stroke="#2A9D8F" stroke-width=".9"
+    <circle
+cx="50" cy="50" r="38" fill="none" stroke="#2A9D8F" stroke-width=".9"
       :class="animated ? 'mm-r3' : ''" style="opacity:.45" />
-    <circle cx="50" cy="50" r="28" fill="none" stroke="#4A80D4" stroke-width="1.2"
+    <circle
+cx="50" cy="50" r="28" fill="none" stroke="#4A80D4" stroke-width="1.2"
       :class="animated ? 'mm-r2' : ''" style="opacity:.65" />
-    <circle cx="50" cy="50" r="18" fill="none" stroke="#D4A843" stroke-width="1.8"
+    <circle
+cx="50" cy="50" r="18" fill="none" stroke="#D4A843" stroke-width="1.8"
       :class="animated ? 'mm-r1' : ''" style="opacity:.9" />
     <circle cx="50" cy="50" r="7"   fill="#D4A843" />
     <circle cx="50" cy="50" r="3.5" fill="#EEC563" />

@@ -1,5 +1,5 @@
 <template>
-  <div class="marketplace-pagination" v-if="totalPages > 1">
+  <div v-if="totalPages > 1" class="marketplace-pagination">
     <div class="pagination-info">
       <span class="info-text">
         Showing <span class="info-highlight">{{ startItem }}-{{ endItem }}</span> 
@@ -12,8 +12,8 @@
         class="pagination-btn" 
         :class="{ 'disabled': currentPage === 1 }" 
         :disabled="currentPage === 1"
-        @click="goToPage(1)"
         aria-label="Go to first page"
+        @click="goToPage(1)"
       >
         <UIcon name="i-heroicons-chevron-double-left" dynamic />
       </button>
@@ -22,8 +22,8 @@
         class="pagination-btn" 
         :class="{ 'disabled': currentPage === 1 }" 
         :disabled="currentPage === 1"
-        @click="goToPage(currentPage - 1)" 
-        aria-label="Go to previous page"
+        aria-label="Go to previous page" 
+        @click="goToPage(currentPage - 1)"
       >
         <UIcon name="i-heroicons-chevron-left" dynamic />
       </button>
@@ -52,8 +52,8 @@
         class="pagination-btn" 
         :class="{ 'disabled': currentPage === totalPages }" 
         :disabled="currentPage === totalPages"
-        @click="goToPage(currentPage + 1)" 
-        aria-label="Go to next page"
+        aria-label="Go to next page" 
+        @click="goToPage(currentPage + 1)"
       >
         <UIcon name="i-heroicons-chevron-right" dynamic />
       </button>
@@ -62,8 +62,8 @@
         class="pagination-btn" 
         :class="{ 'disabled': currentPage === totalPages }" 
         :disabled="currentPage === totalPages"
-        @click="goToPage(totalPages)" 
-        aria-label="Go to last page"
+        aria-label="Go to last page" 
+        @click="goToPage(totalPages)"
       >
         <UIcon name="i-heroicons-chevron-double-right" dynamic />
       </button>

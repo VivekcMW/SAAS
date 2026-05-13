@@ -155,7 +155,7 @@ function clearChat() {
         <div v-if="loading" class="msg msg-assistant">
           <div class="msg-avatar"><Icon name="heroicons:sparkles" /></div>
           <div class="msg-bubble typing">
-            <span></span><span></span><span></span>
+            <span/><span/><span/>
           </div>
         </div>
       </template>
@@ -171,7 +171,7 @@ function clearChat() {
         class="input-field"
         :disabled="loading"
         autocomplete="off"
-      />
+      >
       <button
         v-if="messages.length > 0"
         type="button"

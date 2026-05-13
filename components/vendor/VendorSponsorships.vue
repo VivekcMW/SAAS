@@ -204,7 +204,7 @@
                   class="sp-slot-option"
                   :class="{ selected: form.slot === slot.value }"
                 >
-                  <input type="radio" :value="slot.value" v-model="form.slot" class="sp-slot-radio" />
+                  <input v-model="form.slot" type="radio" :value="slot.value" class="sp-slot-radio" >
                   <div class="sp-slot-option__body">
                     <strong class="sp-slot-option__name">{{ slot.label }}</strong>
                     <span class="sp-slot-option__price">From ${{ slot.minBudget }}/mo</span>
@@ -220,11 +220,11 @@
             <div class="sp-date-row">
               <div class="sp-field" style="flex:1;">
                 <label class="sp-label">Start date <span class="sp-req">*</span></label>
-                <input v-model="form.startsAt" type="date" class="sp-input" :min="today" />
+                <input v-model="form.startsAt" type="date" class="sp-input" :min="today" >
               </div>
               <div class="sp-field" style="flex:1;">
                 <label class="sp-label">End date <span class="sp-req">*</span></label>
-                <input v-model="form.endsAt" type="date" class="sp-input" :min="form.startsAt || today" />
+                <input v-model="form.endsAt" type="date" class="sp-input" :min="form.startsAt || today" >
               </div>
             </div>
             <div class="sp-field">
@@ -240,7 +240,7 @@
             <div class="sp-field">
               <label class="sp-label">Total budget (USD) <span class="sp-req">*</span></label>
               <div class="sp-budget-wrap">
-                <input v-model.number="form.budget" type="number" :min="selectedSlot?.minBudget ?? 100" step="100" class="sp-input" :placeholder="`Min. $${selectedSlot?.minBudget ?? 100}`" />
+                <input v-model.number="form.budget" type="number" :min="selectedSlot?.minBudget ?? 100" step="100" class="sp-input" :placeholder="`Min. $${selectedSlot?.minBudget ?? 100}`" >
                 <span v-if="selectedSlot" class="sp-budget-hint">Min. ${{ selectedSlot.minBudget }} for this slot</span>
               </div>
             </div>
@@ -255,7 +255,7 @@
           <div v-if="formStep === 2" class="sp-form-section">
             <div class="sp-field">
               <label class="sp-label">Key message / tagline (optional)</label>
-              <input v-model="form.tagline" class="sp-input" placeholder="e.g. The #1 CRM for growing SaaS teams" />
+              <input v-model="form.tagline" class="sp-input" placeholder="e.g. The #1 CRM for growing SaaS teams" >
             </div>
             <div class="sp-field">
               <label class="sp-label">Notes for admin (optional)</label>

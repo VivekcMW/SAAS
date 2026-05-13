@@ -34,8 +34,8 @@
         + Report a price
       </button>
       <form v-else class="price-intel__form" @submit.prevent="submit">
-        <input v-model="form.plan_name" type="text" placeholder="Plan name (e.g. Pro)" required />
-        <input v-model.number="form.price_usd" type="number" min="0" max="100000" step="0.01" placeholder="Price (USD)" required />
+        <input v-model="form.plan_name" type="text" placeholder="Plan name (e.g. Pro)" required >
+        <input v-model.number="form.price_usd" type="number" min="0" max="100000" step="0.01" placeholder="Price (USD)" required >
         <select v-model="form.billing_period">
           <option value="month">per month</option>
           <option value="year">per year</option>

@@ -18,7 +18,7 @@
     </header>
 
     <div class="bw-toolbar">
-      <input v-model="q" class="bw-input" placeholder="Search listings…" style="max-width: 320px;" />
+      <input v-model="q" class="bw-input" placeholder="Search listings…" style="max-width: 320px;" >
       <select v-model="filter" class="bw-select" style="max-width: 180px;">
         <option value="all">All statuses</option>
         <option value="live">Live</option>
@@ -94,9 +94,9 @@
       <div class="vl-modal">
         <h2 class="vl-modal__title">Edit listing</h2>
         <form class="vl-modal__form" @submit.prevent="saveEdit">
-          <label>Name<input v-model="editForm.name" required /></label>
+          <label>Name<input v-model="editForm.name" required ></label>
           <label>Short description<textarea v-model="editForm.description" rows="2" /></label>
-          <label>Category<input v-model="editForm.category" /></label>
+          <label>Category<input v-model="editForm.category" ></label>
           <label>Pricing type
             <select v-model="editForm.pricingType">
               <option value="free">Free</option>
@@ -105,18 +105,18 @@
               <option value="contact">Contact us</option>
             </select>
           </label>
-          <label v-if="editForm.pricingType === 'paid'">Price (USD/mo)<input v-model.number="editForm.pricingValue" type="number" min="0" /></label>
+          <label v-if="editForm.pricingType === 'paid'">Price (USD/mo)<input v-model.number="editForm.pricingValue" type="number" min="0" ></label>
           <div class="vl-form__group">
             <label class="vl-form__label">Screenshots</label>
             <div v-if="editForm.screenshots.length" class="vl-screenshots">
               <div v-for="(url, idx) in editForm.screenshots" :key="url" class="vl-screenshot-item">
-                <img :src="url" :alt="`Screenshot ${idx + 1}`" />
+                <img :src="url" :alt="`Screenshot ${idx + 1}`" >
                 <button type="button" class="vl-screenshot-remove" @click="removeScreenshot(idx)">&times;</button>
               </div>
             </div>
             <label class="bw-btn bw-btn--ghost bw-btn--sm" style="cursor:pointer;display:inline-block;margin-top:6px;">
               {{ screenshotUploading ? 'Uploading…' : '+ Add screenshots' }}
-              <input type="file" multiple accept="image/*" style="display:none" :disabled="screenshotUploading" @change="handleScreenshotUpload" />
+              <input type="file" multiple accept="image/*" style="display:none" :disabled="screenshotUploading" @change="handleScreenshotUpload" >
             </label>
           </div>
           <div class="vl-modal__actions">

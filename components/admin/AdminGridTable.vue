@@ -1,5 +1,5 @@
 <template>
-  <div class="agt" ref="rootEl">
+  <div ref="rootEl" class="agt">
 
     <!-- ─── Toolbar ──────────────────────────────────────────────── -->
     <div class="agt-toolbar">
@@ -14,7 +14,7 @@
           class="bw-input agt-search__input"
           :placeholder="searchPlaceholder ?? 'Search…'"
           @input="currentPage = 1"
-        />
+        >
         <button v-if="searchQuery" class="agt-clear-btn" title="Clear search" @click="searchQuery = ''; currentPage = 1">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
@@ -55,7 +55,7 @@
         </div>
 
         <!-- Column visibility toggle -->
-        <div v-if="hideableColumns.length > 0" class="agt-col-wrap" ref="colMenuEl">
+        <div v-if="hideableColumns.length > 0" ref="colMenuEl" class="agt-col-wrap">
           <button class="bw-btn bw-btn--ghost bw-btn--sm agt-col-btn" @click.stop="showColMenu = !showColMenu">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
@@ -66,7 +66,7 @@
           <div v-if="showColMenu" class="agt-dropdown" @click.stop>
             <p class="agt-dropdown__title">Toggle columns</p>
             <label v-for="col in hideableColumns" :key="col.key" class="agt-dropdown__item">
-              <input type="checkbox" v-model="visibleKeys" :value="col.key" />
+              <input v-model="visibleKeys" type="checkbox" :value="col.key" >
               {{ col.label }}
             </label>
           </div>
@@ -92,7 +92,7 @@
           {{ selectedIds.length }} row{{ selectedIds.length > 1 ? 's' : '' }} selected
         </span>
         <div class="agt-bulk-bar__actions">
-          <slot name="bulk-actions" :selectedRows="selectedRows" :clearSelection="clearSelection">
+          <slot name="bulk-actions" :selected-rows="selectedRows" :clear-selection="clearSelection">
             <button
               v-for="action in bulkActions"
               :key="action.action"
@@ -133,7 +133,7 @@
                 :checked="allSelected"
                 :indeterminate="someSelected"
                 @change="toggleAll"
-              />
+              >
             </th>
             <!-- Column headers -->
             <th
@@ -199,7 +199,7 @@
             @click="$emit('row-click', row)"
           >
             <td v-if="selectable" class="agt-td agt-td--check" @click.stop>
-              <input type="checkbox" class="agt-checkbox" v-model="selectedIds" :value="row[rowKey]" />
+              <input v-model="selectedIds" type="checkbox" class="agt-checkbox" :value="row[rowKey]" >
             </td>
             <td
               v-for="col in visibleColumns"
@@ -234,17 +234,17 @@
           </select>
         </label>
         <div class="agt-pages">
-          <button class="bw-btn bw-btn--ghost bw-btn--sm agt-page-btn" :disabled="currentPage === 1" @click="currentPage = 1" title="First page">
+          <button class="bw-btn bw-btn--ghost bw-btn--sm agt-page-btn" :disabled="currentPage === 1" title="First page" @click="currentPage = 1">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/></svg>
           </button>
-          <button class="bw-btn bw-btn--ghost bw-btn--sm agt-page-btn" :disabled="currentPage === 1" @click="currentPage--" title="Previous page">
+          <button class="bw-btn bw-btn--ghost bw-btn--sm agt-page-btn" :disabled="currentPage === 1" title="Previous page" @click="currentPage--">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
           </button>
           <span class="agt-page-indicator">{{ currentPage }} / {{ totalPages || 1 }}</span>
-          <button class="bw-btn bw-btn--ghost bw-btn--sm agt-page-btn" :disabled="currentPage >= totalPages" @click="currentPage++" title="Next page">
+          <button class="bw-btn bw-btn--ghost bw-btn--sm agt-page-btn" :disabled="currentPage >= totalPages" title="Next page" @click="currentPage++">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
           </button>
-          <button class="bw-btn bw-btn--ghost bw-btn--sm agt-page-btn" :disabled="currentPage >= totalPages" @click="currentPage = totalPages" title="Last page">
+          <button class="bw-btn bw-btn--ghost bw-btn--sm agt-page-btn" :disabled="currentPage >= totalPages" title="Last page" @click="currentPage = totalPages">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg>
           </button>
         </div>
@@ -298,7 +298,7 @@ const props = withDefaults(defineProps<{
 })
 
 // ── Emits ────────────────────────────────────────────────────────────
-const emit = defineEmits<{
+const _emit = defineEmits<{
   'row-click': [row: Record<string, any>]
   'bulk-action': [payload: { action: string; rows: Record<string, any>[] }]
 }>()

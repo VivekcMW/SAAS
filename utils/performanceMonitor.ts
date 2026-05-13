@@ -3,7 +3,7 @@
  * Automated system for checking app health and performance metrics
  */
 
-import type { PerformanceData, ApiHealthStatus, CompatibilityData } from '~/types/enhanced-app'
+import type { PerformanceData, CompatibilityData } from '~/types/enhanced-app'
 
 export class PerformanceMonitor {
   private static instance: PerformanceMonitor
@@ -53,7 +53,7 @@ export class PerformanceMonitor {
       await this.storePerformanceData(appId, performanceData)
 
       return performanceData
-    } catch (error) {
+    } catch (_error) {
       console.error(`Failed to check health for app ${appId}:`, error)
       
       return {
@@ -102,7 +102,7 @@ export class PerformanceMonitor {
         if (response.status >= 400) {
           errors++
         }
-      } catch (error) {
+      } catch (_error) {
         results.push({
           url,
           status: 0,
@@ -138,7 +138,7 @@ export class PerformanceMonitor {
       
       clearTimeout(timeoutId)
       return Date.now() - startTime
-    } catch (error) {
+    } catch (_error) {
       return 10000 // Return high response time on error
     }
   }
@@ -155,7 +155,7 @@ export class PerformanceMonitor {
 
       const successfulChecks = recentChecks.filter(check => check.status === 'healthy').length
       return (successfulChecks / recentChecks.length) * 100
-    } catch (error) {
+    } catch (_error) {
       return 99.9 // Default high uptime
     }
   }
@@ -191,7 +191,7 @@ export class PerformanceMonitor {
           // Small delay between checks to avoid overwhelming servers
           await new Promise(resolve => setTimeout(resolve, 1000))
         }
-      } catch (error) {
+      } catch (_error) {
         console.error('Error during automated monitoring:', error)
       }
     }, this.checkInterval)
@@ -267,7 +267,7 @@ export class PerformanceMonitor {
   /**
    * Check browser compatibility
    */
-  async checkCompatibility(appId: string): Promise<CompatibilityData> {
+  async checkCompatibility(_appId: string): Promise<CompatibilityData> {
     // In a real implementation, this would run automated browser tests
     return {
       platforms: [

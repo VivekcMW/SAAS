@@ -15,7 +15,7 @@
     </div>
     <div v-else class="bw-card" style="overflow: auto;">
       <table class="bw-table">
-        <thead><tr><th>Title</th><th>Category</th><th>Status</th><th>Published</th><th></th></tr></thead>
+        <thead><tr><th>Title</th><th>Category</th><th>Status</th><th>Published</th><th/></tr></thead>
         <tbody>
           <tr v-for="p in posts" :key="p.id">
             <td>{{ p.title }}</td>
@@ -39,12 +39,12 @@
         <h2 class="ab-modal__title">{{ editing ? 'Edit post' : 'New post' }}</h2>
         <div class="ab-form">
           <label class="bw-label">Title *</label>
-          <input v-model="form.title" class="bw-input" placeholder="How to choose the right CRM" />
+          <input v-model="form.title" class="bw-input" placeholder="How to choose the right CRM" >
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
             <div>
               <label class="bw-label">Category *</label>
-              <input v-model="form.category" class="bw-input" placeholder="product-news" />
+              <input v-model="form.category" class="bw-input" placeholder="product-news" >
             </div>
             <div>
               <label class="bw-label">Status</label>
@@ -61,23 +61,23 @@
           <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
             <div>
               <label class="bw-label">Author</label>
-              <input v-model="form.author" class="bw-input" placeholder="Moonmart Editorial" />
+              <input v-model="form.author" class="bw-input" placeholder="Moonmart Editorial" >
             </div>
             <div>
               <label class="bw-label">Read time (min)</label>
-              <input v-model.number="form.read_minutes" class="bw-input" type="number" min="1" />
+              <input v-model.number="form.read_minutes" class="bw-input" type="number" min="1" >
             </div>
             <div>
               <label class="bw-label">Published at</label>
-              <input v-model="form.published_at" class="bw-input" type="date" />
+              <input v-model="form.published_at" class="bw-input" type="date" >
             </div>
           </div>
 
           <label class="bw-label">Cover image URL</label>
-          <input v-model="form.image" class="bw-input" placeholder="https://…" />
+          <input v-model="form.image" class="bw-input" placeholder="https://…" >
 
           <label class="bw-label">Tags (comma-separated)</label>
-          <input v-model="tagsRaw" class="bw-input" placeholder="crm, saas, review" />
+          <input v-model="tagsRaw" class="bw-input" placeholder="crm, saas, review" >
 
           <label class="bw-label">Content (Markdown)</label>
           <textarea v-model="form.content" class="bw-input ab-editor" rows="12" style="font-family: monospace; resize: vertical;" placeholder="## Introduction&#10;Write your post content here…" />

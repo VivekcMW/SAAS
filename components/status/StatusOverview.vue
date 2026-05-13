@@ -78,7 +78,7 @@
       <h2 style="font-size:1.1rem;font-weight:700;margin:0 0 .5rem;">Get incident notifications</h2>
       <p style="font-size:.875rem;color:#64748b;margin:0 0 1rem;">We'll email you when services are impacted.</p>
       <template v-if="!subscribeMsg">
-        <input v-model="subscribeEmail" type="email" placeholder="you@company.com" style="width:100%;padding:.6rem .9rem;border:1px solid #e2e8f0;border-radius:8px;font-size:.9rem;margin-bottom:.75rem;" @keydown.enter="submitSubscribe" />
+        <input v-model="subscribeEmail" type="email" placeholder="you@company.com" style="width:100%;padding:.6rem .9rem;border:1px solid #e2e8f0;border-radius:8px;font-size:.9rem;margin-bottom:.75rem;" @keydown.enter="submitSubscribe" >
         <p v-if="subscribeError" style="color:#dc2626;font-size:.8rem;margin:0 0 .5rem;">{{ subscribeError }}</p>
         <div style="display:flex;gap:.75rem;justify-content:flex-end;">
           <button style="padding:.5rem 1rem;border-radius:8px;border:1px solid #e2e8f0;background:transparent;cursor:pointer;" @click="showSubscribeModal = false">Cancel</button>
@@ -100,17 +100,17 @@ const {
   averageResponseTime, 
   activeIncidents, 
   lastRefresh,
-  isLoading,
-  refreshStatus,
-  getStatusColor,
-  getStatusIcon,
+  isLoading: _isLoading,
+  refreshStatus: _refreshStatus,
+  getStatusColor: _getStatusColor,
+  getStatusIcon: _getStatusIcon,
   formatUptime,
   formatResponseTime,
   formatIncidentTime,
   getRelativeTime
 } = useStatusData()
 
-const getStatusText = (status: string) => {
+const _getStatusText = (status: string) => {
   const texts = {
     operational: 'All Systems Operational',
     outage: 'Service Outage',
@@ -125,7 +125,7 @@ const subscribeError = ref('')
 const subscribing = ref(false)
 const showSubscribeModal = ref(false)
 
-const openSubscribeModal = () => {
+const _openSubscribeModal = () => {
   subscribeEmail.value = ''
   subscribeMsg.value = ''
   subscribeError.value = ''

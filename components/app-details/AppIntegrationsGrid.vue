@@ -62,14 +62,14 @@ const visible = computed(() =>
           type="search"
           placeholder="Search integrations..."
           class="int-search-input"
-        />
+        >
       </div>
     </div>
 
     <div v-if="visible.length > 0" class="int-grid">
       <div v-for="i in visible" :key="i.name" class="int-item">
         <div class="int-logo">
-          <img v-if="i.logo" :src="i.logo" :alt="`${i.name} logo`" />
+          <img v-if="i.logo" :src="i.logo" :alt="`${i.name} logo`" >
           <span v-else class="int-initial">{{ i.name.charAt(0) }}</span>
         </div>
         <span class="int-name">{{ i.name }}</span>

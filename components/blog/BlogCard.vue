@@ -7,7 +7,7 @@
     <div class="blog-card-image">
       <!-- Loading State -->
       <div v-if="isGenerating" class="thumbnail-loading">
-        <div class="loading-spinner"></div>
+        <div class="loading-spinner"/>
         <p>Generating AI thumbnail...</p>
       </div>
       
@@ -17,9 +17,9 @@
         :src="thumbnailUrl" 
         :alt="post.title"
         class="thumbnail-image"
-        @error="handleImageError"
         loading="lazy"
-      />
+        @error="handleImageError"
+      >
       
       <!-- Fallback Placeholder -->
       <div v-else class="thumbnail-placeholder">
@@ -30,9 +30,9 @@
       <!-- Regenerate Button (Admin/Dev) -->
       <button 
         v-if="showControls && !isGenerating" 
-        @click="regenerateThumbnail"
         class="regenerate-btn"
         title="Regenerate thumbnail"
+        @click="regenerateThumbnail"
       >
         <Icon name="ph:arrow-clockwise" />
       </button>
@@ -107,7 +107,7 @@ const loadThumbnail = async () => {
       style: props.post.thumbnailStyle || 'modern'
     })
     thumbnailUrl.value = url
-  } catch (error) {
+  } catch (_error) {
     console.error('Failed to load thumbnail:', error)
   }
 }
@@ -115,7 +115,7 @@ const loadThumbnail = async () => {
 const regenerateThumbnail = async () => {
   try {
     // Clear cache
-    if (process.client) {
+    if (import.meta.client) {
       localStorage.removeItem(`thumbnail-${props.post.slug}`)
     }
     
@@ -126,7 +126,7 @@ const regenerateThumbnail = async () => {
       style: props.post.thumbnailStyle || 'modern'
     })
     thumbnailUrl.value = url
-  } catch (error) {
+  } catch (_error) {
     console.error('Failed to regenerate thumbnail:', error)
   }
 }

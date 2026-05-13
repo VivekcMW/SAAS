@@ -1,65 +1,145 @@
 import { getMarketplaceAppByIdOrSlug } from '~/server/utils/apps'
 
 /**
- * OG/Twitter social share image for app details page.
- * Phase 1: returns an SVG (served as image) — no external deps.
- * Browsers, Slack, Twitter, LinkedIn, WhatsApp all render SVG in og:image.
+ * GET /api/og/app/[id]
+ *
+ * Enhanced SVG OG/Twitter social share image for app detail pages.
+ *
+ * Visual elements:
+ *  - Category accent bar (colour-coded by category)
+ *  - App name + provider
+ *  - Short description
+ *  - Star rating (filled/empty SVG paths)
+ *  - Pricing tier pill (Free · Paid · Contact Sales)
+ *  - Moonmart score badge (if available)
+ *  - Canonical URL line
  */
+import { getDb } from '~/server/utils/database'
+
+// Category → accent colour mapping
+const CATEGORY_COLOURS: Record<string, string> = {
+  crm: '#3b82f6',
+  marketing: '#f59e0b',
+  analytics: '#8b5cf6',
+  productivity: '#10b981',
+  collaboration: '#06b6d4',
+  design: '#ec4899',
+  devtools: '#6366f1',
+  hr: '#f97316',
+  finance: '#14b8a6',
+  security: '#ef4444',
+  ai: '#a855f7',
+  'e-commerce': '#22c55e',
+}
+const DEFAULT_ACCENT = '#ff8838'
+
+function categoryAccent(cat: string): string {
+  return CATEGORY_COLOURS[cat?.toLowerCase()] || DEFAULT_ACCENT
+}
+
+// Pricing label + pill colour
+function pricingPill(app: { pricing?: { type?: string; value?: number } | null }): { label: string; bg: string; fg: string } {
+  const type = app.pricing?.type
+  if (type === 'free') return { label: 'Free', bg: '#dcfce7', fg: '#15803d' }
+  if (type === 'contact') return { label: 'Contact Sales', bg: '#fef3c7', fg: '#92400e' }
+  if (type === 'freemium') return { label: 'Freemium', bg: '#eff6ff', fg: '#1d4ed8' }
+  if (app.pricing?.value) return { label: `From $${app.pricing.value}/mo`, bg: '#f3f4f6', fg: '#374151' }
+  return { label: 'Paid', bg: '#f3f4f6', fg: '#374151' }
+}
+
+// Build filled/empty star SVG
+function starRating(rating: number, cx: number, cy: number): string {
+  const stars = []
+  for (let i = 1; i <= 5; i++) {
+    const x = cx + (i - 1) * 36
+    const filled = rating >= i
+    const half = !filled && rating >= i - 0.5
+    const fill = filled || half ? '#f59e0b' : '#d1d5db'
+    stars.push(`<text x="${x}" y="${cy}" font-size="28" fill="${fill}" font-family="Arial Unicode MS, sans-serif">★</text>`)
+  }
+  return stars.join('\n')
+}
+
+const escape = (s: string) =>
+  String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;')
+
 export default defineEventHandler((event) => {
   const id = getRouterParam(event, 'id') || ''
   const app = getMarketplaceAppByIdOrSlug(id)
 
   const name = app?.name || 'Moonmart'
   const provider = app?.provider || ''
-  const description = (app?.description || 'Discover the best SaaS tools for your business').slice(0, 140)
-  const rating = app?.rating ? app.rating.toFixed(1) : ''
+  const description = (app?.description || 'Discover the best SaaS tools for your business').slice(0, 130)
+  const rating = app?.rating ?? 0
+  const ratingDisplay = rating > 0 ? rating.toFixed(1) : ''
   const reviewCount = app?.reviewCount || 0
   const category = app?.category || 'SaaS'
+  const accent = categoryAccent(category)
+  const pill = pricingPill(app || {})
 
-  const escape = (s: string) =>
-    s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;')
+  // Moonmart SEO score from DB (optional)
+  let seoScore: number | null = null
+  try {
+    const db = getDb()
+    const meta = db.prepare('SELECT seo_score FROM app_seo_meta WHERE app_id = ?').get(app?.id || id) as { seo_score: number } | undefined
+    seoScore = meta?.seo_score ?? null
+  } catch { /* ignore */ }
+
+  const ratingY = 480
+  const starsX = 60
 
   const svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#fff3e6"/>
-      <stop offset="1" stop-color="#ffffff"/>
-    </linearGradient>
-  </defs>
-  <rect width="1200" height="630" fill="url(#bg)"/>
-  <rect x="0" y="0" width="1200" height="6" fill="#ff8838"/>
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#ffffff"/>
+  <!-- Left accent bar (category colour) -->
+  <rect x="0" y="0" width="8" height="630" fill="${accent}"/>
+  <!-- Top bar (thin) -->
+  <rect x="0" y="0" width="1200" height="5" fill="${accent}"/>
 
-  <text x="60" y="90" font-family="Inter, system-ui, sans-serif" font-size="20" font-weight="600" fill="#ff8838" letter-spacing="2">
-    SAASWORLD · ${escape(category.toUpperCase())}
-  </text>
+  <!-- Category label -->
+  <text x="60" y="72" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="700" fill="${accent}" letter-spacing="2">${escape(category.toUpperCase())} · MOONMART.AI</text>
 
-  <text x="60" y="210" font-family="Inter, system-ui, sans-serif" font-size="84" font-weight="800" fill="#1f2937">
-    ${escape(name.slice(0, 30))}
-  </text>
+  <!-- App name -->
+  <text x="60" y="175" font-family="Inter, system-ui, sans-serif" font-size="${name.length > 20 ? 64 : 80}" font-weight="800" fill="#111827">${escape(name.slice(0, 28))}</text>
 
-  ${provider ? `<text x="60" y="260" font-family="Inter, system-ui, sans-serif" font-size="28" font-weight="500" fill="#6b7280">by ${escape(provider)}</text>` : ''}
+  <!-- Provider -->
+  ${provider ? `<text x="62" y="222" font-family="Inter, system-ui, sans-serif" font-size="26" font-weight="500" fill="#6b7280">by ${escape(provider)}</text>` : ''}
 
-  <foreignObject x="60" y="300" width="1080" height="200">
-    <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: Inter, system-ui, sans-serif; font-size: 30px; line-height: 1.4; color: #374151; font-weight: 400;">
-      ${escape(description)}
-    </div>
-  </foreignObject>
+  <!-- Divider -->
+  <line x1="60" y1="248" x2="1140" y2="248" stroke="#f3f4f6" stroke-width="1.5"/>
 
-  ${rating ? `
-  <g transform="translate(60, 520)">
-    <rect width="180" height="50" rx="8" fill="#ffffff" stroke="#e5e7eb" stroke-width="1"/>
-    <text x="20" y="33" font-family="Inter, system-ui, sans-serif" font-size="24" font-weight="700" fill="#ff8838">★ ${escape(rating)}</text>
-    <text x="75" y="33" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="500" fill="#6b7280">(${reviewCount} reviews)</text>
+  <!-- Description -->
+  <text x="60" y="295" font-family="Inter, system-ui, sans-serif" font-size="26" fill="#374151" font-weight="400">${escape(description.slice(0, 70))}</text>
+  ${description.length > 70 ? `<text x="60" y="335" font-family="Inter, system-ui, sans-serif" font-size="26" fill="#374151">${escape(description.slice(70, 140))}</text>` : ''}
+  ${description.length > 140 ? `<text x="60" y="375" font-family="Inter, system-ui, sans-serif" font-size="26" fill="#374151">${escape(description.slice(140, 210))}</text>` : ''}
+
+  <!-- Star rating -->
+  ${ratingDisplay ? `
+  ${starRating(rating, starsX, ratingY)}
+  <text x="${starsX + 190}" y="${ratingY}" font-family="Inter, system-ui, sans-serif" font-size="26" font-weight="700" fill="#111827">${escape(ratingDisplay)}</text>
+  <text x="${starsX + 240}" y="${ratingY}" font-family="Inter, system-ui, sans-serif" font-size="22" fill="#6b7280">(${reviewCount.toLocaleString()} reviews)</text>
+  ` : ''}
+
+  <!-- Pricing pill -->
+  <rect x="60" y="506" width="${pill.label.length * 11 + 28}" height="38" rx="19" fill="${pill.bg}"/>
+  <text x="${60 + (pill.label.length * 11 + 28) / 2}" y="530" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="20" font-weight="600" fill="${pill.fg}">${escape(pill.label)}</text>
+
+  <!-- Moonmart score badge (if available) -->
+  ${seoScore !== null ? `
+  <g transform="translate(900, 490)">
+    <rect width="200" height="60" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+    <text x="100" y="22" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#15803d" font-weight="600">MOONMART SCORE</text>
+    <text x="100" y="50" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="26" fill="#15803d" font-weight="800">${Math.round(seoScore)}/100</text>
   </g>` : ''}
 
-  <text x="60" y="598" font-family="Inter, system-ui, sans-serif" font-size="20" font-weight="500" fill="#9ca3af">
-    moonmart.ai/marketplace/app/${escape(id)}
-  </text>
+  <!-- Canonical URL -->
+  <text x="60" y="600" font-family="Inter, system-ui, sans-serif" font-size="18" fill="#9ca3af">moonmart.ai/marketplace/app/${escape(app?.slug || id)}</text>
 
-  <g transform="translate(1000, 520)">
-    <rect width="140" height="50" rx="8" fill="#ff8838"/>
-    <text x="70" y="33" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="600" fill="#ffffff" text-anchor="middle">View Details →</text>
+  <!-- CTA button -->
+  <g transform="translate(1020, 556)">
+    <rect width="120" height="44" rx="8" fill="${accent}"/>
+    <text x="60" y="28" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="600" fill="#ffffff">View App →</text>
   </g>
 </svg>`
 

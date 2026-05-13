@@ -150,7 +150,7 @@
         <dialog class="stack-modal bw-card" open aria-modal="true" :aria-label="editId ? 'Edit tool' : 'Add tool'">
           <div class="stack-modal__head">
             <h2 class="stack-modal__title">{{ editId ? 'Edit tool' : 'Add tool' }}</h2>
-            <button class="bw-icon-btn" @click="closeModal" aria-label="Close dialog">
+            <button class="bw-icon-btn" aria-label="Close dialog" @click="closeModal">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
@@ -158,27 +158,27 @@
             <div class="stack-mrow">
               <div style="grid-column: 1 / -1;">
                 <label class="bw-label" for="st-name">Tool name *</label>
-                <input id="st-name" v-model="form.name" class="bw-input" placeholder="e.g. Slack" />
+                <input id="st-name" v-model="form.name" class="bw-input" placeholder="e.g. Slack" >
               </div>
             </div>
             <div class="stack-mrow">
               <div>
                 <label class="bw-label" for="st-category">Category</label>
-                <input id="st-category" v-model="form.category" class="bw-input" placeholder="Communication" />
+                <input id="st-category" v-model="form.category" class="bw-input" placeholder="Communication" >
               </div>
               <div>
                 <label class="bw-label" for="st-cost">Monthly cost (USD)</label>
-                <input id="st-cost" v-model.number="form.monthly_cost" type="number" min="0" class="bw-input" placeholder="0" />
+                <input id="st-cost" v-model.number="form.monthly_cost" type="number" min="0" class="bw-input" placeholder="0" >
               </div>
             </div>
             <div class="stack-mrow">
               <div>
                 <label class="bw-label" for="st-renewal">Renewal date</label>
-                <input id="st-renewal" v-model="form.renewal_date" type="date" class="bw-input" />
+                <input id="st-renewal" v-model="form.renewal_date" type="date" class="bw-input" >
               </div>
               <div>
                 <label class="bw-label" for="st-notes">Notes</label>
-                <input id="st-notes" v-model="form.notes" class="bw-input" placeholder="Optional" />
+                <input id="st-notes" v-model="form.notes" class="bw-input" placeholder="Optional" >
               </div>
             </div>
             <p v-if="modalErr" class="stack-modal__err">{{ modalErr }}</p>

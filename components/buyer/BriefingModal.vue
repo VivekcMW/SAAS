@@ -23,21 +23,21 @@
             <div class="bm-row">
               <div class="bm-field">
                 <label class="bm-label">Company name</label>
-                <input v-model="ctx.companyName" class="bm-input" placeholder="Acme Corp" />
+                <input v-model="ctx.companyName" class="bm-input" placeholder="Acme Corp" >
               </div>
               <div class="bm-field">
                 <label class="bm-label">Team size</label>
-                <input v-model.number="ctx.teamSize" type="number" min="1" class="bm-input" placeholder="50" />
+                <input v-model.number="ctx.teamSize" type="number" min="1" class="bm-input" placeholder="50" >
               </div>
             </div>
             <div class="bm-row">
               <div class="bm-field">
                 <label class="bm-label">Monthly budget (USD)</label>
-                <input v-model.number="ctx.budget" type="number" min="0" class="bm-input" placeholder="500" />
+                <input v-model.number="ctx.budget" type="number" min="0" class="bm-input" placeholder="500" >
               </div>
               <div class="bm-field">
                 <label class="bm-label">Decision date</label>
-                <input v-model="ctx.decisionDate" type="date" class="bm-input" />
+                <input v-model="ctx.decisionDate" type="date" class="bm-input" >
               </div>
             </div>
           </div>

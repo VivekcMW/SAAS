@@ -15,13 +15,13 @@
       <section class="bw-card">
         <h2 class="bw-card__title">Tell me about your product</h2>
         <label class="bw-label">Product (1 line)</label>
-        <input v-model="form.product" class="bw-input" placeholder="e.g. Acme CRM — a pipeline tool for SMB sales teams" />
+        <input v-model="form.product" class="bw-input" placeholder="e.g. Acme CRM — a pipeline tool for SMB sales teams" >
 
         <label class="bw-label">Target audience</label>
-        <input v-model="form.audience" class="bw-input" placeholder="e.g. 10–200 person B2B SaaS teams" />
+        <input v-model="form.audience" class="bw-input" placeholder="e.g. 10–200 person B2B SaaS teams" >
 
         <label class="bw-label">Top integrations (comma separated)</label>
-        <input v-model="form.integrations" class="bw-input" placeholder="e.g. Slack, Zapier, Salesforce" />
+        <input v-model="form.integrations" class="bw-input" placeholder="e.g. Slack, Zapier, Salesforce" >
 
         <label class="bw-label">Tone</label>
         <select v-model="form.tone" class="bw-select">
@@ -35,7 +35,7 @@
             <svg v-if="!generating" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 3l14 9-14 9V3z"/></svg>
             {{ generating ? 'Generating…' : 'Generate with AI' }}
           </button>
-          <button class="bw-btn bw-btn--subtle" @click="reset" :disabled="generating">Reset</button>
+          <button class="bw-btn bw-btn--subtle" :disabled="generating" @click="reset">Reset</button>
         </div>
       </section>
 
@@ -86,7 +86,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 const ai = useAICopilot()
-const { listings } = useVendorData()
+const { listings: _listings } = useVendorData()
 
 const form = ref({ product: '', audience: '', integrations: '', tone: 'professional' })
 const draft = ref<{ title: string; description: string; bullets: string[] } | null>(null)

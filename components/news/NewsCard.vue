@@ -2,7 +2,7 @@
   <NuxtLink :to="`/news/${post.slug}`" class="news-card" :class="{ 'news-card--featured': post.featured }">
     <!-- Cover -->
     <div class="news-card__cover">
-      <img v-if="post.coverImage" :src="post.coverImage" :alt="post.title" loading="lazy" class="news-card__img" />
+      <img v-if="post.coverImage" :src="post.coverImage" :alt="post.title" loading="lazy" class="news-card__img" >
       <div v-else class="news-card__cover-placeholder">
         <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" fill="currentColor"/></svg>
       </div>
@@ -12,7 +12,7 @@
     <!-- Body -->
     <div class="news-card__body">
       <p class="news-card__vendor">
-        <span class="news-card__dot" aria-hidden="true"></span>
+        <span class="news-card__dot" aria-hidden="true"/>
         {{ post.vendor.name }}
       </p>
       <h3 class="news-card__title">{{ post.title }}</h3>

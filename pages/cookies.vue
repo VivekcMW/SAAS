@@ -69,7 +69,7 @@
               <!-- Essential Cookies -->
               <div class="border border-gray-200 rounded-lg p-6">
                 <h3 class="text-xl font-semibold text-gray-900 mb-3 flex items-center">
-                  <span class="w-3 h-3 bg-red-500 rounded-full mr-3"></span>
+                  <span class="w-3 h-3 bg-red-500 rounded-full mr-3"/>
                   Essential Cookies
                 </h3>
                 <p class="text-gray-700 mb-3">
@@ -89,7 +89,7 @@
               <!-- Performance Cookies -->
               <div class="border border-gray-200 rounded-lg p-6">
                 <h3 class="text-xl font-semibold text-gray-900 mb-3 flex items-center">
-                  <span class="w-3 h-3 bg-yellow-500 rounded-full mr-3"></span>
+                  <span class="w-3 h-3 bg-yellow-500 rounded-full mr-3"/>
                   Performance Cookies
                 </h3>
                 <p class="text-gray-700 mb-3">
@@ -109,7 +109,7 @@
               <!-- Functional Cookies -->
               <div class="border border-gray-200 rounded-lg p-6">
                 <h3 class="text-xl font-semibold text-gray-900 mb-3 flex items-center">
-                  <span class="w-3 h-3 bg-blue-500 rounded-full mr-3"></span>
+                  <span class="w-3 h-3 bg-blue-500 rounded-full mr-3"/>
                   Functional Cookies
                 </h3>
                 <p class="text-gray-700 mb-3">
@@ -129,7 +129,7 @@
               <!-- Marketing Cookies -->
               <div class="border border-gray-200 rounded-lg p-6">
                 <h3 class="text-xl font-semibold text-gray-900 mb-3 flex items-center">
-                  <span class="w-3 h-3 bg-green-500 rounded-full mr-3"></span>
+                  <span class="w-3 h-3 bg-green-500 rounded-full mr-3"/>
                   Marketing Cookies
                 </h3>
                 <p class="text-gray-700 mb-3">

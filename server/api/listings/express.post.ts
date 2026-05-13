@@ -19,6 +19,7 @@
  */
 import { createVendorApp } from '~/server/utils/apps'
 import { getDb } from '~/server/utils/database'
+import { indexNowApp } from '~/server/utils/seoEngine'
 
 interface ExpressBody {
   url?: string
@@ -157,6 +158,8 @@ export default defineEventHandler(async (event) => {
   if (body.publish) {
     db.prepare('UPDATE app_listings SET status = ?, updated_at = ? WHERE id = ?')
       .run('published', new Date().toISOString(), row.id)
+    // Trigger IndexNow asynchronously — fire and forget
+    indexNowApp(row.id).catch(() => {})
   }
 
   return {

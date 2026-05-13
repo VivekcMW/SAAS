@@ -17,7 +17,7 @@
 
     <section v-else class="oss-grid container">
       <article v-for="app in apps" :key="app.id" class="oss-card">
-        <img v-if="app.logo" :src="app.logo" :alt="app.name" class="oss-card__logo" @error="onLogoErr" />
+        <img v-if="app.logo" :src="app.logo" :alt="app.name" class="oss-card__logo" @error="onLogoErr" >
         <div v-else class="oss-card__logo-fb">{{ app.name[0] }}</div>
         <div class="oss-card__info">
           <h2 class="oss-card__name">{{ app.name }}</h2>

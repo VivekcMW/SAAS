@@ -38,7 +38,7 @@ const PARKED_SIGNALS = [
 
 const SPAM_NAME_PATTERNS = [
   /^\d+$/, // all numbers
-  /[^\x00-\x7F]{3,}/, // heavy non-ASCII (not legit SaaS name)
+  /[\u0080-\uFFFF]{3,}/, // heavy non-ASCII (not legit SaaS name)
   /(.)\1{4,}/, // repeated chars: "aaaaab"
 ]
 

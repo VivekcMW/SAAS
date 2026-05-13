@@ -4,7 +4,7 @@
  */
 import { getDb } from '~/server/utils/database'
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (_event) => {
   const db = getDb()
   const tags = db.prepare(`
     SELECT tag, question_count FROM question_tags

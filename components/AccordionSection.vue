@@ -1,10 +1,10 @@
 <template>
   <div class="accordion-section" :class="{ 'expanded': isExpanded }">
-    <div class="accordion-header" @click="toggle" role="button" :aria-expanded="isExpanded">
+    <div class="accordion-header" role="button" :aria-expanded="isExpanded" @click="toggle">
       <div class="header-content">
-        <span class="section-icon" v-if="icon">{{ icon }}</span>
+        <span v-if="icon" class="section-icon">{{ icon }}</span>
         <h3>{{ title }}</h3>
-        <span class="section-status" v-if="showStatus" :class="statusClass">{{ status }}</span>
+        <span v-if="showStatus" class="section-status" :class="statusClass">{{ status }}</span>
       </div>
       <div class="chevron-icon">
         <UIcon dynamic :name="isExpanded ? 'heroicons:chevron-up' : 'heroicons:chevron-down'" />

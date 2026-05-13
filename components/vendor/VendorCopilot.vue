@@ -16,12 +16,12 @@
     <div class="vw-chat bw-card">
       <div ref="logEl" class="vw-chat__log">
         <div v-for="m in ai.messages.value" :key="m.id" class="vw-chat__msg" :class="m.role === 'user' ? 'vw-chat__msg--user' : 'vw-chat__msg--ai'">
-          <div class="vw-chat__bubble" v-if="m.role === 'user'">{{ m.content }}</div>
-          <div class="vw-chat__bubble vw-chat__bubble--md" v-else v-html="renderMd(m.content)" />
+          <div v-if="m.role === 'user'" class="vw-chat__bubble">{{ m.content }}</div>
+          <div v-else class="vw-chat__bubble vw-chat__bubble--md" v-html="renderMd(m.content)" />
         </div>
         <div v-if="ai.typing.value" class="vw-chat__msg vw-chat__msg--ai">
           <div class="vw-chat__bubble vw-chat__typing">
-            <span></span><span></span><span></span>
+            <span/><span/><span/>
           </div>
         </div>
       </div>
@@ -32,7 +32,7 @@
 
       <form class="vw-chat__composer" @submit.prevent="submit">
         <div v-if="contextListing" class="cp-context-badge">Context: {{ contextListing.name }}</div>
-        <input v-model="q" class="vw-chat__input" placeholder="Ask the copilot…" />
+        <input v-model="q" class="vw-chat__input" placeholder="Ask the copilot…" >
         <button class="bw-btn bw-btn--primary" type="submit" :disabled="!q.trim() || ai.typing.value">Send</button>
       </form>
     </div>
@@ -56,7 +56,7 @@ function renderMd(text: string): string {
     // Italic *text*
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
     // Unordered list items
-    .replace(/^[\-\*] (.+)$/gm, '<li>$1</li>')
+    .replace(/^[-*] (.+)$/gm, '<li>$1</li>')
     // Numbered list items
     .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
     // Wrap consecutive <li> runs in <ul>

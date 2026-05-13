@@ -102,7 +102,16 @@ export function generateBackupCodes(count = 8): string[] {
 // ─── Temp-token helpers for 2-step login ─────────────────────────────────────
 
 const TEMP_TOKEN_SECRET =
-  () => process.env.SESSION_SECRET || process.env.NUXT_SESSION_PASSWORD || 'moonmart-2fa-dev'
+  () => {
+    const secret = process.env.SESSION_SECRET || process.env.NUXT_SESSION_PASSWORD
+    if (!secret || secret.startsWith('change-me')) {
+      if (process.env.NODE_ENV === 'production') {
+        throw new Error('[totp] SESSION_SECRET is not set. Set a strong random secret before deploying.')
+      }
+      return 'moonmart-2fa-dev'
+    }
+    return secret
+  }
 
 /** Sign a short-lived (5 min) token binding a userId for the 2FA login step. */
 export function signTwoFactorToken(userId: string): string {

@@ -24,7 +24,7 @@
         {{ showForm ? 'Cancel' : '+ Start a new thread' }}
       </button>
       <form v-if="showForm" class="thread-form" @submit.prevent="submitThread">
-        <input v-model="form.title" class="form-input" placeholder="Thread title" required maxlength="200" />
+        <input v-model="form.title" class="form-input" placeholder="Thread title" required maxlength="200" >
         <textarea v-model="form.body" class="form-textarea" placeholder="What's on your mind?" required rows="4" />
         <select v-model="form.category" class="form-select" required>
           <option value="" disabled>Select category</option>
@@ -33,8 +33,8 @@
           </option>
         </select>
         <div v-if="!isLoggedIn" class="anon-fields">
-          <input v-model="form.author_name" class="form-input" placeholder="Your name (optional)" />
-          <input v-model="form.author_email" class="form-input" type="email" placeholder="Your email (optional)" />
+          <input v-model="form.author_name" class="form-input" placeholder="Your name (optional)" >
+          <input v-model="form.author_email" class="form-input" type="email" placeholder="Your email (optional)" >
         </div>
         <button type="submit" class="btn-submit" :disabled="submitting">
           {{ submitting ? 'Posting...' : 'Post Thread' }}

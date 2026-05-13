@@ -20,7 +20,7 @@
       </div>
       <div v-if="showInviteForm" class="bw-card" style="margin-bottom: 16px; background: var(--vw-surface-2);">
         <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-end;">
-          <input v-model="inviteEmail" type="email" placeholder="teammate@company.com" class="bw-input" style="flex: 1; min-width: 220px;" />
+          <input v-model="inviteEmail" type="email" placeholder="teammate@company.com" class="bw-input" style="flex: 1; min-width: 220px;" >
           <select v-model="inviteRole" class="bw-input" style="width: 140px;">
             <option value="admin">Admin</option>
             <option value="editor">Editor</option>
@@ -33,7 +33,7 @@
       <div v-if="loadingMembers" style="padding: 20px; text-align: center; color: var(--vw-muted);">Loading…</div>
       <div v-else-if="members.length === 0" style="padding: 20px; text-align: center; color: var(--vw-muted);">No team members yet.</div>
       <table v-else class="bw-table">
-        <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th></th></tr></thead>
+        <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th/></tr></thead>
         <tbody>
           <tr v-for="m in members" :key="m.id">
             <td><strong>{{ m.name }}</strong></td>
@@ -53,7 +53,7 @@
         <button class="bw-btn bw-btn--primary bw-btn--sm">Create key</button>
       </div>
       <table class="bw-table">
-        <thead><tr><th>Name</th><th>Key</th><th>Created</th><th></th></tr></thead>
+        <thead><tr><th>Name</th><th>Key</th><th>Created</th><th/></tr></thead>
         <tbody>
           <tr v-for="k in keys" :key="k.id">
             <td><strong>{{ k.name }}</strong></td>

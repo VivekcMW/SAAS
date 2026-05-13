@@ -45,7 +45,7 @@
             placeholder="000000"
             autofocus
             @keydown.enter="confirmSetup"
-          />
+          >
           <p v-if="verifyError" class="tfa-error">{{ verifyError }}</p>
           <div class="tfa-step__actions">
             <button class="tfa-btn tfa-btn--ghost" @click="step = 1">← Back</button>
@@ -84,7 +84,7 @@
           placeholder="000000"
           autofocus
           @keydown.enter="confirmDisable"
-        />
+        >
         <p v-if="disableError" class="tfa-error">{{ disableError }}</p>
         <div class="tfa-step__actions">
           <button class="tfa-btn tfa-btn--ghost" @click="disabling = false">Cancel</button>

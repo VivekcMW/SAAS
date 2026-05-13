@@ -36,7 +36,7 @@
             </div>
             <div class="plan__foot-actions">
               <button class="bw-btn bw-btn--ghost" @click="startCheckout('portal')">Update card</button>
-              <button class="bw-btn bw-btn--primary" @click="startCheckout('buyer-pro')" :disabled="checkoutLoading !== null">
+              <button class="bw-btn bw-btn--primary" :disabled="checkoutLoading !== null" @click="startCheckout('buyer-pro')">
                 {{ checkoutLoading === 'buyer-pro' ? 'Redirecting...' : 'Upgrade' }}
               </button>
             </div>
@@ -49,7 +49,7 @@
           </div>
           <table class="bw-table">
             <thead>
-              <tr><th>Date</th><th>Description</th><th>Amount</th><th>Status</th><th></th></tr>
+              <tr><th>Date</th><th>Description</th><th>Amount</th><th>Status</th><th/></tr>
             </thead>
             <tbody>
               <tr v-for="inv in invoices" :key="inv.id">
@@ -100,7 +100,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 
-const { currentUser } = useAuth()
+const { currentUser: _currentUser } = useAuth()
 
 // ── Real subscription data ───────────────────────────────────────────────
 const { data: subData } = await useFetch<{

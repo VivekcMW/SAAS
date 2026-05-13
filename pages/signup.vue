@@ -47,7 +47,7 @@
               :aria-invalid="!!fieldErrors.firstName"
               required
               @input="clearFieldError('firstName')"
-            />
+            >
             <p v-if="fieldErrors.firstName" class="field-error">{{ fieldErrors.firstName }}</p>
           </div>
           <div class="field">
@@ -62,7 +62,7 @@
               :aria-invalid="!!fieldErrors.lastName"
               required
               @input="clearFieldError('lastName')"
-            />
+            >
             <p v-if="fieldErrors.lastName" class="field-error">{{ fieldErrors.lastName }}</p>
           </div>
         </div>
@@ -79,7 +79,7 @@
             :aria-invalid="!!fieldErrors.email"
             required
             @input="clearFieldError('email')"
-          />
+          >
           <p v-if="fieldErrors.email" class="field-error">{{ fieldErrors.email }}</p>
         </div>
 
@@ -96,7 +96,7 @@
               :aria-invalid="!!fieldErrors.password"
               required
               @input="clearFieldError('password')"
-            />
+            >
             <button
               type="button"
               class="eye-btn"
@@ -117,7 +117,7 @@
         </div>
 
         <label class="terms">
-          <input v-model="form.termsAgree" type="checkbox" :disabled="isLoading" />
+          <input v-model="form.termsAgree" type="checkbox" :disabled="isLoading" >
           <span>
             I agree to the
             <NuxtLink to="/terms" target="_blank">Terms</NuxtLink>

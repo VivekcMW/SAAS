@@ -5,8 +5,8 @@
       <button 
         v-for="group in categoryGroups" 
         :key="group.id"
-        @click="selectedGroup = group.id"
         :class="['group-button', { active: selectedGroup === group.id }]"
+        @click="selectedGroup = group.id"
       >
         <UIcon dynamic :name="group.icon" />
         <span>{{ group.name }}</span>
@@ -30,7 +30,7 @@
     </div>
     
     <div class="category-actions">
-      <button @click="toggleShowAll" class="show-all-button">
+      <button class="show-all-button" @click="toggleShowAll">
         {{ showAllCategories ? 'Show Less' : 'Show All Categories' }}
         <UIcon dynamic :name="showAllCategories ? 'heroicons:chevron-up' : 'heroicons:chevron-down'" />
       </button>
@@ -276,7 +276,7 @@ const filteredCategories = computed(() => {
 });
 
 // Select a category
-const selectCategory = (categoryId: string) => {
+const _selectCategory = (categoryId: string) => {
   // Navigate to the category page instead of using query parameters
   console.log("Navigating to category:", categoryId);
   router.push(`/marketplace/category/${categoryId}`);

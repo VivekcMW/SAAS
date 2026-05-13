@@ -49,7 +49,7 @@ const scroll = (dir: 1 | -1) => {
       >
         <div class="alt-head">
           <div class="alt-logo">
-            <img v-if="a.logo" :src="a.logo" :alt="`${a.name} logo`" />
+            <img v-if="a.logo" :src="a.logo" :alt="`${a.name} logo`" >
             <span v-else class="alt-initial">{{ a.name.charAt(0) }}</span>
           </div>
           <div class="alt-main">

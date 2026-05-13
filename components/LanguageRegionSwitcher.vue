@@ -13,7 +13,7 @@
         <div class="switcher-dropdown" @click.stop>
           <div class="dropdown-header">
             <h3>{{ $t('footer.language') }} & {{ $t('pricing.currency') }}</h3>
-            <button @click="closeDropdown" class="close-btn">
+            <button class="close-btn" @click="closeDropdown">
               <UIcon dynamic name="i-heroicons-x-mark" />
             </button>
           </div>
@@ -23,12 +23,12 @@
               <button
                 v-for="localeOption in availableLocales"
                 :key="localeOption.code"
-                @click="switchLocale(localeOption.code)"
                 class="region-option"
                 :class="{ 
                   'active': locale === localeOption.code,
                   'rtl': localeOption.dir === 'rtl' 
                 }"
+                @click="switchLocale(localeOption.code)"
               >
                 <div class="region-info">
                   <span class="flag">{{ localeOption.flag }}</span>
@@ -37,8 +37,9 @@
                     <span class="currency-code">{{ localeOption.currency }}</span>
                   </div>
                 </div>
-                <UIcon dynamic 
-                  v-if="locale === localeOption.code" 
+                <UIcon
+v-if="locale === localeOption.code" 
+                  dynamic 
                   name="i-heroicons-check" 
                  
                   class="check-icon" 
@@ -92,7 +93,7 @@ try {
   } else {
     // Fallback implementation if plugin not available
     console.warn('Global market plugin not available in LanguageRegionSwitcher');
-    formatCurrency = (amount: number) => `$${amount.toFixed(2)}`;
+    formatCurrency = (_amount: number) => `$0.00`;
     currentRegion = ref('US');
     getComplianceRequirements = () => [];
     isRTL = computed(() => false);
@@ -100,6 +101,7 @@ try {
 } catch (error) {
   console.error('Error setting up global market in LanguageRegionSwitcher:', error);
   // Safe fallbacks
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   formatCurrency = (amount: number) => `$${amount.toFixed(2)}`;
   currentRegion = ref('US');
   getComplianceRequirements = () => [];
@@ -124,7 +126,7 @@ const currentCurrency = computed(() => {
   return currentRegion.value.currency;
 });
 
-const getLocaleName = (code: string) => {
+const _getLocaleName = (code: string) => {
   const found = availableLocales.value.find((l: any) => l.code === code);
   return found?.name || code;
 };

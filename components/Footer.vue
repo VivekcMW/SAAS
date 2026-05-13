@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <!-- Footer component for Moonmart -->
 <template>
   <footer class="footer">
@@ -87,7 +88,7 @@
             <NuxtLink to="/sitemap">Sitemap</NuxtLink>
           </nav>
           <NuxtLink to="/status" class="status-link">
-            <span class="status-dot" aria-hidden="true"></span>
+            <span class="status-dot" aria-hidden="true"/>
             All systems normal
           </NuxtLink>
         </div>

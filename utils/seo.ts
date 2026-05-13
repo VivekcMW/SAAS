@@ -105,7 +105,7 @@ export const isUrlSEOFriendly = (url: string): boolean => {
     !/[A-Z]/.test(url), // No uppercase
     !/\s/.test(url), // No spaces
     !url.includes('_'), // No underscores
-    /^[a-z0-9\-\/]+$/.test(url), // Only lowercase, numbers, hyphens, slashes
+    /^[a-z0-9\-/]+$/.test(url), // Only lowercase, numbers, hyphens, slashes
     !url.includes('//'), // No double slashes (except protocol)
     !url.endsWith('/') || url === '/' // No trailing slash except root
   ]

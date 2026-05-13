@@ -30,7 +30,7 @@
 
     <!-- Loading -->
     <div v-if="pending" class="vn-state">
-      <div class="vn-spinner" aria-label="Loading…"></div>
+      <div class="vn-spinner" aria-label="Loading…"/>
     </div>
 
     <!-- Empty -->

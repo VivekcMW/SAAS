@@ -20,7 +20,7 @@
 
     <section v-else class="free-grid container">
       <article v-for="app in filteredApps" :key="app.id" class="free-card">
-        <img v-if="app.logo" :src="app.logo" :alt="app.name" class="free-card__logo" @error="onLogoErr" />
+        <img v-if="app.logo" :src="app.logo" :alt="app.name" class="free-card__logo" @error="onLogoErr" >
         <div v-else class="free-card__logo-fb">{{ app.name[0] }}</div>
         <h2 class="free-card__name">{{ app.name }}</h2>
         <span class="free-card__cat">{{ app.category }}</span>

@@ -3,8 +3,8 @@
  * Automatically applies SEO configuration based on route patterns
  */
 
-export default defineNuxtRouteMiddleware((to, from) => {
-  const { applySEO, generateCategorySEO, generateEnhancedCategorySEO, generateAppSEO, generateListingSEO, generateHreflangTags, baseSEO, allCategoryKeywords } = useSEO({ path: to.path })
+export default defineNuxtRouteMiddleware((to, _from) => {
+  const { applySEO, generateCategorySEO, generateAppSEO, generateHreflangTags, baseSEO, allCategoryKeywords } = useSEO({ path: to.path })
   
   // Extract route information from the to parameter (not useRoute())
   const path = to.path

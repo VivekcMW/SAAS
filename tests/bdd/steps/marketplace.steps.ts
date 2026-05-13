@@ -83,7 +83,7 @@ When('I select the {string} price filter', async ({ page }, priceType: string) =
   }
 })
 
-When('I click the {string} pagination button', async ({ page }, label: string) => {
+When('I click the {string} pagination button', async ({ page }, _label: string) => {
   // Pagination uses aria-label, not button text
   const btn = page.locator('[aria-label="Go to next page"]')
   const count = await btn.count()
@@ -214,7 +214,7 @@ Then('products should appear in descending rating order', async ({ page }) => {
   await expect(page.locator('body')).toBeVisible()
 })
 
-Then('I should be redirected to a URL matching {string}', async ({ page }, pattern: string) => {
+Then('I should be redirected to a URL matching {string}', async ({ page }, _pattern: string) => {
   // Product cards navigate to /marketplace/app/[id]
   expect(page.url()).toMatch(/\/marketplace\/app\/|\/app\//)  
 })

@@ -17,7 +17,7 @@ interface RegionalSettings {
   flag: string;
 }
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin((_nuxtApp) => {
   // Get config
   const config = useRuntimeConfig();
   
@@ -75,7 +75,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         style: 'currency',
         currency: targetCurrency,
       }).format(amount);
-    } catch (error) {
+    } catch (_error) {
       // Fallback formatting
       const symbol = getCurrencySymbol(targetCurrency);
       return `${symbol}${amount.toFixed(2)}`;
@@ -86,7 +86,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   const formatNumber = (number: number, options?: Intl.NumberFormatOptions) => {
     try {
       return new Intl.NumberFormat(currentRegionSettings.value.locale, options).format(number);
-    } catch (error) {
+    } catch (_error) {
       return number.toLocaleString();
     }
   };
@@ -116,9 +116,10 @@ export default defineNuxtPlugin((nuxtApp) => {
     if (regionalConfigs.value[newRegion]) {
       currentRegion.value = newRegion;
       
-      // Store user preference
-      if (process.client) {
+      if (import.meta.client) {
+        // Explicit user choice — store as preference and remove auto-detected value
         localStorage.setItem('preferred-region', newRegion);
+        localStorage.removeItem('geo-detected');
       }
     }
   };
@@ -154,11 +155,39 @@ export default defineNuxtPlugin((nuxtApp) => {
   });
 
   // Initialize on plugin creation
-  if (process.client) {
+  if (import.meta.client) {
     const savedRegion = localStorage.getItem('preferred-region');
     if (savedRegion && regionalConfigs.value[savedRegion]) {
+      // User explicitly picked a region before — respect that choice
       currentRegion.value = savedRegion;
+    } else {
+      const prevDetected = localStorage.getItem('geo-detected');
+      if (prevDetected && regionalConfigs.value[prevDetected]) {
+        // We detected on a previous visit but user never manually changed — reuse it
+        currentRegion.value = prevDetected;
+      } else {
+        // First visit with no preference: auto-detect country via server API
+        fetch('/api/geo')
+          .then(r => r.ok ? r.json() : null)
+          .then((data: { regionKey?: string } | null) => {
+            if (data?.regionKey && regionalConfigs.value[data.regionKey]) {
+              currentRegion.value = data.regionKey;
+              localStorage.setItem('geo-detected', data.regionKey);
+            }
+          })
+          .catch(() => { /* keep default US */ });
+      }
     }
+
+    // Fetch live exchange rates (1h cached on server) and merge into local store
+    fetch('/api/exchange-rates')
+      .then(r => r.ok ? r.json() : null)
+      .then((data: { rates?: Record<string, number> } | null) => {
+        if (data?.rates) {
+          exchangeRates.value = { ...exchangeRates.value, ...data.rates };
+        }
+      })
+      .catch(() => { /* keep static fallback rates */ });
   }
 
   // Create the globalMarket object

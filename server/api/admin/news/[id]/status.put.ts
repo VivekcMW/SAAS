@@ -26,7 +26,10 @@ export default defineEventHandler(async (event) => {
 
   const now = new Date().toISOString()
   const adminNote = typeof body.adminNote === 'string' ? body.adminNote.trim() : null
-  const featured  = typeof body.featured === 'boolean' ? (body.featured ? 1 : 0) : undefined
+  let featured: number | undefined
+  if (typeof body.featured === 'boolean') {
+    featured = body.featured ? 1 : 0
+  }
 
   const sets = ['status = ?', 'admin_note = ?', 'updated_at = ?']
   const values: Array<string | number | null> = [newStatus, adminNote, now]

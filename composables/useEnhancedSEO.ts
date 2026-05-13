@@ -3,7 +3,6 @@
  * Advanced meta tag optimization for search engines and LLMs
  */
 
-import type { CategoryKeywords } from '~/seo/keywords/types'
 
 interface EnhancedSEOOptions {
   title?: string
@@ -32,7 +31,7 @@ interface EnhancedSEOOptions {
 }
 
 export const useEnhancedSEO = () => {
-  const { $i18n } = useNuxtApp()
+  const { $i18n: _$i18n } = useNuxtApp()
   const route = useRoute()
   
   /**
@@ -54,7 +53,7 @@ export const useEnhancedSEO = () => {
       locale = 'en_US',
       alternateLocales = ['en_US', 'es_ES', 'fr_FR', 'de_DE', 'pt_BR'],
       schema,
-      breadcrumbs = [],
+      breadcrumbs: _breadcrumbs = [],
       appData
     } = options
 

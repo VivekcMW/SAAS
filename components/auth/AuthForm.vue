@@ -17,7 +17,7 @@
     </div>
     
     <!-- Forgot Password Form -->
-    <form v-if="mode === 'forgot-password'" @submit.prevent="handleForgotPassword" class="auth-form">
+    <form v-if="mode === 'forgot-password'" class="auth-form" @submit.prevent="handleForgotPassword">
       <div class="forgot-password-header">
         <h3>Reset Your Password</h3>
         <p>Enter your email address and we'll send you a link to reset your password.</p>
@@ -32,7 +32,7 @@
           required
           placeholder="your@email.com"
           :class="{ 'error': forgotPasswordErrors.email }"
-        />
+        >
         <p v-if="forgotPasswordErrors.email" class="error-message">{{ forgotPasswordErrors.email }}</p>
       </div>
       
@@ -58,7 +58,7 @@
       </div>
       
       <div class="back-to-login">
-        <button type="button" @click="switchMode('login')" class="link-button">
+        <button type="button" class="link-button" @click="switchMode('login')">
           <UIcon dynamic name="i-heroicons-arrow-left" />
           Back to Login
         </button>
@@ -66,7 +66,7 @@
     </form>
     
     <!-- Login Form -->
-    <form v-if="mode === 'login'" @submit.prevent="handleLogin" class="auth-form">
+    <form v-if="mode === 'login'" class="auth-form" @submit.prevent="handleLogin">
       <div class="form-group">
         <label for="login-email">Email</label>
         <input
@@ -76,7 +76,7 @@
           required
           placeholder="your@email.com"
           :class="{ 'error': loginErrors.email }"
-        />
+        >
         <p v-if="loginErrors.email" class="error-message">{{ loginErrors.email }}</p>
       </div>
       
@@ -90,7 +90,7 @@
             required
             placeholder="Enter your password"
             :class="{ 'error': loginErrors.password }"
-          />
+          >
           <button 
             type="button" 
             class="toggle-password"
@@ -104,7 +104,7 @@
       
       <div class="form-options">
         <label class="checkbox-container">
-          <input type="checkbox" v-model="loginForm.rememberMe" />
+          <input v-model="loginForm.rememberMe" type="checkbox" >
           <span class="checkbox-label">Remember me</span>
         </label>
         <button type="button" class="forgot-password-link" @click="switchMode('forgot-password')">
@@ -189,7 +189,7 @@
     </form>
     
     <!-- Register Form -->
-    <form v-if="mode === 'register'" @submit.prevent="handleRegister" class="auth-form">
+    <form v-if="mode === 'register'" class="auth-form" @submit.prevent="handleRegister">
       <div class="form-row">
         <div class="form-group">
           <label for="register-firstName">First Name</label>
@@ -200,7 +200,7 @@
             required
             placeholder="First name"
             :class="{ 'error': registerErrors.firstName }"
-          />
+          >
           <p v-if="registerErrors.firstName" class="error-message">{{ registerErrors.firstName }}</p>
         </div>
         <div class="form-group">
@@ -212,7 +212,7 @@
             required
             placeholder="Last name"
             :class="{ 'error': registerErrors.lastName }"
-          />
+          >
           <p v-if="registerErrors.lastName" class="error-message">{{ registerErrors.lastName }}</p>
         </div>
       </div>
@@ -226,7 +226,7 @@
           required
           placeholder="your@email.com"
           :class="{ 'error': registerErrors.email }"
-        />
+        >
         <p v-if="registerErrors.email" class="error-message">{{ registerErrors.email }}</p>
       </div>
       
@@ -255,11 +255,11 @@
               class="dropdown-item"
             >
               <input
+                v-model="selectedUserTypes"
                 type="checkbox"
                 :value="type.value"
-                v-model="selectedUserTypes"
                 class="checkbox-input"
-              />
+              >
               <div class="item-content">
                 <UIcon dynamic :name="type.icon" class="item-icon" />
                 <div class="item-text">
@@ -284,7 +284,7 @@
             required
             placeholder="Create a strong password"
             :class="{ 'error': registerErrors.password }"
-          />
+          >
           <button 
             type="button" 
             class="toggle-password"
@@ -294,12 +294,12 @@
           </button>
         </div>
         <p v-if="registerErrors.password" class="error-message">{{ registerErrors.password }}</p>
-        <div class="password-strength" v-if="registerForm.password">
+        <div v-if="registerForm.password" class="password-strength">
           <div class="strength-meter">
             <span 
               class="strength-bar" 
               :style="{ width: `${passwordStrength.score * 25}%`, backgroundColor: passwordStrength.color }"
-            ></span>
+            />
           </div>
           <span class="strength-text" :style="{ color: passwordStrength.color }">
             {{ passwordStrength.message }}
@@ -317,7 +317,7 @@
             required
             placeholder="Confirm your password"
             :class="{ 'error': registerErrors.confirmPassword }"
-          />
+          >
           <button 
             type="button" 
             class="toggle-password"
@@ -331,7 +331,7 @@
       
       <div class="form-check">
         <label class="checkbox-container">
-          <input type="checkbox" v-model="registerForm.acceptTerms" :class="{ 'error': registerErrors.acceptTerms }" />
+          <input v-model="registerForm.acceptTerms" type="checkbox" :class="{ 'error': registerErrors.acceptTerms }" >
           <span class="checkbox-label">I accept the <a href="/terms" target="_blank">Terms of Service</a> and <a href="/privacy" target="_blank">Privacy Policy</a></span>
         </label>
         <p v-if="registerErrors.acceptTerms" class="error-message">{{ registerErrors.acceptTerms }}</p>
@@ -818,7 +818,7 @@ const handleForgotPassword = async () => {
 };
 
 // Original forgot password handler (for compatibility)
-const handleForgotPasswordOld = () => {
+const _handleForgotPasswordOld = () => {
   emit('forgot-password', loginForm.email);
 };
 

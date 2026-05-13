@@ -14,7 +14,7 @@
         <MarketplaceFilters :view-mode="viewMode" @update:view-mode="viewMode = $event" />
         <div class="applications-grid-container">
           <MarketplaceGrid :view-mode="viewMode" @total-loaded="totalApplications = $event" />
-          <MarketplacePagination :totalItems="totalApplications" />
+          <MarketplacePagination :total-items="totalApplications" />
         </div>
       </div>
     </section>
@@ -36,7 +36,7 @@ const viewMode = ref<'grid' | 'list'>('grid');
 
 // VC-focused SEO implementation
 const { generateVCMeta, generateInvestmentSchema, trackVCEngagement } = useVCSEO();
-const { applySEO, generateHreflangTags } = useSEO();
+const { applySEO: _applySEO, generateHreflangTags: _generateHreflangTags } = useSEO();
 
 // Generate VC-optimized meta tags for marketplace
 const vcMetaConfig = generateVCMeta({

@@ -2,7 +2,7 @@
  * GET /api/billing/subscription
  * Returns the current user's subscription status and invoice history.
  */
-import { getUserSubscription, getStripe, PLANS } from '~/server/utils/stripe'
+import { getUserSubscription, getStripe } from '~/server/utils/stripe'
 import { requireUser } from '~/server/utils/auth'
 import { getDb } from '~/server/utils/database'
 

@@ -143,8 +143,8 @@
         <div v-if="outreachItemId === selected.id" class="dq-outreach-form">
           <p class="pq-label" style="margin-bottom:6px">Outreach email</p>
           <div class="dq-outreach-row">
-            <input v-model="outreachEmail" type="email" class="dq-textarea" style="padding:8px 12px;resize:none;height:auto" placeholder="founder@company.com" />
-            <input v-model="outreachName" class="dq-textarea" style="padding:8px 12px;resize:none;height:auto" placeholder="Name (optional)" />
+            <input v-model="outreachEmail" type="email" class="dq-textarea" style="padding:8px 12px;resize:none;height:auto" placeholder="founder@company.com" >
+            <input v-model="outreachName" class="dq-textarea" style="padding:8px 12px;resize:none;height:auto" placeholder="Name (optional)" >
             <button class="bw-btn bw-btn--primary" :disabled="outreachingId === selected.id" @click="sendOutreach(selected)">
               {{ outreachingId === selected.id ? 'Sending…' : 'Send' }}
             </button>

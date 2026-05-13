@@ -87,7 +87,7 @@ onMounted(trackImpression)
     >
       <header class="ad-head">
         <div class="ad-logo">
-          <img :src="ad.logo" :alt="`${ad.name} logo`" />
+          <img :src="ad.logo" :alt="`${ad.name} logo`" >
         </div>
         <div class="ad-titles">
           <h4 class="ad-name">{{ ad.name }}</h4>
@@ -119,7 +119,7 @@ onMounted(trackImpression)
       <span class="ad-pill mini">{{ label }}</span>
       <div class="tile-row">
         <div class="tile-logo">
-          <img :src="ad.logo" :alt="`${ad.name} logo`" />
+          <img :src="ad.logo" :alt="`${ad.name} logo`" >
         </div>
         <div class="tile-info">
           <h5 class="tile-name">{{ ad.name }}</h5>
@@ -148,7 +148,7 @@ onMounted(trackImpression)
       <span class="ad-pill mini">{{ label }}</span>
       <div class="banner-row">
         <div class="banner-logo">
-          <img :src="ad.logo" :alt="`${ad.name} logo`" />
+          <img :src="ad.logo" :alt="`${ad.name} logo`" >
         </div>
         <div class="banner-text">
           <h4 class="banner-name">{{ ad.name }}</h4>

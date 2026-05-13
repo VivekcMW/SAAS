@@ -15,11 +15,11 @@
         <h2 class="bw-card__title st-title">Pricing</h2>
         <label class="st-row">
           <span>Platform fee (%)</span>
-          <input v-model.number="settings.platformFee" type="number" min="0" max="50" class="bw-input st-input-narrow" />
+          <input v-model.number="settings.platformFee" type="number" min="0" max="50" class="bw-input st-input-narrow" >
         </label>
         <label class="st-row">
           <span>Minimum payout ($)</span>
-          <input v-model.number="settings.minPayout" type="number" min="0" class="bw-input st-input-narrow" />
+          <input v-model.number="settings.minPayout" type="number" min="0" class="bw-input st-input-narrow" >
         </label>
       </section>
 
@@ -27,26 +27,26 @@
         <h2 class="bw-card__title st-title">Policies</h2>
         <label class="st-row">
           <span>Dispute SLA (days)</span>
-          <input v-model.number="settings.disputeSla" type="number" min="1" class="bw-input st-input-narrow" />
+          <input v-model.number="settings.disputeSla" type="number" min="1" class="bw-input st-input-narrow" >
         </label>
         <label class="st-row">
           <span>Refund window (days)</span>
-          <input v-model.number="settings.refundWindow" type="number" min="0" class="bw-input st-input-narrow" />
+          <input v-model.number="settings.refundWindow" type="number" min="0" class="bw-input st-input-narrow" >
         </label>
       </section>
 
       <section class="bw-card">
         <h2 class="bw-card__title st-title">Marketplace</h2>
         <label class="st-row st-row--check">
-          <input v-model="settings.requireApproval" type="checkbox" />
+          <input v-model="settings.requireApproval" type="checkbox" >
           <span>Require admin approval for new apps</span>
         </label>
         <label class="st-row st-row--check">
-          <input v-model="settings.allowSelfSignupVendor" type="checkbox" />
+          <input v-model="settings.allowSelfSignupVendor" type="checkbox" >
           <span>Allow vendor self-signup</span>
         </label>
         <label class="st-row st-row--check">
-          <input v-model="settings.publicReviews" type="checkbox" />
+          <input v-model="settings.publicReviews" type="checkbox" >
           <span>Public reviews</span>
         </label>
       </section>

@@ -222,7 +222,7 @@ const alternatives = computed(() =>
 // "You might also need" — derived from integrations, with curated fallbacks
 const complementaryApps = computed(() => {
   const integrations = app.value?.integrations || []
-  const integrationsNamed: { id: string; name: string; logo?: string; why: string }[] = []
+  const _integrationsNamed: { id: string; name: string; logo?: string; why: string }[] = []
   const fallbackMap: Record<string, { id: string; name: string; why: string }[]> = {
     crm: [
       { id: 'slack', name: 'Slack', why: 'Team communication & deal alerts' },
@@ -486,7 +486,7 @@ function getCategoryLabel(cat?: string): string {
   <div class="showcase-page">
     <!-- Loading -->
     <div v-if="pending" class="showcase-state">
-      <div class="showcase-spinner"></div>
+      <div class="showcase-spinner"/>
       <p>Loading…</p>
     </div>
 
@@ -543,9 +543,9 @@ function getCategoryLabel(cat?: string): string {
                     :alt="`${app.name} screenshot`"
                     class="sc-hero__screenshot"
                     loading="eager"
-                  />
+                  >
                   <div v-else class="sc-hero__placeholder">
-                    <img v-if="app.logo" :src="app.logo" :alt="app.name" class="sc-hero__logo-lg" />
+                    <img v-if="app.logo" :src="app.logo" :alt="app.name" class="sc-hero__logo-lg" >
                   </div>
                 </div>
 
@@ -556,7 +556,7 @@ function getCategoryLabel(cat?: string): string {
                   </div>
 
                   <div class="sc-hero__brand">
-                    <img v-if="app.logo" :src="app.logo" :alt="app.name" class="sc-hero__logo" />
+                    <img v-if="app.logo" :src="app.logo" :alt="app.name" class="sc-hero__logo" >
                     <div>
                       <h1 class="sc-hero__name">{{ app.name }}</h1>
                       <p class="sc-hero__provider">by {{ app.provider }}</p>
@@ -675,6 +675,20 @@ function getCategoryLabel(cat?: string): string {
             </div>
           </section>
 
+          <!-- ROI Calculator -->
+          <section id="roi" class="sc-section">
+            <div class="sc-container">
+              <header class="sc-section-head">
+                <h2 class="sc-section-title">ROI Calculator</h2>
+                <p class="sc-section-sub">Estimate your return on investment with {{ app.name }}</p>
+              </header>
+              <AppROICalculator
+                :price-per-seat="app.pricing?.value || app.pricing?.type === 'free' ? 0 : 29"
+                :price-period="app.pricing?.period === 'year' ? 'year' : 'month'"
+              />
+            </div>
+          </section>
+
           <!-- Integrations -->
           <section id="integrations" class="sc-section">
             <div class="sc-container">
@@ -730,7 +744,7 @@ function getCategoryLabel(cat?: string): string {
                 </li>
               </ul>
 
-              <div class="sc-about-desc" v-html="app.longDescription || app.description"></div>
+              <div class="sc-about-desc" v-html="app.longDescription || app.description"/>
 
               <div class="sc-highlights">
                 <h3 class="sc-hl-title">Why teams choose {{ app.name }}</h3>
@@ -770,7 +784,8 @@ function getCategoryLabel(cat?: string): string {
                 <p class="sc-section-sub">Detected technologies powering this product</p>
               </header>
               <div class="enrich-grid">
-                <div v-for="(techs, category) in {
+                <div
+v-for="(techs, category) in {
                   Frontend: enrich.tech_stack.frontend,
                   Backend: enrich.tech_stack.backend,
                   Databases: enrich.tech_stack.databases,
@@ -913,7 +928,7 @@ function getCategoryLabel(cat?: string): string {
                   class="sc-also-card"
                 >
                   <div class="sc-also-card__logo">
-                    <img v-if="rec.logo" :src="rec.logo" :alt="rec.name" />
+                    <img v-if="rec.logo" :src="rec.logo" :alt="rec.name" >
                     <span v-else>{{ rec.name.charAt(0) }}</span>
                   </div>
                   <div class="sc-also-card__body">
@@ -923,6 +938,24 @@ function getCategoryLabel(cat?: string): string {
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </NuxtLink>
               </div>
+            </div>
+          </section>
+
+          <!-- AI Assistant inline -->
+          <section class="sc-section sc-section--ai-chat">
+            <div class="sc-container">
+              <header class="sc-section-head">
+                <h2 class="sc-section-title">Ask AI About {{ app.name }}</h2>
+                <p class="sc-section-sub">Get instant answers about features, pricing, and comparisons</p>
+              </header>
+              <ClientOnly>
+                <AIChatInline
+                  :app-id="app.id"
+                  :app-name="app.name"
+                  :app-category="app.category"
+                  :app-description="app.shortDescription"
+                />
+              </ClientOnly>
             </div>
           </section>
 
@@ -952,13 +985,13 @@ function getCategoryLabel(cat?: string): string {
           <div class="sc-modal" :aria-label="`Enquiry about ${app.name}`">
             <div class="sc-modal__head">
               <div class="sc-modal__brand">
-                <img v-if="app.logo" :src="app.logo" :alt="app.name" class="sc-modal__logo" />
+                <img v-if="app.logo" :src="app.logo" :alt="app.name" class="sc-modal__logo" >
                 <div>
                   <div class="sc-modal__app-name">{{ app.name }}</div>
                   <div class="sc-modal__section">{{ enquirySection }}</div>
                 </div>
               </div>
-              <button class="sc-modal__close" @click="showEnquiryModal = false" aria-label="Close">
+              <button class="sc-modal__close" aria-label="Close" @click="showEnquiryModal = false">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
               </button>
             </div>
@@ -968,15 +1001,15 @@ function getCategoryLabel(cat?: string): string {
                 <p class="sc-enq-desc">Tell us what you'd like to know about {{ app.name }} and we'll connect you with the right person.</p>
                 <div class="sc-field">
                   <label class="sc-label" for="enq-name">Your name</label>
-                  <input id="enq-name" v-model="enquiryForm.name" class="sc-input" type="text" placeholder="Alex Chen" required />
+                  <input id="enq-name" v-model="enquiryForm.name" class="sc-input" type="text" placeholder="Alex Chen" required >
                 </div>
                 <div class="sc-field">
                   <label class="sc-label" for="enq-email">Work email</label>
-                  <input id="enq-email" v-model="enquiryForm.email" class="sc-input" type="email" placeholder="alex@company.com" required />
+                  <input id="enq-email" v-model="enquiryForm.email" class="sc-input" type="email" placeholder="alex@company.com" required >
                 </div>
                 <div class="sc-field">
                   <label class="sc-label" for="enq-message">Your question or request</label>
-                  <textarea id="enq-message" v-model="enquiryForm.message" class="sc-textarea" rows="3" :placeholder="`I'd like to learn more about ${app.name}…`" required></textarea>
+                  <textarea id="enq-message" v-model="enquiryForm.message" class="sc-textarea" rows="3" :placeholder="`I'd like to learn more about ${app.name}…`" required/>
                 </div>
                 <p v-if="enquiryError" class="sc-enq-error">{{ enquiryError }}</p>
                 <p v-if="enquirySuccess" class="sc-enq-success">Thanks! We'll be in touch shortly.</p>
@@ -993,15 +1026,15 @@ function getCategoryLabel(cat?: string): string {
       </Teleport>
 
     </template>
-  </div>
 
-  <!-- Compare tray & mobile nav — included here because this page uses layout: false -->
-  <ClientOnly>
-    <CompareBar />
-  </ClientOnly>
-  <ClientOnly>
-    <MobileBottomNav />
-  </ClientOnly>
+    <!-- Compare tray & mobile nav — included here because this page uses layout: false -->
+    <ClientOnly>
+      <CompareBar />
+    </ClientOnly>
+    <ClientOnly>
+      <MobileBottomNav />
+    </ClientOnly>
+  </div>
 </template>
 
 <style scoped>

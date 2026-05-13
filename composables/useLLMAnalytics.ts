@@ -5,7 +5,7 @@
 
 import { useLLMOrchestrator } from './useLLMOrchestrator'
 import { useLLMTesting } from './useLLMTesting'
-import type { LLMType, LLMOptimizationConfig, LLMOrchestrationResult } from './useLLMOrchestrator'
+import type { LLMType, LLMOptimizationConfig } from './useLLMOrchestrator'
 
 export interface LLMUsageMetrics {
   llmType: LLMType
@@ -98,7 +98,7 @@ export interface LLMDashboardData {
 
 export const useLLMAnalytics = () => {
   const orchestrator = useLLMOrchestrator()
-  const testing = useLLMTesting()
+  const _testing = useLLMTesting()
 
   // In-memory storage for demo purposes (in production, use a database)
   const performanceHistory: LLMPerformanceMetrics[] = []
@@ -457,7 +457,7 @@ export const useLLMAnalytics = () => {
     }
 
     // Generate LLM status
-    const llmStatus = Object.entries(llmConfigs).map(([llmType, config]) => {
+    const llmStatus = Object.entries(llmConfigs).map(([llmType, _config]) => {
       const usage = usageMetrics.get(llmType as LLMType)
       const recentAlerts = alerts.filter(a => a.llmType === llmType && !a.resolved)
       

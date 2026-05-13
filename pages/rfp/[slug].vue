@@ -1,6 +1,6 @@
 <template>
   <div class="rfp-detail">
-    <div class="container rfp-detail__body" v-if="rfpData">
+    <div v-if="rfpData" class="container rfp-detail__body">
       <NuxtLink to="/rfp" class="back-link">← Back to RFPs</NuxtLink>
 
       <!-- RFP header -->
@@ -30,12 +30,12 @@
         <form @submit.prevent="submitResponse">
           <div class="form-group">
             <label>Message <span class="req">*</span></label>
-            <textarea v-model="responseForm.message" rows="4" placeholder="Describe how your solution meets their requirements…" required></textarea>
+            <textarea v-model="responseForm.message" rows="4" placeholder="Describe how your solution meets their requirements…" required/>
           </div>
           <div class="form-row">
             <div class="form-group">
               <label>Price (USD)</label>
-              <input v-model.number="responseForm.price_usd" type="number" min="0" placeholder="0" />
+              <input v-model.number="responseForm.price_usd" type="number" min="0" placeholder="0" >
             </div>
             <div class="form-group">
               <label>Billing period</label>
@@ -73,7 +73,7 @@
       </div>
     </div>
 
-    <div class="container" v-else>
+    <div v-else class="container">
       <p class="muted" style="padding:2rem 0">Loading…</p>
     </div>
   </div>

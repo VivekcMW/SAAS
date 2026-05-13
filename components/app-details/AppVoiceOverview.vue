@@ -86,7 +86,7 @@ onBeforeUnmount(() => {
         Stop
       </button>
       <span v-if="playing" class="voice-pulse" aria-hidden="true">
-        <span></span><span></span><span></span>
+        <span/><span/><span/>
       </span>
     </template>
   </div>

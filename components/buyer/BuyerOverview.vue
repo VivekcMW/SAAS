@@ -96,7 +96,7 @@
           <div v-if="deals.length === 0" class="bw-empty" style="border: 0; padding: 16px 0 4px;">
             <p class="bw-empty__desc" style="margin: 0;">No active deals right now. <NuxtLink to="/dashboard/deals" class="bw-link">Check back later</NuxtLink>.</p>
           </div>
-          <div v-else v-for="d in deals.slice(0, 2)" :key="d.id" class="deal-mini">
+          <div v-for="d in deals.slice(0, 2)" v-else :key="d.id" class="deal-mini">
             <div class="deal-mini__head">
               <strong>{{ d.product }}</strong>
               <span class="bw-chip bw-chip--primary">{{ d.percentOff }}% OFF</span>
@@ -111,7 +111,7 @@
           </div>
           <ul class="activity-list">
             <li v-for="it in digest.slice(0, 3)" :key="it.id" class="activity-item">
-              <span class="activity-dot" :class="`is-${it.kind}`"></span>
+              <span class="activity-dot" :class="`is-${it.kind}`"/>
               <div>
                 <div class="activity-title">{{ it.title }}</div>
                 <div class="activity-meta">{{ it.at }}</div>
@@ -129,15 +129,46 @@
             <p class="become-vendor__title">Sell your product on Moonmart</p>
             <p class="become-vendor__desc">Reach thousands of buyers actively comparing software in your category.</p>
           </div>
-          <NuxtLink to="/list-product" class="bw-btn bw-btn--primary become-vendor__cta">List your product →</NuxtLink>
+          <NuxtLink to="/upgrade-to-vendor" class="bw-btn bw-btn--primary become-vendor__cta">Become a vendor →</NuxtLink>
         </section>
       </aside>
     </div>
+
+    <!-- Recommendations -->
+    <section v-if="recommendations.length > 0" class="bw-recs">
+      <header class="bw-recs__head">
+        <h2 class="bw-recs__title">
+          {{ recommendationSource === 'personalised' ? 'Recommended for you' : 'Trending apps' }}
+        </h2>
+        <NuxtLink to="/marketplace" class="bw-link">Browse all →</NuxtLink>
+      </header>
+      <div class="bw-recs__grid">
+        <NuxtLink
+          v-for="app in recommendations"
+          :key="app.id"
+          :to="`/marketplace/app/${app.slug || app.id}`"
+          class="bw-rec-card"
+        >
+          <div class="bw-rec-card__logo">
+            <img v-if="app.logoUrl" :src="app.logoUrl" :alt="app.name" width="36" height="36" >
+            <span v-else>{{ app.name.slice(0, 2).toUpperCase() }}</span>
+          </div>
+          <div class="bw-rec-card__body">
+            <p class="bw-rec-card__name">{{ app.name }}</p>
+            <p class="bw-rec-card__cat">{{ app.category }}</p>
+            <p class="bw-rec-card__price">
+              {{ app.pricingType === 'free' ? 'Free' : app.pricingStartsAt ? `From $${app.pricingStartsAt}/mo` : 'Custom pricing' }}
+            </p>
+          </div>
+          <div v-if="app.rating" class="bw-rec-card__rating">★ {{ app.rating.toFixed(1) }}</div>
+        </NuxtLink>
+      </div>
+    </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useBuyerData, statusLabel, statusTone } from '~/composables/useBuyerData'
 import { useCurrency } from '~/composables/useCurrency'
 
@@ -163,6 +194,30 @@ const nextStep = computed(() => {
   if (evaluating.length >= 2) return { title: `Compare ${evaluating[0].name} vs ${evaluating[1].name}`, desc: 'Finish your evaluation with a side-by-side comparison.', cta: 'Open compare', to: '/dashboard/compare' }
   if (savedApps.value.length < 3) return { title: 'Shortlist 3 apps to unlock comparisons', desc: 'Browse the marketplace and save apps you want to evaluate.', cta: 'Browse apps', to: '/marketplace' }
   return null
+})
+
+// ── Recommendations engine ───────────────────────────────────────────────────
+interface RecommendedApp {
+  id: string
+  slug: string
+  name: string
+  description: string
+  logoUrl: string
+  category: string
+  rating: number
+  reviewCount: number
+  pricingType: string
+  pricingStartsAt: number | null
+}
+const recommendations = ref<RecommendedApp[]>([])
+const recommendationSource = ref<'personalised' | 'trending'>('trending')
+
+onMounted(async () => {
+  try {
+    const data = await $fetch<{ apps: RecommendedApp[]; source: 'personalised' | 'trending' }>('/api/recommendations')
+    recommendations.value = data.apps
+    recommendationSource.value = data.source
+  } catch { /* ignore */ }
 })
 </script>
 
@@ -220,4 +275,18 @@ const nextStep = computed(() => {
 .become-vendor__title { font-weight: 600; font-size: 0.9rem; color: var(--bw-text); margin: 0 0 2px; }
 .become-vendor__desc { font-size: 0.8rem; color: var(--bw-text-muted); margin: 0; }
 .become-vendor__cta { flex-shrink: 0; font-size: 0.8rem; }
+
+.bw-recs { margin-top: 2rem; }
+.bw-recs__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.bw-recs__title { font-family: var(--f-ui); font-weight: 700; font-size: 1rem; color: var(--bw-text); margin: 0; }
+.bw-recs__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.bw-rec-card { display: flex; align-items: flex-start; gap: 12px; padding: 14px; border-radius: 10px; background: var(--bw-surface); border: 1px solid var(--bw-border); text-decoration: none; transition: border-color .15s; }
+.bw-rec-card:hover { border-color: var(--bw-primary); }
+.bw-rec-card__logo { width: 36px; height: 36px; border-radius: 8px; overflow: hidden; background: var(--bw-primary-50); color: var(--bw-primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.75rem; flex-shrink: 0; }
+.bw-rec-card__logo img { width: 100%; height: 100%; object-fit: cover; }
+.bw-rec-card__body { flex: 1; min-width: 0; }
+.bw-rec-card__name { font-weight: 600; font-size: 0.88rem; color: var(--bw-text); margin: 0 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bw-rec-card__cat { font-size: 0.75rem; color: var(--bw-text-muted); margin: 0 0 4px; }
+.bw-rec-card__price { font-size: 0.78rem; color: var(--bw-primary); font-weight: 600; margin: 0; }
+.bw-rec-card__rating { font-size: 0.78rem; color: #f59e0b; font-weight: 600; white-space: nowrap; }
 </style>

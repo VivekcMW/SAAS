@@ -4,7 +4,7 @@
       <div class="review-card__meta">
         <StarRating :rating="review.rating" />
         <AuthenticityBadge
-          :level="(review.authenticity_label || 'unverified') as 'highly-verified' | 'verified' | 'basic' | 'unverified'"
+          :level="authLevel"
           :score="review.authenticity_score"
         />
       </div>
@@ -39,7 +39,7 @@
       </div>
       <div class="review-card__actions">
         <span class="review-card__helpful">{{ review.helpful_votes }} found helpful</span>
-        <button class="review-card__flag" @click="$emit('flag', review.id)" title="Flag this review">
+        <button class="review-card__flag" title="Flag this review" @click="$emit('flag', review.id)">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
           Flag
         </button>
@@ -49,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   review: {
     id: string
     user_name: string
@@ -68,6 +68,9 @@ defineProps<{
   }
 }>()
 defineEmits<{ (e: 'flag', id: string): void }>()
+
+type AuthLevel = 'highly-verified' | 'verified' | 'basic' | 'unverified'
+const authLevel = computed<AuthLevel>(() => (props.review.authenticity_label || 'unverified') as AuthLevel)
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })

@@ -211,7 +211,7 @@ export async function runDuplicateMerger(): Promise<DuplicateMergerResult> {
   result.pairsFound = pairs.length
 
   const merge = db.transaction((pair: DuplicatePair) => {
-    const keepApp = apps.find(a => a.id === pair.keepId)!
+    const _keepApp = apps.find(a => a.id === pair.keepId)!
     const dropApp = apps.find(a => a.id === pair.dropId)!
 
     // Copy over any fields from dropApp that keepApp is missing

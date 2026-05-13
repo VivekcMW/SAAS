@@ -1,7 +1,7 @@
 <template>
   <div class="category-applications">
     <div v-if="loading" class="loading-container">
-      <div class="loading-spinner"></div>
+      <div class="loading-spinner"/>
       <p>Loading applications...</p>
     </div>
     
@@ -78,45 +78,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, useNuxtApp } from '#imports';
+import { ref, computed, onMounted, watch } from '#imports';
 import { useRoute, useRouter } from '#app';
+import { useCurrency } from '~/composables/useCurrency';
 
-// Use the global market from plugin with safety checks
-const nuxtApp = useNuxtApp();
-let formatCurrency, getLocalizedPrice, currentRegionSettings;
-
-try {
-  // Try to use the global market plugin
-  if (nuxtApp.$globalMarket) {
-    formatCurrency = nuxtApp.$globalMarket.formatCurrency;
-    getLocalizedPrice = nuxtApp.$globalMarket.getLocalizedPrice;
-    currentRegionSettings = nuxtApp.$globalMarket.currentRegionSettings;
-  } else {
-    // Fallback implementation if plugin not available
-    console.warn('Global market plugin not available in CategoryApplications');
-    formatCurrency = (amount: number) => `$${amount.toFixed(2)}`;
-    getLocalizedPrice = (amount: number) => amount;
-    currentRegionSettings = computed(() => ({ 
-      currency: 'USD', 
-      locale: 'en-US',
-      name: 'United States',
-      tax: 8.5,
-      flag: 'us'
-    }));
-  }
-} catch (error) {
-  console.error('Error setting up global market in CategoryApplications:', error);
-  // Safe fallbacks
-  formatCurrency = (amount: number) => `$${amount.toFixed(2)}`;
-  getLocalizedPrice = (amount: number) => amount;
-  currentRegionSettings = computed(() => ({ 
-    currency: 'USD', 
-    locale: 'en-US',
-    name: 'United States',
-    tax: 8.5,
-    flag: 'us'
-  }));
-}
+const { formatPrice: _currencyFmt } = useCurrency();
+const formatCurrency = (amount: number) => _currencyFmt(amount);
+const getLocalizedPrice = (amount: number) => amount; // kept for compat; conversion handled by formatCurrency
 
 // Define props
 const props = defineProps<{
@@ -179,7 +147,7 @@ const applications = ref<Application[]>([]);
 const loading = ref(true);
 
 // Router
-const route = useRoute();
+const _route = useRoute();
 const router = useRouter();
 
 // Navigation function
@@ -241,12 +209,12 @@ const regularApps = computed(() => {
 });
 
 // Utility functions
-const truncateText = (text: string, maxLength: number): string => {
+const _truncateText = (text: string, maxLength: number): string => {
   if (!text) return '';
   return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
 };
 
-const formatPrice = (pricing: AppPricing): string => {
+const _formatPrice = (pricing: AppPricing): string => {
   if (pricing.type === 'free') return 'Free';
   if (pricing.type === 'trial') return 'Free Trial';
   
@@ -258,7 +226,7 @@ const formatPrice = (pricing: AppPricing): string => {
 };
 
 // Image error handling
-const handleImageError = (event: Event, app: Application) => {
+const _handleImageError = (event: Event, app: Application) => {
   const target = event.target as HTMLImageElement;
   
   // First try to find an alternative image based on category or name

@@ -14,11 +14,11 @@
       <section class="bw-card">
         <h2 class="bw-card__title">Basics</h2>
         <label class="bw-label">Company name</label>
-        <input v-model="form.name" class="bw-input" />
+        <input v-model="form.name" class="bw-input" >
         <label class="bw-label">Website</label>
-        <input v-model="form.website" class="bw-input" />
+        <input v-model="form.website" class="bw-input" >
         <label class="bw-label">Headquarters</label>
-        <input v-model="form.hq" class="bw-input" />
+        <input v-model="form.hq" class="bw-input" >
         <label class="bw-label">Short description</label>
         <textarea v-model="form.bio" class="bw-textarea" rows="4" />
       </section>
@@ -27,16 +27,16 @@
         <h2 class="bw-card__title">Brand</h2>
         <label class="bw-label">Logo</label>
         <div class="pf-logo">
-          <img v-if="form.logoUrl" :src="form.logoUrl" alt="logo" class="pf-logo__preview" style="object-fit:contain;" />
+          <img v-if="form.logoUrl" :src="form.logoUrl" alt="logo" class="pf-logo__preview" style="object-fit:contain;" >
           <div v-else class="pf-logo__preview">{{ form.name.charAt(0) }}</div>
           <label class="bw-btn bw-btn--subtle bw-btn--sm" style="cursor:pointer;">
             {{ uploading ? 'Uploading…' : 'Upload' }}
-            <input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" style="display:none" @change="uploadLogo" />
+            <input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" style="display:none" @change="uploadLogo" >
           </label>
         </div>
         <label class="bw-label">Primary colour</label>
         <div class="pf-color">
-          <input v-model="form.color" type="color" class="pf-color__swatch" />
+          <input v-model="form.color" type="color" class="pf-color__swatch" >
           <code>{{ form.color }}</code>
         </div>
       </aside>

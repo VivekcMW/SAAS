@@ -17,12 +17,12 @@
                     :src="appNames[id].logo"
                     :alt="appNames[id].name"
                     @error="(e) => (e.target as HTMLImageElement).style.display='none'"
-                  />
+                  >
                   <span v-else>{{ (appNames[id]?.name || id).charAt(0) }}</span>
                 </div>
                 <span class="cbar__slot-name">{{ appNames[id]?.name || '…' }}</span>
               </div>
-              <button class="cbar__slot-remove" @click="removeFromCompare(id)" :aria-label="`Remove ${appNames[id]?.name || id}`">
+              <button class="cbar__slot-remove" :aria-label="`Remove ${appNames[id]?.name || id}`" @click="removeFromCompare(id)">
                 <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
               </button>
             </div>

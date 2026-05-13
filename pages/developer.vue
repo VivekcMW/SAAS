@@ -53,7 +53,7 @@
             <h3 class="dev-section__h3">Your API Keys</h3>
             <div v-if="keysLoading" class="muted">Loading…</div>
             <table v-else-if="keys.length" class="dev-table">
-              <thead><tr><th>Name</th><th>Prefix</th><th>Tier</th><th>Req Today</th><th>Total</th><th></th></tr></thead>
+              <thead><tr><th>Name</th><th>Prefix</th><th>Tier</th><th>Req Today</th><th>Total</th><th/></tr></thead>
               <tbody>
                 <tr v-for="k in keys" :key="k.id">
                   <td>{{ k.name }}</td>
@@ -68,7 +68,7 @@
             <p v-else class="muted">No API keys yet.</p>
 
             <div class="dev-new-key">
-              <input v-model="newKeyName" type="text" placeholder="Key name (e.g. My App)" />
+              <input v-model="newKeyName" type="text" placeholder="Key name (e.g. My App)" >
               <select v-model="newKeyTier">
                 <option value="free">Free (100 req/day)</option>
                 <option value="developer">Developer (10K req/day)</option>
@@ -246,7 +246,7 @@
           <h3 class="dev-section__h3">Score Badge</h3>
           <div class="dev-code">&lt;img src="https://moonmart.ai/api/badges/YOUR-APP-SLUG.svg" alt="moonmart.ai Score" /&gt;</div>
           <div class="dev-badge-preview">
-            <img :src="'/api/badges/example.svg'" alt="moonmart.ai badge example" class="dev-badge-img" @error="(e) => (e.target as HTMLImageElement).style.display = 'none'" />
+            <img :src="'/api/badges/example.svg'" alt="moonmart.ai badge example" class="dev-badge-img" @error="(e) => (e.target as HTMLImageElement).style.display = 'none'" >
           </div>
         </section>
 

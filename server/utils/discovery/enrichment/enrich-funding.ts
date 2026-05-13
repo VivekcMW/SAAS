@@ -188,7 +188,7 @@ async function enrichFromEDGAR(companyName: string): Promise<FundingRound | null
 interface CHSearchResult { company_number: string; title: string }
 interface CHFilingItem { date: string; description: string; category: string }
 
-async function enrichFromCompaniesHouse(companyName: string): Promise<FundingRound | null> {
+async function _enrichFromCompaniesHouse(companyName: string): Promise<FundingRound | null> {
   const apiKey = process.env.COMPANIES_HOUSE_API_KEY
   if (!apiKey) return null
 
@@ -273,7 +273,7 @@ async function enrichFromNews(companyName: string): Promise<FundingRound | null>
 
 // ── Source 5: OpenCorporates ─────────────────────────────────────────────────
 
-async function enrichFromOpenCorporates(companyName: string): Promise<{ founded_year?: number }> {
+async function _enrichFromOpenCorporates(companyName: string): Promise<{ founded_year?: number }> {
   try {
     const json = await httpGet(
       `https://api.opencorporates.com/v0.4/companies/search?q=${encodeURIComponent(companyName)}&per_page=1`,

@@ -21,7 +21,7 @@
         Ask a question about your data
       </div>
       <form class="nl-form" @submit.prevent="askAI">
-        <input v-model="nlQuery" class="bw-input" placeholder="e.g. Why did demos drop last week?" />
+        <input v-model="nlQuery" class="bw-input" placeholder="e.g. Why did demos drop last week?" >
         <button class="bw-btn bw-btn--primary" :disabled="!nlQuery.trim() || thinking">
           {{ thinking ? 'Thinking…' : 'Ask' }}
         </button>
@@ -35,7 +35,7 @@
     <!-- KPI row -->
     <div class="bw-kpis">
       <template v-if="analyticsLoading">
-        <div v-for="i in 4" :key="i" class="bw-kpi bw-kpi--skel"></div>
+        <div v-for="i in 4" :key="i" class="bw-kpi bw-kpi--skel"/>
       </template>
       <template v-else>
       <div class="bw-kpi">

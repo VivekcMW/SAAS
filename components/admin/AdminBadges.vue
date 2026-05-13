@@ -6,7 +6,7 @@
         <p class="bw-head__sub">Assign and revoke recognition badges on app listings.</p>
       </div>
       <div class="bw-head__actions">
-        <button class="bw-btn bw-btn--primary" @click="showAssignModal = true">Assign badge</button>
+        <button class="bw-btn bw-btn--primary" @click="openAssignModal">Assign badge</button>
       </div>
     </header>
 
@@ -54,9 +54,32 @@
           </button>
         </div>
         <div class="bw-modal__body">
+          <!-- App search -->
           <div class="bw-field">
-            <label class="bw-label">App ID</label>
-            <input v-model="form.appId" class="bw-input" placeholder="app_xxxx" />
+            <label class="bw-label">App</label>
+            <div class="bw-app-search">
+              <input
+                v-model="appQuery"
+                class="bw-input"
+                placeholder="Search by app name…"
+                autocomplete="off"
+                @input="onAppQueryInput"
+                @focus="showSuggestions = appSuggestions.length > 0"
+                @blur="hideSuggestionsDelayed"
+              >
+              <ul v-if="showSuggestions && appSuggestions.length" class="bw-app-search__list">
+                <li
+                  v-for="app in appSuggestions"
+                  :key="app.id"
+                  class="bw-app-search__item"
+                  @mousedown.prevent="selectApp(app)"
+                >
+                  <strong>{{ app.name }}</strong>
+                  <span class="bw-app-search__meta">{{ app.category }} · {{ app.id }}</span>
+                </li>
+              </ul>
+            </div>
+            <p v-if="form.appId" style="font-size:0.78rem;color:var(--bw-text-muted);margin-top:2px;">Selected: <strong>{{ form.appName }}</strong> ({{ form.appId }})</p>
           </div>
           <div class="bw-field">
             <label class="bw-label">Badge type</label>
@@ -67,11 +90,11 @@
           </div>
           <div class="bw-field">
             <label class="bw-label">Reason (optional)</label>
-            <input v-model="form.reason" class="bw-input" placeholder="e.g. Editor's pick for Q2 2026" />
+            <input v-model="form.reason" class="bw-input" placeholder="e.g. Editor's pick for Q2 2026" >
           </div>
           <div class="bw-field">
             <label class="bw-label">Expires at (optional)</label>
-            <input v-model="form.expiresAt" type="date" class="bw-input" :min="today" />
+            <input v-model="form.expiresAt" type="date" class="bw-input" :min="today" >
           </div>
           <p v-if="formError" class="bw-form-error">
             {{ formError }}
@@ -103,6 +126,12 @@ interface BadgeRow {
   createdAt: string
 }
 
+interface AppSuggestion {
+  id: string
+  name: string
+  category: string
+}
+
 const BADGE_TYPES = [
   { value: 'editor_choice', label: "Editor's Choice" },
   { value: 'trending', label: 'Trending' },
@@ -114,6 +143,7 @@ const BADGE_TYPES = [
   { value: 'top_rated', label: 'Top Rated' }
 ]
 
+const { fmtDate } = useFmt()
 const today = new Date().toISOString().split('T')[0]
 
 const badges = ref<BadgeRow[]>([])
@@ -121,7 +151,48 @@ const loading = ref(false)
 const saving = ref(false)
 const showAssignModal = ref(false)
 const formError = ref('')
-const form = ref({ appId: '', badgeType: '', reason: '', expiresAt: '' })
+const form = ref({ appId: '', appName: '', badgeType: '', reason: '', expiresAt: '' })
+
+// App search
+const appQuery = ref('')
+const appSuggestions = ref<AppSuggestion[]>([])
+const showSuggestions = ref(false)
+let searchTimer: ReturnType<typeof setTimeout> | null = null
+
+function onAppQueryInput() {
+  form.value.appId = ''
+  form.value.appName = ''
+  if (searchTimer) clearTimeout(searchTimer)
+  if (!appQuery.value.trim()) { appSuggestions.value = []; showSuggestions.value = false; return }
+  searchTimer = setTimeout(async () => {
+    try {
+      const data = await $fetch<{ listings: AppSuggestion[] }>('/api/admin/listings', {
+        query: { search: appQuery.value.trim(), limit: 10 }
+      })
+      appSuggestions.value = data.listings ?? []
+      showSuggestions.value = appSuggestions.value.length > 0
+    } catch { appSuggestions.value = [] }
+  }, 280)
+}
+
+function selectApp(app: AppSuggestion) {
+  form.value.appId = app.id
+  form.value.appName = app.name
+  appQuery.value = app.name
+  showSuggestions.value = false
+}
+
+function hideSuggestionsDelayed() {
+  setTimeout(() => { showSuggestions.value = false }, 200)
+}
+
+function openAssignModal() {
+  form.value = { appId: '', appName: '', badgeType: '', reason: '', expiresAt: '' }
+  appQuery.value = ''
+  appSuggestions.value = []
+  formError.value = ''
+  showAssignModal.value = true
+}
 
 const columns = [
   { key: 'appName',    label: 'App',         sortable: true,  hideable: false, minWidth: '160px' },
@@ -132,10 +203,6 @@ const columns = [
   { key: 'expiresAt',  label: 'Expires',     sortable: true,  hideable: true,  width: '120px' },
   { key: '_actions',   label: '',            sortable: false, hideable: false, width: '90px' }
 ]
-
-function fmtDate(d: string) {
-  return new Date(d).toLocaleDateString()
-}
 
 function badgeLabel(type: string) {
   return BADGE_TYPES.find(b => b.value === type)?.label ?? type
@@ -160,7 +227,7 @@ async function loadBadges() {
   try {
     const data = await $fetch<{ badges: BadgeRow[] }>('/api/admin/badges')
     badges.value = data.badges
-  } catch (err) {
+  } catch (_err) {
     console.error('[AdminBadges] failed to load:', err)
   } finally {
     loading.value = false
@@ -170,7 +237,7 @@ async function loadBadges() {
 async function assignBadge() {
   formError.value = ''
   if (!form.value.appId.trim() || !form.value.badgeType) {
-    formError.value = 'App ID and badge type are required.'
+    formError.value = 'Please select an app and a badge type.'
     return
   }
   saving.value = true
@@ -186,10 +253,12 @@ async function assignBadge() {
       }
     })
     showAssignModal.value = false
-    form.value = { appId: '', badgeType: '', reason: '', expiresAt: '' }
+    form.value = { appId: '', appName: '', badgeType: '', reason: '', expiresAt: '' }
+    appQuery.value = ''
     await loadBadges()
-  } catch (err: any) {
-    formError.value = err?.data?.message || err?.statusMessage || 'Failed to assign badge.'
+  } catch (err: unknown) {
+    const e = err as { data?: { message?: string }; statusMessage?: string }
+    formError.value = e?.data?.message || e?.statusMessage || 'Failed to assign badge.'
   } finally {
     saving.value = false
   }
@@ -203,7 +272,7 @@ async function removeBadge(row: BadgeRow) {
       body: { appId: row.appId, badgeType: row.badgeType, action: 'remove' }
     })
     await loadBadges()
-  } catch (err) {
+  } catch (_err) {
     console.error('[AdminBadges] remove failed:', err)
   }
 }
@@ -228,4 +297,17 @@ onMounted(loadBadges)
 .bw-field { display: flex; flex-direction: column; gap: 4px; }
 .bw-label { font-size: 0.83rem; font-weight: 600; color: var(--bw-text-muted); }
 .bw-form-error { font-size: 0.82rem; color: var(--bw-danger, #e53e3e); margin: 0; }
+.bw-app-search { position: relative; }
+.bw-app-search__list {
+  position: absolute; top: calc(100% + 2px); left: 0; right: 0; z-index: 200;
+  background: var(--bw-surface); border: 1px solid var(--bw-border); border-radius: 8px;
+  list-style: none; margin: 0; padding: 4px 0; max-height: 240px; overflow-y: auto;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+}
+.bw-app-search__item {
+  padding: 8px 12px; cursor: pointer; display: flex; flex-direction: column; gap: 1px;
+  transition: background 0.12s;
+}
+.bw-app-search__item:hover { background: var(--bw-surface-hover, rgba(255,255,255,0.05)); }
+.bw-app-search__meta { font-size: 0.75rem; color: var(--bw-text-muted); }
 </style>

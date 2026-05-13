@@ -122,9 +122,8 @@
 <script setup lang="ts">
 const { applySEO } = useSEO()
 
-const updatedAt = new Date().toLocaleDateString('en-US', {
-  year: 'numeric', month: 'long', day: 'numeric'
-})
+const { fmtDate } = useFmt()
+const updatedAt = fmtDate(new Date(), { year: 'numeric', month: 'long', day: 'numeric' })
 
 const tocSections = [
   { id: 'program', label: '1. Security program' },

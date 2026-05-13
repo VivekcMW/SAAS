@@ -25,7 +25,7 @@ export const usePerformanceSEO = () => {
     // FID (First Input Delay) optimization
     const optimizeFID = () => {
       // Code splitting and lazy loading
-      if (process.client) {
+      if (import.meta.client) {
         // Defer non-critical JavaScript
         setTimeout(() => {
           // Load analytics after initial interaction
@@ -92,7 +92,7 @@ export const usePerformanceSEO = () => {
 
   // Service Worker for caching
   const implementServiceWorker = () => {
-    if (process.client && 'serviceWorker' in navigator) {
+    if (import.meta.client && 'serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js').then(registration => {
         console.log('SW registered: ', registration)
       }).catch(registrationError => {

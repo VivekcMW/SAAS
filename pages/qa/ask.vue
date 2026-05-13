@@ -23,7 +23,7 @@
             minlength="10"
             maxlength="200"
             @input="onTitleInput"
-          />
+          >
         </div>
 
         <!-- Similar questions preview -->
@@ -58,25 +58,25 @@
               type="text"
               placeholder="Add a tag…"
               @keydown.enter.prevent="addTag"
-              @keydown.comma.prevent="addTag"
-            />
+              @keydown="(e: KeyboardEvent) => { if (e.key === ',') { e.preventDefault(); addTag() } }"
+            >
           </div>
         </div>
 
         <div v-if="!loggedIn" class="form-group form-group--row">
           <div class="form-group">
             <label for="name">Your name <span class="required">*</span></label>
-            <input id="name" v-model="form.author_name" type="text" required />
+            <input id="name" v-model="form.author_name" type="text" required >
           </div>
           <div class="form-group">
             <label for="email">Email <small>(not published)</small></label>
-            <input id="email" v-model="form.author_email" type="email" />
+            <input id="email" v-model="form.author_email" type="email" >
           </div>
         </div>
 
         <div class="form-group">
           <label for="app">App <small>(optional)</small></label>
-          <input id="app" v-model="form.app_id" type="text" placeholder="App ID if your question is about a specific app" />
+          <input id="app" v-model="form.app_id" type="text" placeholder="App ID if your question is about a specific app" >
         </div>
 
         <p v-if="errorMsg" class="form-error">{{ errorMsg }}</p>

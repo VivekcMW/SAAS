@@ -29,7 +29,6 @@
  * Batch:    100 apps/run
  */
 import { getDb, makeId } from '~/server/utils/database'
-import * as https from 'https'
 import * as tls from 'tls'
 import * as dns from 'dns'
 import { promisify } from 'util'

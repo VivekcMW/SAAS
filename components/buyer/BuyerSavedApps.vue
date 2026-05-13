@@ -20,7 +20,7 @@
     <div class="bw-toolbar">
       <div class="bw-toolbar__search">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5" stroke-linecap="round"/></svg>
-        <input v-model="q" class="bw-input" placeholder="Search your saved apps…" />
+        <input v-model="q" class="bw-input" placeholder="Search your saved apps…" >
       </div>
       <select v-model="filterStatus" class="bw-select" style="max-width: 200px;">
         <option value="">All stages</option>
@@ -42,7 +42,7 @@
     <div v-else class="bw-grid bw-grid--2">
       <article v-for="a in filtered" :key="a.id" class="bw-card bw-card--hover app">
         <label class="app__select" :aria-label="`Select ${a.name} for comparison`">
-          <input type="checkbox" :value="a.id" v-model="selected" :aria-label="`Select ${a.name} for comparison`" />
+          <input v-model="selected" type="checkbox" :value="a.id" :aria-label="`Select ${a.name} for comparison`" >
         </label>
         <div class="app__head">
           <div class="app__logo" :style="{ background: a.color }">{{ a.logo }}</div>
@@ -79,7 +79,7 @@
             :value="a.note || ''"
             :placeholder="'Add a private note…'"
             @change="setNote(a.id, ($event.target as HTMLInputElement).value)"
-          />
+          >
         </div>
 
         <div class="app__foot">

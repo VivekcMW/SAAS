@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
     fundingTotal?: number; headquarters?: string; socialLinks?: Record<string, string>
   }>(event)
 
-  const allowed = [
+  const _allowed = [
     'company_name', 'website_url', 'logo_url', 'tagline', 'description',
     'founded_year', 'company_size', 'funding_stage', 'funding_total', 'headquarters', 'social_links'
   ]

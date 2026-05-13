@@ -275,7 +275,7 @@ export const useAdvancedSEO = () => {
 
   // Core Web Vitals optimization tracking
   const trackCoreWebVitals = () => {
-    if (process.client) {
+    if (import.meta.client) {
       // Track LCP, FID, CLS for performance monitoring
       const vitals = {
         lcp: 0,
@@ -293,7 +293,7 @@ export const useAdvancedSEO = () => {
 
   // IndexNow API integration for instant indexing
   const submitToIndexNow = async (urls: string[]) => {
-    if (process.server) return
+    if (import.meta.server) return
 
     try {
       const indexNowKey = 'your-indexnow-api-key' // Store in runtime config

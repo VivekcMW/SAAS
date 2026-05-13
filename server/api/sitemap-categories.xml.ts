@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
     })
 
     // Subcategory pages
-    Object.entries(categoryData.subcategories).forEach(([subcategoryKey, subcategoryData]) => {
+    Object.entries(categoryData.subcategories).forEach(([_subcategoryKey, subcategoryData]) => {
       categoryPages.push({
         url: subcategoryData.path,
         priority: '0.8',

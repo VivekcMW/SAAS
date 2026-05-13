@@ -204,7 +204,7 @@ export class ScheduledTasks {
     ]
   }
 
-  private async calculateAppMetrics(appId: string): Promise<any> {
+  private async calculateAppMetrics(_appId: string): Promise<any> {
     // Calculate various metrics from raw analytics events
     return {
       views: {
@@ -307,7 +307,7 @@ export class ScheduledTasks {
   }
 
   // Helper methods
-  private async getAppAnalytics(appId: string): Promise<any> {
+  private async getAppAnalytics(_appId: string): Promise<any> {
     // Get analytics data for app
     return {
       views: { total: 1250, unique: 980, growth: 12.5 },
@@ -316,7 +316,7 @@ export class ScheduledTasks {
     }
   }
 
-  private async getAppReviews(appId: string): Promise<Array<{ rating: number; content: string }>> {
+  private async getAppReviews(_appId: string): Promise<Array<{ rating: number; content: string }>> {
     // Get recent reviews for app
     return [
       { rating: 5, content: 'Great app!' },

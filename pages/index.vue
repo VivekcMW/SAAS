@@ -28,7 +28,7 @@
             :placeholder="searchPlaceholder"
             :disabled="aiLoading"
             aria-label="Describe what you need"
-          />
+          >
           <button
             type="submit"
             class="mk-btn mk-btn--primary home-search__btn"
@@ -175,7 +175,7 @@
           >
             <div class="app-card__head">
               <div class="app-card__logo">
-                <img :src="app.image" :alt="`${app.name} logo`" loading="lazy" @error="onLogoError" />
+                <img :src="app.image" :alt="`${app.name} logo`" loading="lazy" @error="onLogoError" >
               </div>
               <div class="app-card__title">
                 <h3 class="app-card__name">{{ app.name }}</h3>
@@ -219,7 +219,7 @@
           <div class="home-aotd__card">
             <div class="home-aotd__left">
               <div class="home-aotd__logo">
-                <img :src="appOfDay.image" :alt="appOfDay.name" @error="onLogoError" />
+                <img :src="appOfDay.image" :alt="appOfDay.name" @error="onLogoError" >
               </div>
               <div class="home-aotd__info">
                 <h3 class="home-aotd__name">{{ appOfDay.name }}</h3>
@@ -266,7 +266,7 @@
             class="home-new-item"
           >
             <div class="home-new-item__logo">
-              <img :src="app.image" :alt="app.name" @error="onLogoError" />
+              <img :src="app.image" :alt="app.name" @error="onLogoError" >
             </div>
             <div class="home-new-item__body">
               <span class="home-new-item__name">{{ app.name }}</span>

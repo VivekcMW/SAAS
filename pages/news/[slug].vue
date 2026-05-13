@@ -2,7 +2,7 @@
   <div class="news-article">
     <!-- Loading -->
     <div v-if="pending" class="na-loading">
-      <div class="na-spinner" aria-label="Loading…"></div>
+      <div class="na-spinner" aria-label="Loading…"/>
     </div>
 
     <!-- Error -->
@@ -28,7 +28,7 @@
           <div class="na-head__top">
             <span class="na-badge" :data-type="post.postType">{{ typeLabel(post.postType) }}</span>
             <span v-if="post.app" class="na-head__app">
-              <img v-if="post.app.logo" :src="post.app.logo" :alt="post.app.name" width="16" height="16" class="na-head__app-logo" />
+              <img v-if="post.app.logo" :src="post.app.logo" :alt="post.app.name" width="16" height="16" class="na-head__app-logo" >
               {{ post.app.name }}
             </span>
           </div>
@@ -38,7 +38,7 @@
 
           <div class="na-head__meta">
             <NuxtLink :to="`/vendor/${post.vendor.slug}`" class="na-vendor">
-              <span class="na-vendor__dot" aria-hidden="true"></span>
+              <span class="na-vendor__dot" aria-hidden="true"/>
               {{ post.vendor.name }}
             </NuxtLink>
             <span class="na-sep" aria-hidden="true">·</span>
@@ -55,7 +55,7 @@
 
         <!-- Cover -->
         <figure v-if="post.coverImage" class="na-cover">
-          <img :src="post.coverImage" :alt="post.title" class="na-cover__img" loading="eager" />
+          <img :src="post.coverImage" :alt="post.title" class="na-cover__img" loading="eager" >
         </figure>
 
         <!-- Body -->
@@ -63,7 +63,7 @@
           <!-- Article body -->
           <div class="na-body-col">
             <div class="na-body">
-              <div class="na-body__content prose" v-html="bodyHtml"></div>
+              <div class="na-body__content prose" v-html="bodyHtml"/>
 
               <!-- AI Insight: what this means for buyers -->
               <NewsAIInsight :slug="slug" />

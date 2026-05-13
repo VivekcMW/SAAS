@@ -15,38 +15,38 @@
     <section v-if="tab === 'personal'" class="bw-card">
       <!-- Avatar upload -->
       <div class="bp-avatar-row">
-        <img v-if="avatarPreview || currentUser?.avatarUrl" :src="avatarPreview || currentUser?.avatarUrl" class="bp-avatar" alt="Profile photo" />
+        <img v-if="avatarPreview || currentUser?.avatarUrl" :src="avatarPreview || currentUser?.avatarUrl" class="bp-avatar" alt="Profile photo" >
         <div v-else class="bp-avatar bp-avatar--placeholder">{{ (form.firstName || '?')[0].toUpperCase() }}</div>
         <div>
           <label class="bw-btn bw-btn--ghost bw-btn--sm" style="cursor: pointer;">
             Change photo
-            <input type="file" accept="image/png,image/jpeg,image/webp" style="display: none;" @change="uploadAvatar" />
+            <input type="file" accept="image/png,image/jpeg,image/webp" style="display: none;" @change="uploadAvatar" >
           </label>
           <p class="bp-avatar-hint">PNG, JPG or WebP · max 2 MB</p>
           <p v-if="avatarError" style="color: #fca5a5; font-size: 0.8rem; margin: 0;">{{ avatarError }}</p>
         </div>
       </div>
-      <hr class="bw-divider" />
+      <hr class="bw-divider" >
       <div class="bw-grid bw-grid--2">
         <div>
           <label class="bw-label" for="bp-firstName">First name</label>
-          <input id="bp-firstName" v-model="form.firstName" class="bw-input" />
+          <input id="bp-firstName" v-model="form.firstName" class="bw-input" >
         </div>
         <div>
           <label class="bw-label" for="bp-lastName">Last name</label>
-          <input id="bp-lastName" v-model="form.lastName" class="bw-input" />
+          <input id="bp-lastName" v-model="form.lastName" class="bw-input" >
         </div>
         <div>
           <label class="bw-label" for="bp-email">Email</label>
-          <input id="bp-email" v-model="form.email" type="email" class="bw-input" disabled style="opacity:0.6; cursor:not-allowed;" title="Email cannot be changed here" />
+          <input id="bp-email" v-model="form.email" type="email" class="bw-input" disabled style="opacity:0.6; cursor:not-allowed;" title="Email cannot be changed here" >
         </div>
         <div>
           <label class="bw-label" for="bp-jobTitle">Job title</label>
-          <input id="bp-jobTitle" v-model="form.jobTitle" class="bw-input" placeholder="e.g. Head of Ops" />
+          <input id="bp-jobTitle" v-model="form.jobTitle" class="bw-input" placeholder="e.g. Head of Ops" >
         </div>
         <div>
           <label class="bw-label" for="bp-company">Company</label>
-          <input id="bp-company" v-model="form.company" class="bw-input" />
+          <input id="bp-company" v-model="form.company" class="bw-input" >
         </div>
         <div>
           <label class="bw-label" for="bp-companySize">Company size</label>
@@ -55,7 +55,7 @@
           </select>
         </div>
       </div>
-      <hr class="bw-divider" />
+      <hr class="bw-divider" >
       <div class="bw-form-footer">
         <span v-if="saveSuccess" class="bw-save-success">Changes saved.</span>
         <span v-if="saveError" class="bw-save-error">{{ saveError }}</span>
@@ -85,7 +85,7 @@
           </select>
         </div>
       </div>
-      <hr class="bw-divider" />
+      <hr class="bw-divider" >
       <div class="bw-form-footer">
         <span v-if="saveSuccess" class="bw-save-success">Preferences saved.</span>
         <span v-if="saveError" class="bw-save-error">{{ saveError }}</span>
@@ -101,11 +101,11 @@
           <div class="notif-row__desc">{{ n.desc }}</div>
         </div>
         <label class="switch" :aria-label="n.title">
-          <input type="checkbox" v-model="form.notifications[n.key]" :aria-label="n.title" />
-          <span class="switch__slider"></span>
+          <input v-model="form.notifications[n.key]" type="checkbox" :aria-label="n.title" >
+          <span class="switch__slider"/>
         </label>
       </div>
-      <hr class="bw-divider" />
+      <hr class="bw-divider" >
       <div style="display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
         <span v-if="saveSuccess" class="bw-save-success">Preferences saved.</span>
         <span v-if="saveError" class="bw-save-error">{{ saveError }}</span>

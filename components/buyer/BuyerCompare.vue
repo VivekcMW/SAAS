@@ -31,7 +31,7 @@
       </div>
       <div v-else class="picker">
         <label v-for="a in savedApps" :key="a.id" class="picker__chip" :class="{ 'is-on': picks.includes(a.id), 'is-disabled': !picks.includes(a.id) && picks.length >= 4 }">
-          <input type="checkbox" :value="a.id" v-model="picks" />
+          <input v-model="picks" type="checkbox" :value="a.id" >
           <span class="picker__logo" :style="{ background: a.color }">{{ a.logo }}</span>
           <span>{{ a.name }}</span>
         </label>
@@ -72,7 +72,7 @@
         <h3 class="tco__title">Total cost estimate</h3>
         <div class="tco__controls">
           <label class="bw-label">Seats
-            <input type="number" v-model.number="seats" class="bw-input" min="1" />
+            <input v-model.number="seats" type="number" class="bw-input" min="1" >
           </label>
           <span class="tco__mult">×</span>
           <span class="tco__mult">12 months</span>

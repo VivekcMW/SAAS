@@ -32,7 +32,7 @@
         <h3>Reset Password</h3>
         <p>Enter your email address and we'll send you a link to reset your password.</p>
         
-        <form @submit.prevent="handleResetPasswordSubmit" class="forgot-password-form">
+        <form class="forgot-password-form" @submit.prevent="handleResetPasswordSubmit">
           <div class="form-group">
             <label for="reset-email">Email Address</label>
             <input
@@ -42,7 +42,7 @@
               required
               placeholder="your@email.com"
               :class="{ 'error': resetEmailError }"
-            />
+            >
             <p v-if="resetEmailError" class="error-message">{{ resetEmailError }}</p>
           </div>
           

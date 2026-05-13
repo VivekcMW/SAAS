@@ -1,5 +1,12 @@
 <template>
   <main class="mk-page">
+    <!-- PPP regional pricing banner -->
+    <div v-if="ppp?.eligible" class="mk-ppp-banner">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      Prices below are adjusted for {{ ppp.name }} — <strong>up to {{ ppp.discountPct }}% off</strong> standard USD pricing.
+      <a href="mailto:hello@moonmart.ai?subject=PPP+pricing+request" class="mk-ppp-banner__link">Questions? Contact us →</a>
+    </div>
+
     <!-- Hero -->
     <section class="mk-hero">
       <div class="mk-hero__inner">
@@ -35,7 +42,7 @@
           <article v-for="p in buyerPlans" :key="p.name" :class="['mk-plan', { 'is-featured': p.featured }]">
             <p class="mk-plan__eyebrow">{{ p.eyebrow }}</p>
             <h3 class="mk-plan__name">{{ p.name }}</h3>
-            <p class="mk-plan__price">{{ p.price }}<span v-if="p.unit">{{ p.unit }}</span></p>
+            <p class="mk-plan__price">{{ currentPrice(p) }}<span v-if="p.unit">{{ p.unit }}</span></p>
             <p class="mk-plan__desc">{{ p.desc }}</p>
             <ul class="mk-plan__list">
               <li v-for="f in p.features" :key="f">{{ f }}</li>
@@ -144,6 +151,17 @@
 
 <script setup lang="ts">
 const { applySEO } = useSEO()
+const { formatPrice, formatPppPrice } = useCurrency()
+
+// PPP regional pricing
+interface PppInfo { country: string; name: string; multiplier: number; eligible: boolean; discountPct: number }
+const ppp = ref<PppInfo | null>(null)
+onMounted(async () => {
+  try {
+    const country = (await $fetch<{ country: string }>('/api/geo')).country
+    if (country) ppp.value = await $fetch<PppInfo>(`/api/ppp?country=${country}`)
+  } catch { /* ignore — geo or ppp may be unavailable */ }
+})
 
 applySEO({
   title: 'Pricing | Moonmart',
@@ -152,47 +170,87 @@ applySEO({
   ogType: 'website'
 })
 
+useHead({
+  meta: [
+    { property: 'og:image', content: '/api/og/page?title=Moonmart+Pricing&sub=Free+for+buyers%2C+fair+pricing+for+vendors&label=Pricing' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:image', content: '/api/og/page?title=Moonmart+Pricing&sub=Free+for+buyers%2C+fair+pricing+for+vendors&label=Pricing' }
+  ]
+})
+
 const cycles = [
   { id: 'monthly', label: 'Monthly', note: '' },
   { id: 'annual', label: 'Annual', note: 'Save 20%' }
 ]
 const cycle = ref('monthly')
 
-const buyerPlans = [
-  {
-    eyebrow: 'Buyer', name: 'Free', price: '$0', unit: '/forever',
-    desc: 'Everything you need to find and compare SaaS tools.',
-    features: ['Unlimited searches', 'Compare up to 5 tools', 'Read verified reviews', 'Shortlists & notes', 'Community Q&A'],
-    cta: { label: 'Create free account', to: '/signup' }, featured: false
-  },
-  {
-    eyebrow: 'Buyer · Pro', name: 'Buyer Pro', price: '$29', unit: '/user/mo',
-    desc: 'For RevOps, IT and procurement teams managing a large stack.',
-    features: ['Stack inventory & renewals', 'Team shortlists', 'Contract repository', 'Private Q&A threads', 'Priority support'],
-    cta: { label: 'Start 14-day trial', to: '/signup?plan=buyer-pro' }, featured: true
-  }
-]
+type DbPlan = {
+  plan_key: string
+  display_name: string
+  price_monthly: number
+  price_annual: number
+  features: string[]
+}
 
-const vendorPlans = [
-  {
-    eyebrow: 'Vendor', name: 'Starter', priceMonthly: '$0', priceAnnual: '$0', unit: '/mo',
-    desc: 'Get found. Pay only for qualified leads you accept.',
-    features: ['Free listing page', 'Basic analytics', '$99 per accepted lead', 'Respond to reviews', 'Email support'],
-    cta: { label: 'List for free', to: '/list-product' }, featured: false
-  },
-  {
-    eyebrow: 'Vendor', name: 'Growth', priceMonthly: '$499', priceAnnual: '$399', unit: '/mo',
-    desc: 'For vendors with strong PMF that want deeper placement.',
-    features: ['Everything in Starter', 'Category boost & sidebar ads', 'Advanced lead scoring', 'Competitor insights', '$59 per accepted lead', 'Slack + email support'],
-    cta: { label: 'Start Growth', to: '/list-product?plan=growth' }, featured: true
-  },
-  {
-    eyebrow: 'Vendor', name: 'Scale', priceMonthly: 'Custom', priceAnnual: 'Custom', unit: '',
-    desc: 'For category leaders that want premium distribution and partnerships.',
-    features: ['Everything in Growth', 'Homepage placements', 'Co-marketing & webinars', 'Dedicated CSM', 'SLA & MSA options', 'Volume lead pricing'],
-    cta: { label: 'Talk to sales', to: '/demo' }, featured: false
-  }
-]
+const { data: buyerDbPlans } = await useFetch<DbPlan[]>('/api/billing/plans', { query: { audience: 'buyer' } })
+const { data: vendorDbPlans } = await useFetch<DbPlan[]>('/api/billing/plans', { query: { audience: 'vendor' } })
+
+function fmtPrice (amount: number | null | undefined): string {
+  if (!amount) return formatPrice(0)
+  return ppp.value?.eligible ? formatPppPrice(amount) : formatPrice(amount)
+}
+
+const buyerPlans = computed(() => {
+  const freePlan = buyerDbPlans.value?.find(p => p.plan_key === 'buyer-free')
+  const proPlan = buyerDbPlans.value?.find(p => p.plan_key === 'buyer-pro')
+  return [
+    {
+      eyebrow: 'Buyer', name: 'Free',
+      priceMonthly: '$0', priceAnnual: '$0', unit: '/forever',
+      desc: 'Everything you need to find and compare SaaS tools.',
+      features: freePlan?.features?.length ? freePlan.features : ['Unlimited searches', 'Compare up to 5 tools', 'Read verified reviews', 'Shortlists & notes', 'Community Q&A'],
+      cta: { label: 'Create free account', to: '/signup' }, featured: false
+    },
+    {
+      eyebrow: 'Buyer · Pro', name: proPlan?.display_name ?? 'Buyer Pro',
+      priceMonthly: proPlan ? fmtPrice(proPlan.price_monthly) : '$29',
+      priceAnnual: proPlan ? fmtPrice(proPlan.price_annual) : '$23',
+      unit: '/user/mo',
+      desc: 'For RevOps, IT and procurement teams managing a large stack.',
+      features: proPlan?.features?.length ? proPlan.features : ['Stack inventory & renewals', 'Team shortlists', 'Contract repository', 'Private Q&A threads', 'Priority support'],
+      cta: { label: 'Start 14-day trial', to: '/signup?plan=buyer-pro' }, featured: true
+    }
+  ]
+})
+
+const vendorPlans = computed(() => {
+  const freePlan = vendorDbPlans.value?.find(p => p.plan_key === 'vendor-free')
+  const growthPlan = vendorDbPlans.value?.find(p => p.plan_key === 'vendor-growth')
+  return [
+    {
+      eyebrow: 'Vendor', name: freePlan?.display_name ?? 'Starter',
+      priceMonthly: '$0', priceAnnual: '$0', unit: '/mo',
+      desc: 'Get found. Pay only for qualified leads you accept.',
+      features: freePlan?.features?.length ? freePlan.features : ['Free listing page', 'Basic analytics', '$99 per accepted lead', 'Respond to reviews', 'Email support'],
+      cta: { label: 'List for free', to: '/list-product' }, featured: false
+    },
+    {
+      eyebrow: 'Vendor', name: growthPlan?.display_name ?? 'Growth',
+      priceMonthly: growthPlan ? fmtPrice(growthPlan.price_monthly) : '$499',
+      priceAnnual: growthPlan ? fmtPrice(growthPlan.price_annual) : '$399',
+      unit: '/mo',
+      desc: 'For vendors with strong PMF that want deeper placement.',
+      features: growthPlan?.features?.length ? growthPlan.features : ['Everything in Starter', 'Category boost & sidebar ads', 'Advanced lead scoring', 'Competitor insights', '$59 per accepted lead', 'Slack + email support'],
+      cta: { label: 'Start Growth', to: '/list-product?plan=growth' }, featured: true
+    },
+    {
+      eyebrow: 'Vendor', name: 'Scale', priceMonthly: 'Custom', priceAnnual: 'Custom', unit: '',
+      desc: 'For category leaders that want premium distribution and partnerships.',
+      features: ['Everything in Growth', 'Homepage placements', 'Co-marketing & webinars', 'Dedicated CSM', 'SLA & MSA options', 'Volume lead pricing'],
+      cta: { label: 'Talk to sales', to: '/demo' }, featured: false
+    }
+  ]
+})
 
 function currentPrice (p: { priceMonthly: string; priceAnnual: string }) {
   return cycle.value === 'annual' ? p.priceAnnual : p.priceMonthly
@@ -223,6 +281,10 @@ const faqs = [
 
 <style scoped>
 /* Pricing-specific tweaks (shared mk-* classes live in assets/css/marketing.css) */
+
+.mk-ppp-banner { display: flex; align-items: center; gap: 0.5rem; background: #fef9e7; border-bottom: 1px solid #f59e0b; padding: 0.6rem 1.5rem; font-size: 0.85rem; color: #92400e; flex-wrap: wrap; }
+.mk-ppp-banner__link { margin-left: 0.25rem; color: #b45309; font-weight: 600; text-decoration: none; }
+.mk-ppp-banner__link:hover { text-decoration: underline; }
 
 .mk-toggle { display: inline-flex; background: var(--mm-s2); border: 0.5px solid var(--b1); border-radius: var(--r-full); padding: 0.25rem; }
 .mk-toggle__btn { background: transparent; border: none; padding: 0.5rem 1.1rem; border-radius: var(--r-sm); font-weight: 600; color: var(--mm-slate); cursor: pointer; font-size: 0.9rem; }

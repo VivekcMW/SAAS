@@ -11,7 +11,7 @@ export const useAnalytics = () => {
   
   // Initialize session ID
   const initSession = () => {
-    if (process.client) {
+    if (import.meta.client) {
       let storedSessionId = sessionStorage.getItem('saas_session_id')
       if (!storedSessionId) {
         storedSessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
@@ -23,7 +23,7 @@ export const useAnalytics = () => {
 
   // Track any analytics event
   const trackEvent = async (eventData: Partial<AnalyticsEvent>) => {
-    if (!process.client) return
+    if (!import.meta.client) return
 
     try {
       await $fetch('/api/analytics/track', {
@@ -154,7 +154,7 @@ export const useAnalytics = () => {
 
   // Track time spent on page
   const trackTimeSpent = (appId: string) => {
-    if (!process.client) return
+    if (!import.meta.client) return
 
     const startTime = Date.now()
     
@@ -189,7 +189,7 @@ export const useAnalytics = () => {
 
   // Auto-track scroll depth
   const trackScrollDepth = (appId: string) => {
-    if (!process.client) return
+    if (!import.meta.client) return
 
     let maxScrollDepth = 0
     const milestones = [25, 50, 75, 90, 100]
@@ -265,7 +265,7 @@ function throttle<T extends (...args: any[]) => any>(func: T, limit: number): T 
   let inThrottle: boolean
   return ((...args: any[]) => {
     if (!inThrottle) {
-      func.apply(null, args)
+      func(...args)
       inThrottle = true
       setTimeout(() => inThrottle = false, limit)
     }

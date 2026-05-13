@@ -75,7 +75,7 @@ onMounted(() => {
     <article v-else class="embed-card">
       <header class="embed-head">
         <div class="embed-logo">
-          <img :src="app.logo" :alt="`${app.name} logo`" />
+          <img :src="app.logo" :alt="`${app.name} logo`" >
         </div>
         <div class="embed-meta">
           <h1 class="embed-name">{{ app.name }}</h1>

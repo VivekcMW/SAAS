@@ -115,7 +115,7 @@ function scoreLabel(score: number): 'Excellent' | 'Good' | 'Fair' | 'Poor' {
   return 'Poor'
 }
 
-function emptyScore(vendorId: string): HealthScoreBreakdown {
+function emptyScore(_vendorId: string): HealthScoreBreakdown {
   return {
     verified_pct: 0, response_rate: 0, review_velocity: 0,
     flagged_count: 0, avg_rating: 0, review_count: 0,

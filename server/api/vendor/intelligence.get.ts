@@ -59,7 +59,7 @@ export default defineEventHandler(async (event) => {
   `).get(vendor.id) as { user_company: string } | undefined
 
   // Recent reviews pros/cons analysis for content gaps
-  const recentReviews = db.prepare(`
+  const _recentReviews = db.prepare(`
     SELECT content, rating FROM reviews
     WHERE app_id IN (SELECT id FROM app_listings WHERE vendor_id = ?) AND status = 'approved'
     ORDER BY created_at DESC LIMIT 50

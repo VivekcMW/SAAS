@@ -9,7 +9,7 @@
 
     <div class="container contracts-page__body">
       <!-- Summary bar -->
-      <div class="contracts-summary" v-if="data">
+      <div v-if="data" class="contracts-summary">
         <div class="summary-pill">
           <span class="summary-pill__label">Contracts</span>
           <span class="summary-pill__value">{{ data.contracts?.length ?? 0 }}</span>
@@ -42,7 +42,7 @@
               <th>Seats</th>
               <th>Renews</th>
               <th>Status</th>
-              <th></th>
+              <th/>
             </tr>
           </thead>
           <tbody>
@@ -87,17 +87,17 @@
           <div class="form-row">
             <div class="form-group">
               <label>App name <span class="req">*</span></label>
-              <input v-model="form.app_name" type="text" placeholder="e.g. Salesforce" required />
+              <input v-model="form.app_name" type="text" placeholder="e.g. Salesforce" required >
             </div>
             <div class="form-group">
               <label>Vendor</label>
-              <input v-model="form.vendor_name" type="text" placeholder="e.g. Salesforce Inc." />
+              <input v-model="form.vendor_name" type="text" placeholder="e.g. Salesforce Inc." >
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
               <label>Price (USD)</label>
-              <input v-model.number="form.price_usd" type="number" min="0" step="0.01" />
+              <input v-model.number="form.price_usd" type="number" min="0" step="0.01" >
             </div>
             <div class="form-group">
               <label>Billing period</label>
@@ -113,7 +113,7 @@
           <div class="form-row">
             <div class="form-group">
               <label>Seats</label>
-              <input v-model.number="form.seats" type="number" min="1" />
+              <input v-model.number="form.seats" type="number" min="1" >
             </div>
             <div class="form-group">
               <label>Status</label>
@@ -128,19 +128,19 @@
           <div class="form-row">
             <div class="form-group">
               <label>Start date</label>
-              <input v-model="form.start_date" type="date" />
+              <input v-model="form.start_date" type="date" >
             </div>
             <div class="form-group">
               <label>End / renewal date</label>
-              <input v-model="form.end_date" type="date" />
+              <input v-model="form.end_date" type="date" >
             </div>
           </div>
           <div class="form-group form-group--check">
-            <label><input v-model="form.auto_renews" type="checkbox" /> Auto-renews</label>
+            <label><input v-model="form.auto_renews" type="checkbox" > Auto-renews</label>
           </div>
           <div class="form-group">
             <label>Notes</label>
-            <textarea v-model="form.notes" rows="2" placeholder="Payment method, contract terms, contact info…"></textarea>
+            <textarea v-model="form.notes" rows="2" placeholder="Payment method, contract terms, contact info…"/>
           </div>
           <p v-if="formError" class="form-error">{{ formError }}</p>
           <div class="modal__actions">

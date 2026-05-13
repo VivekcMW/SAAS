@@ -85,11 +85,11 @@
           <option value="trial-extend">Extended trial</option>
         </select>
         <label class="bw-label">Label / description</label>
-        <input v-model="newForm.label" class="bw-input" placeholder="e.g. 20% off annual plan" style="margin-bottom: 10px;" />
+        <input v-model="newForm.label" class="bw-input" placeholder="e.g. 20% off annual plan" style="margin-bottom: 10px;" >
         <label class="bw-label">Budget ($)</label>
-        <input v-model.number="newForm.budget" type="number" min="0" class="bw-input" placeholder="0" style="margin-bottom: 10px;" />
+        <input v-model.number="newForm.budget" type="number" min="0" class="bw-input" placeholder="0" style="margin-bottom: 10px;" >
         <label class="bw-label">Ends at (optional)</label>
-        <input v-model="newForm.endsAt" type="date" class="bw-input" style="margin-bottom: 14px;" />
+        <input v-model="newForm.endsAt" type="date" class="bw-input" style="margin-bottom: 14px;" >
         <div class="vw-ai-card" style="margin-bottom: 12px;">
           <div class="vw-ai-card__title"><span class="vw-ai-chip">AI</span> Recommendation</div>
           <p style="margin: 0; font-size: 0.85rem;">For a 30-day window, a <strong>22% discount</strong> maximises leads without eroding margin. Competitors are at 20–25%.</p>

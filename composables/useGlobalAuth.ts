@@ -64,7 +64,7 @@ export const useGlobalAuth = () => {
   };
 
   // Open forgot password modal
-  const openForgotPassword = (email?: string) => {
+  const openForgotPassword = (_email?: string) => {
     openAuthModal({
       mode: 'forgot-password',
       title: 'Reset Password',

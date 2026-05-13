@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <nav class="navbar" :class="{ 'navbar-scrolled': isScrolled }">
     <div class="container">
@@ -22,7 +23,7 @@
               </NuxtLink>
             </li>
             <!-- Buyer / Seller separator -->
-            <li class="nav-sep" aria-hidden="true"></li>
+            <li class="nav-sep" aria-hidden="true"/>
             <li>
               <NuxtLink to="/list-product" class="nav-item nav-item--pill">Get Listed</NuxtLink>
             </li>
@@ -42,7 +43,7 @@
           </button>
 
           <!-- Language switcher (compact globe) -->
-          <div class="nav-lang-wrap" ref="langWrapRef">
+          <div ref="langWrapRef" class="nav-lang-wrap">
             <button
               type="button"
               class="nav-utility-btn nav-lang-btn"
@@ -68,26 +69,26 @@
 
           <template v-if="!isAuthenticated">
             <!-- Divider -->
-            <span class="nav-divider" aria-hidden="true"></span>
-            <button @click="openSignInModal" class="btn-signin">Sign in</button>
-            <button @click="openSignUpModal" class="btn-signup">
+            <span class="nav-divider" aria-hidden="true"/>
+            <button class="btn-signin" @click="openSignInModal">Sign in</button>
+            <button class="btn-signup" @click="openSignUpModal">
               Start free
               <UIcon dynamic name="i-heroicons-arrow-right" class="btn-icon" />
             </button>
           </template>
           <template v-if="isAuthenticated">
             <div class="user-menu">
-              <button @click="toggleUserDropdown" class="user-menu-button">
+              <button class="user-menu-button" @click="toggleUserDropdown">
                 <div class="user-avatar">
                   <span v-if="!currentUser?.avatar">{{ userInitials }}</span>
-                  <img v-else :src="currentUser.avatar" :alt="currentUser.fullName" />
+                  <img v-else :src="currentUser.avatar" :alt="currentUser.fullName" >
                 </div>
                 <span class="user-name">{{ currentUser?.firstName || 'User' }}</span>
                 <UIcon dynamic name="i-heroicons-chevron-down" :class="{ 'rotate': isUserDropdownOpen }" />
               </button>
               
               <!-- User Dropdown Menu -->
-              <div class="dropdown-menu user-dropdown" v-if="isUserDropdownOpen">
+              <div v-if="isUserDropdownOpen" class="dropdown-menu user-dropdown">
                 <NuxtLink to="/dashboard" class="dropdown-item">
                   <UIcon dynamic name="i-heroicons-squares-2x2" class="dropdown-item-icon" />
                   <span>Dashboard</span>
@@ -100,8 +101,8 @@
                   <UIcon dynamic name="i-heroicons-cog-6-tooth" class="dropdown-item-icon" />
                   <span>Settings</span>
                 </NuxtLink>
-                <div class="dropdown-divider"></div>
-                <button @click="handleLogout" class="dropdown-item">
+                <div class="dropdown-divider"/>
+                <button class="dropdown-item" @click="handleLogout">
                   <UIcon dynamic name="i-heroicons-arrow-right-on-rectangle" class="dropdown-item-icon" />
                   <span>Sign out</span>
                 </button>
@@ -111,39 +112,39 @@
         </div>
 
         <!-- Mobile search button -->
-        <button class="mobile-search-button" @click="triggerGlobalSearch" aria-label="Search">
+        <button class="mobile-search-button" aria-label="Search" @click="triggerGlobalSearch">
           <UIcon dynamic name="i-heroicons-magnifying-glass" />
         </button>
 
         <!-- Mobile menu button -->
-        <button class="mobile-menu-button" @click="toggleMobileMenu" aria-label="Menu">
+        <button class="mobile-menu-button" aria-label="Menu" @click="toggleMobileMenu">
           <UIcon dynamic :name="isMobileMenuOpen ? 'i-heroicons-x-mark' : 'i-heroicons-bars-3'" />
         </button>
       </div>
     </div>
     
     <!-- Mobile Menu Overlay -->
-    <div class="mobile-menu-overlay" :class="{ 'show': isMobileMenuOpen }" @click="toggleMobileMenu"></div>
+    <div class="mobile-menu-overlay" :class="{ 'show': isMobileMenuOpen }" @click="toggleMobileMenu"/>
   </nav>
   
   <!-- Categories Drawer (legacy inline markup removed — now handled by CategoriesLauncher in navbar) -->
 
   <!-- Sign Up Modal -->
   <div class="signup-modal" :class="{ 'open': showSignUpModal }">
-    <div class="modal-overlay" @click="closeSignUpModal"></div>
+    <div class="modal-overlay" @click="closeSignUpModal"/>
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title">
           {{ isForgotPasswordMode ? 'Forgot Password' : (isLoginMode ? 'Welcome Back' : 'Create Your Account') }}
         </h2>
-        <button @click="closeSignUpModal" class="modal-close" aria-label="Close">
+        <button class="modal-close" aria-label="Close" @click="closeSignUpModal">
           <UIcon dynamic name="i-heroicons-x-mark" />
         </button>
       </div>
       
       <div class="modal-body">
         <!-- Forgot Password Form -->
-        <form v-if="isForgotPasswordMode" @submit.prevent="handleSendResetEmail" class="forgot-password-form">
+        <form v-if="isForgotPasswordMode" class="forgot-password-form" @submit.prevent="handleSendResetEmail">
           <div class="forgot-password-header">
             <h3 class="form-title">Reset Your Password</h3>
             <p class="form-subtitle">Enter your email address and we'll send you a link to reset your password.</p>
@@ -152,13 +153,13 @@
           <div class="form-group">
             <label for="resetEmail" class="form-label">Email Address</label>
             <input 
-              v-model="forgotPasswordForm.email"
-              type="email" 
               id="resetEmail"
+              v-model="forgotPasswordForm.email" 
+              type="email"
               class="form-input"
               placeholder="Enter your email address"
               required
-            />
+            >
           </div>
           
           <button type="submit" class="submit-button" :disabled="!forgotPasswordForm.email || isSendingResetEmail">
@@ -170,7 +171,7 @@
           </button>
           
           <div class="back-to-login">
-            <button type="button" @click="backToLogin" class="back-link">
+            <button type="button" class="back-link" @click="backToLogin">
               <UIcon dynamic name="i-heroicons-arrow-left" class="back-icon" />
               Back to Sign In
             </button>
@@ -178,29 +179,29 @@
         </form>
 
         <!-- Login Form -->
-        <form v-else-if="isLoginMode" @submit.prevent="handleLogin" class="login-form">
+        <form v-else-if="isLoginMode" class="login-form" @submit.prevent="handleLogin">
           <div class="form-group">
             <label for="loginEmail" class="form-label">Email Address</label>
             <input 
-              v-model="loginForm.email"
-              type="email" 
               id="loginEmail"
+              v-model="loginForm.email" 
+              type="email"
               class="form-input"
               placeholder="Enter your email address"
               required
-            />
+            >
           </div>
           
           <div class="form-group">
             <label for="loginPassword" class="form-label">Password</label>
             <input 
-              v-model="loginForm.password"
-              type="password" 
               id="loginPassword"
+              v-model="loginForm.password" 
+              type="password"
               class="form-input"
               placeholder="Enter your password"
               required
-            />
+            >
           </div>
           
           <div class="form-group remember-forgot">
@@ -209,10 +210,10 @@
                 v-model="loginForm.rememberMe"
                 type="checkbox" 
                 class="checkbox-input"
-              />
+              >
               <span class="checkbox-text">Remember me</span>
             </label>
-            <button type="button" @click="showForgotPasswordForm" class="forgot-link">Forgot password?</button>
+            <button type="button" class="forgot-link" @click="showForgotPasswordForm">Forgot password?</button>
           </div>
           
           <button type="submit" class="submit-button" :disabled="!isLoginFormValid">
@@ -227,7 +228,7 @@
           <div v-if="isLoginMode" class="form-footer">
             <p class="signin-text">
               Don't have an account?
-              <button @click="toggleAuthMode" class="signin-link">
+              <button class="signin-link" @click="toggleAuthMode">
                 Sign Up
               </button>
             </p>
@@ -235,32 +236,32 @@
 
           <!-- Social Login Options -->
           <div class="social-divider">
-            <span class="divider-line"></span>
+            <span class="divider-line"/>
             <span class="divider-text">or continue with</span>
-            <span class="divider-line"></span>
+            <span class="divider-line"/>
           </div>
 
           <div class="social-buttons social-buttons-2-rows">
             <div class="social-row">
-              <button type="button" @click="handleSocialLogin('google')" class="social-button google">
+              <button type="button" class="social-button google" @click="handleSocialLogin('google')">
                 <UIcon dynamic name="i-logos-google-icon" class="social-icon" />
                 <span>Google</span>
               </button>
-              <button type="button" @click="handleSocialLogin('facebook')" class="social-button facebook">
+              <button type="button" class="social-button facebook" @click="handleSocialLogin('facebook')">
                 <UIcon dynamic name="i-logos-facebook" class="social-icon" />
                 <span>Facebook</span>
               </button>
-              <button type="button" @click="handleSocialLogin('github')" class="social-button github">
+              <button type="button" class="social-button github" @click="handleSocialLogin('github')">
                 <UIcon dynamic name="i-logos-github-icon" class="social-icon" />
                 <span>GitHub</span>
               </button>
             </div>
             <div class="social-row">
-              <button type="button" @click="handleSocialLogin('linkedin')" class="social-button linkedin">
+              <button type="button" class="social-button linkedin" @click="handleSocialLogin('linkedin')">
                 <UIcon dynamic name="i-logos-linkedin-icon" class="social-icon" />
                 <span>LinkedIn</span>
               </button>
-              <button type="button" @click="handleSocialLogin('x')" class="social-button x">
+              <button type="button" class="social-button x" @click="handleSocialLogin('x')">
                 <UIcon dynamic name="i-simple-icons-x" class="social-icon" />
                 <span>X</span>
               </button>
@@ -269,68 +270,68 @@
         </form>
 
         <!-- Sign Up Form -->
-        <form v-else @submit.prevent="handleSignUp" class="signup-form">
+        <form v-else class="signup-form" @submit.prevent="handleSignUp">
           <div class="form-row">
             <div class="form-group">
               <label for="firstName" class="form-label">First Name</label>
               <input 
-                v-model="signUpForm.firstName"
-                type="text" 
                 id="firstName"
+                v-model="signUpForm.firstName" 
+                type="text"
                 class="form-input"
                 placeholder="Enter your first name"
                 required
-              />
+              >
             </div>
             
             <div class="form-group">
               <label for="lastName" class="form-label">Last Name</label>
               <input 
-                v-model="signUpForm.lastName"
-                type="text" 
                 id="lastName"
+                v-model="signUpForm.lastName" 
+                type="text"
                 class="form-input"
                 placeholder="Enter your last name"
                 required
-              />
+              >
             </div>
           </div>
           
           <div class="form-group">
             <label for="email" class="form-label">Email Address</label>
             <input 
-              v-model="signUpForm.email"
-              type="email" 
               id="email"
+              v-model="signUpForm.email" 
+              type="email"
               class="form-input"
               placeholder="Enter your email address"
               required
-            />
+            >
           </div>
           
           <div class="form-row">
             <div class="form-group">
               <label for="password" class="form-label">Password</label>
               <input 
-                v-model="signUpForm.password"
-                type="password" 
                 id="password"
+                v-model="signUpForm.password" 
+                type="password"
                 class="form-input"
                 placeholder="Create a strong password"
                 required
-              />
+              >
             </div>
             
             <div class="form-group">
               <label for="confirmPassword" class="form-label">Confirm Password</label>
               <input 
-                v-model="signUpForm.confirmPassword"
-                type="password" 
                 id="confirmPassword"
+                v-model="signUpForm.confirmPassword" 
+                type="password"
                 class="form-input"
                 placeholder="Confirm your password"
                 required
-              />
+              >
             </div>
           </div>
           
@@ -341,7 +342,7 @@
                 type="checkbox" 
                 class="checkbox-input"
                 required
-              />
+              >
               <span class="checkbox-text">
                 I agree to the <a href="/terms" target="_blank" class="terms-link">Terms of Service</a> 
                 and <a href="/privacy" target="_blank" class="terms-link">Privacy Policy</a>
@@ -361,7 +362,7 @@
           <div v-if="!isLoginMode" class="form-footer">
             <p class="signin-text">
               Already have an account?
-              <button @click="toggleAuthMode" class="signin-link">
+              <button class="signin-link" @click="toggleAuthMode">
                 Sign In
               </button>
             </p>
@@ -369,32 +370,32 @@
 
           <!-- Social Sign Up Options -->
           <div class="social-divider">
-            <span class="divider-line"></span>
+            <span class="divider-line"/>
             <span class="divider-text">or continue with</span>
-            <span class="divider-line"></span>
+            <span class="divider-line"/>
           </div>
 
           <div class="social-buttons social-buttons-2-rows">
             <div class="social-row">
-              <button type="button" @click="handleSocialLogin('google')" class="social-button google">
+              <button type="button" class="social-button google" @click="handleSocialLogin('google')">
                 <UIcon dynamic name="i-logos-google-icon" class="social-icon" />
                 <span>Google</span>
               </button>
-              <button type="button" @click="handleSocialLogin('facebook')" class="social-button facebook">
+              <button type="button" class="social-button facebook" @click="handleSocialLogin('facebook')">
                 <UIcon dynamic name="i-logos-facebook" class="social-icon" />
                 <span>Facebook</span>
               </button>
-              <button type="button" @click="handleSocialLogin('github')" class="social-button github">
+              <button type="button" class="social-button github" @click="handleSocialLogin('github')">
                 <UIcon dynamic name="i-logos-github-icon" class="social-icon" />
                 <span>GitHub</span>
               </button>
             </div>
             <div class="social-row">
-              <button type="button" @click="handleSocialLogin('linkedin')" class="social-button linkedin">
+              <button type="button" class="social-button linkedin" @click="handleSocialLogin('linkedin')">
                 <UIcon dynamic name="i-logos-linkedin-icon" class="social-icon" />
                 <span>LinkedIn</span>
               </button>
-              <button type="button" @click="handleSocialLogin('x')" class="social-button x">
+              <button type="button" class="social-button x" @click="handleSocialLogin('x')">
                 <UIcon dynamic name="i-simple-icons-x" class="social-icon" />
                 <span>X</span>
               </button>
@@ -449,13 +450,13 @@ watch(isCategoriesDrawerOpen, (newValue) => {
   console.log('Navbar: isCategoriesDrawerOpen changed to:', newValue);
 });
 
-const selectedCategory = ref<string | null>(null);
+const _selectedCategory = ref<string | null>(null);
 const selectedCategoryGroup = ref<string | null>(null);
 const searchQuery = ref('');
-const selectedSubcategories = ref<string[]>([]);
+const _selectedSubcategories = ref<string[]>([]);
 
 // Use the centralized category system - import categoryGroups directly
-const categories = computed(() => {
+const _categories = computed(() => {
   return categoryGroups.map(group => ({
     id: group.id,
     name: group.name,
@@ -468,36 +469,36 @@ const categories = computed(() => {
 });
 
 // Categories functionality
-const openCategoriesDrawer = () => {
+const _openCategoriesDrawer = () => {
   openDrawer();
   selectedCategoryGroup.value = null; // Reset selection when opening
   document.body.style.overflow = 'hidden';
 };
 
-const closeCategoriesDrawer = () => {
+const _closeCategoriesDrawer = () => {
   closeDrawer();
   selectedCategoryGroup.value = null;
   document.body.style.overflow = '';
 };
 
 // Get total subcategories using centralized system  
-const getTotalSubcategories = () => {
+const _getTotalSubcategories = () => {
   return allCategories.length;
 };
 
 // Get selected group data
-const getSelectedGroupData = () => {
+const _getSelectedGroupData = () => {
   return categoryGroups.find(group => group.id === selectedCategoryGroup.value);
 };
 
 // Get categories for selected group
-const getSelectedGroupCategories = () => {
+const _getSelectedGroupCategories = () => {
   if (!selectedCategoryGroup.value) return [];
   return getCategoriesByGroup(selectedCategoryGroup.value);
 };
 
 // Search functionality - updated to include group information
-const searchResults = computed(() => {
+const _searchResults = computed(() => {
   if (!searchQuery.value) return [];
   
   const query = searchQuery.value.toLowerCase();
@@ -518,7 +519,7 @@ const searchResults = computed(() => {
   return results;
 });
 
-const selectedCategoryData = computed(() => {
+const _selectedCategoryData = computed(() => {
   return categoryGroups.find(group => group.id === selectedCategoryGroup.value);
 });
 
@@ -562,7 +563,7 @@ const forgotPasswordForm = ref({
 // Real cookie-based auth (single source of truth)
 const { isAuthenticated, currentUser, handleLogout: authLogout } = useAuth();
 // Keep legacy modal helpers available for any legacy callers, but do not drive state from them
-const { openRegister, openLogin } = useGlobalAuth();
+const { openRegister: _openRegister, openLogin: _openLogin } = useGlobalAuth();
 
 // User dropdown state
 const isUserDropdownOpen = ref(false);
@@ -614,7 +615,7 @@ const toggleUserDropdown = () => {
 };
 
 // Open auth modal
-const openAuthModal = () => {
+const _openAuthModal = () => {
   showAuthModal.value = true;
 };
 
@@ -782,18 +783,18 @@ const handleSignUp = async () => {
 };
 
 // Switch to sign in (you can implement this later)
-const switchToSignIn = () => {
+const _switchToSignIn = () => {
   toggleAuthMode();
   console.log('Switch to sign in');
 };
 
 // Social sign up methods
-const signUpWithGoogle = () => {
+const _signUpWithGoogle = () => {
   console.log('Sign up with Google');
   // Implement Google OAuth
 };
 
-const signUpWithGitHub = () => {
+const _signUpWithGitHub = () => {
   console.log('Sign up with GitHub');
   // Implement GitHub OAuth
 };

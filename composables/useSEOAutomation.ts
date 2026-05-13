@@ -82,7 +82,7 @@ export const useSEOAutomation = () => {
         })
         score -= 15
       }
-    } catch (error) {
+    } catch (_error) {
       issues.push({
         category: 'technical',
         severity: 'warning' as const,
@@ -104,7 +104,7 @@ export const useSEOAutomation = () => {
         })
         score -= 20
       }
-    } catch (error) {
+    } catch (_error) {
       issues.push({
         category: 'technical',
         severity: 'warning' as const,
@@ -118,11 +118,11 @@ export const useSEOAutomation = () => {
   }
 
   // Content SEO automated checks
-  const runContentSEOChecks = async (url: string) => {
+  const runContentSEOChecks = async (_url: string) => {
     const issues = []
     let score = 100
 
-    if (process.client) {
+    if (import.meta.client) {
       // Check meta title
       const title = document.querySelector('title')?.textContent || ''
       if (!title) {
@@ -201,11 +201,11 @@ export const useSEOAutomation = () => {
   }
 
   // Mobile SEO automated checks
-  const runMobileSEOChecks = async (url: string) => {
+  const runMobileSEOChecks = async (_url: string) => {
     const issues = []
     let score = 100
 
-    if (process.client) {
+    if (import.meta.client) {
       // Check viewport meta tag
       const viewport = document.querySelector('meta[name="viewport"]')?.getAttribute('content') || ''
       if (!viewport.includes('width=device-width')) {
@@ -258,11 +258,11 @@ export const useSEOAutomation = () => {
   }
 
   // Performance automated checks
-  const runPerformanceChecks = async (url: string) => {
+  const runPerformanceChecks = async (_url: string) => {
     const issues = []
     let score = 100
 
-    if (process.client && 'performance' in window) {
+    if (import.meta.client && 'performance' in window) {
       // Check page load time
       const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming
       if (navigation) {
@@ -290,7 +290,7 @@ export const useSEOAutomation = () => {
       const resources = performance.getEntriesByType('resource')
       const images = resources.filter(resource => resource.name.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i))
       const scripts = resources.filter(resource => resource.name.includes('.js'))
-      const stylesheets = resources.filter(resource => resource.name.includes('.css'))
+      const _stylesheets = resources.filter(resource => resource.name.includes('.css'))
 
       if (images.length > 50) {
         issues.push({
@@ -317,11 +317,11 @@ export const useSEOAutomation = () => {
   }
 
   // Accessibility automated checks
-  const runAccessibilityChecks = async (url: string) => {
+  const runAccessibilityChecks = async (_url: string) => {
     const issues = []
     let score = 100
 
-    if (process.client) {
+    if (import.meta.client) {
       // Check for skip links
       const skipLinks = document.querySelectorAll('a[href^="#"]')
       const hasSkipToMain = Array.from(skipLinks).some(link => 

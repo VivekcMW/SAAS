@@ -17,8 +17,8 @@
       <div class="nf-wrap">
         <NuxtLink :to="`/news/${featuredPost.slug}`" class="nf-hero__card">
           <div class="nf-hero__media">
-            <img v-if="featuredPost.coverImage" :src="featuredPost.coverImage" :alt="featuredPost.title" loading="eager" class="nf-hero__img" />
-            <div v-else class="nf-hero__placeholder" aria-hidden="true"></div>
+            <img v-if="featuredPost.coverImage" :src="featuredPost.coverImage" :alt="featuredPost.title" loading="eager" class="nf-hero__img" >
+            <div v-else class="nf-hero__placeholder" aria-hidden="true"/>
           </div>
           <div class="nf-hero__body">
             <div class="nf-hero__top">
@@ -52,7 +52,7 @@
       <div class="nf-wrap">
         <!-- Loading skeleton -->
         <div v-if="pending" class="nf-skeleton-grid">
-          <div v-for="n in 6" :key="n" class="nf-skeleton"></div>
+          <div v-for="n in 6" :key="n" class="nf-skeleton"/>
         </div>
 
         <!-- Empty -->
@@ -136,7 +136,7 @@ const queryParams = computed(() => ({
   ...(activeType.value ? { type: activeType.value } : {})
 }))
 
-const { data, pending, refresh } = await useFetch<NewsResponse>('/api/news', {
+const { data, pending, refresh: _refresh } = await useFetch<NewsResponse>('/api/news', {
   query: queryParams,
   key: computed(() => `news-feed-${activeType.value ?? 'all'}-p${page.value}`)
 })

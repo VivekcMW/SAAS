@@ -25,11 +25,11 @@
       <!-- Mobile Menu Toggle -->
       <button 
         class="mobile-menu-toggle"
-        @click="toggleMobileMenu"
         :class="{ 'active': isMobileMenuOpen }"
+        @click="toggleMobileMenu"
       >
-        <Icon name="i-heroicons-bars-3" v-if="!isMobileMenuOpen" />
-        <Icon name="i-heroicons-x-mark" v-else />
+        <Icon v-if="!isMobileMenuOpen" name="i-heroicons-bars-3" />
+        <Icon v-else name="i-heroicons-x-mark" />
       </button>
     </div>
 
@@ -51,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 
 interface App {
   id: string;
@@ -70,7 +70,7 @@ interface Props {
   app?: App | null;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 
 // State
 const isScrolled = ref(false);

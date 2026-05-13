@@ -30,7 +30,7 @@
           :class="{ 'integration-card--verified': int.verified }"
         >
           <div class="integration-card__logo">
-            <img v-if="int.partner_logo" :src="int.partner_logo" :alt="int.partner_name ?? ''" width="32" height="32" loading="lazy" />
+            <img v-if="int.partner_logo" :src="int.partner_logo" :alt="int.partner_name ?? ''" width="32" height="32" loading="lazy" >
             <div v-else class="integration-card__logo-placeholder">{{ (int.partner_name ?? '?')[0] }}</div>
           </div>
           <div class="integration-card__body">
@@ -45,7 +45,7 @@
               <span class="dir-tag">{{ int.direction }}</span>
             </div>
           </div>
-          <button class="vote-int-btn" :class="{ 'vote-int-btn--active': voted.has(int.id) }" @click="vote(int)" :title="voted.has(int.id) ? 'Remove vote' : 'This integration exists'">
+          <button class="vote-int-btn" :class="{ 'vote-int-btn--active': voted.has(int.id) }" :title="voted.has(int.id) ? 'Remove vote' : 'This integration exists'" @click="vote(int)">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
             {{ (int.vote_score ?? 0) + (localVotes[int.id] ?? 0) }}
           </button>
@@ -60,7 +60,7 @@
       <div class="suggest-modal">
         <h4>Suggest an integration</h4>
         <form @submit.prevent="submitSuggest">
-          <input v-model="suggestForm.partner_name" type="text" placeholder="Tool name (e.g. Stripe)" required />
+          <input v-model="suggestForm.partner_name" type="text" placeholder="Tool name (e.g. Stripe)" required >
           <select v-model="suggestForm.integration_type">
             <option value="native">Native</option>
             <option value="api">API</option>

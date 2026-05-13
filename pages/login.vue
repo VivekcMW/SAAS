@@ -52,7 +52,7 @@
             :aria-invalid="!!fieldErrors.email"
             required
             @input="clearFieldError('email')"
-          />
+          >
           <p v-if="fieldErrors.email" class="field-error">{{ fieldErrors.email }}</p>
         </div>
 
@@ -72,7 +72,7 @@
               :aria-invalid="!!fieldErrors.password"
               required
               @input="clearFieldError('password')"
-            />
+            >
             <button
               type="button"
               class="eye-btn"
@@ -87,7 +87,7 @@
         </div>
 
         <label class="remember">
-          <input v-model="form.rememberMe" type="checkbox" :disabled="isLoading" />
+          <input v-model="form.rememberMe" type="checkbox" :disabled="isLoading" >
           <span>Remember me for 30 days</span>
         </label>
 

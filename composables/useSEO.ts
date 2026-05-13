@@ -6,7 +6,6 @@
 import type { CategoryKeywords } from '~/seo/keywords/types'
 import { allCategoryKeywords, globalKeywords, generateMetaKeywords, generatePageTitle, generateMetaDescription, getKeywordsForCategory } from '~/seo/keywords/index'
 import { getCategoryKeywords, isValidCategory } from '~/utils/categoryMapping'
-import type { CategoryName } from '~/utils/categoryMapping'
 
 export interface SEOConfig {
   title?: string
@@ -26,7 +25,7 @@ export const useSEO = (routeContext?: { path: string }) => {
   let route: { path: string }
   if (routeContext) {
     route = routeContext
-  } else if (process.client) {
+  } else if (import.meta.client) {
     route = useRoute()
   } else {
     route = { path: '' }
@@ -83,7 +82,7 @@ export const useSEO = (routeContext?: { path: string }) => {
         name: `${categoryKeywords.category} Software Solutions`,
         description: `Comprehensive directory of ${categoryKeywords.category.toLowerCase()} software and tools`,
         numberOfItems: Object.keys(categoryKeywords.subcategories).length,
-        itemListElement: Object.entries(categoryKeywords.subcategories).map(([key, subcategory], index) => ({
+        itemListElement: Object.entries(categoryKeywords.subcategories).map(([_key, subcategory], index) => ({
           '@type': 'ListItem',
           position: index + 1,
           item: {

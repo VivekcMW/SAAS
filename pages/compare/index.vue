@@ -32,14 +32,14 @@
         <!-- App columns -->
         <div v-for="id in compareIds" :key="id" class="cmp-col">
           <div v-if="loadingIds.has(id)" class="cmp-col__loading">
-            <div class="cmp-spinner"></div>
+            <div class="cmp-spinner"/>
           </div>
           <template v-else-if="appMap[id]">
             <div class="cmp-col__header">
-              <button class="cmp-col__remove" @click="removeFromCompare(id)" aria-label="Remove">
+              <button class="cmp-col__remove" aria-label="Remove" @click="removeFromCompare(id)">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
               </button>
-              <img v-if="appMap[id].logo" :src="appMap[id].logo" :alt="appMap[id].name" class="cmp-col__logo" />
+              <img v-if="appMap[id].logo" :src="appMap[id].logo" :alt="appMap[id].name" class="cmp-col__logo" >
               <div v-else class="cmp-col__logo-fallback">{{ appMap[id].name.charAt(0) }}</div>
               <h2 class="cmp-col__name">{{ appMap[id].name }}</h2>
               <p class="cmp-col__provider">by {{ appMap[id].provider }}</p>
@@ -113,7 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, reactive } from 'vue'
+import { ref, watch, reactive } from 'vue'
 import { useCompare } from '~/composables/useCompare'
 
 definePageMeta({ title: 'Compare Apps — Moonmart' })

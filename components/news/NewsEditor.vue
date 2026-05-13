@@ -15,33 +15,33 @@
     <!-- Title -->
     <div class="ne-field">
       <label class="ne-label" for="ne-title">Title <span class="ne-required">*</span></label>
-      <input id="ne-title" class="ne-input" type="text" maxlength="160" placeholder="What's the news?" :value="modelValue.title" @input="update('title', ($event.target as HTMLInputElement).value)" required />
+      <input id="ne-title" class="ne-input" type="text" maxlength="160" placeholder="What's the news?" :value="modelValue.title" required @input="update('title', ($event.target as HTMLInputElement).value)" >
     </div>
 
     <!-- Excerpt -->
     <div class="ne-field">
       <label class="ne-label" for="ne-excerpt">Excerpt <span class="ne-required">*</span></label>
-      <textarea id="ne-excerpt" class="ne-textarea ne-textarea--short" maxlength="300" placeholder="One-sentence summary shown in the feed…" :value="modelValue.excerpt" @input="update('excerpt', ($event.target as HTMLTextAreaElement).value)" required></textarea>
+      <textarea id="ne-excerpt" class="ne-textarea ne-textarea--short" maxlength="300" placeholder="One-sentence summary shown in the feed…" :value="modelValue.excerpt" required @input="update('excerpt', ($event.target as HTMLTextAreaElement).value)"/>
       <span class="ne-hint">{{ (modelValue.excerpt || '').length }} / 300</span>
     </div>
 
     <!-- Body -->
     <div class="ne-field">
       <label class="ne-label" for="ne-body">Content (Markdown) <span class="ne-required">*</span></label>
-      <textarea id="ne-body" class="ne-textarea ne-textarea--tall" placeholder="Write your story in Markdown…" :value="modelValue.bodyMarkdown" @input="update('bodyMarkdown', ($event.target as HTMLTextAreaElement).value)" required></textarea>
+      <textarea id="ne-body" class="ne-textarea ne-textarea--tall" placeholder="Write your story in Markdown…" :value="modelValue.bodyMarkdown" required @input="update('bodyMarkdown', ($event.target as HTMLTextAreaElement).value)"/>
       <span class="ne-hint">Markdown is supported: **bold**, _italic_, ## headings, `code`, [links](url)</span>
     </div>
 
     <!-- Cover Image -->
     <div class="ne-field">
       <label class="ne-label" for="ne-cover">Cover Image URL</label>
-      <input id="ne-cover" class="ne-input" type="url" placeholder="https://…" :value="modelValue.coverImage ?? ''" @input="update('coverImage', ($event.target as HTMLInputElement).value || null)" />
+      <input id="ne-cover" class="ne-input" type="url" placeholder="https://…" :value="modelValue.coverImage ?? ''" @input="update('coverImage', ($event.target as HTMLInputElement).value || null)" >
     </div>
 
     <!-- Tags -->
     <div class="ne-field">
       <label class="ne-label" for="ne-tags">Tags</label>
-      <input id="ne-tags" class="ne-input" type="text" placeholder="e.g. ai, security, mobile (comma-separated)" :value="(modelValue.tags || []).join(', ')" @input="updateTags(($event.target as HTMLInputElement).value)" />
+      <input id="ne-tags" class="ne-input" type="text" placeholder="e.g. ai, security, mobile (comma-separated)" :value="(modelValue.tags || []).join(', ')" @input="updateTags(($event.target as HTMLInputElement).value)" >
       <span class="ne-hint">Up to 8 tags</span>
     </div>
 

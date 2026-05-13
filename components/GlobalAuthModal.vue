@@ -31,7 +31,7 @@ const {
 } = useGlobalAuth();
 
 // Handle mode changes
-const handleModeChange = (mode: 'login' | 'register' | 'forgot-password') => {
+const handleModeChange = (_mode: 'login' | 'register' | 'forgot-password') => {
   // Note: We can't directly modify authModalConfig.mode as it's readonly
   // The mode change is handled by the AuthForm internally
 };

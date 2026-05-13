@@ -57,10 +57,10 @@ applySEO({
 
 // Status Data
 const { 
-  lastRefresh, 
-  isLoading, 
-  refreshStatus, 
-  formatIncidentTime 
+  lastRefresh: _lastRefresh, 
+  isLoading: _isLoading, 
+  refreshStatus: _refreshStatus, 
+  formatIncidentTime: _formatIncidentTime 
 } = useStatusData()
 
 // Page Title

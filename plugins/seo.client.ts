@@ -101,14 +101,14 @@ export default defineNuxtPlugin((nuxtApp) => {
   // Router middleware for automatic SEO and analytics tracking
   nuxtApp.hook('page:start', () => {
     // Add page loading performance mark
-    if (process.client && typeof performance !== 'undefined') {
+    if (import.meta.client && typeof performance !== 'undefined') {
       performance.mark('page-start')
     }
   })
 
   nuxtApp.hook('page:finish', () => {
     // Add page loading performance mark
-    if (process.client && typeof performance !== 'undefined') {
+    if (import.meta.client && typeof performance !== 'undefined') {
       performance.mark('page-end')
       // Guard against missing 'page-start' (happens on initial hydration)
       if (performance.getEntriesByName('page-start').length) {
@@ -156,14 +156,14 @@ export default defineNuxtPlugin((nuxtApp) => {
     provide: {
       seoTracking: {
         trackEvent: (eventName: string, data: any) => {
-          if (process.client && hasAnalyticsConsent()) {
+          if (import.meta.client && hasAnalyticsConsent()) {
             if (typeof window !== 'undefined' && (window as any).gtag) {
               (window as any).gtag('event', eventName, data)
             }
           }
         },
         trackConversion: (type: string, category?: string, value?: number) => {
-          if (process.client && hasAnalyticsConsent()) {
+          if (import.meta.client && hasAnalyticsConsent()) {
             const conversionData = {
               conversion_type: type,
               category: category || 'general',

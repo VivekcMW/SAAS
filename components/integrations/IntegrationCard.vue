@@ -1,14 +1,14 @@
 <template>
   <div class="integration-card" :class="{ 'featured': integration.popular }">
     <div class="integration-logo">
-      <img :src="integration.logo" :alt="integration.name" />
+      <img :src="integration.logo" :alt="integration.name" >
     </div>
     <div class="integration-content">
       <h3>{{ integration.name }}</h3>
       <p>{{ integration.description }}</p>
       <div class="integration-tags">
         <span class="tag">{{ integration.category }}</span>
-        <span class="tag popular-tag" v-if="integration.popular">Popular</span>
+        <span v-if="integration.popular" class="tag popular-tag">Popular</span>
       </div>
       <slot>
         <button class="btn btn-outline" @click="showDetails">Learn more</button>

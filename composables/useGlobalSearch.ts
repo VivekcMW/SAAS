@@ -181,7 +181,7 @@ export const useGlobalSearch = () => {
         return []
       }
 
-      let results = searchData.filter(item => {
+      const results = searchData.filter(item => {
         // Filter by type
         if (!types.includes(item.type)) return false
 

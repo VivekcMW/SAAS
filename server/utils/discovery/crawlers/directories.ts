@@ -68,8 +68,8 @@ async function crawlG2Categories(maxPerCategory = 30): Promise<DiscoveredApp[]> 
       const html = await httpGet(`https://www.g2.com/categories/${cat}?order=g2_score`, 15_000)
 
       // Extract product cards — G2 renders server-side with JSON-LD
-      const productRe = /"url"\s*:\s*"(https:\/\/www\.g2\.com\/products\/([^"\/]+)\/reviews)"[^}]*"name"\s*:\s*"([^"]+)"/g
-      const websiteRe = /"url"\s*:\s*"(https?:\/\/(?!www\.g2\.com)[^"]+)"/g
+      const productRe = /"url"\s*:\s*"(https:\/\/www\.g2\.com\/products\/([^"/]+)\/reviews)"[^}]*"name"\s*:\s*"([^"]+)"/g
+      const _websiteRe = /"url"\s*:\s*"(https?:\/\/(?!www\.g2\.com)[^"]+)"/g
 
       const products: Record<string, { name: string; g2Url: string; website?: string }> = {}
 
@@ -136,7 +136,7 @@ const CAPTERRA_CATEGORIES = [
   'sales-force-automation', 'analytics', 'collaboration', 'erp'
 ]
 
-async function crawlCapterra(maxPerCategory = 30): Promise<DiscoveredApp[]> {
+async function crawlCapterra(_maxPerCategory = 30): Promise<DiscoveredApp[]> {
   const apps: DiscoveredApp[] = []
 
   for (const cat of CAPTERRA_CATEGORIES) {
@@ -168,7 +168,7 @@ async function crawlCapterra(maxPerCategory = 30): Promise<DiscoveredApp[]> {
 
       // Fallback: extract product links from page
       const productRe = /href="(https?:\/\/(?!capterra\.com|capterraboomerang)[^"]+)"[^>]*data-click-type="visit">/gi
-      const nameRe = /<h3[^>]*>([\s\S]*?)<\/h3>/gi
+      const _nameRe = /<h3[^>]*>([\s\S]*?)<\/h3>/gi
       let pm: RegExpExecArray | null
       while ((pm = productRe.exec(html)) !== null) {
         apps.push({
@@ -381,7 +381,7 @@ async function crawlStackShare(pages = 5): Promise<DiscoveredApp[]> {
       )
 
       // StackShare renders tools in server-side HTML
-      const cardRe = /<a[^>]+href="\/([^"\/]+)"[^>]*class="[^"]*ToolCell[^"]*"[^>]*>([\s\S]{1,1000}?)<\/a>/gi
+      const cardRe = /<a[^>]+href="\/([^"/]+)"[^>]*class="[^"]*ToolCell[^"]*"[^>]*>([\s\S]{1,1000}?)<\/a>/gi
       let card: RegExpExecArray | null
       while ((card = cardRe.exec(html)) !== null) {
         const slug = card[1]
@@ -452,8 +452,8 @@ async function crawlOpenCollective(pages = 5): Promise<DiscoveredApp[]> {
 // ── DB Persister ──────────────────────────────────────────────────────────────
 
 async function persistApps(apps: DiscoveredApp[]): Promise<{ added: number; skipped: number; failed: number }> {
-  const db = getDb()
-  const runId = makeId('run')
+  const _db = getDb()
+  const _runId = makeId('run')
   let added = 0
   let skipped = 0
   let failed = 0

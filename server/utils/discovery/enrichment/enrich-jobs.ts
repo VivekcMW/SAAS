@@ -114,7 +114,7 @@ interface GreenhouseJob { title: string; departments?: Array<{ name: string }>; 
 
 async function fetchGreenhouse(slug: string): Promise<Partial<JobData> | null> {
   try {
-    const json = await httpGet(`https://boards-api.greenhouse.io/v1/boards/${slug}/jobs?content=true`, 12_000)
+    const _json = await httpGet(`https://boards-api.greenhouse.io/v1/boards/${slug}/jobs?content=true`, 12_000)
     const data = JSON.parse(json) as { jobs?: GreenhouseJob[] }
     const jobs = data.jobs ?? []
     if (!jobs.length) return null
@@ -140,7 +140,7 @@ interface LeverPosting { text: string; categories?: { team?: string; department?
 
 async function fetchLever(slug: string): Promise<Partial<JobData> | null> {
   try {
-    const json = await httpGet(`https://api.lever.co/v0/postings/${slug}?mode=json`, 12_000)
+    const _json = await httpGet(`https://api.lever.co/v0/postings/${slug}?mode=json`, 12_000)
     const jobs = JSON.parse(json) as LeverPosting[]
     if (!Array.isArray(jobs) || !jobs.length) return null
 
@@ -166,7 +166,7 @@ interface AshbyResponse { jobBoard?: { jobPostings?: AshbyJob[] } }
 
 async function fetchAshby(slug: string): Promise<Partial<JobData> | null> {
   try {
-    const json = await httpGet(`https://jobs.ashbyhq.com/api/non-user-graphql?op=ApiJobBoardWithTeams`, 12_000)
+    const _json = await httpGet(`https://jobs.ashbyhq.com/api/non-user-graphql?op=ApiJobBoardWithTeams`, 12_000)
     // Try the standard Ashby public endpoint
     const res2 = await fetch('https://api.ashbyhq.com/posting-api/job-board', {
       method: 'POST',

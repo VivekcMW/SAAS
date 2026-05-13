@@ -11,7 +11,7 @@
     <section v-if="data?.featured" class="events-page__featured">
       <div class="events-page__container">
         <div class="event-featured">
-          <img v-if="data.featured.coverImage" :src="data.featured.coverImage" :alt="data.featured.title" class="event-featured__img" />
+          <img v-if="data.featured.coverImage" :src="data.featured.coverImage" :alt="data.featured.title" class="event-featured__img" >
           <div class="event-featured__body">
             <span class="bw-chip bw-chip--primary">Featured</span>
             <h2 class="event-featured__title">{{ data.featured.title }}</h2>
@@ -59,7 +59,7 @@
               :key="ev.id"
               class="event-card"
             >
-              <img v-if="ev.coverImage" :src="ev.coverImage" :alt="ev.title" class="event-card__img" />
+              <img v-if="ev.coverImage" :src="ev.coverImage" :alt="ev.title" class="event-card__img" >
               <div class="event-card__body">
                 <div class="event-card__chips">
                   <span class="bw-chip bw-chip--neutral bw-chip--sm">{{ ev.category }}</span>

@@ -14,7 +14,7 @@ test.describe('Marketplace', () => {
     const filtersCount = await filters.count()
     if (filtersCount > 0) {
       // On desktop it should be visible; on mobile a toggle button is acceptable
-      const visibleFilter = filters.filter({ hasNot: page.locator('[style*="display: none"]') })
+      const _visibleFilter = filters.filter({ hasNot: page.locator('[style*="display: none"]') })
       const hasVisible = await filters.evaluateAll(els => els.some(el => {
         const cs = window.getComputedStyle(el);
         return cs.display !== 'none' && cs.visibility !== 'hidden' && cs.opacity !== '0';

@@ -79,7 +79,7 @@ onBeforeUnmount(() => {
         class="gallery-item"
         @click="openLightbox(i)"
       >
-        <img :src="item.thumbnail || item.url" :alt="item.caption || `${appName} screenshot ${i + 1}`" />
+        <img :src="item.thumbnail || item.url" :alt="item.caption || `${appName} screenshot ${i + 1}`" >
         <span class="gallery-zoom" aria-hidden="true">
           <Icon name="heroicons:magnifying-glass-plus" />
         </span>
@@ -94,7 +94,7 @@ onBeforeUnmount(() => {
           controls
           preload="metadata"
         >
-          <track kind="captions" />
+          <track kind="captions" >
         </video>
         <p v-if="v.caption" class="video-caption">{{ v.caption }}</p>
       </div>
@@ -125,7 +125,7 @@ onBeforeUnmount(() => {
               v-if="currentList[lightboxIndex]?.type === 'image'"
               :src="currentList[lightboxIndex]?.url"
               :alt="currentList[lightboxIndex]?.caption"
-            />
+            >
             <p v-if="currentList[lightboxIndex]?.caption" class="lb-caption">
               {{ currentList[lightboxIndex]?.caption }}
             </p>

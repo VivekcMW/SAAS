@@ -5,10 +5,12 @@ import { useCompare } from '~/composables/useCompare'
 import { useFavorites } from '~/composables/useFavorites'
 import { useGlobalAuth } from '~/composables/useGlobalAuth'
 import { useAuth } from '~/composables/useAuth'
+import { useFmt } from '~/composables/useFmt'
 
 const route = useRoute()
-const router = useRouter()
+const _router = useRouter()
 const appId = computed(() => route.params.id as string)
+const { fmtDate } = useFmt()
 
 interface Pricing {
   type: 'free' | 'trial' | 'paid' | 'contact'
@@ -64,6 +66,11 @@ const { data: similarData } = await useFetch<{ similar: Array<{
   id: string; slug?: string; name: string; logo?: string; description: string
   rating: number; pricingType: string; pricingValue: number | null
 }> }>(() => `/api/apps/${appId.value}/similar`, { key: `similar-${appId.value}` })
+
+const { data: storedFaqData } = await useFetch<{ faqs: Array<{ q: string; a: string }> }>(
+  () => `/api/seo/faqs/${appId.value}`,
+  { key: `faqs-${appId.value}`, default: () => ({ faqs: [] }) }
+)
 
 // --- Normalization helpers ---
 const normalizedFeatures = computed(() => {
@@ -207,7 +214,7 @@ const mappedReviews = computed(() =>
     reviewTitle: r.title,
     content: r.content,
     date: r.createdAt
-      ? new Date(r.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      ? fmtDate(r.createdAt, { month: 'short', day: 'numeric', year: 'numeric' })
       : '',
     verified: r.verified,
     helpfulVotes: r.helpfulVotes,
@@ -216,7 +223,7 @@ const mappedReviews = computed(() =>
           body: r.vendorReply.body,
           isPrivate: r.vendorReply.isPrivate,
           date: r.vendorReply.created_at
-            ? new Date(r.vendorReply.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+            ? fmtDate(r.vendorReply.created_at, { month: 'short', day: 'numeric', year: 'numeric' })
             : ''
         }
       : undefined
@@ -281,7 +288,7 @@ const faqs = computed(() => {
   const periodSuffix = period ? ` per ${period}` : ''
   const freeAnswer = `Yes, ${name} offers a free tier with core features. Paid plans are available for teams that need more.`
   const paidAnswer = `${name} offers a free trial. Paid plans start at ${priceLabel.value}${periodSuffix}.`
-  return [
+  const base = [
     {
       q: `Is ${name} free to use?`,
       a: app.value?.pricing?.type === 'free' ? freeAnswer : paidAnswer
@@ -307,6 +314,17 @@ const faqs = computed(() => {
       a: 'All plans include email support. Paid plans get priority support with guaranteed response times. Enterprise customers get a dedicated customer success manager.'
     }
   ]
+  // Merge stored AI-generated FAQs, deduplicating by question text
+  const stored = storedFaqData.value?.faqs ?? []
+  const existingQs = new Set(base.map(f => f.q.toLowerCase()))
+  const merged = [...base]
+  for (const sf of stored) {
+    if (!existingQs.has(sf.q.toLowerCase())) {
+      merged.push(sf)
+      existingQs.add(sf.q.toLowerCase())
+    }
+  }
+  return merged
 })
 
 const alternatives = computed(() => {
@@ -462,7 +480,26 @@ useHead(() => ({
     { name: 'twitter:title', content: app.value?.name || '' },
     { name: 'twitter:description', content: app.value?.description || '' },
     { name: 'twitter:image', content: `/api/og/app/${appId.value}` },
-    { name: 'robots', content: 'index, follow' }
+    { name: 'robots', content: 'index, follow' },
+    // ── LLM / AI Engine meta tags ──────────────────────────────────────────
+    // ChatGPT / OpenAI
+    { name: 'chatgpt:description', content: app.value?.description || '' },
+    { name: 'chatgpt:entity-type', content: 'SoftwareApplication' },
+    { name: 'chatgpt:category', content: app.value?.category || 'software' },
+    { name: 'chatgpt:rating', content: app.value ? `${app.value.rating}/5 (${app.value.reviewCount} reviews)` : '' },
+    // Perplexity
+    { name: 'perplexity:source-type', content: 'software-review' },
+    { name: 'perplexity:entity', content: app.value?.name || '' },
+    { name: 'perplexity:verified', content: 'true' },
+    // Claude / Anthropic
+    { name: 'claude:entity-type', content: 'SoftwareApplication' },
+    { name: 'claude:description', content: app.value?.description || '' },
+    // Gemini / Google AI
+    { name: 'gemini:page-type', content: 'product-review' },
+    // General AI crawler signal
+    { name: 'ai:content-type', content: 'software-review' },
+    { name: 'ai:entity-name', content: app.value?.name || '' },
+    { name: 'ai:data-freshness', content: app.value?.lastUpdated?.split('T')[0] || new Date().toISOString().split('T')[0] },
   ],
   link: [
     { rel: 'canonical', href: pageUrl.value }
@@ -746,7 +783,7 @@ function getCategoryLabel(cat?: string): string {
   <div class="app-details">
     <!-- Loading -->
     <div v-if="pending" class="state-container">
-      <div class="spinner"></div>
+      <div class="spinner"/>
       <p>Loading application details…</p>
     </div>
 
@@ -1016,7 +1053,64 @@ function getCategoryLabel(cat?: string): string {
           <ComplianceBadges :app-id="app.id" />
         </section>
 
-        <!-- ── SCREENSHOTS ───────────────────────────────────── -->
+        <!-- ── STRUCTURED FACTS (AI/SEO entity signals) ──────── -->
+        <section
+          class="app-facts-section"
+          aria-label="Quick facts about {{ app.name }}"
+          data-schema="SoftwareApplication"
+          itemscope
+          itemtype="https://schema.org/SoftwareApplication"
+        >
+          <dl class="app-facts-grid">
+            <div class="app-fact-item">
+              <dt class="app-fact-label">Category</dt>
+              <dd class="app-fact-value" itemprop="applicationCategory">{{ (app.category || 'SaaS').replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()) }}</dd>
+            </div>
+            <div class="app-fact-item">
+              <dt class="app-fact-label">Pricing</dt>
+              <dd class="app-fact-value" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                <span itemprop="price">{{ priceLabel }}</span>
+              </dd>
+            </div>
+            <div class="app-fact-item">
+              <dt class="app-fact-label">Overall Rating</dt>
+              <dd class="app-fact-value" itemprop="aggregateRating" itemscope itemtype="https://schema.org/AggregateRating">
+                <span itemprop="ratingValue">{{ app.rating.toFixed(1) }}</span>/5
+                (<span itemprop="reviewCount">{{ app.reviewCount }}</span> reviews)
+              </dd>
+            </div>
+            <div class="app-fact-item">
+              <dt class="app-fact-label">Vendor</dt>
+              <dd class="app-fact-value" itemprop="author" itemscope itemtype="https://schema.org/Organization">
+                <span itemprop="name">{{ app.provider || '—' }}</span>
+              </dd>
+            </div>
+            <div class="app-fact-item" v-if="app.version">
+              <dt class="app-fact-label">Latest Version</dt>
+              <dd class="app-fact-value" itemprop="softwareVersion">{{ app.version }}</dd>
+            </div>
+            <div class="app-fact-item" v-if="app.lastUpdated">
+              <dt class="app-fact-label">Last Updated</dt>
+              <dd class="app-fact-value">
+                <time :datetime="app.lastUpdated" itemprop="dateModified">{{ fmtDate(app.lastUpdated) }}</time>
+              </dd>
+            </div>
+            <div class="app-fact-item">
+              <dt class="app-fact-label">Platforms</dt>
+              <dd class="app-fact-value" itemprop="operatingSystem">Web, iOS, Android</dd>
+            </div>
+            <div class="app-fact-item">
+              <dt class="app-fact-label">Compare</dt>
+              <dd class="app-fact-value">
+                <NuxtLink :to="`/alternatives/${app.slug || app.id}`" class="app-fact-link">Alternatives</NuxtLink>
+                &nbsp;·&nbsp;
+                <NuxtLink :to="`/pricing/${app.slug || app.id}`" class="app-fact-link">Pricing plans</NuxtLink>
+              </dd>
+            </div>
+          </dl>
+        </section>
+
+
         <section id="screenshots" class="section">
           <header class="section-head">
             <h2 class="section-title">Screenshots & Demo</h2>
@@ -1057,7 +1151,7 @@ function getCategoryLabel(cat?: string): string {
               </div>
             </li>
           </ul>
-          <div class="about-description" v-html="app.longDescription || app.description"></div>
+          <div class="about-description" v-html="app.longDescription || app.description"/>
           <div class="about-highlights">
             <h3 class="hl-title">Why teams choose {{ app.name }}</h3>
             <div class="hl-grid">
@@ -1292,14 +1386,15 @@ function getCategoryLabel(cat?: string): string {
           <div v-else-if="reviewFormOpen" class="write-review-panel">
             <div class="write-review-header">
               <h3 class="write-review-title">Share your experience with {{ app.name }}</h3>
-              <button class="write-review-close" @click="reviewFormOpen = false" aria-label="Close review form">
+              <button class="write-review-close" aria-label="Close review form" @click="reviewFormOpen = false">
                 <Icon name="heroicons:x-mark" />
               </button>
             </div>
             <form class="write-review-form" @submit.prevent="submitReview">
               <!-- Star ratings grid -->
               <div class="review-ratings-grid">
-                <div v-for="(cat, key) in ({
+                <div
+v-for="(cat, key) in ({
                   overallRating: 'Overall rating',
                   easeRating: 'Ease of use',
                   featuresRating: 'Features',
@@ -1314,8 +1409,8 @@ function getCategoryLabel(cat?: string): string {
                       type="button"
                       class="review-star-btn"
                       :class="{ 'review-star-btn--lit': s <= reviewForm[key as keyof typeof reviewForm] }"
-                      @click="setReviewStar(key as 'overallRating' | 'easeRating' | 'featuresRating' | 'valueRating' | 'supportRating', s)"
                       :aria-label="`${s} star`"
+                      @click="setReviewStar(key as 'overallRating' | 'easeRating' | 'featuresRating' | 'valueRating' | 'supportRating', s)"
                     >★</button>
                   </div>
                 </div>
@@ -1324,11 +1419,11 @@ function getCategoryLabel(cat?: string): string {
               <div v-if="!isAuthenticated" class="form-row">
                 <div class="form-field">
                   <label for="rev-name">Your name <span class="req">*</span></label>
-                  <input id="rev-name" v-model="reviewForm.name" type="text" placeholder="Jane Smith" autocomplete="name" />
+                  <input id="rev-name" v-model="reviewForm.name" type="text" placeholder="Jane Smith" autocomplete="name" >
                 </div>
                 <div class="form-field">
                   <label for="rev-email">Email <span class="req-hint">(kept private)</span></label>
-                  <input id="rev-email" v-model="reviewForm.email" type="email" placeholder="jane@example.com" autocomplete="email" />
+                  <input id="rev-email" v-model="reviewForm.email" type="email" placeholder="jane@example.com" autocomplete="email" >
                 </div>
               </div>
               <!-- Role -->
@@ -1349,22 +1444,22 @@ function getCategoryLabel(cat?: string): string {
               <!-- Title -->
               <div class="form-field">
                 <label for="rev-title">Review title <span class="req">*</span></label>
-                <input id="rev-title" v-model="reviewForm.title" type="text" placeholder="Summarise your experience in one line" required maxlength="100" />
+                <input id="rev-title" v-model="reviewForm.title" type="text" placeholder="Summarise your experience in one line" required maxlength="100" >
               </div>
               <!-- Body -->
               <div class="form-field">
                 <label for="rev-body">Your experience <span class="req">*</span></label>
-                <textarea id="rev-body" v-model="reviewForm.body" rows="4" placeholder="Tell others what you use it for and how it's helped your team…" required></textarea>
+                <textarea id="rev-body" v-model="reviewForm.body" rows="4" placeholder="Tell others what you use it for and how it's helped your team…" required/>
               </div>
               <!-- Pros / Cons -->
               <div class="form-row">
                 <div class="form-field">
                   <label for="rev-pros">What do you like most?</label>
-                  <textarea id="rev-pros" v-model="reviewForm.pros" rows="2" placeholder="Best things about it…"></textarea>
+                  <textarea id="rev-pros" v-model="reviewForm.pros" rows="2" placeholder="Best things about it…"/>
                 </div>
                 <div class="form-field">
                   <label for="rev-cons">What could be better?</label>
-                  <textarea id="rev-cons" v-model="reviewForm.cons" rows="2" placeholder="Areas for improvement…"></textarea>
+                  <textarea id="rev-cons" v-model="reviewForm.cons" rows="2" placeholder="Areas for improvement…"/>
                 </div>
               </div>
               <!-- Actions -->
@@ -1459,17 +1554,17 @@ function getCategoryLabel(cat?: string): string {
                 <div class="form-row">
                   <div class="form-field">
                     <label for="enq-name">Full name <span class="req">*</span></label>
-                    <input id="enq-name" v-model="enquiryForm.name" type="text" placeholder="Jane Smith" required autocomplete="name" />
+                    <input id="enq-name" v-model="enquiryForm.name" type="text" placeholder="Jane Smith" required autocomplete="name" >
                   </div>
                   <div class="form-field">
                     <label for="enq-email">Work email <span class="req">*</span></label>
-                    <input id="enq-email" v-model="enquiryForm.email" type="email" placeholder="jane@company.com" required autocomplete="email" />
+                    <input id="enq-email" v-model="enquiryForm.email" type="email" placeholder="jane@company.com" required autocomplete="email" >
                   </div>
                 </div>
                 <div class="form-row">
                   <div class="form-field">
                     <label for="enq-company">Company name <span class="req">*</span></label>
-                    <input id="enq-company" v-model="enquiryForm.company" type="text" placeholder="Acme Inc." required autocomplete="organization" />
+                    <input id="enq-company" v-model="enquiryForm.company" type="text" placeholder="Acme Inc." required autocomplete="organization" >
                   </div>
                   <div class="form-field">
                     <label for="enq-size">Team size</label>
@@ -1487,7 +1582,7 @@ function getCategoryLabel(cat?: string): string {
                   <label for="enq-msg">
                     {{ enquiryTab === 'demo' ? 'What would you like to see in the demo?' : 'How can we help?' }}
                   </label>
-                  <textarea id="enq-msg" v-model="enquiryForm.message" rows="4" :placeholder="enquiryTab === 'demo' ? 'Tell us about your use case and goals…' : 'Describe your requirements or questions…'"></textarea>
+                  <textarea id="enq-msg" v-model="enquiryForm.message" rows="4" :placeholder="enquiryTab === 'demo' ? 'Tell us about your use case and goals…' : 'Describe your requirements or questions…'"/>
                 </div>
                 <div v-if="enquiryError" class="contact-error">{{ enquiryError }}</div>
                 <button type="submit" class="contact-submit" :disabled="enquirySending || !enquiryForm.name || !enquiryForm.email || !enquiryForm.company">
@@ -1505,7 +1600,7 @@ function getCategoryLabel(cat?: string): string {
             <!-- Right: social proof sidebar -->
             <div class="contact-sidebar">
               <div class="contact-proof-card">
-                <img v-if="app.logo" :src="app.logo" :alt="app.name" class="contact-app-logo" />
+                <img v-if="app.logo" :src="app.logo" :alt="app.name" class="contact-app-logo" >
                 <div class="contact-app-name">{{ app.name }}</div>
                 <div class="contact-app-rating">
                   <span v-for="s in 5" :key="s" class="star" :class="{ 'star--lit': s <= Math.round(app.rating) }">★</span>
@@ -1728,6 +1823,44 @@ function getCategoryLabel(cat?: string): string {
   border-top: 0.5px solid var(--b1);
 }
 .section:first-child { margin-top: 32px; border-top: none; }
+
+/* ── App Facts (SEO entity microdata block) ─────────────────────────────── */
+.app-facts-section {
+  margin-top: 20px;
+  padding: 16px 0 4px;
+  border-top: 0.5px solid var(--b1);
+}
+.app-facts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin: 0;
+}
+.app-fact-item {
+  background: var(--b0, #f9fafb);
+  border: 1px solid var(--b1, #e5e7eb);
+  border-radius: 6px;
+  padding: 10px 14px;
+}
+.app-fact-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--mm-slate, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+.app-fact-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--mm-pearl, #111827);
+}
+.app-fact-link {
+  color: var(--mm-orange, #f97316);
+  text-decoration: none;
+}
+.app-fact-link:hover { text-decoration: underline; }
+/* ─────────────────────────────────────────────────────────── */
 
 .section-head { margin-bottom: 24px; }
 .section-head--row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }

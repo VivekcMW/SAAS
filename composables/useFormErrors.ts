@@ -41,7 +41,7 @@ export const useFormErrors = () => {
   // Clear errors for a specific field
   const clearFieldError = (field: string) => {
     errors.value = errors.value.filter(error => error.field !== field)
-    delete fieldErrors.value[field]
+    Reflect.deleteProperty(fieldErrors.value, field)
   }
 
   // Add a single error
@@ -190,7 +190,7 @@ export const useFormErrors = () => {
       const result = await submitFn()
       options.onSuccess?.(result)
       return result
-    } catch (error) {
+    } catch (_error) {
       handleApiError(error)
       options.onError?.(error)
       throw error
@@ -277,7 +277,7 @@ export const validationRules = {
   }),
   
   phone: (message?: string): FieldValidationRule => ({
-    pattern: /^\+?[\d\s\-\(\)]+$/,
+    pattern: /^\+?[\d\s\-()+]+$/,
     message: message || 'Please enter a valid phone number'
   }),
   

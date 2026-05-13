@@ -19,7 +19,7 @@
             <th>Your rank</th>
             <th>Gap</th>
             <th>Audience overlap</th>
-            <th></th>
+            <th/>
           </tr>
         </thead>
         <tbody>
@@ -45,9 +45,7 @@
                 <span>{{ c.overlap }}%</span>
               </div>
             </td>
-            <td>
-
-            </td>
+            <td/>
           </tr>
         </tbody>
       </table>

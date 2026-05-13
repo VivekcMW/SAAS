@@ -102,8 +102,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'toggleSidebar'): void
-  (e: 'logout'): void
+  (e: 'toggleSidebar' | 'logout'): void
 }>()
 
 const open = ref(false)

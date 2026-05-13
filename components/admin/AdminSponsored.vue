@@ -38,8 +38,8 @@
       </button>
       <button class="sp-tab" :class="{ active: activeTab === 'requests' }" @click="activeTab = 'requests'">
         Vendor requests
-        <span class="sp-tab-count sp-tab-count--pending" v-if="pendingCount > 0">{{ pendingCount }}</span>
-        <span class="sp-tab-count" v-else>{{ vendorRequests.length }}</span>
+        <span v-if="pendingCount > 0" class="sp-tab-count sp-tab-count--pending">{{ pendingCount }}</span>
+        <span v-else class="sp-tab-count">{{ vendorRequests.length }}</span>
       </button>
     </div>
 
@@ -84,7 +84,7 @@
           <div v-if="req.rejectionReason" class="sp-req-reject-reason">
             Rejected: {{ req.rejectionReason }}
           </div>
-          <div class="sp-req-card__actions" v-if="req.status === 'pending'">
+          <div v-if="req.status === 'pending'" class="sp-req-card__actions">
             <button class="bw-btn bw-btn--primary bw-btn--sm" @click="approveRequest(req)">Approve → create campaign</button>
             <button class="bw-btn bw-btn--ghost bw-btn--sm bw-btn--danger" @click="openReject(req)">Reject</button>
           </div>
@@ -205,15 +205,15 @@
             <legend class="sp-legend">App &amp; vendor</legend>
             <div class="bw-field">
               <label class="bw-label">Vendor name <span class="sp-req">*</span></label>
-              <input v-model="form.vendorName" class="bw-input" placeholder="e.g. Acme Corp" />
+              <input v-model="form.vendorName" class="bw-input" placeholder="e.g. Acme Corp" >
             </div>
             <div class="bw-field">
               <label class="bw-label">App name <span class="sp-req">*</span></label>
-              <input v-model="form.appName" class="bw-input" placeholder="e.g. Acme CRM" />
+              <input v-model="form.appName" class="bw-input" placeholder="e.g. Acme CRM" >
             </div>
             <div class="bw-field">
               <label class="bw-label">App ID (optional)</label>
-              <input v-model="form.appId" class="bw-input" placeholder="app_xxxx" />
+              <input v-model="form.appId" class="bw-input" placeholder="app_xxxx" >
             </div>
           </fieldset>
 
@@ -230,7 +230,7 @@
             </div>
             <div class="bw-field">
               <label class="bw-label">Category (optional)</label>
-              <input v-model="form.category" class="bw-input" placeholder="e.g. CRM, Project Management" />
+              <input v-model="form.category" class="bw-input" placeholder="e.g. CRM, Project Management" >
               <p class="sp-hint">Leave blank to show across all categories.</p>
             </div>
           </fieldset>
@@ -241,11 +241,11 @@
             <div class="sp-date-row">
               <div class="bw-field" style="flex:1;">
                 <label class="bw-label">Starts on <span class="sp-req">*</span></label>
-                <input v-model="form.startsAt" type="date" class="bw-input" :min="today" />
+                <input v-model="form.startsAt" type="date" class="bw-input" :min="today" >
               </div>
               <div class="bw-field" style="flex:1;">
                 <label class="bw-label">Ends on <span class="sp-req">*</span></label>
-                <input v-model="form.endsAt" type="date" class="bw-input" :min="form.startsAt || today" />
+                <input v-model="form.endsAt" type="date" class="bw-input" :min="form.startsAt || today" >
               </div>
             </div>
             <div class="bw-field">
@@ -263,7 +263,7 @@
             <legend class="sp-legend">Budget &amp; pricing</legend>
             <div class="bw-field">
               <label class="bw-label">Total budget (USD) <span class="sp-req">*</span></label>
-              <input v-model.number="form.budget" type="number" min="0" step="100" class="bw-input" placeholder="e.g. 2000" />
+              <input v-model.number="form.budget" type="number" min="0" step="100" class="bw-input" placeholder="e.g. 2000" >
             </div>
             <div class="bw-field">
               <label class="bw-label">Notes / contract ref (optional)</label>

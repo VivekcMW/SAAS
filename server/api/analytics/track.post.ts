@@ -74,7 +74,7 @@ function detectPlatform(userAgent: string): string {
   return 'desktop'
 }
 
-async function getLocationFromIP(ip: string) {
+async function getLocationFromIP(_ip: string) {
   // In a real implementation, you would use a service like MaxMind or IP-API
   // For now, return mock data
   return {
@@ -84,7 +84,7 @@ async function getLocationFromIP(ip: string) {
   }
 }
 
-async function updateAppMetrics(appId: string, eventType: string) {
+async function updateAppMetrics(_appId: string, _eventType: string) {
   // In a real implementation, this would update metrics in the database
   // Example of what this would do:
   // - Increment view count for 'view' events

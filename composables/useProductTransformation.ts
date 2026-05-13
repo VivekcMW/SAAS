@@ -116,23 +116,25 @@ export const useProductTransformation = () => {
       case 'freemium':
         return { type: 'trial' };
       
-      case 'subscription':
+      case 'subscription': {
         const priceMatch = formData.pricingDetails?.match(/\$?(\d+(?:\.\d{2})?)/);
-        const price = priceMatch ? parseFloat(priceMatch[1]) : undefined;
+        const price = priceMatch ? Number.parseFloat(priceMatch[1]) : undefined;
         const period = formData.pricingDetails?.toLowerCase().includes('year') ? 'year' : 'month';
         return { 
           type: 'paid', 
           value: price, 
           period: period 
         };
+      }
       
       case 'one-time':
-      case 'one-time purchase':
+      case 'one-time purchase': {
         const oneTimePrice = formData.pricingDetails?.match(/\$?(\d+(?:\.\d{2})?)/);
         return { 
           type: 'paid', 
-          value: oneTimePrice ? parseFloat(oneTimePrice[1]) : undefined 
+          value: oneTimePrice ? Number.parseFloat(oneTimePrice[1]) : undefined 
         };
+      }
       
       case 'usage-based':
         return { type: 'paid', period: 'usage' };

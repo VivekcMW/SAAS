@@ -68,8 +68,8 @@
             <form @submit.prevent="postAnswer">
               <textarea v-model="answerForm.body" rows="6" placeholder="Write your answer…" required minlength="20" />
               <div v-if="!loggedIn" class="add-answer-section__anon">
-                <input v-model="answerForm.author_name" type="text" placeholder="Your name" required />
-                <input v-model="answerForm.author_email" type="email" placeholder="Email (not published)" required />
+                <input v-model="answerForm.author_name" type="text" placeholder="Your name" required >
+                <input v-model="answerForm.author_email" type="email" placeholder="Email (not published)" required >
               </div>
               <p v-if="answerError" class="form-error">{{ answerError }}</p>
               <button type="submit" :disabled="answerLoading" class="btn-primary">

@@ -1,10 +1,10 @@
 <template>
   <div class="popover-container" :class="{ 'popover-visible': isVisible }">
-    <div class="popover-overlay" v-if="isVisible" @click="closeModal"></div>
+    <div v-if="isVisible" class="popover-overlay" @click="closeModal"/>
     <div class="popover-content" :class="{ 'popover-content-visible': isVisible }">
       <div class="popover-header">
         <div class="integration-logo">
-          <img :src="integration.logo" :alt="integration.name" />
+          <img :src="integration.logo" :alt="integration.name" >
         </div>
         <button class="close-button" @click="closeModal">
           <NuxtIcon name="heroicons:x-mark" size="1.25rem" />
@@ -15,7 +15,7 @@
         <h2 class="integration-title">{{ integration.name }}</h2>
         <div class="integration-tags">
           <span class="tag">{{ integration.category }}</span>
-          <span class="tag popular-tag" v-if="integration.popular">Popular</span>
+          <span v-if="integration.popular" class="tag popular-tag">Popular</span>
         </div>
         
         <div class="integration-section">
@@ -53,12 +53,12 @@
               v-for="(item, index) in getDefaultKnowledgeItems()" 
               :key="index" 
               class="knowledge-item"
-              @click="openKnowledgeItem(item, integration)"
               tabindex="0"
-              @keydown.enter="openKnowledgeItem(item, integration)"
-              @keydown.space.prevent="openKnowledgeItem(item, integration)"
               role="button"
               :aria-label="`Learn more about ${integration.name} ${item.title}`"
+              @click="openKnowledgeItem(item, integration)"
+              @keydown.enter="openKnowledgeItem(item, integration)"
+              @keydown.space.prevent="openKnowledgeItem(item, integration)"
             >
               <NuxtIcon :name="item.icon" class="knowledge-icon" />
               <div class="knowledge-content">
@@ -81,7 +81,7 @@
     </div>
 
     <!-- Documentation Modal -->
-    <div class="kb-modal-overlay" v-if="showDocModal" @click="showDocModal = false">
+    <div v-if="showDocModal" class="kb-modal-overlay" @click="showDocModal = false">
       <div class="kb-modal-container" @click.stop>
         <div class="kb-modal-header">
           <h3>{{ currentKnowledgeContent?.title }}</h3>
@@ -148,7 +148,7 @@
     </div>
 
     <!-- Videos Modal -->
-    <div class="kb-modal-overlay" v-if="showVideoModal" @click="showVideoModal = false">
+    <div v-if="showVideoModal" class="kb-modal-overlay" @click="showVideoModal = false">
       <div class="kb-modal-container" @click.stop>
         <div class="kb-modal-header">
           <h3>{{ currentKnowledgeContent?.title }}</h3>
@@ -205,7 +205,7 @@
     </div>
 
     <!-- FAQ Modal -->
-    <div class="kb-modal-overlay" v-if="showFAQModal" @click="showFAQModal = false">
+    <div v-if="showFAQModal" class="kb-modal-overlay" @click="showFAQModal = false">
       <div class="kb-modal-container" @click.stop>
         <div class="kb-modal-header">
           <h3>{{ currentKnowledgeContent?.title }}</h3>

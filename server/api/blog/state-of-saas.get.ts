@@ -5,7 +5,7 @@ import { getDb, makeId } from '~/server/utils/database'
  * Returns (or generates) the latest "State of SaaS" weekly digest post.
  * Auto-generated from live DB data: top apps, trending reviews, new listings.
  */
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (_event) => {
   const db = getDb()
 
   // Get week start (last Monday)

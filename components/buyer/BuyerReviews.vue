@@ -93,7 +93,7 @@
         <section class="bw-card rev-badge-card" style="margin-top: 16px;">
           <h3 class="bw-card__title rev-badge-card__title">Verified Buyer badge</h3>
           <p class="rev-badge-card__desc">Write 3 verified reviews to unlock the Verified Buyer badge on your profile.</p>
-          <div class="progress"><div class="progress__fill" :style="{ width: `${progress}%` }"></div></div>
+          <div class="progress"><div class="progress__fill" :style="{ width: `${progress}%` }"/></div>
           <div class="rev-badge-card__count">{{ reviews.length }} / 3 reviews</div>
         </section>
       </aside>

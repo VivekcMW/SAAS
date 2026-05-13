@@ -363,7 +363,7 @@ export async function runVCAggregatorCrawler(
 
     for (const entry of toProcess) {
       try {
-        // eslint-disable-next-line prefer-const
+         
         let extracted = {
           name: entry.name,
           tagline: entry.description || entry.name,

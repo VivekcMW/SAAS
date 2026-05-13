@@ -57,7 +57,7 @@
           <div class="review-header">
             <div class="reviewer-info">
               <div class="reviewer-avatar">
-                <img :src="review.avatar" :alt="review.name" />
+                <img :src="review.avatar" :alt="review.name" >
               </div>
               <div class="reviewer-details">
                 <h5 class="reviewer-name">{{ review.name }}</h5>
@@ -119,7 +119,7 @@
                 <div 
                   class="feature-progress" 
                   :style="{ width: feature.percentage + '%' }"
-                ></div>
+                />
               </div>
               <span class="feature-percentage">{{ feature.percentage }}%</span>
             </div>
@@ -139,7 +139,7 @@
                 <div 
                   class="issue-progress" 
                   :style="{ width: issue.percentage + '%' }"
-                ></div>
+                />
               </div>
               <span class="issue-percentage">{{ issue.percentage }}%</span>
             </div>
@@ -175,7 +175,7 @@
 import { ref, computed } from 'vue';
 
 // Props
-const props = defineProps({
+defineProps({
   reviews: {
     type: Array,
     default: () => []

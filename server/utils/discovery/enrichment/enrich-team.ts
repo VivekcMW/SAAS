@@ -130,7 +130,7 @@ async function enrichFromAboutPage(domain: string): Promise<Partial<TeamData>> {
 // ── Source 2: LinkedIn Company Page ──────────────────────────────────────────
 
 const LI_EMPLOYEE_RE = /["']?(?:employeesOnLinkedIn|companyEmployeesCount|staffCount)["']?\s*:\s*(\d+)/i
-const LI_NAME_RE = /<h1[^>]*>([^<]{3,80})<\/h1>/i
+const _LI_NAME_RE = /<h1[^>]*>([^<]{3,80})<\/h1>/i
 
 async function enrichFromLinkedIn(companySlug: string): Promise<{ team_size_min?: number; team_size_max?: number }> {
   try {
@@ -188,7 +188,7 @@ async function enrichFromHunter(domain: string): Promise<TeamData['founders']> {
 
 // ── Source 4: Crunchbase Public Summary ──────────────────────────────────────
 
-interface CrunchbasePerson { name?: string; title?: string; linkedin?: string }
+interface _CrunchbasePerson { name?: string; title?: string; linkedin?: string }
 
 async function enrichFromCrunchbase(companyName: string): Promise<{ founders: TeamData['founders']; team_size_min?: number }> {
   try {

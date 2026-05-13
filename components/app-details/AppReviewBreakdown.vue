@@ -136,7 +136,7 @@ async function submitReply(reviewId: string) {
             <div
               class="bar-fill"
               :style="{ width: `${pct(breakdown?.[star as keyof RatingBreakdown] || 0)}%` }"
-            ></div>
+            />
           </div>
           <span class="bar-pct">{{ pct(breakdown?.[star as keyof RatingBreakdown] || 0) }}%</span>
         </div>
@@ -245,8 +245,8 @@ async function submitReply(reviewId: string) {
                 Private
               </button>
             </div>
-            <span class="rv-hint" v-if="replyStates[r.id].isPrivate">Only the reviewer can see this</span>
-            <span class="rv-hint" v-else>Visible to all visitors</span>
+            <span v-if="replyStates[r.id].isPrivate" class="rv-hint">Only the reviewer can see this</span>
+            <span v-else class="rv-hint">Visible to all visitors</span>
           </div>
 
           <textarea
@@ -255,7 +255,7 @@ async function submitReply(reviewId: string) {
             placeholder="Write a helpful, professional response…"
             rows="4"
             :disabled="replyStates[r.id].submitting"
-          ></textarea>
+          />
 
           <p v-if="replyStates[r.id].error" class="reply-error">
             <Icon name="heroicons:exclamation-circle" />
@@ -271,7 +271,7 @@ async function submitReply(reviewId: string) {
               :disabled="replyStates[r.id].submitting || !replyStates[r.id].text.trim()"
               @click="submitReply(r.id)"
             >
-              <span v-if="replyStates[r.id].submitting" class="spinner"></span>
+              <span v-if="replyStates[r.id].submitting" class="spinner"/>
               <Icon v-else name="heroicons:paper-airplane" />
               {{ replyStates[r.id].submitting ? 'Posting…' : 'Post reply' }}
             </button>
