@@ -7,6 +7,8 @@ import { useGlobalAuth } from '~/composables/useGlobalAuth'
 import { useAuth } from '~/composables/useAuth'
 import { useFmt } from '~/composables/useFmt'
 
+useHreflang()
+
 const route = useRoute()
 const _router = useRouter()
 const appId = computed(() => route.params.id as string)
@@ -476,6 +478,7 @@ useHead(() => ({
     { property: 'og:image', content: `/api/og/app/${appId.value}` },
     { property: 'og:url', content: pageUrl.value },
     { property: 'og:type', content: 'website' },
+    { property: 'og:locale', content: 'en_US' },
     { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:title', content: app.value?.name || '' },
     { name: 'twitter:description', content: app.value?.description || '' },
@@ -535,7 +538,23 @@ useHead(() => ({
               acceptedAnswer: { '@type': 'Answer', text: faq.a }
             }))
           })
-        }
+        },
+        ...(app.value.rating && app.value.reviewCount > 0 ? [{
+          type: 'application/ld+json',
+          innerHTML: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'SoftwareApplication',
+            name: app.value.name,
+            applicationCategory: 'BusinessApplication',
+            aggregateRating: {
+              '@type': 'AggregateRating',
+              ratingValue: app.value.rating.toFixed(1),
+              reviewCount: app.value.reviewCount,
+              bestRating: '5',
+              worstRating: '1'
+            }
+          })
+        }] : [])
       ]
     : []
 }))

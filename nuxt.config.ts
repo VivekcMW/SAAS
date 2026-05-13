@@ -226,6 +226,7 @@ export default defineNuxtConfig({
         { name: 'author', content: 'Moonmart' },
         { name: 'robots', content: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' },
         { name: 'googlebot', content: 'index, follow' },
+        { name: 'google-site-verification', content: process.env.GOOGLE_SITE_VERIFICATION || '' },
         { name: 'format-detection', content: 'telephone=no' },
         { name: 'theme-color', content: '#D4A843' },
         { name: 'msapplication-TileColor', content: '#07090F' },

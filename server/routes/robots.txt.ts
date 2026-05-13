@@ -197,6 +197,11 @@ Sitemap: ${baseUrl}/api/sitemap-categories.xml
 Sitemap: ${baseUrl}/api/sitemap-blog.xml
 Sitemap: ${baseUrl}/api/sitemap-comparisons.xml
 Sitemap: ${baseUrl}/api/sitemap-hreflang.xml
+Sitemap: ${baseUrl}/api/sitemap-best.xml
+Sitemap: ${baseUrl}/api/sitemap-features.xml
+
+# Blog RSS feed
+Feed: ${baseUrl}/feed.xml
 
 # AI-readable full content
 LLMs: ${baseUrl}/llms.txt

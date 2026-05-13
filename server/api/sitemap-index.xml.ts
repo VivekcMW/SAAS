@@ -18,6 +18,10 @@ export default defineEventHandler(async (event) => {
     { loc: `${base}/api/sitemap-blog.xml`, lastmod: today },
     // Hreflang (i18n)
     { loc: `${base}/api/sitemap-hreflang.xml`, lastmod: today },
+    // Best [category]-software pages
+    { loc: `${base}/api/sitemap-best.xml`, lastmod: today },
+    // Features pages
+    { loc: `${base}/api/sitemap-features.xml`, lastmod: today },
   ]
 
   const entries = sitemaps.map((s) =>

@@ -403,6 +403,58 @@ applySEO({
   ogType: 'website'
 })
 
+// ── Global structured data: WebSite + Organization + SearchAction ───────────
+useHead({
+  script: [
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        '@id': 'https://moonmart.ai/#website',
+        name: 'Moonmart',
+        url: 'https://moonmart.ai',
+        description: 'AI-powered SaaS marketplace — discover, compare and launch the right software for every team.',
+        inLanguage: 'en',
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: 'https://moonmart.ai/marketplace?q={search_term_string}'
+          },
+          'query-input': 'required name=search_term_string'
+        }
+      })
+    },
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        '@id': 'https://moonmart.ai/#organization',
+        name: 'Moonmart',
+        url: 'https://moonmart.ai',
+        logo: {
+          '@type': 'ImageObject',
+          url: 'https://moonmart.ai/assets/images/og-image.jpg',
+          width: 512,
+          height: 512
+        },
+        sameAs: [
+          'https://twitter.com/moonmart',
+          'https://www.linkedin.com/company/moonmart'
+        ],
+        contactPoint: {
+          '@type': 'ContactPoint',
+          contactType: 'customer support',
+          url: 'https://moonmart.ai/contact',
+          availableLanguage: 'English'
+        }
+      })
+    }
+  ]
+})
+
 const aiPrompt = ref('')
 const aiLoading = ref(false)
 const aiResults = ref<Array<{ app: { id: string; name: string; slug: string }; score: number; reasoning: string; tradeoff: string }>>([])

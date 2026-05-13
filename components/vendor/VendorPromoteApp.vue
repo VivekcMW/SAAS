@@ -79,6 +79,15 @@ async function submitCampaign() {
     campaigns.value = data.campaigns
     success.value = true
     showForm.value = false
+    // GA4 campaign_created conversion event
+    if (import.meta.client && typeof window !== 'undefined' && (window as any).gtag) {
+      ;(window as any).gtag('event', 'campaign_created', {
+        app_id: props.appId,
+        platform: form.value.platform,
+        campaign_type: form.value.campaignType,
+        daily_budget: form.value.dailyBudget
+      })
+    }
   } catch (err: unknown) {
     const e = err as { data?: { statusMessage?: string } }
     error.value = e?.data?.statusMessage || 'Failed to create campaign. Please try again.'

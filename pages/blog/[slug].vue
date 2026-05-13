@@ -209,6 +209,42 @@ if (post.value) {
   })
 }
 
+// NewsArticle JSON-LD schema
+if (post.value) {
+  useHead({
+    script: [
+      {
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'NewsArticle',
+          headline: post.value.title,
+          description: post.value.excerpt,
+          url: `https://moonmart.ai/blog/${post.value.slug}`,
+          datePublished: post.value.published_at || post.value.date,
+          dateModified: (post.value as any).updated_at || post.value.published_at || post.value.date,
+          author: {
+            '@type': 'Person',
+            name: post.value.author
+          },
+          publisher: {
+            '@type': 'Organization',
+            name: 'Moonmart',
+            logo: {
+              '@type': 'ImageObject',
+              url: 'https://moonmart.ai/assets/images/og-image.jpg'
+            }
+          },
+          ...(post.value.image ? { image: { '@type': 'ImageObject', url: post.value.image } } : {}),
+          articleSection: post.value.category,
+          inLanguage: 'en',
+          isAccessibleForFree: true
+        })
+      }
+    ]
+  })
+}
+
 const { fmtDate } = useFmt()
 
 const formattedDate = computed(() => {

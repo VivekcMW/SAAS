@@ -115,6 +115,8 @@ interface App {
   tags?: string[]
 }
 
+useHreflang()
+
 const route = useRoute()
 const slug = route.params.slug as string
 const currentYear = new Date().getFullYear()
@@ -178,6 +180,11 @@ useHead(() => {
       { property: 'og:title', content: `${name} Alternatives — moonmart.ai` },
       { property: 'og:description', content: `Top alternatives to ${name} ranked by verified buyers.` },
       { property: 'og:image', content: `https://moonmart.ai/api/og/app/${slug}` },
+      { property: 'og:locale', content: 'en_US' },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: `${name} Alternatives — moonmart.ai` },
+      { name: 'twitter:description', content: `Top alternatives to ${name} ranked by verified buyers.` },
+      { name: 'twitter:image', content: `https://moonmart.ai/api/og/app/${slug}` },
       { name: 'robots', content: 'index, follow' },
       // LLM / AI crawler meta
       { name: 'chatgpt:description', content: desc },

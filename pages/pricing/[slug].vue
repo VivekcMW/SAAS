@@ -5,6 +5,8 @@
  * SEO target: "{AppName} Pricing {year} — Plans, Cost & Free Trial"
  * Generates: Offer schema, SoftwareApplication, BreadcrumbList, FAQPage
  */
+useHreflang()
+
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 const year = new Date().getFullYear()
@@ -114,7 +116,11 @@ useHead(() => ({
     { property: 'og:description', content: description.value },
     { property: 'og:url', content: canonical.value },
     { property: 'og:image', content: `https://moonmart.ai/api/og/app/${slug.value}` },
+    { property: 'og:locale', content: 'en_US' },
     { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: title.value },
+    { name: 'twitter:description', content: description.value },
+    { name: 'twitter:image', content: `https://moonmart.ai/api/og/app/${slug.value}` },
     { name: 'chatgpt:page-type', content: 'pricing' },
     { name: 'perplexity:source-type', content: 'software-pricing' },
     { name: 'robots', content: 'index, follow' },

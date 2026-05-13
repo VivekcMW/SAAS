@@ -111,6 +111,13 @@ export const useAuth = () => {
       })
       setUser(response.user)
       initialized.value = true
+      // GA4 sign_up conversion event
+      if (import.meta.client && typeof window !== 'undefined' && (window as any).gtag) {
+        ;(window as any).gtag('event', 'sign_up', {
+          method: 'email',
+          user_role: response.user?.role ?? 'buyer'
+        })
+      }
       return currentUser.value
     } finally {
       isLoading.value = false

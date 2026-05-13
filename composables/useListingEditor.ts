@@ -230,6 +230,14 @@ export function useListingEditor() {
       if (data.listing?.id) publishedId.value = data.listing.id
       publishedName.value = draft.name
       lastSaved.value = new Date()
+      // GA4 listing_published conversion event
+      if (import.meta.client && typeof window !== 'undefined' && (window as any).gtag) {
+        ;(window as any).gtag('event', 'listing_published', {
+          listing_id: publishedId.value,
+          listing_name: publishedName.value,
+          category: draft.category ?? ''
+        })
+      }
       // Clear session draft after publish
       if (import.meta.client) sessionStorage.removeItem(SESSION_KEY)
       return true

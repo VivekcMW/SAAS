@@ -9,6 +9,8 @@
  */
 import { computed } from 'vue'
 
+useHreflang()
+
 const route = useRoute()
 const slug = computed(() => (route.params.slug as string) || '')
 const year = new Date().getFullYear()
@@ -133,9 +135,12 @@ useHead(() => ({
     { property: 'og:description', content: description.value },
     { property: 'og:url', content: canonical.value },
     { property: 'og:type', content: 'article' },
+    { property: 'og:image', content: appA.value ? `https://moonmart.ai/api/og/app/${appA.value.slug || appA.value.id}` : 'https://moonmart.ai/assets/images/og-image.jpg' },
+    { property: 'og:locale', content: 'en_US' },
     { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:title', content: title.value },
     { name: 'twitter:description', content: description.value },
+    { name: 'twitter:image', content: appA.value ? `https://moonmart.ai/api/og/app/${appA.value.slug || appA.value.id}` : 'https://moonmart.ai/assets/images/og-image.jpg' },
     // LLM-specific meta
     { name: 'chatgpt:page-type', content: 'comparison' },
     { name: 'perplexity:source-type', content: 'software-comparison' },
