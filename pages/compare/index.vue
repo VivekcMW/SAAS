@@ -48,7 +48,7 @@
                 {{ appMap[id].rating?.toFixed(1) }}
                 <span class="cmp-col__review-count">({{ appMap[id].reviewCount }})</span>
               </div>
-              <NuxtLink :to="`/app/${id}`" class="cmp-col__view">View details →</NuxtLink>
+              <NuxtLink :to="`/marketplace/app/${id}`" class="cmp-col__view">View details →</NuxtLink>
             </div>
 
             <!-- Rows -->

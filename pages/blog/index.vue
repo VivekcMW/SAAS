@@ -1,672 +1,257 @@
 <template>
-  <div class="blog">
-    <!-- Intro -->
-    <header class="blog__intro">
-      <div class="blog__wrap">
-        <span class="blog__label">Journal</span>
-        <h1 class="blog__headline">The Software Insider.</h1>
-        <p class="blog__lede">
-          Plain-spoken guides, honest comparisons, and practical playbooks for choosing
-          software that actually fits your business.
+  <div class="blog-feed">
+    <!-- Header -->
+    <header class="bf-header">
+      <div class="bf-wrap">
+        <span class="bf-eyebrow">Editorial</span>
+        <h1 class="bf-headline">The Software Insider.</h1>
+        <p class="bf-lede">
+          Plain-spoken guides, honest comparisons, and practical playbooks for
+          choosing software that actually fits your business.
         </p>
       </div>
     </header>
 
-    <!-- Featured -->
-    <section v-if="featuredPost" class="blog__feature">
-      <div class="blog__wrap">
-        <NuxtLink :to="`/blog/${featuredPost.slug}`" class="feature">
-          <div class="feature__text">
-            <span class="feature__kicker">This week’s read</span>
-            <h2 class="feature__title">{{ featuredPost.title }}</h2>
-            <p class="feature__excerpt">{{ featuredPost.excerpt }}</p>
-            <div class="feature__meta">
-              <span>{{ featuredPost.category }}</span>
-              <span aria-hidden="true">·</span>
-              <span>{{ formatDate(featuredPost.date) }}</span>
-              <span aria-hidden="true">·</span>
-              <span>{{ featuredPost.author }}</span>
-            </div>
+    <!-- Featured hero -->
+    <section v-if="!pending && featuredPost" class="bf-hero">
+      <div class="bf-wrap">
+        <NuxtLink :to="`/blog/${featuredPost.slug}`" class="bf-hero__card">
+          <div class="bf-hero__media">
+            <img :src="getThumbnail(featuredPost.slug) || FALLBACK" :alt="featuredPost.title" loading="eager" class="bf-hero__img" @error="onImgError">
           </div>
-          <div class="feature__media">
-            <img :src="getThumbnail(featuredPost.slug)" :alt="featuredPost.title" loading="lazy" @error="onImgError">
+          <div class="bf-hero__body">
+            <div class="bf-hero__top">
+              <span class="bf-badge">{{ featuredPost.category }}</span>
+              <span class="bf-hero__author">{{ featuredPost.author }}</span>
+            </div>
+            <h2 class="bf-hero__title">{{ featuredPost.title }}</h2>
+            <p class="bf-hero__excerpt">{{ featuredPost.excerpt }}</p>
+            <div class="bf-hero__footer">
+              <time :datetime="featuredPost.date">{{ fmtDate(featuredPost.date) }}</time>
+              <span v-if="featuredPost.readMinutes">{{ featuredPost.readMinutes }} min read</span>
+            </div>
           </div>
         </NuxtLink>
       </div>
     </section>
 
-    <!-- Topics bar -->
-    <div class="blog__bar">
-      <div class="blog__wrap">
-        <div class="topics" role="tablist" aria-label="Filter articles by topic">
-          <button
-            type="button"
-            role="tab"
-            class="topic"
-            :class="{ 'topic--on': activeCategory === 'all' }"
-            :aria-selected="activeCategory === 'all'"
-            @click="setCategory('all')"
-          >All</button>
-          <button
-            v-for="category in categories"
-            :key="category"
-            type="button"
-            role="tab"
-            class="topic"
-            :class="{ 'topic--on': activeCategory === category }"
-            :aria-selected="activeCategory === category"
-            @click="setCategory(category)"
-          >{{ category }}</button>
+    <!-- Filter bar -->
+    <div class="bf-bar">
+      <div class="bf-wrap bf-bar__inner">
+        <div class="bf-bar__cats" role="tablist" aria-label="Filter by topic">
+          <button type="button" role="tab" class="bf-cat" :class="{ 'bf-cat--on': activeCategory === 'all' }" :aria-selected="activeCategory === 'all'" @click="setCategory('all')">All</button>
+          <button v-for="cat in categories" :key="cat" type="button" role="tab" class="bf-cat" :class="{ 'bf-cat--on': activeCategory === cat }" :aria-selected="activeCategory === cat" @click="setCategory(cat)">{{ cat }}</button>
         </div>
-
-        <label class="find">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="11" cy="11" r="7" />
-            <path d="M21 21l-4.3-4.3" />
-          </svg>
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Search articles"
-            aria-label="Search articles"
-            @input="filterPosts"
-          >
+        <label class="bf-search">
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input v-model="searchQuery" type="text" placeholder="Search articles…" aria-label="Search articles">
         </label>
+        <p class="bf-bar__count">{{ filteredPosts.length }} article{{ filteredPosts.length !== 1 ? 's' : '' }}</p>
       </div>
     </div>
 
-    <!-- List -->
-    <section class="blog__list">
-      <div class="blog__wrap">
-        <div v-if="postsLoading" style="text-align:center;padding:3rem 0;color:#888;">Loading articles…</div>
-        <template v-else>
-        <div v-if="filteredPosts.length > 0" class="blog__meta-row">
-          <span>
-            Showing <strong>{{ displayedPosts.length }}</strong>
-            of {{ filteredPosts.length }} article<span v-if="filteredPosts.length !== 1">s</span>
-          </span>
-          <span v-if="activeCategory !== 'all' || searchQuery" class="blog__meta-reset">
-            <button type="button" @click="resetFilters">Clear filters</button>
-          </span>
+    <!-- Grid section -->
+    <section class="bf-grid-section">
+      <div class="bf-wrap">
+        <!-- Skeleton -->
+        <div v-if="pending" class="bf-skeleton-grid">
+          <div v-for="n in 6" :key="n" class="bf-skeleton" />
         </div>
-
-        <div v-if="filteredPosts.length > 0" class="grid">
-          <article
-            v-for="post in displayedPosts"
-            :key="post.slug"
-            class="post"
-          >
-            <NuxtLink :to="`/blog/${post.slug}`" class="post__link">
-              <div class="post__media">
-                <img :src="getThumbnail(post.slug)" :alt="post.title" loading="lazy" @error="onImgError">
+        <!-- Empty -->
+        <div v-else-if="displayedPosts.length === 0" class="bf-empty">
+          <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"/></svg>
+          <p>No articles match your search.</p>
+          <button type="button" class="bf-empty__btn" @click="resetFilters">Browse all</button>
+        </div>
+        <!-- Card grid -->
+        <div v-else class="bf-grid">
+          <article v-for="post in displayedPosts" :key="post.slug" class="bf-card">
+            <NuxtLink :to="`/blog/${post.slug}`" class="bf-card__link">
+              <div class="bf-card__cover">
+                <img :src="getThumbnail(post.slug) || FALLBACK" :alt="post.title" loading="lazy" class="bf-card__img" @error="onImgError">
+                <span class="bf-badge bf-badge--abs">{{ post.category }}</span>
               </div>
-              <div class="post__body">
-                <div class="post__meta">
-                  <span class="post__tag">{{ post.category }}</span>
-                  <span class="post__date">{{ formatDate(post.date) }}</span>
+              <div class="bf-card__body">
+                <div class="bf-card__meta">
+                  <time :datetime="post.date" class="bf-card__date">{{ fmtDate(post.date) }}</time>
+                  <span v-if="post.readMinutes" class="bf-card__read">· {{ post.readMinutes }} min</span>
                 </div>
-                <h3 class="post__title">{{ post.title }}</h3>
-                <p class="post__excerpt">{{ post.excerpt }}</p>
-                <span class="post__cta">
+                <h3 class="bf-card__title">{{ post.title }}</h3>
+                <p class="bf-card__excerpt">{{ post.excerpt }}</p>
+                <span class="bf-card__cta">
                   Read article
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M5 12h14" />
-                    <path d="M13 6l6 6-6 6" />
-                  </svg>
+                  <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
                 </span>
               </div>
             </NuxtLink>
           </article>
         </div>
-
-        <!-- Empty -->
-        <div v-else class="empty">
-          <h3>Nothing matches that search.</h3>
-          <p>Try a different keyword, or browse all articles.</p>
-          <button type="button" class="empty__btn" @click="resetFilters">Browse all</button>
-        </div>
-
         <!-- Pagination -->
-        <nav v-if="filteredPosts.length > 0 && totalPages > 1" class="pager" aria-label="Pagination">
-          <button
-            type="button"
-            class="pager__btn"
-            :disabled="currentPage === 1"
-            aria-label="Previous page"
-            @click="setPage(currentPage - 1)"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M19 12H5" />
-              <path d="M11 6l-6 6 6 6" />
-            </svg>
+        <nav v-if="totalPages > 1" class="bf-pagination" aria-label="Pagination">
+          <button class="bf-page-btn" :disabled="currentPage <= 1" aria-label="Previous page" @click="setPage(currentPage - 1)">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
           </button>
-          <span class="pager__info">
-            <strong>{{ currentPage }}</strong> / {{ totalPages }}
-          </span>
-          <button
-            type="button"
-            class="pager__btn"
-            :disabled="currentPage === totalPages"
-            aria-label="Next page"
-            @click="setPage(currentPage + 1)"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M5 12h14" />
-              <path d="M13 6l6 6-6 6" />
-            </svg>
+          <span class="bf-page-info">Page <strong>{{ currentPage }}</strong> of {{ totalPages }}</span>
+          <button class="bf-page-btn" :disabled="currentPage >= totalPages" aria-label="Next page" @click="setPage(currentPage + 1)">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
           </button>
         </nav>
-        </template><!-- /v-else (not loading) -->
       </div>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, watch } from 'vue'
+import { blogPosts as staticBlogPosts } from '~/utils/blogPosts'
 
-// Import the static thumbnails composable
-const { getThumbnail } = useStaticThumbnails();
+useHead({
+  title: 'Blog — The Software Insider | Moonmart',
+  meta: [{ name: 'description', content: 'Plain-spoken guides, honest comparisons, and practical playbooks for choosing software that actually fits your business.' }]
+})
 
-// Graceful fallback when a thumbnail fails to load
-const FALLBACK_THUMB = '/assets/images/hero-dashboard.png';
-const onImgError = (e: Event) => {
-  const img = e.target as HTMLImageElement | null;
-  if (img && img.src && !img.src.endsWith(FALLBACK_THUMB)) {
-    img.src = FALLBACK_THUMB;
-  }
-};
+const FALLBACK = '/assets/images/hero-dashboard.png'
+const PER_PAGE = 6
 
-// Featured Post
-// Blog posts loaded from database via API
-interface BlogPost {
-  id: string; slug: string; title: string; excerpt: string;
-  category: string; author: string; author_title?: string;
-  read_minutes?: number; image?: string; tags?: string[];
-  date: string; // mapped from published_at
-}
-
-const allPosts = ref<BlogPost[]>([])
-const featuredPost = computed<BlogPost | null>(() => allPosts.value[0] ?? null)
-const postsLoading = ref(false)
-
-async function loadPosts() {
-  postsLoading.value = true
-  try {
-    const res = await $fetch<{ posts: any[]; total: number }>('/api/blog', {
-      query: { limit: 100 },
-    })
-    allPosts.value = (res.posts ?? []).map(p => ({
-      ...p,
-      date: p.published_at ?? p.date ?? '',
-      image: p.image ? getThumbnail(p.slug) || p.image : getThumbnail(p.slug) || FALLBACK_THUMB,
-    }))
-  } catch {
-    // API unavailable — leave allPosts empty, page will show empty state
-  } finally {
-    postsLoading.value = false
-  }
-}
-
-
-// Extract unique categories from posts
-const categories = computed(() => {
-  const categoriesSet = new Set(allPosts.value.map(post => post.category));
-  return Array.from(categoriesSet);
-});
-
-// Filtering and pagination state
-const activeCategory = ref('all');
-const searchQuery = ref('');
-const filteredPosts = ref<BlogPost[]>([]);
-const currentPage = ref(1);
-const postsPerPage = 6;
-
-// Computed total pages
-const totalPages = computed(() => {
-  return Math.ceil(filteredPosts.value.length / postsPerPage);
-});
-
-// Display posts for current page
-const displayedPosts = computed(() => {
-  const startIndex = (currentPage.value - 1) * postsPerPage;
-  const endIndex = startIndex + postsPerPage;
-  return filteredPosts.value.slice(startIndex, endIndex);
-});
-
-// Filter posts based on category and search query
-const filterPosts = () => {
-  let filtered = [...allPosts.value];
-  
-  // Filter by category
-  if (activeCategory.value !== 'all') {
-    filtered = filtered.filter(post => post.category === activeCategory.value);
-  }
-  
-  // Filter by search query
-  if (searchQuery.value.trim()) {
-    const query = searchQuery.value.toLowerCase();
-    filtered = filtered.filter(post => 
-      post.title.toLowerCase().includes(query) || 
-      post.excerpt.toLowerCase().includes(query) ||
-      post.category.toLowerCase().includes(query) ||
-      post.author.toLowerCase().includes(query)
-    );
-  }
-  
-  // Update filtered posts
-  filteredPosts.value = filtered;
-  
-  // Reset to first page when filters change
-  currentPage.value = 1;
-};
-
-// Set active category
-const setCategory = (category: string | null) => {
-  activeCategory.value = category ?? 'all';
-  filterPosts();
-};
-
-// Reset all filters
-const resetFilters = () => {
-  activeCategory.value = 'all';
-  searchQuery.value = '';
-  filterPosts();
-};
-
-// Set current page
-const setPage = (page: number) => {
-  if (page < 1) page = 1;
-  if (page > totalPages.value) page = totalPages.value;
-  currentPage.value = page;
-};
-
-// Format date
+const { getThumbnail } = useStaticThumbnails()
 const { fmtDate } = useFmt()
-const formatDate = (dateStr: string) => fmtDate(dateStr, { year: 'numeric', month: 'long', day: 'numeric' });
 
-// Initialize filtered posts on mount
-onMounted(async () => {
-  await loadPosts();
-  filterPosts();
-});
+const onImgError = (e: Event) => {
+  const img = e.target as HTMLImageElement | null
+  if (img && img.src && !img.src.endsWith(FALLBACK)) img.src = FALLBACK
+}
+
+interface BlogPost {
+  id?: string; slug: string; title: string; excerpt: string
+  category: string; author: string; readMinutes?: number
+  date: string; image?: string; tags?: string[]
+}
+
+const activeCategory = ref('all')
+const searchQuery = ref('')
+const currentPage = ref(1)
+
+const { data, pending } = await useFetch<{ posts: any[]; total: number }>('/api/blog', {
+  query: { limit: 100 },
+  key: 'blog-index'
+})
+
+const allPosts = computed<BlogPost[]>(() => {
+  const api = (data.value?.posts ?? []).map(p => ({
+    ...p,
+    date: p.published_at ?? p.date ?? '',
+    readMinutes: p.read_minutes ?? p.readMinutes
+  }))
+  if (api.length > 0) return api
+  return staticBlogPosts.map(p => ({ ...p }))
+})
+
+const featuredPost = computed(() => allPosts.value[0] ?? null)
+const categories = computed(() => [...new Set(allPosts.value.map(p => p.category))])
+
+const filteredPosts = computed(() => {
+  let list = allPosts.value
+  if (activeCategory.value !== 'all') list = list.filter(p => p.category === activeCategory.value)
+  if (searchQuery.value.trim()) {
+    const q = searchQuery.value.toLowerCase()
+    list = list.filter(p =>
+      p.title.toLowerCase().includes(q) ||
+      p.excerpt.toLowerCase().includes(q) ||
+      p.author.toLowerCase().includes(q) ||
+      p.category.toLowerCase().includes(q)
+    )
+  }
+  return list
+})
+
+const totalPages = computed(() => Math.max(1, Math.ceil(filteredPosts.value.length / PER_PAGE)))
+const displayedPosts = computed(() => {
+  const start = (currentPage.value - 1) * PER_PAGE
+  return filteredPosts.value.slice(start, start + PER_PAGE)
+})
+
+watch([activeCategory, searchQuery], () => { currentPage.value = 1 })
+
+function setCategory(cat: string) { activeCategory.value = cat }
+function setPage(p: number) {
+  currentPage.value = Math.max(1, Math.min(p, totalPages.value))
+  globalThis.window?.scrollTo({ top: 0, behavior: 'smooth' })
+}
+function resetFilters() { activeCategory.value = 'all'; searchQuery.value = ''; currentPage.value = 1 }
 </script>
 
-
 <style scoped>
-/* Shell ---------------------------------------------------------- */
-.blog { background: #ffffff; color: #1e1e1e; }
-.blog__wrap { max-width: 1160px; margin: 0 auto; padding: 0 1.5rem; }
+.blog-feed { background: var(--mm-bg); color: var(--mm-pearl); min-height: 100vh; }
+.bf-wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
 
-/* Intro ---------------------------------------------------------- */
-.blog__intro {
-  padding: 5rem 0 2.75rem;
-  border-bottom: 1px solid #f0efec;
-}
-.blog__label {
-  display: inline-block;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: #7C5500;
-  margin-bottom: 1rem;
-}
-.blog__headline {
-  font-family: var(--font-heading, 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif);
-  font-size: clamp(2.25rem, 5vw, 3.25rem);
-  font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -0.01em;
-  color: #1e1e1e;
-  margin: 0 0 1rem;
-  max-width: 720px;
-}
-.blog__lede {
-  font-size: 1.0625rem;
-  line-height: 1.6;
-  color: #52525b;
-  margin: 0;
-  max-width: 620px;
-}
+.bf-header { padding: 64px 0 40px; border-bottom: 0.5px solid var(--b1); }
+.bf-eyebrow { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mm-gold); margin-bottom: 16px; }
+.bf-headline { font-size: clamp(2rem, 4.5vw, 3rem); font-weight: 700; line-height: 1.1; letter-spacing: -0.01em; margin: 0 0 16px; color: var(--mm-pearl); max-width: 700px; }
+.bf-lede { font-size: 16px; line-height: 1.65; color: var(--mm-silver); margin: 0; max-width: 580px; }
 
-/* Featured ------------------------------------------------------- */
-.blog__feature { padding: 3rem 0 1rem; }
-.feature {
-  display: grid;
-  grid-template-columns: 1.05fr 1fr;
-  gap: 3rem;
-  align-items: center;
-  color: inherit;
-  text-decoration: none;
-}
-.feature__kicker {
-  display: inline-block;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #7C5500;
-  margin-bottom: 1rem;
-}
-.feature__title {
-  font-family: var(--font-heading, 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif);
-  font-size: clamp(1.625rem, 3vw, 2.25rem);
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.005em;
-  color: #1e1e1e;
-  margin: 0 0 1rem;
-  transition: color 0.2s ease;
-}
-.feature:hover .feature__title { color: var(--sw-primary, #ff8838); }
-.feature__excerpt {
-  font-size: 1.0625rem;
-  line-height: 1.6;
-  color: #3f3f46;
-  margin: 0 0 1.25rem;
-}
-.feature__meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  font-size: 0.8125rem;
-  color: #71717a;
-}
-.feature__meta span:first-child { font-weight: 600; color: #1e1e1e; }
-.feature__media {
-  aspect-ratio: 4 / 3;
-  background: var(--sw-primary-soft, #fff1e6);
-  border-radius: 18px;
-  overflow: hidden;
-  display: grid;
-  place-items: center;
-}
-.feature__media img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-  padding: 1.25rem;
-  transition: transform 0.5s ease;
-}
-.feature:hover .feature__media img { transform: scale(1.03); }
+.bf-hero { padding: 40px 0; border-bottom: 0.5px solid var(--b1); }
+.bf-hero__card { display: grid; grid-template-columns: 1.05fr 1fr; gap: 40px; text-decoration: none; border-radius: 16px; background: var(--mm-s1); border: 0.5px solid var(--b1); overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; }
+.bf-hero__card:hover { border-color: var(--b2); box-shadow: 0 20px 60px -20px rgba(0,0,0,0.5); }
+.bf-hero__media { aspect-ratio: 16/9; overflow: hidden; background: var(--mm-s2); }
+.bf-hero__img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
+.bf-hero__card:hover .bf-hero__img { transform: scale(1.03); }
+.bf-hero__body { padding: 32px 32px 32px 0; display: flex; flex-direction: column; gap: 12px; justify-content: center; }
+.bf-hero__top { display: flex; align-items: center; gap: 10px; }
+.bf-hero__author { font-size: 13px; color: var(--mm-slate); }
+.bf-hero__title { font-size: clamp(18px, 2.5vw, 26px); font-weight: 700; color: var(--mm-pearl); line-height: 1.3; margin: 0; }
+.bf-hero__excerpt { font-size: 14px; line-height: 1.65; color: var(--mm-silver); margin: 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.bf-hero__footer { display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--mm-slate); margin-top: auto; }
+@media (max-width: 720px) { .bf-hero__card { grid-template-columns: 1fr; } .bf-hero__body { padding: 20px; } }
 
-/* Topics bar ----------------------------------------------------- */
-.blog__bar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: saturate(180%) blur(8px);
-  border-top: 1px solid #f0efec;
-  border-bottom: 1px solid #f0efec;
-  margin-top: 2rem;
-}
-.blog__bar .blog__wrap {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-}
-.topics {
-  display: flex;
-  gap: 0.25rem;
-  overflow-x: auto;
-  scrollbar-width: none;
-  flex: 1 1 auto;
-  min-width: 0;
-}
-.topics::-webkit-scrollbar { display: none; }
-.topic {
-  background: transparent;
-  border: none;
-  color: #71717a;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  white-space: nowrap;
-  cursor: pointer;
-  border-radius: 0;
-  position: relative;
-  font-family: inherit;
-  transition: color 0.15s ease;
-}
-.topic:hover { color: #1e1e1e; }
-.topic--on {
-  color: #1e1e1e;
-  font-weight: 600;
-}
-.topic--on::after {
-  content: '';
-  position: absolute;
-  left: 0.75rem;
-  right: 0.75rem;
-  bottom: -0.75rem;
-  height: 2px;
-  background: var(--sw-primary, #ff8838);
-}
-.find {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  height: 40px;
-  padding: 0 0.85rem;
-  border-radius: 10px;
-  background: #ffffff;
-  border: 1px solid #e4e4e7;
-  transition: border-color 0.15s ease;
-  flex-shrink: 0;
-  width: 240px;
-}
-.find:focus-within {
-  border-color: var(--sw-primary, #ff8838);
-}
-.find svg {
-  width: 16px;
-  height: 16px;
-  color: #a1a1aa;
-  flex-shrink: 0;
-}
-.find input {
-  background: transparent;
-  border: none;
-  outline: none;
-  width: 100%;
-  height: 100%;
-  font-size: 0.9375rem;
-  color: #1e1e1e;
-  font-family: inherit;
-}
-.find input::placeholder { color: #a1a1aa; }
+.bf-badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; background: var(--mm-gold-soft, rgba(212,168,67,0.15)); color: var(--mm-goldl, #EEC563); }
 
-/* List ----------------------------------------------------------- */
-.blog__list { padding: 3rem 0 6rem; }
-.blog__meta-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.875rem;
-  color: #71717a;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-.blog__meta-row strong { color: #1e1e1e; font-weight: 700; }
-.blog__meta-reset button {
-  background: none;
-  border: none;
-  padding: 0;
-  color: var(--sw-primary, #ff8838);
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: inherit;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
+.bf-bar { position: sticky; top: 0; z-index: 20; background: rgba(7,9,15,0.92); backdrop-filter: blur(10px); border-bottom: 0.5px solid var(--b1); }
+.bf-bar__inner { display: flex; align-items: center; gap: 12px; padding: 12px 0; flex-wrap: wrap; }
+.bf-bar__cats { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; min-width: 0; }
+.bf-cat { padding: 5px 14px; border-radius: 999px; font-size: 13px; font-weight: 500; background: transparent; border: 0.5px solid var(--b1); color: var(--mm-silver); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.bf-cat:hover { border-color: var(--b2); color: var(--mm-pearl); }
+.bf-cat--on { background: var(--mm-gold-soft, rgba(212,168,67,0.15)); border-color: var(--mm-gold); color: var(--mm-goldl, #EEC563); font-weight: 600; }
+.bf-search { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 8px; background: var(--mm-s1); border: 0.5px solid var(--b1); color: var(--mm-slate); transition: border-color 0.15s; }
+.bf-search:focus-within { border-color: var(--mm-gold); color: var(--mm-pearl); }
+.bf-search input { background: none; border: none; outline: none; font: inherit; font-size: 13px; color: var(--mm-silver); width: 160px; }
+.bf-search input::placeholder { color: var(--mm-slate); }
+.bf-bar__count { font-size: 12px; color: var(--mm-slate); white-space: nowrap; margin: 0; }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2.5rem 2rem;
-}
+.bf-grid-section { padding: 40px 0 80px; }
+.bf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
 
-.post { border: none; background: transparent; }
-.post__link {
-  display: block;
-  color: inherit;
-  text-decoration: none;
-}
-.post__media {
-  aspect-ratio: 16 / 10;
-  background: var(--sw-primary-soft, #fff1e6);
-  border-radius: 14px;
-  overflow: hidden;
-  margin-bottom: 1rem;
-  display: grid;
-  place-items: center;
-}
-.post__media img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-  padding: 0.75rem;
-  transition: transform 0.4s ease;
-}
-.post__link:hover .post__media img { transform: scale(1.04); }
-.post__meta {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 0.75rem;
-  margin-bottom: 0.5rem;
-}
-.post__tag {
-  font-weight: 700;
-  color: #7C5500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-.post__date { color: #595959; }
-.post__title {
-  font-family: var(--font-heading, 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif);
-  font-size: 1.125rem;
-  font-weight: 700;
-  line-height: 1.3;
-  color: #1e1e1e;
-  margin: 0 0 0.5rem;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  transition: color 0.15s ease;
-}
-.post__link:hover .post__title { color: var(--sw-primary, #ff8838); }
-.post__excerpt {
-  font-size: 0.9375rem;
-  line-height: 1.55;
-  color: #52525b;
-  margin: 0 0 0.85rem;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.post__cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #1e1e1e;
-  transition: color 0.15s ease, gap 0.15s ease;
-}
-.post__cta svg { width: 14px; height: 14px; }
-.post__link:hover .post__cta {
-  color: var(--sw-primary, #ff8838);
-  gap: 0.55rem;
-}
+.bf-card { background: var(--mm-s1); border: 0.5px solid var(--b1); border-radius: 14px; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; }
+.bf-card:hover { border-color: var(--b2); box-shadow: 0 16px 48px -16px rgba(0,0,0,0.5); transform: translateY(-2px); }
+.bf-card__link { display: flex; flex-direction: column; height: 100%; text-decoration: none; }
+.bf-card__cover { position: relative; aspect-ratio: 16/9; overflow: hidden; background: var(--mm-s2); }
+.bf-card__img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
+.bf-card:hover .bf-card__img { transform: scale(1.04); }
+.bf-badge--abs { position: absolute; top: 10px; left: 10px; }
+.bf-card__body { padding: 20px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.bf-card__meta { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--mm-slate); }
+.bf-card__title { font-size: 16px; font-weight: 700; color: var(--mm-pearl); line-height: 1.4; margin: 0; }
+.bf-card__excerpt { font-size: 13px; line-height: 1.6; color: var(--mm-silver); margin: 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.bf-card__cta { display: inline-flex; align-items: center; gap: 5px; margin-top: auto; padding-top: 8px; font-size: 12px; font-weight: 600; color: var(--mm-gold); }
 
-/* Empty ---------------------------------------------------------- */
-.empty {
-  text-align: center;
-  padding: 4.5rem 1.5rem;
-  border: 1px dashed #e4e4e7;
-  border-radius: 16px;
-  background: #fbfaf8;
-}
-.empty h3 {
-  font-family: var(--font-heading, 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif);
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #1e1e1e;
-  margin: 0 0 0.5rem;
-}
-.empty p { color: #52525b; margin: 0 0 1.5rem; font-size: 0.9375rem; }
-.empty__btn {
-  background: #1e1e1e;
-  color: #ffffff;
-  border: none;
-  padding: 0.65rem 1.5rem;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 0.9375rem;
-  cursor: pointer;
-  font-family: inherit;
-  transition: background 0.15s ease;
-}
-.empty__btn:hover { background: var(--sw-primary, #ff8838); }
+.bf-skeleton-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+.bf-skeleton { height: 340px; border-radius: 14px; background: linear-gradient(90deg, var(--mm-s1) 0%, var(--mm-s2) 50%, var(--mm-s1) 100%); background-size: 200% 100%; animation: shimmer 1.4s ease-in-out infinite; }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-/* Pager ---------------------------------------------------------- */
-.pager {
-  margin-top: 4rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1.25rem;
-}
-.pager__btn {
-  width: 40px;
-  height: 40px;
-  display: grid;
-  place-items: center;
-  border: 1px solid #e4e4e7;
-  background: #ffffff;
-  color: #1e1e1e;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease;
-}
-.pager__btn:hover:not(:disabled) {
-  border-color: var(--sw-primary, #ff8838);
-  color: var(--sw-primary, #ff8838);
-}
-.pager__btn:disabled { opacity: 0.4; cursor: not-allowed; }
-.pager__btn svg { width: 16px; height: 16px; }
-.pager__info {
-  font-size: 0.9375rem;
-  color: #71717a;
-  font-variant-numeric: tabular-nums;
-}
-.pager__info strong { color: #1e1e1e; font-weight: 700; }
+.bf-empty { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 72px 24px; color: var(--mm-slate); text-align: center; }
+.bf-empty p { margin: 0; font-size: 15px; }
+.bf-empty__btn { padding: 8px 22px; border-radius: 8px; font: inherit; font-size: 13px; font-weight: 600; background: var(--mm-gold-soft, rgba(212,168,67,0.15)); border: 0.5px solid var(--mm-gold); color: var(--mm-goldl); cursor: pointer; transition: background 0.15s; }
+.bf-empty__btn:hover { background: rgba(212,168,67,0.25); }
 
-/* Responsive ----------------------------------------------------- */
-@media (max-width: 960px) {
-  .feature { grid-template-columns: 1fr; gap: 1.75rem; }
-  .feature__media { order: -1; aspect-ratio: 16 / 10; }
-  .grid { grid-template-columns: repeat(2, 1fr); gap: 2rem 1.5rem; }
-}
-@media (max-width: 640px) {
-  .blog__intro { padding: 3.5rem 0 2rem; }
-  .blog__feature { padding: 2rem 0 0.5rem; }
-  .blog__list { padding: 2.5rem 0 4rem; }
-  .blog__bar .blog__wrap { flex-direction: column; align-items: stretch; gap: 0.75rem; }
-  .find { width: 100%; }
-  .topic--on::after { bottom: -0.5rem; }
-  .grid { grid-template-columns: 1fr; gap: 2rem; }
+.bf-pagination { display: flex; align-items: center; justify-content: center; gap: 16px; padding-top: 40px; }
+.bf-page-btn { width: 36px; height: 36px; border-radius: 8px; border: 0.5px solid var(--b1); background: var(--mm-s1); color: var(--mm-silver); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; }
+.bf-page-btn:hover:not(:disabled) { border-color: var(--b2); color: var(--mm-pearl); }
+.bf-page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.bf-page-info { font-size: 13px; color: var(--mm-slate); }
+.bf-page-info strong { color: var(--mm-pearl); }
+
+@media (max-width: 600px) {
+  .bf-header { padding: 40px 0 28px; }
+  .bf-bar__inner { gap: 8px; }
+  .bf-search input { width: 110px; }
 }
 </style>

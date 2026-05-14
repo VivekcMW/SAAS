@@ -8,7 +8,7 @@
  *   nitro: { experimental: { tasks: true } }
  *   scheduledTasks: { '0 3 * * *': ['seo:score-all'] }  // 3 AM UTC
  */
-import { computeAppSeoScore, upsertAppSeoMeta, getAllPublishedApps } from '../utils/seoEngine'
+import { computeAppSeoScore, upsertAppSeoMeta, getAllPublishedApps } from '../../utils/seoEngine'
 
 export default defineTask({
   meta: {
